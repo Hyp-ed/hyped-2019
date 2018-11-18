@@ -266,15 +266,15 @@ int Imu::readFifo(std::vector<ImuData>& data)
   }
   // byte count of fifo queue into uint count var
   readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(count), 2);
-  log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
+  // log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
 
   uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // convert big->little endian since BBB reads from little and IMU reads from big
-  
+
   
   // Get count make to the nearest lowest even number
-  fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));
-  log_.DBG("Fifo Count", "0x%x", fifo_bytes);
-  // fifo_bytes = std::min(kFifo_size, fifo_bytes);  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct 
+  fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct 
+  // log_.DBG("Fifo Count", "0x%x", fifo_bytes);
+  // fifo_bytes = std::min(kFifo_size, fifo_bytes);  
   
 
   // Read from fifo queue register into raw_data struct minimum number of complete data sets
@@ -283,8 +283,9 @@ int Imu::readFifo(std::vector<ImuData>& data)
   readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_bytes);
   // log_.DBG("Raw Fifo data", "x = 0x%x, y = 0x%x, z = 0x%x", raw_data[0].acc[0], raw_data[0].acc[1], raw_data[0].acc[2]);
   
+  // need to get rid of empty zeros here
   for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){
-    myPrint(i);
+    // myPrint(i);
     ImuData imu_data;
     imu_data.acc[0] = raw_data[i].acc[0];
     imu_data.acc[1] = raw_data[i].acc[1];

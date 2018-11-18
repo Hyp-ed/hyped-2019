@@ -63,8 +63,6 @@ class Imu : public ImuInterface {
    */
   int readFifo(std::vector<ImuData>& data);
 
-  void getTemperature(uint8_t temp);        // seperate function for temperature
-
  private:
   /*
    *  @brief Sets the range for the gyroscope
