@@ -73,7 +73,7 @@ class System {
 
   /**
    * @brief Construct a new System object, parameters used by getopt_long to set verbose and debug
-   * 
+   *
    * @param argc argument count
    * @param argv argument array
    */

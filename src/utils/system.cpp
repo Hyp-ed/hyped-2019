@@ -91,7 +91,9 @@ System::System(int argc, char* argv[])
       {"help", no_argument, 0, 'h'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
-    c = getopt_long(argc, argv, "vd::h", long_options, &option_index);    // returns option character from argv array following '-' or '--' from command line
+    // returns option character from argv array following '-' or '--' from command line
+    c = getopt_long(argc, argv, "vd::h", long_options, &option_index);
+
 
     /* Detect the end of the options. */
     if (c == -1)
