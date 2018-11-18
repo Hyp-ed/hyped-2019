@@ -18,8 +18,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_TIMER_HPP_
-#define BEAGLEBONE_BLACK_UTILS_TIMER_HPP_
+#ifndef UTILS_TIMER_HPP_
+#define UTILS_TIMER_HPP_
 
 #include <stdint.h>
 
@@ -70,4 +70,4 @@ class ScopedTimer {
 
 }}  // namespace hyped::utils
 
-#endif  // BEAGLEBONE_BLACK_UTILS_TIMER_HPP_
+#endif  // UTILS_TIMER_HPP_

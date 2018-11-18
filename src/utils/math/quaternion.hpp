@@ -19,8 +19,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_MATH_QUATERNION_HPP_
-#define BEAGLEBONE_BLACK_UTILS_MATH_QUATERNION_HPP_
+#ifndef UTILS_MATH_QUATERNION_HPP_
+#define UTILS_MATH_QUATERNION_HPP_
 
 #include <initializer_list>
 #include <array>
@@ -368,4 +368,4 @@ Vector<T, 4> Quaternion<T>::get_elements() const
 
 }}}  // hyped::utils::math
 
-#endif  // BEAGLEBONE_BLACK_UTILS_MATH_QUATERNION_HPP_
+#endif  // UTILS_MATH_QUATERNION_HPP_

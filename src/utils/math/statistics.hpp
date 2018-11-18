@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_MATH_STATISTICS_HPP_
-#define BEAGLEBONE_BLACK_UTILS_MATH_STATISTICS_HPP_
+#ifndef UTILS_MATH_STATISTICS_HPP_
+#define UTILS_MATH_STATISTICS_HPP_
 
 #include <cassert>
 #include <cmath>
@@ -136,4 +136,4 @@ void RollingStatistics<T>::update(T new_value)
 
 }}}  // namespace hyped::utils::math
 
-#endif  // BEAGLEBONE_BLACK_UTILS_MATH_STATISTICS_HPP_
+#endif  // UTILS_MATH_STATISTICS_HPP_

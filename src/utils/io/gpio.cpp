@@ -54,21 +54,15 @@ constexpr uint32_t kData          = 0x138;
 constexpr uint32_t kClear         = 0x190;
 constexpr uint32_t kSet           = 0x194;
 
-#define GPIOFS 0                                        // used to swtich to file system method for set(), clear(), and read()
+#define GPIOFS 0             // used to swtich to file system method for set(), clear(), and read()
 
 // workaround to avoid conflict with GPIO::read()
-size_t readHelper(int fd)                               // if GPIOFS==1, change type to of readHelper to int
+uint8_t readHelper(int fd)
 {
-#if GPIOFS
   char buf[2];
-  lseek(fd, 0, SEEK_SET);                               // reset file pointer
-  read(fd, buf, sizeof(buf));                           // actually consume new data
+  lseek(fd, 0, SEEK_SET);                      // reset file pointer
+  read(fd, buf, sizeof(buf));                  // actually consume new data, changes value in buffer
   return std::atoi(buf);
-#else
-  char buf[2];
-  lseek(fd, 0, SEEK_SET);                               // reset file pointer
-  return read(fd, buf, sizeof(buf));                           // actually consume new data, changes value in buffer
-#endif
 }
 
 }  // namespace gpio
@@ -139,7 +133,6 @@ void GPIO::initialise()
     base_mapping_[i] = base;
   }
   atexit(uninitialise);
-
   initialised_ = true;
 }
 
@@ -192,7 +185,7 @@ void GPIO::exportGPIO()
 
   // set direction
   snprintf(buf, sizeof(buf), "/sys/class/gpio/gpio%i/direction", pin_);
-  fd = open(buf, O_WRONLY);                             // opens the direciton file for pin, from path in buf, to change direction
+  fd = open(buf, O_WRONLY);
   if (fd < 0) {
     log_.ERR("GPIO", "could not open direction file for %i at %s", pin_, buf);
     return;
@@ -222,7 +215,8 @@ void GPIO::attachGPIO()
 
   bank      = pin_/32;
   pin_id    = pin_%32;
-  pin_mask_ = 1 << pin_id;                              // corresponds to desired data of pin by indicating specific bit within byte of pin data
+  // corresponds to desired data of pin by indicating specific bit within byte of pin data
+  pin_mask_ = 1 << pin_id;
   log_.DBG1("GPIO", "gpio %d resolved as bank,pin %d, %d", pin_, bank, pin_id);
 
   // hacking compilation compatibility for 64bit systems
@@ -348,7 +342,8 @@ uint8_t GPIO::read()
   int val = gpio::readHelper(fd_);
   return val;
 #else
-  uint8_t val = *data_ & pin_mask_ ? 1 : 0;          // compares data and pin mask whether data is zero or one
+  // compares data and pin mask whether data is zero or one
+  uint8_t val = *data_ & pin_mask_ ? 1 : 0;
   log_.DBG1("GPIO", "gpio %d read %d", pin_, val);
   return val;
   #endif

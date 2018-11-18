@@ -1,7 +1,7 @@
 /*
- * Authors: 
+ * Authors:
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -18,10 +18,13 @@
  *    limitations under the License.
  */
 
+#ifndef TELEMETRY_MAIN_HPP_
+#define TELEMETRY_MAIN_HPP_
+
 namespace hyped {
 
 namespace communications {
 
-}}  
+}}
 
-
+#endif  // TELEMETRY_MAIN_HPP_

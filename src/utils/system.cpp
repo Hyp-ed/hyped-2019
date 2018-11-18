@@ -48,11 +48,11 @@ void printUsage()
     "Default value of debug   flags is 0\n"
     "\n  -v, --verbose[=<bool>]\n"
     "    Set system-wide setting of verbosity. If enabled, prints all INFO messages\n"
-    "\n  --verbose_motor, --verbose_nav, --verbose_sensor, --verbose_state, --verbose_cmn\n"
+    "\n  --verbose_motor, --verbose_nav, --verbose_sensor, --verbose_state, --verbose_tlm\n"
     "    Set module-specific setting of verbosity. If enabled, prints all INFO messages\n"
     "\n  -d, --debug[=<level>]\n"
     "    Set system-wide debug level. All DBG[n] where n <= level messages are printed.\n"
-    "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_cmn\n"
+    "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "\n  --fake_imu --fake_proxi --fake_motors --fake_sensors --fake_keyence --fake_batteries\n"
     "    Make the system use the fake data drivers.\n"
@@ -68,7 +68,7 @@ void printUsage()
     "    Number of IMUs to use (max=7)."
     "");
 }
-}
+}   // namespace hyped::utils::System
 
 System::~System()
 {
@@ -81,7 +81,7 @@ System::System(int argc, char* argv[])
       verbose_nav(DEFAULT_VERBOSE),
       verbose_sensor(DEFAULT_VERBOSE),
       verbose_state(DEFAULT_VERBOSE),
-      verbose_cmn(DEFAULT_VERBOSE),
+      verbose_tlm(DEFAULT_VERBOSE),
       debug(DEFAULT_DEBUG),
       debug_motor(DEFAULT_DEBUG),
       debug_nav(DEFAULT_DEBUG),
@@ -102,7 +102,9 @@ System::System(int argc, char* argv[])
       running_(true),
       imu_id(DEFAULT_IMU_ID),
       imu_count(DEFAULT_IMU_COUNT),
-      run_id(DEFAULT_RUN_ID)
+      run_id(DEFAULT_RUN_ID),
+      debug_tlm(DEFAULT_DEBUG),
+      running_(true)
 
 {
   int c;
@@ -114,13 +116,13 @@ System::System(int argc, char* argv[])
       {"verbose_nav", optional_argument, 0, 'A'},
       {"verbose_sensor", optional_argument, 0, 'b'},
       {"verbose_state", optional_argument, 0, 'B'},
-      {"verbose_cmn", optional_argument, 0, 'c'},
+      {"verbose_tlm", optional_argument, 0, 'c'},
       {"debug", optional_argument, 0, 'd'},
       {"debug_motor", optional_argument, 0, 'e'},
       {"debug_nav", optional_argument, 0, 'E'},
       {"debug_sensor", optional_argument, 0, 'f'},
       {"debug_state", optional_argument, 0, 'F'},
-      {"debug_cmn", optional_argument, 0, 'g'},
+      {"debug_tlm", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", optional_argument, 0, 'i'},
       {"fail_dec_imu", optional_argument, 0, 'I'},
@@ -139,8 +141,10 @@ System::System(int argc, char* argv[])
       {"imu_count", optional_argument, 0, 'P'},
       {"run_id", optional_argument, 0, 'q'},
       {0, 0, 0, 0}
-    };
+    };    // options for long in long_options array, can support optional argument
+    // returns option character from argv array following '-' or '--' from command line
     c = getopt_long(argc, argv, "vd::h", long_options, &option_index);
+
 
     /* Detect the end of the options. */
     if (c == -1)
@@ -175,9 +179,10 @@ System::System(int argc, char* argv[])
         if (optarg) verbose_state = atoi(optarg);
         else        verbose_state = true;
         break;
-      case 'c':   // verbose_cmn
-        if (optarg) verbose_cmn = atoi(optarg);
-        else        verbose_cmn = true;
+      case 'c':   // verbose_tlm
+        if (optarg) verbose_tlm = atoi(optarg);
+        else        verbose_tlm = true;
+        break;
       case 'e':   // debug_motor
         if (optarg) debug_motor = atoi(optarg);
         else        debug_motor = 0;
@@ -194,61 +199,9 @@ System::System(int argc, char* argv[])
         if (optarg) debug_state = atoi(optarg);
         else        debug_state = 0;
         break;
-      case 'g':   // debug_cmn
-        if (optarg) debug_cmn = atoi(optarg);
-        else        debug_cmn = 0;
-        break;
-      case 'i':
-        if (optarg) fake_imu = atoi(optarg);
-        else        fake_imu = 1;
-        break;
-      case 'I':
-        if (optarg) fail_dec_imu = atoi(optarg);
-        else        fail_dec_imu = 1;
-        break;
-      case 'j':
-        if (optarg) fake_proxi = atoi(optarg);
-        else        fake_proxi = 1;
-        break;
-      case 'J':
-        if (optarg) fail_acc_imu = atoi(optarg);
-        else        fail_acc_imu = 1;
-        break;
-      case 'k':
-        if (optarg) fake_sensors = atoi(optarg);
-        else        fake_sensors = 1;
-        break;
-      case 'K':
-        if (optarg) fail_motors = atoi(optarg);
-        else        fail_motors = 1;
-        break;
-      case 'l':
-        if (optarg) fake_keyence = atoi(optarg);
-        else        fake_keyence = 1;
-        break;
-      case 'L':
-        if (optarg) miss_keyence = atoi(optarg);
-        else        miss_keyence = 1;
-        break;
-      case 'm':
-        if (optarg) fake_motors = atoi(optarg);
-        else        fake_motors = 1;
-        break;
-      case 'M':
-        if (optarg) double_keyence = atoi(optarg);
-        else        double_keyence = 1;
-        break;
-      case 'n':
-        if (optarg) fake_embrakes = atoi(optarg);
-        else        fake_embrakes = 1;
-        break;
-      case 'N':
-        if (optarg) accurate = atoi(optarg);
-        else        accurate = true;
-        break;
-      case 'o':
-        if (optarg) fake_batteries = atoi(optarg);
-        else        fake_batteries = 1;
+      case 'g':   // debug_tlm
+        if (optarg) debug_tlm = atoi(optarg);
+        else        debug_tlm = 0;
         break;
       case 'p':
         if (optarg) imu_id = atoi(optarg);
@@ -274,25 +227,24 @@ System::System(int argc, char* argv[])
   if (verbose_nav     == DEFAULT_VERBOSE) verbose_nav     = verbose;
   if (verbose_sensor  == DEFAULT_VERBOSE) verbose_sensor  = verbose;
   if (verbose_state   == DEFAULT_VERBOSE) verbose_state   = verbose;
-  if (verbose_cmn     == DEFAULT_VERBOSE) verbose_cmn     = verbose;
+  if (verbose_tlm     == DEFAULT_VERBOSE) verbose_tlm     = verbose;
 
   if (debug_motor   == DEFAULT_DEBUG) debug_motor   = debug;
   if (debug_nav     == DEFAULT_DEBUG) debug_nav     = debug;
   if (debug_sensor  == DEFAULT_DEBUG) debug_sensor  = debug;
   if (debug_state   == DEFAULT_DEBUG) debug_state   = debug;
-  if (debug_cmn     == DEFAULT_DEBUG) debug_cmn     = debug;
+  if (debug_tlm     == DEFAULT_DEBUG) debug_tlm     = debug;
 
   log_ = new Logger(verbose, debug);
-  system_ = this;
+  system_ = this;   // own address
 }
 
 System* System::system_ = 0;
 
 void System::parseArgs(int argc, char* argv[])
 {
-  if (system_) return;
-
-  system_ = new System(argc, argv);
+  if (system_) return;                  // when all command-line option have been parsed
+  system_ = new System(argc, argv);     // System overloaded
 }
 
 System& System::getSystem()
@@ -309,7 +261,6 @@ Logger& System::getLogger()
   System& sys = getSystem();
   return *sys.log_;
 }
-
 
 static void gracefulExit(int x)
 {

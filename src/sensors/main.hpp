@@ -1,7 +1,7 @@
 /*
- * Author: 
+ * Author:
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  * Main manages sensor drivers, collects data from sensors and updates
  * shared Data::Sensors structure. Main is not responsible for initialisation
@@ -22,8 +22,13 @@
  *    limitations under the License.
  */
 
+#ifndef SENSORS_MAIN_HPP_
+#define SENSORS_MAIN_HPP_
+
 namespace hyped {
 
 namespace sensors {
 
-}}  
+}}
+
+#endif  // SENSORS_MAIN_HPP_

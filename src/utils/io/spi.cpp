@@ -8,7 +8,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licen ses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,9 +21,12 @@
 #include "utils/io/spi.hpp"
 
 // #include <stdio.h>
+#include <poll.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <sys/mman.h>
 
 #ifndef WIN
 #include <linux/spi/spidev.h>
@@ -64,10 +67,43 @@ struct spi_ioc_transfer {
 #define SPI_MSBFIRST 0
 #define SPI_LSBFIRST 1
 
+#define SPI_FS  0
+
 
 namespace hyped {
 namespace utils {
 namespace io {
+
+constexpr uint32_t kSPIAddrBase = 0x48030000;
+constexpr uint32_t kMmapSize    = 0x1000;
+
+// define what the address space of SPI looks like
+#pragma pack(1)
+struct SPI_CH {   // offset
+  uint32_t conf;  // 0x00
+  uint32_t stat;  // 0x04
+  uint32_t ctrl;  // 0x08
+  uint32_t tx;    // 0x0c
+  uint32_t rx;    // 0x10
+};
+
+#pragma pack(1)    // so that the compiler does not change layout
+struct SPI_HW {           // offset
+  uint32_t revision;      // 0x000
+  uint32_t nope0[0x43];   // 0x004 - 0x110
+  uint32_t sysconfig;     // 0x110
+  uint32_t sysstatus;     // 0x114
+  uint32_t irqstatus;     // 0x118
+  uint32_t irqenable;     // 0x11c
+  uint32_t nope1[2];      // 0x120 - 0x124
+  uint32_t syst;          // 0x124
+  uint32_t modulctr;      // 0x128
+  SPI_CH   ch0;           // 0x12c - 0x140
+  SPI_CH   ch1;           // 0x140 - 0x154
+  SPI_CH   ch2;           // 0x154 - 0x168
+  SPI_CH   ch3;           // 0x168 - 0x17c
+  uint32_t xferlevel;     // 0x17c
+};
 
 SPI& SPI::getInstance()
 {
@@ -76,7 +112,10 @@ SPI& SPI::getInstance()
 }
 
 SPI::SPI(Logger& log)
-    : log_(log)
+    : spi_fd_(-1),
+      hw_(0),
+      ch_(0),
+      log_(log)
 {
   const char device[] = "/dev/spidev1.0";
   spi_fd_ = open(device, O_RDWR, 0);
@@ -89,8 +128,7 @@ SPI::SPI(Logger& log)
   // set clock frequency
   setClock(Clock::k1MHz);
 
-  // set bits per word
-  uint8_t bits = SPI_BITS;
+  uint8_t bits = SPI_BITS;      // need to change this value
   if (ioctl(spi_fd_, SPI_IOC_WR_BITS_PER_WORD, &bits) < 0) {
     log_.ERR("SPI", "could not set bits per word");
   }
@@ -107,8 +145,35 @@ SPI::SPI(Logger& log)
     log_.ERR("SPI", "could not set bit order");
   }
 
+  initialise();
   log_.INFO("SPI", "spi instance created");
 }
+
+void SPI::initialise()
+{
+  int   fd;
+  void* base;
+
+  fd = open("/dev/mem", O_RDWR);
+  if (fd < 0) {
+    log_.ERR("SPI", "could not open /dev/mem");
+    return;
+  }
+
+  base = mmap(0, kMmapSize, PROT_READ | PROT_WRITE, MAP_SHARED,
+              fd, kSPIAddrBase);
+  if (base == MAP_FAILED) {
+    log_.ERR("SPI", "could not map bank 0x%x", kSPIAddrBase);
+    return;
+  }
+
+  hw_ = reinterpret_cast<SPI_HW*>(base);
+  ch_ = &hw_->ch0;
+
+  log_.INFO("SPI", "Mapping successfully created %d", sizeof(SPI_HW));
+  log_.INFO("SPI", "revision 0x%x", hw_->revision);
+}
+
 
 void SPI::setClock(Clock clk)
 {
@@ -116,6 +181,7 @@ void SPI::setClock(Clock clk)
   switch (clk) {
     case Clock::k1MHz:  data = 1000000;   break;
     case Clock::k4MHz:  data = 4000000;   break;
+    case Clock::k16MHz: data = 16000000;  break;
     case Clock::k20MHz: data = 20000000;  break;
   }
 
@@ -126,8 +192,8 @@ void SPI::setClock(Clock clk)
 
 void SPI::transfer(uint8_t* tx, uint8_t* rx, uint16_t len)
 {
+#if SPI_FS
   if (spi_fd_ < 0) return;  // early exit if no spi device present
-
   spi_ioc_transfer message = {};
 
   message.tx_buf = reinterpret_cast<uint64_t>(tx);
@@ -137,6 +203,32 @@ void SPI::transfer(uint8_t* tx, uint8_t* rx, uint16_t len)
   if (ioctl(spi_fd_, SPI_IOC_MESSAGE(1), &message) < 0) {
     log_.ERR("SPI", "could not submit TRANSFER message");
   }
+#else
+
+  if (hw_ == 0) return;   // early exit if no spi mapped
+
+  for (uint16_t x = 0; x < len; x++) {
+    // log_.INFO("SPI_TEST","channel 0 status before: %d", 10);
+    // while(!(ch0->status & 0x2));
+    log_.INFO("SPI_TEST", "Status register: %x", ch_->stat);
+    ch_->ctrl = ch_->ctrl | 0x1;
+    ch_->conf = ch_->conf & 0xfffcffff;
+    ch_->tx = tx[x];
+    log_.INFO("SPI_TEST", "Status register: %x", ch_->stat);
+    log_.INFO("SPI_TEST", "Config register: %x", ch_->conf);
+    log_.INFO("SPI_TEST", "Control register: %x", ch_->ctrl);
+
+    while (!(ch_->stat & 0x1)) {
+      utils::concurrent::Thread::sleep(1000);
+      log_.INFO("SPI_TEST", "Status register: %d", ch_->stat);
+    }
+    log_.INFO("SPI_TEST", "Status register: %d", ch_->stat);
+    // log_.INFO("SPI_TEST","Read buffer: %d", ch0->rx_buf);
+    // log_.INFO("SPI_TEST","channel 0 status after: %d", 10);
+    // write_buffer++;
+  }
+
+#endif
 }
 
 void SPI::read(uint8_t addr, uint8_t* rx, uint16_t len)
