@@ -1,0 +1,17 @@
+# binaries
+bin
+
+# Executables
+*.exe
+hyped
+
+# AtmelStudio
+.vs/*
+Debug/
+*.componentinfo.xml
+
+# Other rubbish
+.DS_Store
+.cpplint-cache
+.vscode
+.idea
