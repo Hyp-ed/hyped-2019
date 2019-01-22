@@ -3,7 +3,7 @@
 
 SRCS := \
   data/data.cpp \
-  sensors/imu_driver.cpp \
+  sensors/imu.cpp \
   utils/io/gpio.cpp \
   utils/io/spi.cpp \
   utils/concurrent/thread.cpp \
@@ -13,12 +13,3 @@ SRCS := \
   utils/logger.cpp \
   utils/system.cpp \
   utils/timer.cpp  \
-  
-
-
-MAINS := \
-  velocity_nlmuns \
-
-
-
- 
