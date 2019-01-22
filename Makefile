@@ -9,9 +9,11 @@ LIBS_DIR:=lib
 OBJS_DIR:=bin
 
 CFLAGS:=-pthread -std=c++11 -O2 -Wall -Wno-unused-result
-LFLAGS:=-lpthread -pthread
+LFLAGS:=-lpthread -pthread -static
 
+# default configuration
 CROSS=0
+NOLINT=1
 
 ifeq ($(CROSS), 0)
 	CC:=g++
@@ -26,14 +28,9 @@ ifeq ($(CROSS), 0)
 		CFLAGS:=$(CFLAGS) -DARCH_64
 	endif
 else
-	CC:=arm-linux-gnueabihf-g++
+	CC:=hyped-cross-g++
 	CFLAGS:=$(CFLAGS) -DARCH_32
 $(info cross-compiling)
-endif
-
-ifdef PROXI
-$(info using proximities)
-	CFLAGS:=$(CFLAGS) -DPROXI
 endif
 
 # test if compiler is installed
@@ -63,14 +60,7 @@ Echo := $(Verb)echo
 
 
 
-default: $(TARGET) lint
-
-all:
-	$(Verb) set -e; \
-	for main in $(MAINS); do \
-		$(MAKE) MAIN=$${main}.cpp TARGET=$$main NOLINT=1 --silent; \
-	done; \
-	$(MAKE) lint --no-print-directory
+default: lint $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(Echo) "Linking executable $(MAIN) into $@"
@@ -83,7 +73,7 @@ $(OBJS): $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
 	$(Verb) $(CC) $(DEPFLAGS) $(CFLAGS) -o $@ -c $(INC_DIR) $<
 
 lint:
-ifndef NOLINT
+ifeq ($(NOLINT), 0)
 	$(Verb) python2.7 utils/Lint/presubmit.py
 endif
 
