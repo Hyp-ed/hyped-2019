@@ -211,7 +211,6 @@ void GPIO::attachGPIO()
   // hacking compilation compatibility for 64bit systems
 #ifdef ARCH_64
   uint64_t base = reinterpret_cast<uint64_t>(base_mapping_[bank]);
-#pragma message("compiling for 64 bits")
 #else
   uint32_t base = reinterpret_cast<uint32_t>(base_mapping_[bank]);
 #endif

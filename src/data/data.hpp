@@ -48,7 +48,7 @@ struct Sensor {
 };
 
 typedef Vector<NavigationType, 3> NavigationVector;
-struct Imu : public Sensor {
+struct ImuData : public Sensor {
   NavigationVector acc;
   NavigationVector gyr;
 };
