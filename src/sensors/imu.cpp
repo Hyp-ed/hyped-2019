@@ -2,7 +2,7 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 23/05/18
- * Description: Main file for ImuDriver
+ * Description: Main file for Imu
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#include "sensors/imu_driver.hpp"
+#include "sensors/imu.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/math/statistics.hpp"
 
@@ -29,7 +29,7 @@ constexpr uint8_t kAccelConfig2             = 0x1D;
 
 constexpr uint8_t  kGyroConfig              = 0x1B;
 
-constexpr uint8_t kWhoAmIImuDriver            = 0x75;
+constexpr uint8_t kWhoAmIImu            = 0x75;
 constexpr uint8_t kWhoAmIResetValue1        = 0x71;
 constexpr uint8_t kWhoAmIResetValue2        = 0x73;
 
@@ -41,7 +41,7 @@ constexpr uint8_t kMpuRegConfig             = 0x1A;
 
 constexpr uint8_t kReadFlag                 = 0x80;
 
-// Configuration bits ImuDriver
+// Configuration bits Imu
 constexpr uint8_t kBitsFs250Dps             = 0x00;
 constexpr uint8_t kBitsFs500Dps             = 0x08;
 constexpr uint8_t kBitsFs1000Dps            = 0x10;
@@ -63,18 +63,19 @@ using data::NavigationVector;
 
 namespace sensors {
 
-ImuDriver::ImuDriver(Logger& log, uint32_t pin, uint8_t acc_scale, uint8_t gyro_scale)
-    : log_(log),
+Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale, uint8_t gyro_scale)
+    : spi_(SPI::getInstance()),
+    log_(log),
     gpio_(pin, kDirection, log),
     acc_scale_(acc_scale),
     gyro_scale_(gyro_scale),
     is_online_(false)
 {
   init();
-  log_.DBG("ImuDriver", "Creating ImuDriver sensor");
+  log_.DBG("Imu", "Creating Imu sensor");
 }
 
-void ImuDriver::init()
+void Imu::init()
 {
   // Set pin high
   gpio_.set();
@@ -88,40 +89,40 @@ void ImuDriver::init()
   writeByte(kAccelConfig2, 0x01);
   setAcclScale(acc_scale_);
   setGyroScale(gyro_scale_);
-  log_.INFO("ImuDriver", "ImuDriver sensor created. Initialisation complete");
+  log_.INFO("Imu", "Imu sensor created. Initialisation complete");
 }
 
-bool ImuDriver::whoAmI()
+bool Imu::whoAmI()
 {
   uint8_t data;
   int send_counter;
 
   for (send_counter = 0; send_counter < 10; send_counter++) {
     // Who am I checks what address the sensor is at
-    readByte(kWhoAmIImuDriver, &data);
-    log_.INFO("ImuDriver", "ImuDriver connected to SPI, data: %d", data);
+    readByte(kWhoAmIImu, &data);
+    log_.INFO("Imu", "Imu connected to SPI, data: %d", data);
     if (data == kWhoAmIResetValue1 || data == kWhoAmIResetValue2) {
       is_online_ = true;
       break;
     } else {
-      log_.DBG1("ImuDriver", "Cannot initialise. Who am I is incorrect");
+      log_.DBG1("Imu", "Cannot initialise. Who am I is incorrect");
       is_online_ = false;
       Thread::yield();
     }
   }
 
   if (!is_online_) {
-    log_.ERR("ImuDriver", "Cannot initialise who am I. Sensor offline");
+    log_.ERR("Imu", "Cannot initialise who am I. Sensor offline");
   }
   return is_online_;
 }
 
-ImuDriver::~ImuDriver()
+Imu::~Imu()
 {
-  log_.INFO("ImuDriver", "Deconstructing sensor object");
+  log_.INFO("Imu", "Deconstructing sensor object");
 }
 
-void ImuDriver::writeByte(uint8_t write_reg, uint8_t write_data)
+void Imu::writeByte(uint8_t write_reg, uint8_t write_data)
 {
   // ',' instead of ';' is to inform the compiler not to reorder function calls
   // chip selects signals must have exact ordering with respect to the spi access
@@ -130,30 +131,30 @@ void ImuDriver::writeByte(uint8_t write_reg, uint8_t write_data)
   deSelect();
 }
 
-void ImuDriver::readByte(uint8_t read_reg, uint8_t *read_data)
+void Imu::readByte(uint8_t read_reg, uint8_t *read_data)
 {
   select(),
   spi_.read(read_reg | kReadFlag, read_data, 1),
   deSelect();
 }
 
-void ImuDriver::readBytes(uint8_t read_reg, uint8_t *read_data, uint8_t length)
+void Imu::readBytes(uint8_t read_reg, uint8_t *read_data, uint8_t length)
 {
   select(),
   spi_.read(read_reg | kReadFlag, read_data, length),
   deSelect();
 }
 
-void ImuDriver::select()
+void Imu::select()
 {
   gpio_.clear();
 }
-void  ImuDriver::deSelect()
+void  Imu::deSelect()
 {
   gpio_.set();
 }
 
-void ImuDriver::setGyroScale(int scale)
+void Imu::setGyroScale(int scale)
 {
   writeByte(kGyroConfig, scale);
 
@@ -173,7 +174,7 @@ void ImuDriver::setGyroScale(int scale)
   }
 }
 
-void ImuDriver::setAcclScale(int scale)
+void Imu::setAcclScale(int scale)
 {
   writeByte(kAccelConfig, scale);
 
@@ -193,10 +194,10 @@ void ImuDriver::setAcclScale(int scale)
   }
 }
 
-void ImuDriver::getData(Imu* data)
+void Imu::getData(ImuData* data)
 {
   if (is_online_) {
-    log_.DBG3("ImuDriver", "Getting ImuDriver data");
+    log_.DBG3("Imu", "Getting Imu data");
     auto& acc = data->acc;
     auto& gyr = data->gyr;
     uint8_t response[14];
@@ -225,7 +226,7 @@ void ImuDriver::getData(Imu* data)
     gyr[2] = gyro_data[2];
   } else {
     // Try and turn the sensor on again
-    log_.ERR("ImuDriver", "Sensor not operational, trying to turn on sensor");
+    log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");
     init();
   }
 }

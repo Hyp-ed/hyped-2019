@@ -1,4 +1,4 @@
-#include "sensors/imu_driver.hpp"
+#include "sensors/imu.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -11,19 +11,19 @@
 #include <unistd.h>
 #include <cstdlib> 
 
-using hyped::sensors::ImuDriver;
+using hyped::sensors::Imu;
 using hyped::utils::Logger;
 using hyped::utils::Timer;
 using hyped::utils::ScopedTimer;
 using hyped::utils::concurrent::Thread;
-using hyped::data::Imu;
+using hyped::data::ImuData;
 using hyped::data::NavigationType;
 using hyped::data::NavigationVector;
 
-void sensorAverage(NavigationVector &acc, NavigationVector &gyr, std::vector<Imu *> & msmnts)
+void sensorAverage(NavigationVector &acc, NavigationVector &gyr, std::vector<ImuData *> & msmnts)
 {
   float nSensors = float(msmnts.size());
-  for (Imu *msmnt : msmnts)
+  for (ImuData *msmnt : msmnts)
   {
     acc[0] += msmnt->acc[0] / nSensors;
     acc[1] += msmnt->acc[1] / nSensors;
@@ -46,8 +46,8 @@ float absoluteSum(NavigationVector &v)
 }
 
 
-NavigationVector computeAvgAcc(unsigned int nSensors, std::vector<ImuDriver *> &sensors,
-                                  std::vector<Imu *> &imus, unsigned int measurements)
+NavigationVector computeAvgAcc(unsigned int nSensors, std::vector<Imu *> &sensors,
+                                  std::vector<ImuData *> &imus, unsigned int measurements)
 {
     std::vector<NavigationVector> accelerations(measurements);
     for (unsigned int i = 0; i < measurements; i++)
@@ -92,16 +92,16 @@ int main(int argc, char* argv[])
   Logger& log = hyped::utils::System::getLogger();
 
   // Initialise array of sensors
-  std::vector<ImuDriver *> sensors(nSensors);
-  std::vector<Imu *> imus(nSensors);
+  std::vector<Imu *> sensors(nSensors);
+  std::vector<ImuData *> imus(nSensors);
   // need to set these values manually
   std::vector<int> i2cs = {66};  // i2c locations of sensors
 
   assert(nSensors == i2cs.size());
   for (unsigned int i = 0; i < nSensors; ++i)
   {
-    ImuDriver * mpu = new ImuDriver(log, i2cs[i], 0x08, 0x00);
-    Imu * imu = new Imu();
+    Imu * mpu = new Imu(log, i2cs[i], 0x08, 0x00);
+    ImuData * imu = new ImuData();
     sensors[i] = mpu;
     imus[i] = imu;
   }

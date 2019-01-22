@@ -26,7 +26,7 @@
 
 namespace hyped {
 
-using data::Imu;
+using data::ImuData;
 using data::NavigationVector;
 
 namespace sensors {
@@ -46,7 +46,7 @@ class ImuInterface: public SensorInterface {
    * @brief Get IMU data
    * @param imu - output pointer to be filled by this sensor
    */
-  virtual void getData(Imu* imu) = 0;
+  virtual void getData(ImuData* imu) = 0;
 };
 
 }}  // namespace hyped::sensors

@@ -2,7 +2,7 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 23/05/18
- * Description: Main file for ImuDriver
+ * Description: Main file for Imu
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,10 +36,10 @@ using data::NavigationVector;
 
 namespace sensors {
 
-class ImuDriver : public ImuInterface {
+class Imu : public ImuInterface {
  public:
-  ImuDriver(Logger& log, uint32_t pin, uint8_t acc_scale = 0x08, uint8_t gyro_scale = 0x00);
-  ~ImuDriver();
+  Imu(Logger& log, uint32_t pin, uint8_t acc_scale = 0x08, uint8_t gyro_scale = 0x00);
+  ~Imu();
   /*
    *  @brief Returns if the sensor is online
    *
@@ -49,9 +49,9 @@ class ImuDriver : public ImuInterface {
     return whoAmI();
   }
   /*
-   *  @brief Get the ImuDriver data and update the pointer
+   *  @brief Get the Imu data and update the pointer
    */
-  void getData(Imu* data) override;
+  void getData(ImuData* data) override;
 
  private:
   /*
@@ -70,14 +70,16 @@ class ImuDriver : public ImuInterface {
   void writeByte(uint8_t write_reg, uint8_t write_data);
   void readByte(uint8_t read_reg, uint8_t *read_data);
   void readBytes(uint8_t read_reg, uint8_t *read_buff, uint8_t length);
-  SPI& spi_ = SPI::getInstance();
+
+ private:
+  SPI&    spi_;
   Logger& log_;
-  GPIO gpio_;
+  GPIO    gpio_;
   uint8_t acc_scale_;
   uint8_t gyro_scale_;
-  double acc_divider_;
-  double gyro_divider_;
-  bool is_online_;
+  double  acc_divider_;
+  double  gyro_divider_;
+  bool    is_online_;
 };
 
 }}  // namespace hyped::sensors
