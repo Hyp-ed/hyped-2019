@@ -12,6 +12,7 @@ Debug/
 
 # Other rubbish
 .DS_Store
+._.DS_Store
 .cpplint-cache
 .vscode
 .idea
