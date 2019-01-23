@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
   std::vector<Imu *> sensors(nSensors);
   std::vector<ImuData *> imus(nSensors);
   // need to set these values manually
-  std::vector<int> i2cs = {66};  // i2c locations of sensors
+  std::vector<int> i2cs = {48};  // i2c locations of sensors
 
   assert(nSensors == i2cs.size());
   for (unsigned int i = 0; i < nSensors; ++i)

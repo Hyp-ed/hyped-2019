@@ -31,7 +31,7 @@ constexpr uint8_t  kGyroConfig              = 0x1B;
 
 constexpr uint8_t kWhoAmIImu            = 0x75;
 constexpr uint8_t kWhoAmIResetValue1        = 0x71;
-constexpr uint8_t kWhoAmIResetValue2        = 0x73;
+constexpr uint8_t kWhoAmIResetValue2        = 0x70;
 
 // Power Management
 constexpr uint8_t kMpuRegPwrMgmt1           = 0x6B;
@@ -72,6 +72,7 @@ Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale, uint8_t gyro_scale)
     is_online_(false)
 {
   init();
+  log_.ERR("Imu pin: ", "%d", pin);
   log_.DBG("Imu", "Creating Imu sensor");
 }
 
