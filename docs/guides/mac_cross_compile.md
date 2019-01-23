@@ -55,11 +55,16 @@ Woooo! Cross-compile should be set-up. We need to test if it works.
 ## Testing Cross Compile
 
 Reload your terminal/Open a new terminal
+
 [BBB] Create a hello world program.
+
 [MAC] Mount the BBB to your mac.
+
 [MAC] Go to where the hello world program was created on the BBB.
+
 [MAC] Run the command:
 arm-none-linux-gnueabi-c++ hello.cpp
+
 Where hello.cpp will be whatever you called your hello world program
 
 [BBB] Run the compiled hello world program.
