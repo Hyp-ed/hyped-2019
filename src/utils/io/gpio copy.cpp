@@ -25,13 +25,15 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
-
+//
+#include <iostream>
+#include <fstream>
+//
 #include <cstdlib>
 #include <cstring>
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
-
 
 namespace hyped {
 namespace utils {
@@ -52,19 +54,28 @@ constexpr uint32_t kData          = 0x138;
 constexpr uint32_t kClear         = 0x190;
 constexpr uint32_t kSet           = 0x194;
 
+#define GPIOFS 1                                        // used to swtich to file system method for set(), clear(), and read()
+
 // workaround to avoid conflict with GPIO::read()
-size_t readHelper(int fd)
+int readHelper(int fd)
 {
+#if GPIOFS
   char buf[2];
-  lseek(fd, 0, SEEK_SET);             // reset file pointer
-  return read(fd, buf, sizeof(buf));  // actually consume new data
+  lseek(fd, 0, SEEK_SET);                               // reset file pointer
+  read(fd, buf, sizeof(buf));                           // actually consume new data
+  return std::atoi(buf);
+#else
+  char buf[2];
+  lseek(fd, 0, SEEK_SET);                               // reset file pointer
+  read(fd, buf, sizeof(buf));                           // actually consume new data, changes value in buffer
+#endif
 }
 
 }  // namespace gpio
 
 bool GPIO::initialised_ = false;
 void* GPIO::base_mapping_[gpio::kBankNum];
-std::vector<uint32_t> GPIO::exported_pins;  // NOLINT [build/include_what_you_use]
+std::vector<uint32_t> GPIO::exported_pins;              // NOLINT [build/include_what_you_use]
 
 GPIO::GPIO(uint32_t pin, gpio::Direction direction)
     : GPIO(pin, direction, System::getLogger())
@@ -92,14 +103,14 @@ GPIO::GPIO(uint32_t pin, gpio::Direction direction, Logger& log)
 
   exportGPIO();
   attachGPIO();
-  if (direction == gpio::Direction::kOut) {
+  if (direction == gpio::Direction::kOut) {              // sets pin value to 1 if direction is out
     set();
   }
 }
 
 void GPIO::initialise()
 {
-  int   fd;
+  int   fd;                                              // file descriptor
   off_t offset;
   void* base;
   Logger log(false, -1);
@@ -112,6 +123,12 @@ void GPIO::initialise()
 
   for (int i = 0; i < gpio::kBankNum; i++) {
     offset = gpio::bases[i];
+    /**
+     * @brief mmap() creates a new mapping in the virtual address space of the calling process
+        The starting address is zero
+        The length argument is kMmapSize
+     * void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+     */
     base = mmap(0, gpio::kMmapSize, PROT_READ | PROT_WRITE, MAP_SHARED,
                 fd, offset);
     if (base == MAP_FAILED) {
@@ -175,7 +192,7 @@ void GPIO::exportGPIO()
 
   // set direction
   snprintf(buf, sizeof(buf), "/sys/class/gpio/gpio%i/direction", pin_);
-  fd = open(buf, O_WRONLY);
+  fd = open(buf, O_WRONLY);                             // opens the direciton file for pin, from path in buf, to change direction
   if (fd < 0) {
     log_.ERR("GPIO", "could not open direction file for %i at %s", pin_, buf);
     return;
@@ -200,17 +217,18 @@ void GPIO::exportGPIO()
 
 void GPIO::attachGPIO()
 {
-  uint8_t bank;
+  uint8_t bank;                                         // offset: GPIO_0,1,2,3
   uint8_t pin_id;
 
   bank      = pin_/32;
   pin_id    = pin_%32;
-  pin_mask_ = 1 << pin_id;
+  pin_mask_ = 1 << pin_id;                              // corresponds to desired data of pin by indicating specific bit within byte of pin data
   log_.DBG1("GPIO", "gpio %d resolved as bank,pin %d, %d", pin_, bank, pin_id);
 
   // hacking compilation compatibility for 64bit systems
 #ifdef ARCH_64
   uint64_t base = reinterpret_cast<uint64_t>(base_mapping_[bank]);
+#pragma message("compiling for 64 bits")
 #else
   uint32_t base = reinterpret_cast<uint32_t>(base_mapping_[bank]);
 #endif
@@ -218,6 +236,7 @@ void GPIO::attachGPIO()
     data_  = reinterpret_cast<volatile uint32_t*>(base + gpio::kData);
     setupWait();
   } else {
+    setupWait();
     set_   = reinterpret_cast<volatile uint32_t*>(base + gpio::kSet);
     clear_ = reinterpret_cast<volatile uint32_t*>(base + gpio::kClear);
   }
@@ -273,8 +292,11 @@ int8_t GPIO::wait()
   return -1;
 }
 
+//-----------------------------------------------------
+
 void GPIO::set()
 {
+  char buf[2];
   if (!initialised_) {
     log_.ERR("GPIO", "service has not been initialised");
     return;
@@ -285,8 +307,12 @@ void GPIO::set()
     return;
   }
 
+#if GPIOFS
+  write(fd_, "1", 2);
+#else
   *set_ = pin_mask_;
   log_.DBG1("GPIO", "gpio %d set", pin_);
+#endif
 }
 
 void GPIO::clear()
@@ -300,9 +326,12 @@ void GPIO::clear()
     log_.ERR("GPIO", "clear register not configured, pin %d", pin_);
     return;
   }
-
+#if GPIOFS
+  write(fd_, "0", 2);
+#else
   *clear_ = pin_mask_;
   log_.DBG1("GPIO", "gpio %d cleared", pin_);
+#endif
 }
 
 uint8_t GPIO::read()
@@ -316,10 +345,14 @@ uint8_t GPIO::read()
     log_.ERR("GPIO", "data register not configured, pin %d", pin_);
     return 0;
   }
-
-  uint8_t val = *data_ & pin_mask_ ? 1 : 0;
+#if GPIOFS
+  int val = gpio::readHelper(fd_);
+  return val;
+#else
+  uint8_t val = *data_ & pin_mask_ ? 1 : 0;          // compares data and pin mask whether data is zero or one
   log_.DBG1("GPIO", "gpio %d read %d", pin_, val);
   return val;
+  #endif
 }
 
 }}}   // namespace hyped::utils::io
