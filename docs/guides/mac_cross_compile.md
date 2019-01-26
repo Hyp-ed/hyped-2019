@@ -69,25 +69,6 @@ Where hello.cpp will be whatever you called your hello world program
 
 [BBB] Run the compiled hello world program.
 
-If this works to use cross-compile on hyped repo you will need to change the Makefile
-````vim
-ifeq ($(CROSS), 0)
-        CC:=g++
-        UNAME=$(shell uname)
-        ifneq ($(UNAME),Linux)
-                # assume Windows
-                UNAME='Windows'
-                CFLAGS:=$(CFLAGS) -DWIN
-        endif
-        ARCH=$(shell uname -m)
-        ifneq (,$(findstring 64,$(ARCH)))
-                CFLAGS:=$(CFLAGS) -DARCH_64
-        endif
-else
-        CC:=arm-none-linux-gnueabi-g++   ←------- **(Change this line to make it the same, leave everything else!!! )**
-        CFLAGS:=$(CFLAGS) -DARCH_32
-````
-
 [MAC] to cross-compile run:
 ````sh
 make CROSS=1
