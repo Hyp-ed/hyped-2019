@@ -50,6 +50,12 @@ export PATH="/Users/jackhorsburgh/cross/bin:$PATH"
 
 Where /Users/jackhorsburgh/cross can be replaced with the location you copied the arm-none-linux-gnueabi to.
 
+## Create symbolic link to keep compilers consisten
+```
+cd /Users/jackhorsburgh/cross/bin
+ln -s arm-none-linux-gnueabi-g++ hyped-cross-g++
+```
+
 Woooo! Cross-compile should be set-up. We need to test if it works.
 
 ## Testing Cross Compile
