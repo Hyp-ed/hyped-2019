@@ -81,6 +81,8 @@ clean: cleanlint
 	$(Verb) rm -rf $(OBJS_DIR)/*
 	$(Verb) rm -f $(TARGET)
 	$(Verb) rm -f $(MAINS)
+	$(Verb) find src | xargs touch
+	$(Verb) touch Makefile
 
 cleanlint:
 	$(Verb) rm -f .cpplint-cache
