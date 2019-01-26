@@ -34,6 +34,7 @@ namespace hyped {
 namespace utils {
 namespace io {
 
+constexpr uint8_t kBankNum = 2;
 
 class SPI {
  public:
@@ -74,6 +75,13 @@ class SPI {
  private:
   explicit SPI(Logger& log);
   ~SPI();
+  /**
+   * @brief Fill in base_mapping_ with pointers to mmap-ed /dev/spidev1.0
+   * to 2 SPI banks/ports.
+   */
+  static void initialise();
+  static void uninitialise();
+  static bool initialised_;
   int spi_fd_;
   Logger& log_;
 

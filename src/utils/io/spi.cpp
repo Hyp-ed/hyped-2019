@@ -21,9 +21,12 @@
 #include "utils/io/spi.hpp"
 
 // #include <stdio.h>
+#include <poll.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <sys/mman.h>
 
 #ifndef WIN
 #include <linux/spi/spidev.h>
@@ -69,6 +72,20 @@ namespace hyped {
 namespace utils {
 namespace io {
 
+constexpr const off_t bases[kBankNum] = {
+  0x48030000,
+  0x481A0000  
+};
+
+constexpr uint32_t kMmapSize = 0x1000;
+void* base_mapping_[kBankNum];
+
+// register offsets
+
+constexpr uint32_t MCSPI_SYSCONFIG = 0x110;
+constexpr uint32_t MCSPI_CH0CONF = 0x12C;
+
+
 SPI& SPI::getInstance()
 {
   static SPI spi(System::getLogger());
@@ -78,6 +95,8 @@ SPI& SPI::getInstance()
 SPI::SPI(Logger& log)
     : log_(log)
 {
+  if (!initialised_) initialise();
+
   const char device[] = "/dev/spidev1.0";
   spi_fd_ = open(device, O_RDWR, 0);
 
@@ -90,7 +109,7 @@ SPI::SPI(Logger& log)
   setClock(Clock::k1MHz);
 
   // set bits per word
-  uint8_t bits = SPI_BITS;
+  uint8_t bits = SPI_BITS;      // need to change this value
   if (ioctl(spi_fd_, SPI_IOC_WR_BITS_PER_WORD, &bits) < 0) {
     log_.ERR("SPI", "could not set bits per word");
   }
@@ -110,6 +129,57 @@ SPI::SPI(Logger& log)
   log_.INFO("SPI", "spi instance created");
 }
 
+void SPI::initialise()
+{
+  int   fd;
+  off_t offset;
+  void* base;
+  Logger log(false, -1);
+
+  fd = open("/dev/mem", O_RDWR);
+  if (fd < 0) {
+    log.ERR("SPI", "could not open /dev/mem");
+    return;
+  }
+
+  for (int i = 0; i < kBankNum; i++) {
+    offset = bases[i];
+    base = mmap(0, kMmapSize, PROT_READ | PROT_WRITE, MAP_SHARED,
+                fd, offset);
+    if (base == MAP_FAILED) {
+      log.ERR("SPI", "could not map bank %d", offset);
+      return;
+    }
+
+    base_mapping_[i] = base;
+  }
+
+  atexit(uninitialise);
+
+  initialised_ = true;
+}
+
+// void SPI::uninitialise()
+// {
+//   Logger log(1, 1);
+//   log.ERR("SPI", "uninitialising");
+
+//   int fd;
+//   fd = open("/sys/class/gpio/unexport", O_WRONLY);    // not sure here
+//   if (fd < 0) {
+//     log.ERR("SPI", "could not open unexport");
+//     return;
+//   }
+
+//   char buf[10];
+//   for (uint32_t pin : exported_pins) {
+//     snprintf(buf, sizeof(buf), "%d", pin);
+//     write(fd, buf, strlen(buf) + 1);
+//   }
+//   close(fd);
+// }
+
+
 void SPI::setClock(Clock clk)
 {
   uint32_t data;
@@ -126,8 +196,10 @@ void SPI::setClock(Clock clk)
 
 void SPI::transfer(uint8_t* tx, uint8_t* rx, uint16_t len)
 {
-  if (spi_fd_ < 0) return;  // early exit if no spi device present
+#define SPI_FS  0
 
+  if (spi_fd_ < 0) return;  // early exit if no spi device present
+#if SPI_FS
   spi_ioc_transfer message = {};
 
   message.tx_buf = reinterpret_cast<uint64_t>(tx);
@@ -137,6 +209,11 @@ void SPI::transfer(uint8_t* tx, uint8_t* rx, uint16_t len)
   if (ioctl(spi_fd_, SPI_IOC_MESSAGE(1), &message) < 0) {
     log_.ERR("SPI", "could not submit TRANSFER message");
   }
+#else
+
+  uint32_t* write_buffer = reinterpret_cast<uint32_t*>(base_mapping_[0] + 0x138); // cast void* into an integer
+
+#endif
 }
 
 void SPI::read(uint8_t addr, uint8_t* rx, uint16_t len)

@@ -122,7 +122,6 @@ void GPIO::initialise()
     base_mapping_[i] = base;
   }
   atexit(uninitialise);
-
   initialised_ = true;
 }
 
