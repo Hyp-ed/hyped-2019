@@ -16,8 +16,55 @@
  *    limitations under the License.
  */
 
+#ifndef BEAGLEBONE_BLACK_MOTOR_CONTROL_MAIN_HPP_
+#define BEAGLEBONE_BLACK_MOTOR_CONTROL_MAIN_HPP_
+
+#include "utils/concurrent/thread.hpp"
+#include "utils/concurrent/barrier.hpp"
+#include "utils/system.hpp"
+#include "utils/timer.hpp"
+
+#include "StateProcessor.hpp"
+#include "StateProcessorInterface.hpp"
+
+
+#include <iostream>
+
 namespace hyped {
-
+	using utils::concurrent::Thread;
+	using utils::Logger;
+	using utils::System;
 namespace motor_control {
+	class Main: public Thread {
+		public:
+			Main();
+			Main(uint8_t id, Logger& log);
+			
+			/**
+			 * Gets called when Thread is started. Entrypoint in motor control
+			 * Includes the event loop for motor control
+			 * Responds to the different states with appropriate actions
+			 * */
+			void run() override;
 
+		private:
+			bool isRunning;
+			StateProcessorInterface* stateProcessor;
+	};
+
+
+	/**
+	 * States (for now):
+	 * 	Idle 				
+	 * 	Accelerating  		
+	 * 	Decelerating		
+	 * 	EmergencyBraking	
+	 * 	FailureStopped		
+	 * 	RunComplete			
+	 * 	Exiting				
+	 * 	Finished			
+	 * */
+	enum States {Idle,Accelerating,Decelerating,EmergencyBraking,FailureStopped,RunComplete,Exiting,Finished};
 }}  
+
+#endif

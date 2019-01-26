@@ -3,6 +3,8 @@
 
 SRCS := \
   data/data.cpp \
+  propulsion/main.cpp \
+  propulsion/StateProcessor.cpp \
   sensors/imu.cpp \
   utils/io/gpio.cpp \
   utils/io/spi.cpp \
