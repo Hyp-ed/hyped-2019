@@ -54,10 +54,10 @@ constexpr uint32_t kData          = 0x138;
 constexpr uint32_t kClear         = 0x190;
 constexpr uint32_t kSet           = 0x194;
 
-#define GPIOFS 1                                        // used to swtich to file system method for set(), clear(), and read()
+#define GPIOFS 0                                        // used to swtich to file system method for set(), clear(), and read()
 
 // workaround to avoid conflict with GPIO::read()
-int readHelper(int fd)
+size_t readHelper(int fd)                               // if GPIOFS==1, change type to of readHelper to int
 {
 #if GPIOFS
   char buf[2];
@@ -67,7 +67,7 @@ int readHelper(int fd)
 #else
   char buf[2];
   lseek(fd, 0, SEEK_SET);                               // reset file pointer
-  read(fd, buf, sizeof(buf));                           // actually consume new data, changes value in buffer
+  return read(fd, buf, sizeof(buf));                           // actually consume new data, changes value in buffer
 #endif
 }
 
