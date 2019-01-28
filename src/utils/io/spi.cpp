@@ -84,7 +84,18 @@ void* base_mapping_[kBankNum];
 
 constexpr uint32_t MCSPI_SYSCONFIG = 0x110;
 constexpr uint32_t MCSPI_CH0CONF = 0x12C;
+volatile uint32_t* data_;
 
+bool initialised_ = false;
+
+// struct channel {
+//   volatile uint32_t* config;
+//   volatile uint32_t* status;
+//   volatile uint32_t* control;
+//   volatile uint32_t* tx;
+//   volatile uint32_t* rx;
+// };
+// channel* ch0;
 
 SPI& SPI::getInstance()
 {
@@ -108,7 +119,11 @@ SPI::SPI(Logger& log)
   // set clock frequency
   setClock(Clock::k1MHz);
 
-  // set bits per word
+  // set bits per word12Ch MCSPI_CH0CONF McSPI channel 0 configuration register Section 24.4.1.8
+// 130h MCSPI_CH0STAT McSPI channel 0 status register Section 24.4.1.9
+// 134h MCSPI_CH0CTRL McSPI channel 0 control register Section 24.4.1.10
+// 138h MCSPI_TX0 McSPI channel 0 FIFO transmit buffer register Section 24.4.1.11
+// 13Ch MCSPI_RX0 McSPI channel 0 FIFO receive
   uint8_t bits = SPI_BITS;      // need to change this value
   if (ioctl(spi_fd_, SPI_IOC_WR_BITS_PER_WORD, &bits) < 0) {
     log_.ERR("SPI", "could not set bits per word");
@@ -153,8 +168,24 @@ void SPI::initialise()
 
     base_mapping_[i] = base;
   }
+//   struct channel {
+//   volatile uint32_t* config;
+//   volatile uint32_t* status;
+//   volatile uint32_t* control;
+//   volatile uint32_t* tx;
+//   volatile uint32_t* rx;
+// };
+  // uint32_t base_0 = reinterpret_cast<uint32_t>(base_mapping_[0]); // + 0x138
+  // channel* ch0 = reinterpret_cast<channel*>(base + 0x12C);      // cho0 config
+  // ch0->config = reinterpret_cast<volatile uint32_t*>(base_0 + 0x12C);
+  // ch0->status = reinterpret_cast<volatile uint32_t*>(base_0 + 0x130);
+  // ch0->control = reinterpret_cast<volatile uint32_t*>(base_0 + 0x134);
+  // ch0->tx = reinterpret_cast<volatile uint32_t*>(base_0 + 0x138);
+  // ch0->rx = reinterpret_cast<volatile uint32_t*>(base_0 + 0x13C);
+  
 
-  atexit(uninitialise);
+
+  // atexit(uninitialise);
 
   initialised_ = true;
 }
@@ -211,7 +242,18 @@ void SPI::transfer(uint8_t* tx, uint8_t* rx, uint16_t len)
   }
 #else
 
-  uint32_t* write_buffer = reinterpret_cast<uint32_t*>(base_mapping_[0] + 0x138); // cast void* into an integer
+  
+  // 0x130
+  // while(*data_ & 0x4){}  // dereference pointer
+  // uint32_t* write_buffer =reinterpret_cast<uint32_t*>(base + 0x138);    // offset address of register
+  
+  for(uint16_t x = 0; x<len; x++){
+    log_.INFO("SPI_TEST","channel 0 status before: %d", 10);
+    // *write_buffer = tx[x]; 
+    // log_.INFO("SPI_TEST","Write buffer: %d", *(ch0->tx));
+    log_.INFO("SPI_TEST","channel 0 status after: %d", 10);
+    // write_buffer++;
+  }  
 
 #endif
 }
