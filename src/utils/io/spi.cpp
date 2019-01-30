@@ -88,14 +88,15 @@ volatile uint32_t* data_;
 
 bool initialised_ = false;
 
-// struct channel {
-//   volatile uint32_t* config;
-//   volatile uint32_t* status;
-//   volatile uint32_t* control;
-//   volatile uint32_t* tx;
-//   volatile uint32_t* rx;
-// };
-// channel* ch0;
+struct channel {
+  volatile uint32_t config;
+  volatile uint32_t status;
+  volatile uint32_t control;
+  volatile uint32_t tx_buf;
+  volatile uint32_t rx_buf;
+};
+
+channel* ch0;
 
 SPI& SPI::getInstance()
 {
@@ -104,7 +105,8 @@ SPI& SPI::getInstance()
 }
 
 SPI::SPI(Logger& log)
-    : log_(log)
+    : log_(log),
+    transfer_init_(false)
 {
   if (!initialised_) initialise();
 
@@ -175,8 +177,7 @@ void SPI::initialise()
 //   volatile uint32_t* tx;
 //   volatile uint32_t* rx;
 // };
-  // uint32_t base_0 = reinterpret_cast<uint32_t>(base_mapping_[0]); // + 0x138
-  // channel* ch0 = reinterpret_cast<channel*>(base + 0x12C);      // cho0 config
+    // cho0 config
   // ch0->config = reinterpret_cast<volatile uint32_t*>(base_0 + 0x12C);
   // ch0->status = reinterpret_cast<volatile uint32_t*>(base_0 + 0x130);
   // ch0->control = reinterpret_cast<volatile uint32_t*>(base_0 + 0x134);
@@ -241,17 +242,50 @@ void SPI::transfer(uint8_t* tx, uint8_t* rx, uint16_t len)
     log_.ERR("SPI", "could not submit TRANSFER message");
   }
 #else
+  if (!transfer_init_) {
+    spi_ioc_transfer message = {};
 
+    message.tx_buf = reinterpret_cast<uint64_t>(tx);
+    message.rx_buf = reinterpret_cast<uint64_t>(rx);
+    message.len    = len;
+
+    if (ioctl(spi_fd_, SPI_IOC_MESSAGE(1), &message) < 0) {
+      log_.ERR("SPI", "could not submit TRANSFER message");
+    }
+    transfer_init_ = true;
+  }
   
   // 0x130
   // while(*data_ & 0x4){}  // dereference pointer
   // uint32_t* write_buffer =reinterpret_cast<uint32_t*>(base + 0x138);    // offset address of register
-  
+  uint32_t base_0 = reinterpret_cast<uint32_t>(base_mapping_[0]); // + 0x138
+  log_.INFO("SPI_TEST", "base addess: 0x%x", base_0);
+  ch0 = reinterpret_cast<channel*>(base_0 + 0x12C);  
+
   for(uint16_t x = 0; x<len; x++){
-    log_.INFO("SPI_TEST","channel 0 status before: %d", 10);
-    // *write_buffer = tx[x]; 
-    // log_.INFO("SPI_TEST","Write buffer: %d", *(ch0->tx));
-    log_.INFO("SPI_TEST","channel 0 status after: %d", 10);
+    // log_.INFO("SPI_TEST","channel 0 status before: %d", 10);
+    //while(!(ch0->status & 0x2));
+    log_.INFO("SPI_TEST","Status register: %x", ch0->status);
+    ch0->control = ch0->control | 0x1;
+    ch0->config = ch0->config & 0xfffcffff;
+    ch0->tx_buf = tx[x]; 
+    log_.INFO("SPI_TEST","Status register: %x", ch0->status);
+
+    log_.INFO("SPI_TEST","Config register: %x", ch0->config);
+    
+
+    // ch0->control = 0x1;
+    log_.INFO("SPI_TEST","Control register: %x", ch0->control);
+    
+    while(!(ch0->status & 0x1))
+    {
+      utils::concurrent::Thread::sleep(1000);
+      log_.INFO("SPI_TEST","Status register: %p", &ch0->status);
+    }
+    log_.INFO("SPI_TEST","Status register: %d", ch0->status);
+    // log_.INFO("SPI_TEST","Read buffer: %d", ch0->rx_buf);
+    
+    // log_.INFO("SPI_TEST","channel 0 status after: %d", 10);
     // write_buffer++;
   }  
 

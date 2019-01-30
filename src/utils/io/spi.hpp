@@ -80,6 +80,7 @@ class SPI {
    * to 2 SPI banks/ports.
    */
   static void initialise();
+  bool transfer_init_;
   // static void uninitialise();
   // static bool initialised_;
   int spi_fd_;
