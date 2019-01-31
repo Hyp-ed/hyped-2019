@@ -4,7 +4,6 @@
 2.  Unzip the file into folder `arm-4.9.3-linux-gnueabihf`
 3.  `cd arm-4.9.3-linux-gnueabihf/bin/`
 4.  `ln -s arm-linux-gnueabihf-g++ hyped-cross-g++`
-5.  `echo "export PATH=$PATH:`pwd`" >> ~/.bashrc`
 6.  ``echo "export PATH=\$PATH:`pwd`" >> ~/.bashrc``
 7.  `. ~/.bashrc`
 
