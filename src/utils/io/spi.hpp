@@ -34,7 +34,9 @@ namespace hyped {
 namespace utils {
 namespace io {
 
-constexpr uint8_t kBankNum = 2;
+// forward declaration
+struct SPI_HW;
+struct SPI_CH;
 
 class SPI {
  public:
@@ -43,6 +45,7 @@ class SPI {
   enum class Clock {
     k1MHz,
     k4MHz,
+    k16MHz,
     k20MHz
   };
 
@@ -79,11 +82,12 @@ class SPI {
    * @brief Fill in base_mapping_ with pointers to mmap-ed /dev/spidev1.0
    * to 2 SPI banks/ports.
    */
-  static void initialise();
-  bool transfer_init_;
-  // static void uninitialise();
-  // static bool initialised_;
-  int spi_fd_;
+  void initialise();
+
+ private:
+  int     spi_fd_;
+  SPI_HW* hw_;
+  SPI_CH* ch_;
   Logger& log_;
 
   NO_COPY_ASSIGN(SPI);
