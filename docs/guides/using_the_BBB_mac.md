@@ -28,15 +28,18 @@ $ ssh-keygen -R 192.168.6.2
 1. On the command line, navigate to the same directory with `BeagleBone_black`.
 2. Create an empty directory called `mount`.
 3. Mount the BBB onto your computer through that new directory.
-4. Move a copy of the `BeagleBone_black` directory into the `mount` directory:
+4. Clone the up-to-date repo onto the BBB directly:
 ```
 $ mkdir mount
 $ sshfs hyped@192.168.6.2: <insert_path_here>/mount
-$ mv BeagleBone_black mount
+$ cd mount
+$ git clone <repo_URL>
 ```
 - Note: 
     - For Mac: 192.168.6.2
     - For Windows/Linux: 192.168.7.2
+- WARNING:
+    - Make sure create a new branch for your feature changes on the repo and push your edits BEFORE disconneting the BBB or else your edits will be lost.
 
 
 #### Futhermore
