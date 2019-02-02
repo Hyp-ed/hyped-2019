@@ -28,7 +28,7 @@ ifeq ($(CROSS), 0)
 		CFLAGS:=$(CFLAGS) -DARCH_64
 	endif
 else
-	CC:=arm-linux-gnueabihf-g++ #hyped-cross-g++
+	CC:=hyped-cross-g++
 	CFLAGS:=$(CFLAGS) -DARCH_32
 $(info cross-compiling)
 endif
