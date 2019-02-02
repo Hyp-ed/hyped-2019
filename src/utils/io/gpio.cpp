@@ -296,7 +296,6 @@ int8_t GPIO::wait()
 
 void GPIO::set()
 {
-  char buf[2];
   if (!initialised_) {
     log_.ERR("GPIO", "service has not been initialised");
     return;
