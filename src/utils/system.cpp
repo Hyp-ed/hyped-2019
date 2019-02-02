@@ -42,11 +42,11 @@ void printUsage()
     "Default value of debug   flags is 0\n"
     "\n  -v, --verbose[=<bool>]\n"
     "    Set system-wide setting of verbosity. If enabled, prints all INFO messages\n"
-    "\n  --verbose_motor, --verbose_nav, --verbose_sensor, --verbose_state, --verbose_cmn\n"
+    "\n  --verbose_motor, --verbose_nav, --verbose_sensor, --verbose_state, --verbose_tlm\n"
     "    Set module-specific setting of verbosity. If enabled, prints all INFO messages\n"
     "\n  -d, --debug[=<level>]\n"
     "    Set system-wide debug level. All DBG[n] where n <= level messages are printed.\n"
-    "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_cmn\n"
+    "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "");
 }
@@ -63,13 +63,13 @@ System::System(int argc, char* argv[])
       verbose_nav(DEFAULT_VERBOSE),
       verbose_sensor(DEFAULT_VERBOSE),
       verbose_state(DEFAULT_VERBOSE),
-      verbose_cmn(DEFAULT_VERBOSE),
+      verbose_tlm(DEFAULT_VERBOSE),
       debug(DEFAULT_DEBUG),
       debug_motor(DEFAULT_DEBUG),
       debug_nav(DEFAULT_DEBUG),
       debug_sensor(DEFAULT_DEBUG),
       debug_state(DEFAULT_DEBUG),
-      debug_cmn(DEFAULT_DEBUG),
+      debug_tlm(DEFAULT_DEBUG),
       running_(true)
 {
   int c;
@@ -81,13 +81,13 @@ System::System(int argc, char* argv[])
       {"verbose_nav", optional_argument, 0, 'A'},
       {"verbose_sensor", optional_argument, 0, 'b'},
       {"verbose_state", optional_argument, 0, 'B'},
-      {"verbose_cmn", optional_argument, 0, 'c'},
+      {"verbose_tlm", optional_argument, 0, 'c'},
       {"debug", optional_argument, 0, 'd'},
       {"debug_motor", optional_argument, 0, 'e'},
       {"debug_nav", optional_argument, 0, 'E'},
       {"debug_sensor", optional_argument, 0, 'f'},
       {"debug_state", optional_argument, 0, 'F'},
-      {"debug_cmn", optional_argument, 0, 'g'},
+      {"debug_tlm", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
@@ -126,9 +126,9 @@ System::System(int argc, char* argv[])
         if (optarg) verbose_state = atoi(optarg);
         else        verbose_state = true;
         break;
-      case 'c':   // verbose_cmn
-        if (optarg) verbose_cmn = atoi(optarg);
-        else        verbose_cmn = true;
+      case 'c':   // verbose_tlm
+        if (optarg) verbose_tlm = atoi(optarg);
+        else        verbose_tlm = true;
         break;
       case 'e':   // debug_motor
         if (optarg) debug_motor = atoi(optarg);
@@ -146,9 +146,9 @@ System::System(int argc, char* argv[])
         if (optarg) debug_state = atoi(optarg);
         else        debug_state = 0;
         break;
-      case 'g':   // debug_cmn
-        if (optarg) debug_cmn = atoi(optarg);
-        else        debug_cmn = 0;
+      case 'g':   // debug_tlm
+        if (optarg) debug_tlm = atoi(optarg);
+        else        debug_tlm = 0;
         break;
       default:
         printUsage();
@@ -162,13 +162,13 @@ System::System(int argc, char* argv[])
   if (verbose_nav     == DEFAULT_VERBOSE) verbose_nav     = verbose;
   if (verbose_sensor  == DEFAULT_VERBOSE) verbose_sensor  = verbose;
   if (verbose_state   == DEFAULT_VERBOSE) verbose_state   = verbose;
-  if (verbose_cmn     == DEFAULT_VERBOSE) verbose_cmn     = verbose;
+  if (verbose_tlm     == DEFAULT_VERBOSE) verbose_tlm     = verbose;
 
   if (debug_motor   == DEFAULT_DEBUG) debug_motor   = debug;
   if (debug_nav     == DEFAULT_DEBUG) debug_nav     = debug;
   if (debug_sensor  == DEFAULT_DEBUG) debug_sensor  = debug;
   if (debug_state   == DEFAULT_DEBUG) debug_state   = debug;
-  if (debug_cmn     == DEFAULT_DEBUG) debug_cmn     = debug;
+  if (debug_tlm     == DEFAULT_DEBUG) debug_tlm     = debug;
 
   log_ = new Logger(verbose, debug);
   system_ = this;   // own address

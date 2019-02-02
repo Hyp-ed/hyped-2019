@@ -50,14 +50,14 @@ class System {
   int8_t verbose_nav;
   int8_t verbose_sensor;
   int8_t verbose_state;
-  int8_t verbose_cmn;
+  int8_t verbose_tlm;
 
   int8_t debug;
   int8_t debug_motor;
   int8_t debug_nav;
   int8_t debug_sensor;
   int8_t debug_state;
-  int8_t debug_cmn;
+  int8_t debug_tlm;
 
   // barriers
   /**
