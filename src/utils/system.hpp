@@ -18,8 +18,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_SYSTEM_HPP_
-#define BEAGLEBONE_BLACK_UTILS_SYSTEM_HPP_
+#ifndef UTILS_SYSTEM_HPP_
+#define UTILS_SYSTEM_HPP_
 
 #include <cstdint>
 
@@ -94,4 +94,4 @@ class System {
 
 }}  // namespace hyped::utils
 
-#endif  // BEAGLEBONE_BLACK_UTILS_SYSTEM_HPP_
+#endif  // UTILS_SYSTEM_HPP_

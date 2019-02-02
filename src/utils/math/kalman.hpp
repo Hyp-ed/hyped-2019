@@ -21,8 +21,8 @@
 
 #include "utils/math/vector.hpp"
 
-#ifndef BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_HPP_
-#define BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_HPP_
+#ifndef UTILS_MATH_KALMAN_HPP_
+#define UTILS_MATH_KALMAN_HPP_
 
 namespace hyped {
 namespace utils {
@@ -129,4 +129,4 @@ T Kalman<T>::getFiltered()
 
 }}}  // hyped::util::math
 
-#endif  // BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_HPP_
+#endif  // UTILS_MATH_KALMAN_HPP_

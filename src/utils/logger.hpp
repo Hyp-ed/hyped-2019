@@ -18,8 +18,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_LOGGER_HPP_
-#define BEAGLEBONE_BLACK_UTILS_LOGGER_HPP_
+#ifndef UTILS_LOGGER_HPP_
+#define UTILS_LOGGER_HPP_
 
 #include <cstdint>
 
@@ -93,4 +93,4 @@ class Logger {
 };
 
 }}  // namespace hyped::utils
-#endif  // BEAGLEBONE_BLACK_UTILS_LOGGER_HPP_
+#endif  // UTILS_LOGGER_HPP_

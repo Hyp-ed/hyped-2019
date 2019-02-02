@@ -18,8 +18,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_CONCURRENT_BARRIER_HPP_
-#define BEAGLEBONE_BLACK_UTILS_CONCURRENT_BARRIER_HPP_
+#ifndef UTILS_CONCURRENT_BARRIER_HPP_
+#define UTILS_CONCURRENT_BARRIER_HPP_
 
 #include <cstdint>
 
@@ -47,4 +47,4 @@ class Barrier {
 
 }}}   // namespace hyped::utils::concurrent
 
-#endif  // BEAGLEBONE_BLACK_UTILS_CONCURRENT_BARRIER_HPP_
+#endif  // UTILS_CONCURRENT_BARRIER_HPP_

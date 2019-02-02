@@ -22,8 +22,13 @@
  *    limitations under the License.
  */
 
+#ifndef SENSORS_MAIN_HPP_
+#define SENSORS_MAIN_HPP_
+
 namespace hyped {
 
 namespace sensors {
 
 }}
+
+#endif  // SENSORS_MAIN_HPP_

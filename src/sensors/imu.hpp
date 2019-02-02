@@ -18,8 +18,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_SENSORS_IMU_HPP_
-#define BEAGLEBONE_BLACK_SENSORS_IMU_HPP_
+#ifndef SENSORS_IMU_HPP_
+#define SENSORS_IMU_HPP_
 
 #include "sensors/interface.hpp"
 #include "utils/logger.hpp"
@@ -85,4 +85,4 @@ class Imu : public ImuInterface {
 }}  // namespace hyped::sensors
 
 
-#endif  // BEAGLEBONE_BLACK_SENSORS_IMU_HPP_
+#endif  // SENSORS_IMU_HPP_

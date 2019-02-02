@@ -16,8 +16,13 @@
  *    limitations under the License.
  */
 
+#ifndef PROPULSION_MAIN_HPP_
+#define PROPULSION_MAIN_HPP_
+
 namespace hyped {
 
 namespace motor_control {
 
 }}
+
+#endif  // PROPULSION_MAIN_HPP_

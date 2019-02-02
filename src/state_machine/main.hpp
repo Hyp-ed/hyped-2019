@@ -21,8 +21,13 @@
  *    limitations under the License.
  */
 
+#ifndef STATE_MACHINE_MAIN_HPP_
+#define STATE_MACHINE_MAIN_HPP_
+
 namespace hyped {
 
 namespace state_machine {
 
 }}
+
+#endif  // STATE_MACHINE_MAIN_HPP_
