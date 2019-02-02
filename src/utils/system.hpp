@@ -50,28 +50,14 @@ class System {
   int8_t verbose_nav;
   int8_t verbose_sensor;
   int8_t verbose_state;
-  int8_t verbose_cmn;
+  int8_t verbose_tlm;
 
   int8_t debug;
   int8_t debug_motor;
   int8_t debug_nav;
   int8_t debug_sensor;
   int8_t debug_state;
-  int8_t debug_cmn;
-
-  bool fake_imu;
-  bool fake_proxi;
-  bool fake_sensors;
-  bool fake_keyence;
-  bool fake_motors;
-  bool fake_embrakes;
-  bool fail_dec_imu;
-  bool fail_acc_imu;
-  bool fail_motors;
-  bool miss_keyence;
-  bool fake_batteries;
-  bool double_keyence;
-  bool accurate;    // use accurate fake sensors
+  int8_t debug_tlm;
 
   // barriers
   /**
@@ -84,6 +70,13 @@ class System {
  private:
   Logger* log_;
   System() = delete;
+
+  /**
+   * @brief Construct a new System object, parameters used by getopt_long to set verbose and debug
+   * 
+   * @param argc argument count
+   * @param argv argument array
+   */
   System(int argc, char* argv[]);
   ~System();
   static System* system_;
