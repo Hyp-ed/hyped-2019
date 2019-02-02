@@ -1,3 +1,26 @@
+/*
+ * Author:
+ * Organisation: HYPED
+ * Date:
+ * Description:
+ * Main instantiates HypedMachine. It also monitors other data and generates Events
+ * for the HypedMachine. Note, StateMachine structure in Data is not updated here but
+ * in HypedMachine.
+ *
+ *    Copyright 2019 HYPED
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 #include "sensors/imu.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
@@ -9,7 +32,7 @@
 #include <iostream>
 #include <assert.h>
 #include <unistd.h>
-#include <cstdlib> 
+#include <cstdlib>
 
 using hyped::sensors::Imu;
 using hyped::utils::Logger;
@@ -118,7 +141,6 @@ int main(int argc, char* argv[])
       sleep(0.5);
       acc_gravity = computeAvgAcc(nSensors, sensors, imus, grav_measurements);
   }
-  
 
   log.INFO("Gravity Acceleration", "x: %f m/s^2, y: %f m/s^2, z: %f m/s^2",
           acc_gravity[0], acc_gravity[1], acc_gravity[2]);
@@ -164,7 +186,7 @@ int main(int argc, char* argv[])
     // Print
     log.INFO("TEST-mpu9250", "acceleration readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2",
                                                                      acc[0], acc[1], acc[2]);
-    log.INFO("TEST-mpu9250", "velocity readings x: %f m/s, y: %f m/s, z: %f m/s\tblind time: %f\n", 
+    log.INFO("TEST-mpu9250", "velocity readings x: %f m/s, y: %f m/s, z: %f m/s\tblind time: %f\n",
                                                                      vel[0], vel[1], vel[2], dt);
 
     query++;

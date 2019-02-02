@@ -1,6 +1,6 @@
 /*
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description: Class for data exchange between sub-team threads and structures
  * for holding data produced by each of the sub-teams.
  *
