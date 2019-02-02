@@ -23,8 +23,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_IO_SPI_HPP_
-#define BEAGLEBONE_BLACK_UTILS_IO_SPI_HPP_
+#ifndef UTILS_IO_SPI_HPP_
+#define UTILS_IO_SPI_HPP_
 
 
 #include "utils/logger.hpp"
@@ -84,4 +84,4 @@ class SPI {
 }}}   // namespace hyped::utils::io
 
 
-#endif  // BEAGLEBONE_BLACK_UTILS_IO_SPI_HPP_
+#endif  // UTILS_IO_SPI_HPP_

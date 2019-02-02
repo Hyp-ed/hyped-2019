@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_DATA_DATA_HPP_
-#define BEAGLEBONE_BLACK_DATA_DATA_HPP_
+#ifndef DATA_DATA_HPP_
+#define DATA_DATA_HPP_
 
 #include "utils/math/vector.hpp"
 
@@ -55,4 +55,4 @@ struct ImuData : public Sensor {
 
 }}  // namespace hyped::data
 
-#endif  // BEAGLEBONE_BLACK_DATA_DATA_HPP_
+#endif  // DATA_DATA_HPP_

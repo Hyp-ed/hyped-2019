@@ -50,6 +50,8 @@ import subprocess
 import multiprocessing
 from subprocess import PIPE
 
+hyped_paths =  ['data/', 'navigation/', 'propulsion/', 'sensors/', 'state_machine/', 'telemetry/', 'utils/']
+
 # Disabled LINT rules and reason.
 # readability/streams: are we using streams?
 # runtime/references: too many errors, somebody should look at the uses of reference
@@ -194,6 +196,7 @@ class SourceFileProcessor(object):
     else:
       for file in self.GetPathsToSearch():
         all_files += self.FindFilesIn(join(path, file))
+    # print all_files
     if not self.ProcessFiles(all_files, path, options):
       return False
     return True
@@ -241,8 +244,7 @@ class CppLintProcessor(SourceFileProcessor):
               or (name in CppLintProcessor.IGNORE_LINT))
 
   def GetPathsToSearch(self):
-    return ['src/data/', 'src/navigation/', 'src/propulsion/', 'src/sensors/', 
-    'src/state_machine/', 'src/telemetry/', 'src/utils/', 'inc']
+    return hyped_paths
 
   def ProcessFiles(self, files, path, options):
     good_files_cache = FileContentsCache('.cpplint-cache')
@@ -312,7 +314,7 @@ class SourceProcessor(SourceFileProcessor):
     return False
 
   def GetPathsToSearch(self):
-    return ['.']
+    return hyped_paths
 
   def IgnoreDir(self, name):
     return (super(SourceProcessor, self).IgnoreDir(name)

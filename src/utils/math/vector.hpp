@@ -23,8 +23,8 @@
 #include <array>
 #include <cmath>
 
-#ifndef BEAGLEBONE_BLACK_UTILS_MATH_VECTOR_HPP_
-#define BEAGLEBONE_BLACK_UTILS_MATH_VECTOR_HPP_
+#ifndef UTILS_MATH_VECTOR_HPP_
+#define UTILS_MATH_VECTOR_HPP_
 
 namespace hyped {
 namespace utils {
@@ -361,4 +361,4 @@ bool operator==(const Vector<T1, dimension>& lhs,  const Vector<T2, dimension>& 
 
 }}}  // hyped::utils::math
 
-#endif  // BEAGLEBONE_BLACK_UTILS_MATH_VECTOR_HPP_
+#endif  // UTILS_MATH_VECTOR_HPP_

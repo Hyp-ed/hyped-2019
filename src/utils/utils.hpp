@@ -18,8 +18,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_UTILS_HPP_
-#define BEAGLEBONE_BLACK_UTILS_UTILS_HPP_
+#ifndef UTILS_UTILS_HPP_
+#define UTILS_UTILS_HPP_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,4 +53,4 @@ template<> class StaticAssert<true> { };
 }
 }
 
-#endif  // BEAGLEBONE_BLACK_UTILS_UTILS_HPP_
+#endif  // UTILS_UTILS_HPP_
