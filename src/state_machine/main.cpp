@@ -1,7 +1,7 @@
 /*
- * Author: 
+ * Author:
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -21,4 +21,4 @@
 namespace hyped {
 namespace state_machine {
 
-}}  
+}}

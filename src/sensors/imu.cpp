@@ -98,7 +98,7 @@ bool Imu::whoAmI()
   uint8_t data;
   int send_counter;
 
-  for (send_counter = 0; send_counter < 10; send_counter++) {
+  for (send_counter = 1; send_counter < 10; send_counter++) {
     // Who am I checks what address the sensor is at
     readByte(kWhoAmIImu, &data);
     log_.INFO("Imu", "Imu connected to SPI, data: %d", data);

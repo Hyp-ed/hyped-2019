@@ -13,7 +13,7 @@ LFLAGS:=-lpthread -pthread -static
 
 # default configuration
 CROSS=0
-NOLINT=1
+NOLINT=0
 
 ifeq ($(CROSS), 0)
 	CC:=g++

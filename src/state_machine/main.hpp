@@ -1,7 +1,7 @@
 /*
- * Author: 
+ * Author:
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  * Main instantiates HypedMachine. It also monitors other data and generates Events
  * for the HypedMachine. Note, StateMachine structure in Data is not updated here but
@@ -25,4 +25,4 @@ namespace hyped {
 
 namespace state_machine {
 
-}}  
+}}

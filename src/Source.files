@@ -3,13 +3,19 @@
 
 SRCS := \
   data/data.cpp \
+  navigation/main.cpp \
+  propulsion/main.cpp \
   sensors/imu.cpp \
+  sensors/main.cpp \
+  state_machine/main.cpp \
+  telemetry/main.cpp \
+  utils/concurrent/barrier.cpp \
+  utils/concurrent/condition_variable.cpp \
+  utils/concurrent/lock.cpp \
+  utils/concurrent/thread.cpp \
+  utils/io/can.cpp \
   utils/io/gpio.cpp \
   utils/io/spi.cpp \
-  utils/concurrent/thread.cpp \
-  utils/concurrent/lock.cpp \
-  utils/concurrent/condition_variable.cpp \
-  utils/concurrent/barrier.cpp \
   utils/logger.cpp \
   utils/system.cpp \
   utils/timer.cpp  \
