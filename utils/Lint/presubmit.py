@@ -197,6 +197,8 @@ class SourceFileProcessor(object):
       for file in self.GetPathsToSearch():
         all_files += self.FindFilesIn(join(path, file))
     # print all_files
+    # Add main.cpp
+    all_files.append('src/main.cpp')
     if not self.ProcessFiles(all_files, path, options):
       return False
     return True
