@@ -48,15 +48,9 @@ void printUsage()
     "    Set system-wide debug level. All DBG[n] where n <= level messages are printed.\n"
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_cmn\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
-    "\n  --fake_imu --fake_proxi --fake_motors --fake_sensors --fake_keyence --fake_batteries\n"
-    "    Make the system use the fake data drivers.\n"
-    "\n  --fail_dec_imu --fail_acc_imu --fail_motors --miss_keyence --double_keyence\n"
-    "    Make the system use the fake data drivers and fail them for testing.\n"
-    "\n  --accurate\n"
-    "    Make the system use the accurate fake system\n"
     "");
 }
-}
+}   // namespace hyped::utils::System
 
 System::~System()
 {
@@ -76,17 +70,6 @@ System::System(int argc, char* argv[])
       debug_sensor(DEFAULT_DEBUG),
       debug_state(DEFAULT_DEBUG),
       debug_cmn(DEFAULT_DEBUG),
-      fake_imu(false),
-      fake_proxi(false),
-      fake_sensors(false),
-      fake_motors(false),
-      fake_embrakes(false),
-      fail_dec_imu(false),
-      fail_acc_imu(false),
-      fail_motors(false),
-      miss_keyence(false),
-      double_keyence(false),
-      accurate(false),
       running_(true)
 {
   int c;
@@ -106,22 +89,9 @@ System::System(int argc, char* argv[])
       {"debug_state", optional_argument, 0, 'F'},
       {"debug_cmn", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
-      {"fake_imu", optional_argument, 0, 'i'},
-      {"fail_dec_imu", optional_argument, 0, 'I'},
-      {"fake_proxi", optional_argument, 0, 'j'},
-      {"fail_acc_imu", optional_argument, 0, 'J'},
-      {"fake_sensors", optional_argument, 0, 'k'},
-      {"fail_motors", optional_argument, 0, 'K'},
-      {"fake_keyence", optional_argument, 0, 'l'},
-      {"miss_keyence", optional_argument, 0, 'L'},
-      {"fake_motors", optional_argument, 0, 'm'},
-      {"double_keyence", optional_argument, 0, 'M'},
-      {"fake_embrakes", optional_argument, 0, 'n'},
-      {"accurate", optional_argument, 0, 'N'},
-      {"fake_batteries", optional_argument, 0, 'o'},
       {0, 0, 0, 0}
-    };
-    c = getopt_long(argc, argv, "vd::h", long_options, &option_index);
+    };    // options for long in long_options array, can support optional argument
+    c = getopt_long(argc, argv, "vd::h", long_options, &option_index);    // returns option character from argv array following '-' or '--' from command line
 
     /* Detect the end of the options. */
     if (c == -1)
@@ -159,6 +129,7 @@ System::System(int argc, char* argv[])
       case 'c':   // verbose_cmn
         if (optarg) verbose_cmn = atoi(optarg);
         else        verbose_cmn = true;
+        break;
       case 'e':   // debug_motor
         if (optarg) debug_motor = atoi(optarg);
         else        debug_motor = 0;
@@ -178,58 +149,6 @@ System::System(int argc, char* argv[])
       case 'g':   // debug_cmn
         if (optarg) debug_cmn = atoi(optarg);
         else        debug_cmn = 0;
-        break;
-      case 'i':
-        if (optarg) fake_imu = atoi(optarg);
-        else        fake_imu = 1;
-        break;
-      case 'I':
-        if (optarg) fail_dec_imu = atoi(optarg);
-        else        fail_dec_imu = 1;
-        break;
-      case 'j':
-        if (optarg) fake_proxi = atoi(optarg);
-        else        fake_proxi = 1;
-        break;
-      case 'J':
-        if (optarg) fail_acc_imu = atoi(optarg);
-        else        fail_acc_imu = 1;
-        break;
-      case 'k':
-        if (optarg) fake_sensors = atoi(optarg);
-        else        fake_sensors = 1;
-        break;
-      case 'K':
-        if (optarg) fail_motors = atoi(optarg);
-        else        fail_motors = 1;
-        break;
-      case 'l':
-        if (optarg) fake_keyence = atoi(optarg);
-        else        fake_keyence = 1;
-        break;
-      case 'L':
-        if (optarg) miss_keyence = atoi(optarg);
-        else        miss_keyence = 1;
-        break;
-      case 'm':
-        if (optarg) fake_motors = atoi(optarg);
-        else        fake_motors = 1;
-        break;
-      case 'M':
-        if (optarg) double_keyence = atoi(optarg);
-        else        double_keyence = 1;
-        break;
-      case 'n':
-        if (optarg) fake_embrakes = atoi(optarg);
-        else        fake_embrakes = 1;
-        break;
-      case 'N':
-        if (optarg) accurate = atoi(optarg);
-        else        accurate = true;
-        break;
-      case 'o':
-        if (optarg) fake_batteries = atoi(optarg);
-        else        fake_batteries = 1;
         break;
       default:
         printUsage();
@@ -252,16 +171,15 @@ System::System(int argc, char* argv[])
   if (debug_cmn     == DEFAULT_DEBUG) debug_cmn     = debug;
 
   log_ = new Logger(verbose, debug);
-  system_ = this;
+  system_ = this;   // own address
 }
 
 System* System::system_ = 0;
 
 void System::parseArgs(int argc, char* argv[])
 {
-  if (system_) return;
-
-  system_ = new System(argc, argv);
+  if (system_) return;                  // when all command-line option have been parsed
+  system_ = new System(argc, argv);     // System overloaded
 }
 
 System& System::getSystem()
@@ -278,7 +196,6 @@ Logger& System::getLogger()
   System& sys = getSystem();
   return *sys.log_;
 }
-
 
 static void gracefulExit(int x)
 {
