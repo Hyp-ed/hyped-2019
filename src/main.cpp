@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
   Logger log_nav(sys.verbose_nav, sys.debug_nav);
   Logger log_sensor(sys.verbose_sensor, sys.debug_sensor);
   Logger log_state(sys.verbose_state, sys.debug_state);
-  Logger log_cmn(sys.verbose_cmn, sys.debug_cmn);
+  Logger log_cmn(sys.verbose_tlm, sys.debug_tlm);
 
   log_system.INFO("MAIN", "Starting BBB with %d modules", 5);
   log_system.DBG("MAIN", "DBG0");
