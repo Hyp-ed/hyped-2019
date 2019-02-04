@@ -207,28 +207,26 @@ void SPI::transfer(uint8_t* tx, uint8_t* rx, uint16_t len)
 
   if (hw_ == 0) return;   // early exit if no spi mapped
 
-  for(uint16_t x = 0; x<len; x++){
+  for (uint16_t x = 0; x < len; x++) {
     // log_.INFO("SPI_TEST","channel 0 status before: %d", 10);
-    //while(!(ch0->status & 0x2));
-    log_.INFO("SPI_TEST","Status register: %x", ch_->stat);
+    // while(!(ch0->status & 0x2));
+    log_.INFO("SPI_TEST", "Status register: %x", ch_->stat);
     ch_->ctrl = ch_->ctrl | 0x1;
     ch_->conf = ch_->conf & 0xfffcffff;
-    ch_->tx   = tx[x]; 
-    log_.INFO("SPI_TEST","Status register: %x", ch_->stat);
-    log_.INFO("SPI_TEST","Config register: %x", ch_->conf);
-    log_.INFO("SPI_TEST","Control register: %x", ch_->ctrl);
-    
-    while(!(ch_->stat & 0x1))
-    {
+    ch_->tx = tx[x];
+    log_.INFO("SPI_TEST", "Status register: %x", ch_->stat);
+    log_.INFO("SPI_TEST", "Config register: %x", ch_->conf);
+    log_.INFO("SPI_TEST", "Control register: %x", ch_->ctrl);
+
+    while (!(ch_->stat & 0x1)) {
       utils::concurrent::Thread::sleep(1000);
-      log_.INFO("SPI_TEST","Status register: %d", ch_->stat);
+      log_.INFO("SPI_TEST", "Status register: %d", ch_->stat);
     }
-    log_.INFO("SPI_TEST","Status register: %d", ch_->stat);
+    log_.INFO("SPI_TEST", "Status register: %d", ch_->stat);
     // log_.INFO("SPI_TEST","Read buffer: %d", ch0->rx_buf);
-    
     // log_.INFO("SPI_TEST","channel 0 status after: %d", 10);
     // write_buffer++;
-  }  
+  }
 
 #endif
 }
