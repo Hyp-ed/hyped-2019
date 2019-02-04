@@ -25,7 +25,7 @@ $ ssh-keygen -R 192.168.6.2
 #### Mounting to the BBB
 - You will be mounting the BBB file system onto your Mac, which will allow you to move the project directory and other various files onto the BBB.
 - WARNING: when running and debugging the project on the BBB (when mounted), be aware which files you are editing as files edited on the BBB will be lost when turned off. Always save changes to the project saved on your Mac.
-1. On the command line, navigate to the same directory with `BeagleBone_black`.
+1. On the command line, navigate to the same directory with `hyped-2019`.
 2. Create an empty directory called `mount`.
 3. Mount the BBB onto your computer through that new directory.
 4. Clone the up-to-date repo onto the BBB directly:
