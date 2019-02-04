@@ -28,6 +28,8 @@
 
 #define DEFAULT_VERBOSE -1
 #define DEFAULT_DEBUG   -1
+#define DEFAULT_IMU     -1
+#define DEFAULT_QUERIES -1
 
 namespace hyped {
 namespace utils {
@@ -87,7 +89,9 @@ System::System(int argc, char* argv[])
       miss_keyence(false),
       double_keyence(false),
       accurate(false),
-      running_(true)
+      running_(true),
+      imu_id(DEFAULT_IMU)
+
 {
   int c;
   int option_index = 0;
@@ -119,6 +123,7 @@ System::System(int argc, char* argv[])
       {"fake_embrakes", optional_argument, 0, 'n'},
       {"accurate", optional_argument, 0, 'N'},
       {"fake_batteries", optional_argument, 0, 'o'},
+      {"imu_id", optional_argument, 0, 'p'}
       {0, 0, 0, 0}
     };
     c = getopt_long(argc, argv, "vd::h", long_options, &option_index);
@@ -230,6 +235,10 @@ System::System(int argc, char* argv[])
       case 'o':
         if (optarg) fake_batteries = atoi(optarg);
         else        fake_batteries = 1;
+        break;
+      case 'p':
+        if (optarg) imu_id = atoi(optarg);
+        else        imu_id = 1;
         break;
       default:
         printUsage();

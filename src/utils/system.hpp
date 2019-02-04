@@ -59,6 +59,8 @@ class System {
   int8_t debug_state;
   int8_t debug_cmn;
 
+  int8_t imu_id;
+
   bool fake_imu;
   bool fake_proxi;
   bool fake_sensors;
@@ -72,6 +74,7 @@ class System {
   bool fake_batteries;
   bool double_keyence;
   bool accurate;    // use accurate fake sensors
+
 
   // barriers
   /**
