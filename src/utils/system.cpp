@@ -123,7 +123,7 @@ System::System(int argc, char* argv[])
       {"fake_embrakes", optional_argument, 0, 'n'},
       {"accurate", optional_argument, 0, 'N'},
       {"fake_batteries", optional_argument, 0, 'o'},
-      {"imu_id", optional_argument, 0, 'p'}
+      {"imu_id", optional_argument, 0, 'p'},
       {0, 0, 0, 0}
     };
     c = getopt_long(argc, argv, "vd::h", long_options, &option_index);

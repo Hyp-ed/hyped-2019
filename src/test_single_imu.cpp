@@ -1,17 +1,8 @@
-#include "utils/math/statistics.hpp"
-
-using hyped::data::ImuData;
-using hyped::data::NavigationVector;
-using hyped::sensors::Imu;
-using hyped::utils::Logger;
-using hyped::utils::math::OnlineStatistics
-
-
 /*
  * Author: Neil McBlane
  * Organisation: HYPED
  * Date: 02/02/2019
- * Description: Simple single IMU measurement written to file
+ * Description: Simple single IMU measurement written terminal
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -24,23 +15,52 @@ using hyped::utils::math::OnlineStatistics
  *    either express or implied. See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-NavigationVector calibrateGravity(Imu& imu, ImuData& imuData, unsigned int nCalQueries) {
+
+#include "data/data.hpp"
+#include "data/data_point.hpp"
+#include "sensors/imu.hpp"
+#include "utils/logger.hpp"
+#include "utils/math/integrator.hpp"
+#include "utils/math/statistics.hpp"
+#include "utils/system.hpp"
+#include "utils/timer.hpp"
+
+#include <iostream>
+#include <unistd.h>
+#include <cstdio>
+
+using hyped::data::DataPoint;
+using hyped::data::ImuData;
+using hyped::data::NavigationVector;
+using hyped::sensors::Imu;
+using hyped::utils::Logger;
+using hyped::utils::math::Integrator;
+using hyped::utils::math::OnlineStatistics;
+using hyped::utils::System;
+using hyped::utils::Timer;
+
+DataPoint<NavigationVector> queryImuAcceleration(Imu* imu, ImuData* imuData, Timer* timer) {
+	imu->getData(imuData);
+	DataPoint<NavigationVector> acc(timer->getTimeMicros(), imuData->acc);
+	return acc;
+}
+
+NavigationVector calibrateGravity(Imu* imu, ImuData* imuData, unsigned int nCalQueries, Timer* timer) {
 	OnlineStatistics<NavigationVector> online;
-	for (int i = 0; i < nCalQueries; ++i)
+	for (unsigned int i = 0; i < nCalQueries; ++i)
 	{
-		imu->getData(imuData);
-		online.update(imu->acc);
+		online.update(queryImuAcceleration(imu, imuData, timer).value);
 		sleep((float)1/nCalQueries);
 	}
 	return online.getMean();
 }
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
 	// System setup
 	hyped::utils::System::parseArgs(argc, argv);
 	Logger& log = hyped::utils::System::getLogger();
-	System& sys = hyped::utils::System::getSystem();
+	Timer timer;
 
 	// Sensor setup
 	int i2c = 66;
@@ -48,14 +68,49 @@ int main(int argc, char const *argv[])
 	ImuData * imuData = new ImuData();
 
 	// Test values
-	unsigned int nQueries = 5000;
 	unsigned int nCalQueries = 1000;
+	unsigned int nTestQueries = 10000;
+	float queryDelay = 0.01;
 
 	// Calibrate gravitational acceleration
-	NavigationVector gVector = calibrateGravity(imu, imuData, nCalQueries);
+	NavigationVector gVector = calibrateGravity(imu, imuData, nCalQueries, &timer);
 	
 	// Return measured gravity vector
 	std::cout << "Measured gravity vector:\n\tgx=" << gVector[0] << " gy=" << gVector[1] << " gz=" << gVector[2] << std::endl;
+
+	// Store measured/estimated values
+	DataPoint<NavigationVector> accRaw(0., NavigationVector({0.,0.,0.}));
+	DataPoint<NavigationVector> accCor(0., NavigationVector({0.,0.,0.})); 	
+	DataPoint<NavigationVector>    vel(0., NavigationVector({0.,0.,0.}));		
+	DataPoint<NavigationVector>    pos(0., NavigationVector({0.,0.,0.}));
+	// Integrate acceleration -> velocity -> position
+	Integrator<NavigationVector> velIntegrator(&vel);
+	Integrator<NavigationVector> posIntegrator(&pos);
+
+	// Perform acceleration, speed and distance measurements
+	for (unsigned int i = 0; i < nTestQueries; ++i)
+	{
+		// Query sensor and correct values
+		accRaw = queryImuAcceleration(imu, imuData, &timer);
+		accCor = DataPoint<NavigationVector>(accRaw.timestamp, accRaw.value - gVector);
+
+		// Intergrate
+		velIntegrator.update(accCor);
+		posIntegrator.update(vel);
+
+		// Uncomment to view acceleration values over time
+	  	//std::printf("Raw acceleration: a_rx:%4.3f  a_ry:%4.3f  a_rz:%4.3f\tCorrected acceleration: a_cx:%4.3f  a_cy:%4.3f  a_cz:%4.3f\n", 
+	  	//				accRaw.value[0], accRaw.value[1], accRaw.value[2], accCor.value[0], accCor.value[1], accCor.value[2]);
+
+		std::printf("a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n", 
+	  					accCor.value[0], accCor.value[1], accCor.value[2], 
+	  							 vel.value[0], vel.value[1], vel.value[2], 
+	  							 pos.value[0], pos.value[1], pos.value[2]);		
+
+		sleep(queryDelay);
+	}
+
+
 
 	return 0;
 }
