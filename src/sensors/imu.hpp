@@ -59,16 +59,55 @@ class Imu : public ImuInterface {
    */
   void setGyroScale(int scale);
   /*
-   *  @brief Sets the range for the accelerometer
+   *  @brief Sets the range for the accelerometer by writing to the IMU given the write register address
    */
   void setAcclScale(int scale);
   static const uint64_t time_start;
   void init();
+
+  /**
+   * @brief used for SPI chipselect with GPIO pin for IMU
+   * 
+   */
   void select();
+
+  /**
+   * @brief used for SPI chipselect with GPIO pin for IMU
+   * 
+   */
   void deSelect();
+
+  /**
+   * @brief checks what address the sensor is at
+   * 
+   * @return true 
+   * @return false 
+   */
   bool whoAmI();
+
+  /**
+   * @brief chipselects and and writes data (byte) to register address
+   * 
+   * @param write_reg write register address
+   * @param write_data byte of data to write
+   */
   void writeByte(uint8_t write_reg, uint8_t write_data);
+
+  /**
+   * @brief uses chip select and reads necessary data
+   * 
+   * @param read_reg read register address
+   * @param read_data pointer to data desired to read
+   */
   void readByte(uint8_t read_reg, uint8_t *read_data);
+
+  /**
+   * @brief same as readByte but with desired length
+   * 
+   * @param read_reg 
+   * @param read_buff 
+   * @param length number of bytes to read
+   */
   void readBytes(uint8_t read_reg, uint8_t *read_buff, uint8_t length);
 
  private:
