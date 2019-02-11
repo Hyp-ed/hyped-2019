@@ -30,6 +30,7 @@
 #define DEFAULT_DEBUG   -1
 #define DEFAULT_IMU     -1
 #define DEFAULT_QUERIES -1
+#define DEFAULT_Q_DELAY -1
 
 namespace hyped {
 namespace utils {
@@ -56,6 +57,8 @@ void printUsage()
     "    Make the system use the fake data drivers and fail them for testing.\n"
     "\n  --accurate\n"
     "    Make the system use the accurate fake system\n"
+    "\n  --imu_id\n"
+    "    ID number to assign to written datafile."
     "");
 }
 }

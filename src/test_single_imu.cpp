@@ -2,7 +2,7 @@
  * Author: Neil McBlane
  * Organisation: HYPED
  * Date: 02/02/2019
- * Description: Simple single IMU measurement written terminal
+ * Description: Simple single IMU measurement written to file
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -28,6 +28,8 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstdio>
+#include <stdio.h>
+#include <fstream>
 
 using hyped::data::DataPoint;
 using hyped::data::ImuData;
@@ -39,13 +41,15 @@ using hyped::utils::math::OnlineStatistics;
 using hyped::utils::System;
 using hyped::utils::Timer;
 
-DataPoint<NavigationVector> queryImuAcceleration(Imu* imu, ImuData* imuData, Timer* timer) {
+DataPoint<NavigationVector> queryImuAcceleration(Imu* imu, ImuData* imuData, Timer* timer) 
+{
 	imu->getData(imuData);
 	DataPoint<NavigationVector> acc(timer->getTimeMicros(), imuData->acc);
 	return acc;
 }
 
-NavigationVector calibrateGravity(Imu* imu, ImuData* imuData, unsigned int nCalQueries, Timer* timer) {
+NavigationVector calibrateGravity(Imu* imu, ImuData* imuData, unsigned int nCalQueries, Timer* timer) 
+{
 	OnlineStatistics<NavigationVector> online;
 	for (unsigned int i = 0; i < nCalQueries; ++i)
 	{
@@ -55,28 +59,52 @@ NavigationVector calibrateGravity(Imu* imu, ImuData* imuData, unsigned int nCalQ
 	return online.getMean();
 }
 
+void outfileSetup(std::ofstream* outfile, int imu_id) 
+{
+	char fname [20];
+	sprintf(fname, "imu%d_data.csv", imu_id);
+	outfile->open(fname);
+	*outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,t\n";
+}
+
+void printToFile(std::ofstream* outfile, DataPoint<NavigationVector>* accRaw, DataPoint<NavigationVector>* accCor,
+										 DataPoint<NavigationVector>*    vel, DataPoint<NavigationVector>*    pos)
+{
+	*outfile << accRaw->value[0] << "," << accRaw->value[1] << "," << accRaw->value[2] << ","
+	 		 << accCor->value[0] << "," << accCor->value[1] << "," << accCor->value[2] << ","
+	 		 <<    vel->value[0] << "," <<    vel->value[1] << "," <<    vel->value[2] << ","
+			 <<    pos->value[0] << "," <<    pos->value[1] << "," <<    pos->value[2] << ","
+			 << accRaw->timestamp << "\n";
+}
+
 int main(int argc, char *argv[])
 {
 	// System setup
-	hyped::utils::System::parseArgs(argc, argv);
-	Logger& log = hyped::utils::System::getLogger();
+	System::parseArgs(argc, argv);
+	System& sys = System::getSystem();
+	Logger log(sys.verbose, sys.debug);
 	Timer timer;
 
 	// Sensor setup
 	int i2c = 66;
-	Imu * imu = new Imu(log, i2c, 0x08, 0x00);
-	ImuData * imuData = new ImuData();
+	Imu* imu = new Imu(log, i2c, 0x08, 0x00);
+	ImuData* imuData = new ImuData();
 
 	// Test values
 	unsigned int nCalQueries = 1000;
 	unsigned int nTestQueries = 10000;
 	float queryDelay = 0.01;
 
+	// File setup
+	std::ofstream outfile;
+	if (sys.imu_id > 0) outfileSetup(&outfile, sys.imu_id);
+
 	// Calibrate gravitational acceleration
 	NavigationVector gVector = calibrateGravity(imu, imuData, nCalQueries, &timer);
 	
 	// Return measured gravity vector
-	std::cout << "Measured gravity vector:\n\tgx=" << gVector[0] << " gy=" << gVector[1] << " gz=" << gVector[2] << std::endl;
+	log.INFO("MAIN", "Measured gravity vector:\n\tgx=%+6.3f\tgy=%+6.3f\tgz=%+6.3f\n\n",
+						gVector[0], gVector[1], gVector[2]);
 
 	// Store measured/estimated values
 	DataPoint<NavigationVector> accRaw(0., NavigationVector({0.,0.,0.}));
@@ -98,19 +126,21 @@ int main(int argc, char *argv[])
 		velIntegrator.update(accCor);
 		posIntegrator.update(vel);
 
-		// Uncomment to view acceleration values over time
-	  	//std::printf("Raw acceleration: a_rx:%4.3f  a_ry:%4.3f  a_rz:%4.3f\tCorrected acceleration: a_cx:%4.3f  a_cy:%4.3f  a_cz:%4.3f\n", 
-	  	//				accRaw.value[0], accRaw.value[1], accRaw.value[2], accCor.value[0], accCor.value[1], accCor.value[2]);
-
-		std::printf("a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n", 
+		// Output values
+		log.INFO("MAIN", "a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n", 
 	  					accCor.value[0], accCor.value[1], accCor.value[2], 
 	  							 vel.value[0], vel.value[1], vel.value[2], 
 	  							 pos.value[0], pos.value[1], pos.value[2]);		
+		if (sys.imu_id > 0) 
+		{
+			printToFile(&outfile, &accRaw, &accCor, &vel, &pos);
+		}
+
 
 		sleep(queryDelay);
 	}
 
-
+	if (sys.imu_id) outfile.close();
 
 	return 0;
 }
