@@ -54,6 +54,34 @@ constexpr uint8_t kBitsFs16G                = 0x18;
 // Resets the device to defaults
 constexpr uint8_t kBitHReset                = 0x80;
 
+
+// values for FIFO
+uint8_t fifo_enable = 0x23;   // set FIFO enable flags to have sensor data registers be written to data
+constexpr uint8_t fifo_countH = 0x72;   // bit [4:0]
+constexpr uint8_t fifo_countL = 0x73;   // bit [7:0]
+constexpr uint8_t fifo_r_w = 0x74;    // bit [7:0]
+// Use this register to read and write data from the FIFO buffer
+// Data is written to the FIFO in order of register number (lo->hi)
+// Contents of sensor data registers (59-96) are written into the FIFO buffer when
+//    their corresponding FIFO enable flags are set to 1 in FIFO_enable
+// If the FIFO buffer has overflowed, the status bit FIFO_OFLOW_INT is
+//    automatically set to 1 (located in INT_STATUS)
+// When overflowed the oldest data will be lost an dnew data will be written to FIFO
+// If the FIFO buffer is empty, reading the register will return the last byte that was
+//    repviously read from the FIFO until new data is available
+// CHECK FIFO_COUNT TO ENSURE FIFO BUFFER IS NOT READ WHEN EMPTY
+/** (write)
+ * Bit 0: SLV_0
+ * Bit 1: SLV_1
+ * Bit 2: SLV_2
+ * Bit 3: acceleration H/L in XYZ directions
+ * Bit 4: gyro Z H/L
+ * Bit 5: gyro Y H/L
+ * Bit 6: gyro X H/L
+ * Bit 7: temp H/L
+ * 
+ */
+
 namespace hyped {
 
 utils::io::gpio::Direction kDirection = utils::io::gpio::kOut;
@@ -90,6 +118,14 @@ void Imu::init()
   writeByte(kAccelConfig2, 0x01);
   setAcclScale(acc_scale_);
   setGyroScale(gyro_scale_);
+
+  // enable flags for FIFO
+  for(int n=0;n<8;n++){
+    if(n!=1&&n!=2)
+      fifo_enable |= 1 << n;
+  }
+
+
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
 }
 
