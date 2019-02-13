@@ -19,15 +19,15 @@
  *    limitations under the License.
  */
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <unistd.h>
-#include "utils/system.hpp"
-#include <thread>
-#include <iostream>
-#include <cerrno>
-#include <cstring>
+#include "utils/system.hpp"  // NOLINT
+#include <sys/socket.h>  // NOLINT
+#include <netinet/in.h>  // NOLINT
+#include <netdb.h>  // NOLINT
+#include <unistd.h>  // NOLINT
+#include <thread>  // NOLINT
+#include <iostream>  // NOLINT
+#include <cerrno>  // NOLINT
+#include <cstring>  // NOLINT
 
 #define PORT 9090
 #define SERVER_IP "192.168.6.1"
