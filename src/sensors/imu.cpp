@@ -66,7 +66,7 @@ constexpr uint8_t fifo_r_w = 0x74;    // bit [7:0]
 //    their corresponding FIFO enable flags are set to 1 in FIFO_enable
 // If the FIFO buffer has overflowed, the status bit FIFO_OFLOW_INT is
 //    automatically set to 1 (located in INT_STATUS)
-// When overflowed the oldest data will be lost an dnew data will be written to FIFO
+// When overflowed the oldest data will be lost and new data will be written to FIFO
 // If the FIFO buffer is empty, reading the register will return the last byte that was
 //    repviously read from the FIFO until new data is available
 // CHECK FIFO_COUNT TO ENSURE FIFO BUFFER IS NOT READ WHEN EMPTY
