@@ -30,7 +30,7 @@
 #include <cstring>
 
 #define PORT 9090
-#define SERVER_IP "localhost"
+#define SERVER_IP "192.168.6.1"
 #define BUFFER_SIZE 1024
 
 using hyped::utils::System;
