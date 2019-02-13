@@ -110,6 +110,8 @@ class Imu : public ImuInterface {
    */
   void readBytes(uint8_t read_reg, uint8_t *read_buff, uint8_t length);
 
+  int readFifo(std::vector<ImuData> data);
+
  private:
   SPI&    spi_;
   Logger& log_;

@@ -9,7 +9,7 @@ LIBS_DIR:=lib
 OBJS_DIR:=bin
 
 CFLAGS:=-pthread -std=c++11 -O2 -Wall -Wno-unused-result
-LFLAGS:=-lpthread -pthread -static
+LFLAGS:=-lpthread -pthread
 
 # default configuration
 CROSS=0

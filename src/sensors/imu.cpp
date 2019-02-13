@@ -21,6 +21,10 @@
 #include "utils/concurrent/thread.hpp"
 #include "utils/math/statistics.hpp"
 
+#include <algorithm>
+#include <vector>
+
+
 // Accelerometer addresses
 constexpr uint8_t kAccelXoutH               = 0x3B;
 
@@ -56,10 +60,10 @@ constexpr uint8_t kBitHReset                = 0x80;
 
 
 // values for FIFO
-uint8_t fifo_enable = 0x23;   // set FIFO enable flags to have sensor data registers be written to data
-constexpr uint8_t fifo_countH = 0x72;   // bit [4:0]
-constexpr uint8_t fifo_countL = 0x73;   // bit [7:0]
-constexpr uint8_t fifo_r_w = 0x74;    // bit [7:0]
+constexpr uint8_t kFifoEnable = 0x23;   // set FIFO enable flags to have sensor data registers be written to data
+constexpr uint8_t kFifoCountH = 0x72;   // bit [4:0]
+constexpr uint8_t kFifoCountL = 0x73;   // bit [7:0]
+constexpr uint8_t kFifoRW = 0x74;    // bit [7:0]
 // Use this register to read and write data from the FIFO buffer
 // Data is written to the FIFO in order of register number (lo->hi)
 // Contents of sensor data registers (59-96) are written into the FIFO buffer when
@@ -119,12 +123,9 @@ void Imu::init()
   setAcclScale(acc_scale_);
   setGyroScale(gyro_scale_);
 
-  // enable flags for FIFO
-  for(int n=0;n<8;n++){
-    if(n!=1&&n!=2)
-      fifo_enable |= 1 << n;
-  }
-
+  // Enable the fifo for Accelerometer and Gyro 
+  // 59-72 except 65,66
+  writeByte(kFifoEnable, 0x78);
 
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
 }
@@ -229,6 +230,44 @@ void Imu::setAcclScale(int scale)
       acc_divider_ = 2048;
     break;
   }
+}
+
+struct Imu_raw{
+  uint16_t acc[3];
+  uint16_t gyro[3];
+};
+
+constexpr uint16_t kFifo_size = 512;
+
+Imu_raw raw_data[kFifo_size/sizeof(Imu_raw)];
+
+int Imu::readFifo(std::vector<ImuData> data)
+{
+  uint16_t fifo_count;
+
+  // coGet iunt of qfifo ueue
+  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(&fifo_count), 2);
+
+  // Get count make to the nearest lowest even number
+  fifo_count = fifo_count-(fifo_count % sizeof(Imu_raw));
+  fifo_count = std::min(static_cast<uint16_t>(kFifo_size/sizeof(Imu_raw)), fifo_count);  // chooses smallest from fifo_count (amt in fifo buffer), and how much we can store in struct 
+
+  // Read from fifo queue
+  readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_count);
+
+  for(int i = 0; i < fifo_count/sizeof(Imu_raw); i++){
+    ImuData imu_data;
+    imu_data.acc[0] = raw_data[i].acc[0]/acc_divider_  * 9.80665;
+    imu_data.acc[1] = raw_data[i].acc[1]/acc_divider_  * 9.80665;
+    imu_data.acc[2] = raw_data[i].acc[2]/acc_divider_  * 9.80665;
+    imu_data.gyr[0] = raw_data[i].gyro[0]/gyro_divider_;
+    imu_data.gyr[1] = raw_data[i].gyro[1]/gyro_divider_;
+    imu_data.gyr[2] = raw_data[i].gyro[2]/gyro_divider_;
+    imu_data.operational = is_online_;
+    data.push_back(imu_data);
+  }
+
+  return fifo_count;
 }
 
 void Imu::getData(ImuData* data)
