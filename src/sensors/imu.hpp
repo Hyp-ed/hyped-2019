@@ -110,6 +110,14 @@ class Imu : public ImuInterface {
    */
   void readBytes(uint8_t read_reg, uint8_t *read_buff, uint8_t length);
 
+  /**
+   * @brief calculates number of bytes in FIFO and reads number of full sets (12 bytes) into 
+   * vector of ImuData
+   * See data.hpp for ImuData struct
+   * 
+   * @param data ImuData vector to read number of full sets into (acc and gyro)
+   * @return int fifo count
+   */
   int readFifo(std::vector<ImuData> data);
 
  private:

@@ -245,7 +245,7 @@ int Imu::readFifo(std::vector<ImuData> data)
 {
   uint16_t fifo_count;
 
-  // coGet iunt of qfifo ueue
+  // coGet uint of qfifo ueue
   readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(&fifo_count), 2);
 
   // Get count make to the nearest lowest even number
