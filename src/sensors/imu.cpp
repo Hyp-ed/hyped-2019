@@ -73,7 +73,7 @@ constexpr uint8_t kFifoRW = 0x74;    // bit [7:0]
 // When overflowed the oldest data will be lost and new data will be written to FIFO
 // If the FIFO buffer is empty, reading the register will return the last byte that was
 //    repviously read from the FIFO until new data is available
-// CHECK FIFO_COUNT TO ENSURE FIFO BUFFER IS NOT READ WHEN EMPTY
+// CHECK fifo_bytes TO ENSURE FIFO BUFFER IS NOT READ WHEN EMPTY
 /** (write)
  * Bit 0: SLV_0
  * Bit 1: SLV_1
@@ -125,6 +125,10 @@ void Imu::init()
 
   // Enable the fifo for Accelerometer and Gyro 
   // 59-72 except 65,66
+  uint8_t data;
+  readByte(106, &data);
+  log_.INFO("Imu", "Ctrl 0x%x", data);
+  writeByte(106, data | 0x40); // enable fifo
   writeByte(kFifoEnable, 0x78);
   log_.INFO("Imu", "FIFO Enabled");
 
@@ -244,29 +248,41 @@ constexpr uint16_t kFifo_size = 512;
 
 Imu_raw raw_data[kFifo_size/sizeof(Imu_raw)];
 
+void myPrint(int i)
+{
+  Imu_raw& data = raw_data[i];
+  printf("acc 0x%x 0x%x 0x%x\n", data.acc[0], data.acc[1], data.acc[2]);
+  printf("gyro 0x%x 0x%x 0x%x\n", data.gyro[0], data.gyro[1], data.gyro[2]);
+
+}
+
 int Imu::readFifo(std::vector<ImuData>& data)
 {
   uint8_t count[2];
-
+  for (int i = 0; i < kFifo_size/sizeof(Imu_raw); i++) {
+    raw_data[i] = {};
+  }
   // coGet uint of qfifo ueue
-  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(&count), 2);
+  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(count), 2);
   log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
 
-  uint16_t fifo_count = ((count[1]) | (count[0]<<8));    // big->little endian since BBB reads from little and IMU rads from big
+  uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // big->little endian since BBB reads from little and IMU rads from big
   
-  log_.DBG("Fifo Count", "0x%x", fifo_count);
+  
   // Get count make to the nearest lowest even number
-  fifo_count = fifo_count-(fifo_count % sizeof(Imu_raw));
-
-  fifo_count = std::min(static_cast<uint16_t>(kFifo_size/sizeof(Imu_raw)), fifo_count);  // chooses smallest from fifo_count (amt in fifo buffer), and how much we can store in struct 
+  fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));
+  log_.DBG("Fifo Count", "0x%x", fifo_bytes);
+  // fifo_bytes = std::min(kFifo_size, fifo_bytes);  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct 
   
 
   // Read from fifo queue
-  readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_count);
-
-  log_.DBG("Raw Fifo data", "x = 0x%x, y = 0x%x, z = 0x%x", raw_data[0].acc[0], raw_data[0].acc[1], raw_data[0].acc[2]);
+  // if (fifo_bytes < fifo_bytes/sizeof(Imu_raw))
+  //   return 0;
+  readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_bytes);
+  // log_.DBG("Raw Fifo data", "x = 0x%x, y = 0x%x, z = 0x%x", raw_data[0].acc[0], raw_data[0].acc[1], raw_data[0].acc[2]);
   
-  for(int i = 0; i < fifo_count/sizeof(Imu_raw); i++){
+  for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){
+    myPrint(i);
     ImuData imu_data;
     imu_data.acc[0] = raw_data[i].acc[0];
     imu_data.acc[1] = raw_data[i].acc[1];
@@ -278,8 +294,10 @@ int Imu::readFifo(std::vector<ImuData>& data)
     data.push_back(imu_data);
   }
 
-  return fifo_count/sizeof(Imu_raw);
+  return fifo_bytes/sizeof(Imu_raw);
 }
+
+
 
 void Imu::getData(ImuData* data)
 {

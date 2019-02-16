@@ -22,16 +22,17 @@ int main(int argc, char* argv[])
   log.INFO("TEST-Imu", "MPU9250 instance successfully created");
   // int count = imu.readFifo(data);
   // log.DBG("FIFO_COUNT", "%d", count);
-  while (true) {
+  int i = 0;
+  while (i < 20) {
     std::vector<ImuData> data;
     int count = imu.readFifo(data);
-    log.DBG("ReadFifo Count", "%d", count);
-    for (int i=0; i < count; i++) {
-      log.DBG("Loop Count", "%d", i);
+    // log.DBG("ReadFifo Count", "%d", count);
+    // for (int i=0; i < count; i++) {
       // log.DBG("TEST-mpu9250", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);
       // log.DBG("TEST-mpu9250", "gyroscope readings     x: %f rad/s, y: %f rad/s, z: %f rad/s", data[i].gyr[0], data[i].gyr[1], data[i].gyr[2]);
-    }
-    Thread::sleep(1000);
+    // }
+    Thread::sleep(10);
+    i++;
   }
   
 
