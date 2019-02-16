@@ -61,7 +61,7 @@ constexpr uint8_t kBitHReset                = 0x80;
 
 // values for FIFO
 constexpr uint8_t kFifoEnable = 0x23;   // set FIFO enable flags to have sensor data registers be written to data
-constexpr uint8_t kFifoCountH = 0x72;   // bit [4:0]
+constexpr uint8_t kFifoCountH = 0x72;   // bit [4:0]- ONLY 5 BITS
 constexpr uint8_t kFifoCountL = 0x73;   // bit [7:0]
 constexpr uint8_t kFifoRW = 0x74;    // bit [7:0]
 // Use this register to read and write data from the FIFO buffer
@@ -126,6 +126,7 @@ void Imu::init()
   // Enable the fifo for Accelerometer and Gyro 
   // 59-72 except 65,66
   writeByte(kFifoEnable, 0x78);
+  log_.INFO("Imu", "FIFO Enabled");
 
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
 }
@@ -232,42 +233,52 @@ void Imu::setAcclScale(int scale)
   }
 }
 
+#pragma pack(push, 1)
 struct Imu_raw{
   uint16_t acc[3];
   uint16_t gyro[3];
 };
+#pragma pack(pop)
 
 constexpr uint16_t kFifo_size = 512;
 
 Imu_raw raw_data[kFifo_size/sizeof(Imu_raw)];
 
-int Imu::readFifo(std::vector<ImuData> data)
+int Imu::readFifo(std::vector<ImuData>& data)
 {
-  uint16_t fifo_count;
+  uint8_t count[2];
 
   // coGet uint of qfifo ueue
-  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(&fifo_count), 2);
+  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(&count), 2);
+  log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
 
+  uint16_t fifo_count = ((count[1]) | (count[0]<<8));    // big->little endian since BBB reads from little and IMU rads from big
+  
+  log_.DBG("Fifo Count", "0x%x", fifo_count);
   // Get count make to the nearest lowest even number
   fifo_count = fifo_count-(fifo_count % sizeof(Imu_raw));
+
   fifo_count = std::min(static_cast<uint16_t>(kFifo_size/sizeof(Imu_raw)), fifo_count);  // chooses smallest from fifo_count (amt in fifo buffer), and how much we can store in struct 
+  
 
   // Read from fifo queue
   readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_count);
 
+  log_.DBG("Raw Fifo data", "x = 0x%x, y = 0x%x, z = 0x%x", raw_data[0].acc[0], raw_data[0].acc[1], raw_data[0].acc[2]);
+  
   for(int i = 0; i < fifo_count/sizeof(Imu_raw); i++){
     ImuData imu_data;
-    imu_data.acc[0] = raw_data[i].acc[0]/acc_divider_  * 9.80665;
-    imu_data.acc[1] = raw_data[i].acc[1]/acc_divider_  * 9.80665;
-    imu_data.acc[2] = raw_data[i].acc[2]/acc_divider_  * 9.80665;
-    imu_data.gyr[0] = raw_data[i].gyro[0]/gyro_divider_;
-    imu_data.gyr[1] = raw_data[i].gyro[1]/gyro_divider_;
-    imu_data.gyr[2] = raw_data[i].gyro[2]/gyro_divider_;
+    imu_data.acc[0] = raw_data[i].acc[0];
+    imu_data.acc[1] = raw_data[i].acc[1];
+    imu_data.acc[2] = raw_data[i].acc[2];
+    imu_data.gyr[0] = raw_data[i].gyro[0];
+    imu_data.gyr[1] = raw_data[i].gyro[1];
+    imu_data.gyr[2] = raw_data[i].gyro[2];
     imu_data.operational = is_online_;
     data.push_back(imu_data);
   }
 
-  return fifo_count;
+  return fifo_count/sizeof(Imu_raw);
 }
 
 void Imu::getData(ImuData* data)
