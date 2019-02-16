@@ -14,8 +14,7 @@ namespace hyped {
         class SenderInterface
         {
             public:
-                virtual bool pushSdoMessageToStack(utils::io::can::Frame& message)=0;
-                virtual bool pushPdoMessageToStack(utils::io::can::Frame& message)=0;
+                virtual void sendMessage(utils::io::can::Frame& message)=0;
                 virtual void registerController()=0;  
         };
     

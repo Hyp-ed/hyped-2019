@@ -6,10 +6,11 @@
 #define HYPED_2019_CANSENDER_HPP
 
 #include <cstdint>
+#include <condition_variable>
+#include <mutex>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "propulsion/sender_interface.hpp"
-#include <queue>
 
 namespace hyped {
 
@@ -17,6 +18,14 @@ namespace hyped {
         using utils::io::Can;
         using utils::Logger;
         using utils::io::CanProccesor;
+
+        //This is used as the datatype of the queue.
+        //Type = 0 Sdo Message
+        //Type = 1 Pdo Message
+        struct Message {
+            utils::io::can::Frame& msg;
+            int type;
+        };
 
         class CanSender : public CanProccesor, public SenderInterface
         {
@@ -26,9 +35,7 @@ namespace hyped {
                 CanSender(Logger& log_);
                 //CanSender(ControllerInterface* controller);
 
-                bool pushSdoMessageToStack(utils::io::can::Frame& message) override;
-            
-                bool pushPdoMessageToStack(utils::io::can::Frame& message) override;
+                void sendMessage(utils::io::can::Frame& message) override;
 
                 void processNewData(utils::io::can::Frame& message) override;
 
@@ -37,12 +44,8 @@ namespace hyped {
                 void registerController() override;
                 
             protected:
-                bool processingSdoMessage;
-                bool processingPdoMessage;
+                bool processingMessage;
                 Logger& log_;
-
-                std::queue<utils::io::can::Frame> sdoQueue;
-                std::queue<utils::io::can::Frame> pdoQueue;
             };
 
     }

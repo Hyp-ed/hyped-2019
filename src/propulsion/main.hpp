@@ -23,12 +23,10 @@
 #include "utils/concurrent/barrier.hpp"
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
+#include "utils/logger.hpp"
+#include "can_sender.hpp"
 
-#include "StateProcessor.hpp"
-#include "StateProcessorInterface.hpp"
-
-
-#include <iostream>
+#include "state_processor.hpp"
 
 namespace hyped {
 	using utils::concurrent::Thread;
@@ -37,7 +35,6 @@ namespace hyped {
 namespace motor_control {
 	class Main: public Thread {
 		public:
-			Main();
 			Main(uint8_t id, Logger& log);
 			
 			/**
@@ -49,7 +46,8 @@ namespace motor_control {
 
 		private:
 			bool isRunning;
-			StateProcessorInterface* stateProcessor;
+			Logger& log_;
+			StateProcessor* stateProcessor;
 	};
 
 

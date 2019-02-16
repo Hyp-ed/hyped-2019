@@ -21,29 +21,29 @@
 namespace hyped {
 
 namespace motor_control {
-	Main::Main()
-    {
-        std::cout << "Main default constructor was called" << std::endl;
-	}
-
 	Main::Main(uint8_t id, Logger& log)
 		: Thread(id, log),
-		isRunning(true)
+		isRunning(true),
+		log_(log)
 	{
-        std::cout << "Logger constructor was called" << std::endl;
+        log_.INFO("Motor","Logger constructor was called");
 
-        stateProcessor = new StateProcessor(log);
+        stateProcessor = new StateProcessor(6,log);
 	}
 
 	void Main::run()
 	{
-		std::cout << "Thread started" << std::endl;
+		log_.INFO("Motor","Thread started");
 
 		System& sys = System::getSystem();
 
-		States state;// = Idle;
+		States state = Idle;
 
-		while(isRunning && sys.running_) 
+		CanSender* can = new CanSender(log_);
+
+		//can.sendMessage();
+
+		/*while(isRunning && sys.running_) 
 		{
 			std::cout << "Thread running " << state << std::endl;
 			if(state == States::Idle) 
@@ -61,6 +61,7 @@ namespace motor_control {
 			{
 				//TODO: Controller should handle the communication with the SpeedCalculator
 			    std::cout << "State Accelerating" << std::endl;
+			    stateProcessor->accelerate();
 			}
 			else if(state == States::Decelerating)
 			{
@@ -93,8 +94,8 @@ namespace motor_control {
 			}
 
 			Thread::sleep(500);
-		}
+		}*/
 		
-		std::cout << "Thread shutting down" << std::endl;
+		log_.INFO("Motor","Thread shutting down");
 	}
 }} 

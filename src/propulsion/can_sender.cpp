@@ -13,14 +13,8 @@ namespace hyped {
             log_.INFO("Motor","CanSender initialized");
         }
 
-        bool CanSender::pushSdoMessageToStack(utils::io::can::Frame& message) {
-            log_.INFO("Motor","SDO Message pushed to stack");
-            return true;
-        }
-
-        bool CanSender::pushPdoMessageToStack(utils::io::can::Frame& message) {
-            log_.INFO("Motor","PDO message pushed to stack");
-            return true;
+        void CanSender::sendMessage(utils::io::can::Frame& message) {
+            log_.INFO("Motor","send message");
         }
 
         void CanSender::processNewData(utils::io::can::Frame& message) {

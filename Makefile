@@ -3,7 +3,7 @@
 # define VERBOSE to see executed commands
 
 TARGET=hyped
-MAIN=main.cpp
+MAIN=demo_prop.cpp
 SRCS_DIR:=src
 LIBS_DIR:=lib
 OBJS_DIR:=bin

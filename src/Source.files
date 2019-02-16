@@ -3,9 +3,11 @@
 
 SRCS := \
   data/data.cpp \
+  propulsion/state_processor.cpp \
   propulsion/main.cpp \
-  propulsion/StateProcessor.cpp \
+  propulsion/can_sender.cpp \
   sensors/imu.cpp \
+  utils/io/can.cpp \
   utils/io/gpio.cpp \
   utils/io/spi.cpp \
   utils/concurrent/thread.cpp \
