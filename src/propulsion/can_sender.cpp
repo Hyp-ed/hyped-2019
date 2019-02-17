@@ -13,8 +13,16 @@ namespace hyped {
             log_.INFO("Motor","CanSender initialized");
         }
 
-        void CanSender::sendMessage(utils::io::can::Frame& message) {
+        void CanSender::pushSdoMessageToQueue(utils::io::can::Frame& message) {
+            //log_.INFO("Motors",message.id+" before queue");
+
+            queue.push(message);
+
             log_.INFO("Motor","send message");
+
+            utils::io::can::Frame front = queue.front();
+
+            log_.INFO("Motor",front.id+" from queue");
         }
 
         void CanSender::processNewData(utils::io::can::Frame& message) {
@@ -27,6 +35,16 @@ namespace hyped {
 
         void CanSender::registerController() {
 
+        }
+
+        void CanSender::sendMessage() {
+            while(true) {
+                log_.INFO("CONSUMER","Waiting");
+                std::unique_lock<std::mutex> lck(queueMutex);
+                queueConditionVar.wait(lck,processingMessage);
+                log_.INFO("CONSUMER","CONSUMING");
+                //Sleep here
+            }
         }
 
     }}

@@ -39,7 +39,15 @@ namespace motor_control {
 
 		States state = Idle;
 
+		utils::io::can::Frame frame;
+
+		frame.id = 12;
+		frame.extended = false;
+		frame.len = 8;
+
 		CanSender* can = new CanSender(log_);
+
+		can->sendMessage(frame);
 
 		//can.sendMessage();
 
@@ -57,6 +65,14 @@ namespace motor_control {
 
 				yield();
 			} 
+			else if(state == States::Calibrating)
+			{
+
+			}
+			else if(state == States::Ready)
+			{
+				
+			}
 			else if(state == States::Accelerating)
 			{
 				//TODO: Controller should handle the communication with the SpeedCalculator

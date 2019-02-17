@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <condition_variable>
 #include <mutex>
+#include <queue>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "propulsion/sender_interface.hpp"
@@ -35,17 +36,22 @@ namespace hyped {
                 CanSender(Logger& log_);
                 //CanSender(ControllerInterface* controller);
 
-                void sendMessage(utils::io::can::Frame& message) override;
+                void pushSdoMessageToQueue(utils::io::can::Frame& message) override;
 
                 void processNewData(utils::io::can::Frame& message) override;
 
                 bool hasId(uint32_t id, bool extended) override;
 
                 void registerController() override;
+
+                void sendMessage();
                 
             protected:
+                std::mutex queueMutex;
+                std::condition_variable queueConditionVar;
                 bool processingMessage;
                 Logger& log_;
+                std::queue<utils::io::can::Frame> queue;
             };
 
     }

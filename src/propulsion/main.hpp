@@ -53,16 +53,18 @@ namespace motor_control {
 
 	/**
 	 * States (for now):
-	 * 	Idle 				
+	 * 	Idle 		
+	 * 	Calibrating
+	 * 	Ready
 	 * 	Accelerating  		
-	 * 	Decelerating		
+	 * 	Braking		
 	 * 	EmergencyBraking	
 	 * 	FailureStopped		
 	 * 	RunComplete			
 	 * 	Exiting				
 	 * 	Finished			
 	 * */
-	enum States {Idle,Accelerating,Decelerating,EmergencyBraking,FailureStopped,RunComplete,Exiting,Finished};
+	enum States {Idle,Calibrating,Ready,Accelerating,Decelerating,EmergencyBraking,FailureStopped,RunComplete,Exiting,Finished};
 }}  
 
 #endif
