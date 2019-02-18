@@ -59,10 +59,10 @@ NavigationVector calibrateGravity(Imu* imu, ImuData* imuData, unsigned int nCalQ
 	return online.getMean();
 }
 
-void outfileSetup(std::ofstream* outfile, int imu_id) 
+void outfileSetup(std::ofstream* outfile, int imu_id, int run_id) 
 {
 	char fname [20];
-	sprintf(fname, "imu%d_data.csv", imu_id);
+	sprintf(fname, "test_data/imu%d_run%d_data.csv", imu_id, run_id);
 	outfile->open(fname);
 	*outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,t\n";
 }
@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
 	System& sys = System::getSystem();
 	Logger log(sys.verbose, sys.debug);
 	Timer timer;
+	bool writeToFile = (sys.imu_id > 0) || (sys.run_id > 0);
 
 	// Sensor setup
 	int i2c = 66;
@@ -97,7 +98,7 @@ int main(int argc, char *argv[])
 
 	// File setup
 	std::ofstream outfile;
-	if (sys.imu_id > 0) outfileSetup(&outfile, sys.imu_id);
+	if (writeToFile) outfileSetup(&outfile, sys.imu_id, sys.run_id);
 
 	// Calibrate gravitational acceleration
 	NavigationVector gVector = calibrateGravity(imu, imuData, nCalQueries, &timer);

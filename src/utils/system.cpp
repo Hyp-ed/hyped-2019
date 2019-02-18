@@ -29,6 +29,7 @@
 #define DEFAULT_VERBOSE -1
 #define DEFAULT_DEBUG   -1
 #define DEFAULT_IMU     -1
+#define DEFAULT_RUN		-1
 #define DEFAULT_QUERIES -1
 #define DEFAULT_Q_DELAY -1
 
@@ -58,7 +59,9 @@ void printUsage()
     "\n  --accurate\n"
     "    Make the system use the accurate fake system\n"
     "\n  --imu_id\n"
-    "    ID number to assign to written datafile."
+    "    IMU ID number to assign to written datafile."
+    "\n  --run_id\n"
+    "    Run ID number to assign to written datafile."
     "");
 }
 }
@@ -93,7 +96,8 @@ System::System(int argc, char* argv[])
       double_keyence(false),
       accurate(false),
       running_(true),
-      imu_id(DEFAULT_IMU)
+      imu_id(DEFAULT_IMU),
+      run_id(DEFAULT_RUN)
 
 {
   int c;
@@ -127,6 +131,7 @@ System::System(int argc, char* argv[])
       {"accurate", optional_argument, 0, 'N'},
       {"fake_batteries", optional_argument, 0, 'o'},
       {"imu_id", optional_argument, 0, 'p'},
+      {"run_id", optional_argument, 0, 'P'},
       {0, 0, 0, 0}
     };
     c = getopt_long(argc, argv, "vd::h", long_options, &option_index);
@@ -242,6 +247,10 @@ System::System(int argc, char* argv[])
       case 'p':
         if (optarg) imu_id = atoi(optarg);
         else        imu_id = 1;
+        break;
+      case 'P':
+        if (optarg) run_id = atoi(optarg);
+        else        run_id = 1;
         break;
       default:
         printUsage();
