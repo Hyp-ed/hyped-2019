@@ -11,13 +11,15 @@
 #include <queue>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
-#include "propulsion/sender_interface.hpp"
+#include "utils/concurrent/thread.hpp"
 
 namespace hyped {
 
     namespace motor_control {
         using utils::io::Can;
+        using utils::concurrent::BusyThread;
         using utils::Logger;
+        using utils::concurrent::Thread;
         using utils::io::CanProccesor;
 
         //This is used as the datatype of the queue.
@@ -28,30 +30,19 @@ namespace hyped {
             int type;
         };
 
-        class CanSender : public CanProccesor, public SenderInterface
+        class CanSender : public Thread
         {
-            friend Can;
-
             public:
                 CanSender(Logger& log_);
                 //CanSender(ControllerInterface* controller);
 
-                void pushSdoMessageToQueue(utils::io::can::Frame& message) override;
-
-                void processNewData(utils::io::can::Frame& message) override;
-
-                bool hasId(uint32_t id, bool extended) override;
-
-                void registerController() override;
-
-                void sendMessage();
+                void run() override;
                 
             protected:
-                std::mutex queueMutex;
-                std::condition_variable queueConditionVar;
+                std::mutex* queueMutex;
+                std::condition_variable* queueConditionVar;
                 bool processingMessage;
                 Logger& log_;
-                std::queue<utils::io::can::Frame> queue;
             };
 
     }
@@ -59,3 +50,5 @@ namespace hyped {
 
 
 #endif //HYPED_2019_CANSENDER_HPP
+
+

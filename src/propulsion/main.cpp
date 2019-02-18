@@ -45,9 +45,9 @@ namespace motor_control {
 		frame.extended = false;
 		frame.len = 8;
 
-		CanSender* can = new CanSender(log_);
+		CanHandler* can = new CanHandler(log_);
 
-		can->sendMessage(frame);
+		can->pushSdoMessageToQueue(frame);
 
 		//can.sendMessage();
 

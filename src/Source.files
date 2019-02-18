@@ -6,6 +6,7 @@ SRCS := \
   propulsion/state_processor.cpp \
   propulsion/main.cpp \
   propulsion/can_sender.cpp \
+  propulsion/can_handler.cpp \
   sensors/imu.cpp \
   utils/io/can.cpp \
   utils/io/gpio.cpp \
