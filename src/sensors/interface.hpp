@@ -49,6 +49,16 @@ class ImuInterface: public SensorInterface {
   virtual void getData(ImuData* imu) = 0;
 };
 
+// class GpioInterface {
+//  public:
+//   /**
+//    * @brief Get GPIO data
+//    * @param
+//    */
+//   virtual data::StripeCounter getStripeCounter() = 0;    // StripeCounter is a datapoint of timestamp and generic data
+//        // defined in data.hpp and data_point.hpp
+// };
+
 }}  // namespace hyped::sensors
 
 
