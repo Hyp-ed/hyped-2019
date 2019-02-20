@@ -5,6 +5,7 @@ SRCS := \
   data/data.cpp \
   propulsion/state_processor.cpp \
   propulsion/main.cpp \
+  propulsion/concurrent_queue.cpp \
   propulsion/can_sender.cpp \
   propulsion/can_handler.cpp \
   sensors/imu.cpp \
