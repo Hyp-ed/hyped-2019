@@ -18,53 +18,6 @@
  *    limitations under the License.
  */
 
-/**
- * Testing Keyence stripe detection: 
-    * logger
-    * data
-    * start_time, max_time
-    * stripe count (same as data?)
-    * missed stripe? (bool)
-    * accelerating? (bool)
- * 
- * Check if missed stripe:
- * compare time with fake_acceleration data- see if accelerating or decelerating
- * switch states of of state machine in consideration of acceleration
- * increase stripe count of missed, log sensor failure
- * 
- * Reach end of run if:
- * max speed based off acceleration/time
- * max time based acceleration/velocity and stripe count
- * max distance based off stripe count
- * --> case: end gracefully and emergency state
- * 
- * FUNCTIONS (with subfunctions?)
- * 
- * Timer count function to:
- *  calculate time left in run
- *  bool if need to break
- * 
- * getData function with:
- *  isAccelerating?
- *  missedStripe?
- * 
- * getDistance function:
- *  calculate overall distance based solely on stripe count
- *  cross reference imu data (.5at^2)
- *  override if missed stripe
- *  return bool to end run
- * 
- */
-
-/**
- * StripeCounter: DataPoint<uint32_t>, which is a template of 
- * typename 'T' of timestamp and value of type 'T' (2param)
- * 
- * Data needed: 
- * Navigation data (distance, velocity, acc, embrake distance, braking distance)- typedef float
- * State Machine data (critical failure, current state-enum)
- */
-
 #include "sensors/fake_gpio_counter.hpp"
 #include <iostream>
 #include <fstream>
@@ -77,7 +30,9 @@
 #include "utils/timer.hpp"
 #include "data/data.hpp"
 
-constexpr uint64_t kBrakeTime = 10000000;     // calculate this constant from FDP
+constexpr uint64_t kBrakeTime = 10000000;     // calculate this constant from FDP based of max acc, it is a const
+constexpr uint32_t kTrackDistance = 2000;
+constexpr uint32_t kStripeDistance = 100;          // every 100 meters?
 
 namespace hyped {
 
@@ -85,9 +40,10 @@ namespace sensors {
 
 FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
     : log_(log),
-      start_time_(0),                // just zero
-      ref_time_(start_time_),        // current time?
-      check_time_(5000000),                 // base this time off imuData
+      data_(0),//(Data::getInstance()),       // need to update data structures
+      start_time_(0),                // just zero?
+      ref_time_(start_time_),        // current time
+      check_time_(5000000),                 // base this time off practical time to go kStripeDistance off acc data
       brake_time_(kBrakeTime),                   
       // stripe_count_(0);
       miss_stripe_(miss_stripe),
@@ -95,10 +51,85 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
 {
   stripe_count_.timestamp = utils::Timer::getTimeMicros();      // start time
   stripe_count_.value = 0;                                      // start stripe count
+  // ref_time_ = utils::Timer::getTimeMicros();
 }
 
+uint64_t FakeGpioCounter::getAccTime(){   // calculate check_time_ based on acceleration
+  data::Navigation nav   = data_.getNavigationData();
+  // should I calcualte check_time_ or just leave as is
+  uint64_t time = (-1)*nav.velocity + sqrt((pow((nav.velocity),2)-4*nav.acceleration*(.5)*(-1)*kStripeDistance)/(2*nav.acceleration*(.5)));
+  return time;    // would use this time in place of check_time
+}
 
+FakeGpioCounter::StripeCounter FakeGpioCounter::getData(){
+  // calculate if missed stripe here- so need to cross reference acceleration data
+  if(timeCheck()){    // only do this if it's time to check
 
+    data::Navigation nav   = data_.getNavigationData();
+    // data::State state = data_.getStateMachineData().current_state;       // should I reference StateMachine for acc?
+    uint32_t prev_count    = stripe_count_.value;
+    uint32_t current_sector = stripe_count_.value*kStripeDistance;  // which stripe sector pod is in
+    uint32_t next_sector = stripe_count_.value*kStripeDistance;   // distance of next stripe will hit
+    
+    if(nav.distance>current_sector&&nav.distance<next_sector){    // fix this data type for nav.distance!
+    // if correct
+      stripe_count_.value = prev_count;
+      stripe_count_.timestamp = utils::Timer::getTimeMicros();
+      // return stripe_count_;
+    }
+    else if(nav.distance<current_sector){       // counted too many stripes
+      stripe_count_.value--;
+      stripe_count_.timestamp = utils::Timer::getTimeMicros();
+      // return stripe_count_;
+    }
+    else if(nav.distance>next_sector){      // if missed extra_count number of stripes
+      uint64_t extra_count = std::floor((nav.distance-current_sector)/kStripeDistance);
+      stripe_count_.value += extra_count;
+      stripe_count_.timestamp = utils::Timer::getTimeMicros();
+      // return stripe_count_;
+    }
+      log_.DBG2("fake_gpio_counter", "nav.distance=%f, new_count=%d, timestamp=%f", nav.distance, stripe_count_.value, stripe_count_.timestamp);
 
+  }
+  return stripe_count_;
+}
+
+bool FakeGpioCounter::getDistance(){ 
+  data::Navigation nav = data_.getNavigationData();
+  data::State state = data_.getStateMachineData().current_state;    // should I reference this?
+  // uint32_t prev_count    = stripe_count_.value;
+
+  StripeCounter current_data = getData();
+  if(nav.acceleration<0 && state == data::State::kDecelerating){
+    is_accelerating_ = false;
+  } else if(nav.acceleration>0 || state == data::State::kAccelerating){
+    is_accelerating_ = true;
+  }
+  if(timeout(current_data)){    // based on stripe_count_only 
+    // need to stop
+    log_.INFO("fake_gpio_counter", "Need to break...breaking now");
+  } else{
+    log_.INFO("fake_gpio_counter", "Keyence online...continue run");
+  }
+}
+
+bool FakeGpioCounter::timeout(StripeCounter stripe_data){ // if no track left to safely break, based on stripe_counter_
+  data::Navigation nav = data_.getNavigationData();
+  uint32_t current_distance = stripe_data.value*kStripeDistance;
+
+  if(kTrackDistance-current_distance < nav.braking_distance){   // have exceeded minimum braking distance
+    log_.ERR("fake_gpio_counter", "Distance too short! We're gonna crash!");
+    return true;
+  }
+  return false;
+}
+
+bool FakeGpioCounter::timeCheck(){    // used to see if it is time to check
+  if(utils::Timer::getTimeMicros()-stripe_count_.timestamp>=check_time_){
+    // if it is time check acc data to see if missed stripe
+    return true;
+  }
+  return false;
+}
 
 }}

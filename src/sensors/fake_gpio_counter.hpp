@@ -28,7 +28,7 @@
 namespace hyped {
 
 using utils::Logger;
-// using data::Data;
+//using data::Data;
 
 namespace sensors {
 
@@ -42,19 +42,70 @@ class FakeGpioCounter:public SensorInterface {      // change to gpiointerface, 
         };
         StripeCounter getData();
     private:
-        bool timeout();                 // return if check_time_ exceeded
+        bool timeCheck();               // return if check_time_ exceeded
+        bool timeout(StripeCounter stripe_data);      // if needs to break out  
         bool getDistance();             // return if OK or keyence_fail
+        uint64_t getAccTime();
         Logger&     log_;
+        // data&       data_;
+        int data_;
 
         uint64_t              start_time_;      // just zero
         uint64_t              ref_time_;        // current time?
         uint64_t              check_time_;      // base this time off imuData
         uint64_t              brake_time_;
         StripeCounter         stripe_count_;
+        // StripeCounter         prev_stripe_count_;
         bool                  miss_stripe_;
         bool                  is_accelerating_;
 };
 
+/**
+ * Testing Keyence stripe detection: 
+    * logger
+    * data
+    * start_time, max_time
+    * stripe count (same as data?)
+    * missed stripe? (bool)
+    * accelerating? (bool)
+ * 
+ * Check if missed stripe:
+ * compare time with fake_acceleration data- see if accelerating or decelerating
+ * switch states of of state machine in consideration of acceleration
+ * increase stripe count of missed, log sensor failure
+ * 
+ * Reach end of run if:
+ * max speed based off acceleration/time
+ * max time based acceleration/velocity and stripe count
+ * max distance based off stripe count
+ * --> case: end gracefully and emergency state
+ * 
+ * FUNCTIONS (with subfunctions?)
+ * 
+ * Timer count function to:
+ *  calculate time left in run
+ *  bool if need to break
+ * 
+ * getData function with:
+ *  isAccelerating?
+ *  missedStripe?
+ * 
+ * getDistance function:
+ *  calculate overall distance based solely on stripe count
+ *  cross reference imu data (.5at^2)
+ *  override if missed stripe
+ *  return bool to end run
+ * 
+ */
+
+/**
+ * StripeCounter: DataPoint<uint32_t>, which is a template of 
+ * typename 'T' of timestamp and value of type 'T' (2param)
+ * 
+ * Data needed: 
+ * Navigation data (distance, velocity, acc, embrake distance, braking distance)- typedef float
+ * State Machine data (critical failure, current state-enum)
+ */
 
 
 }}
