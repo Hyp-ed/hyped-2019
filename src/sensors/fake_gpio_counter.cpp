@@ -32,7 +32,7 @@
 
 constexpr uint64_t kBrakeTime = 10000000;     // calculate this constant from FDP based of max acc, it is a const
 constexpr uint32_t kTrackDistance = 2000;
-constexpr uint32_t kStripeDistance = 100;          // every 100 meters?
+constexpr uint32_t kStripeDistance = 30;          // every 30 meters, is this the right unit?
 
 namespace hyped {
 
@@ -43,7 +43,7 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
       data_(0),//(Data::getInstance()),       // need to update data structures
       start_time_(0),                // just zero?
       ref_time_(start_time_),        // current time
-      check_time_(5000000),                 // base this time off practical time to go kStripeDistance off acc data
+      check_time_(3150000),          // 3.15 seconds
       brake_time_(kBrakeTime),                   
       // stripe_count_(0);
       miss_stripe_(miss_stripe),
@@ -52,13 +52,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
   stripe_count_.timestamp = utils::Timer::getTimeMicros();      // start time
   stripe_count_.value = 0;                                      // start stripe count
   // ref_time_ = utils::Timer::getTimeMicros();
-}
-
-uint64_t FakeGpioCounter::getAccTime(){   // calculate check_time_ based on acceleration
-  data::Navigation nav   = data_.getNavigationData();
-  // should I calcualte check_time_ or just leave as is
-  uint64_t time = (-1)*nav.velocity + sqrt((pow((nav.velocity),2)-4*nav.acceleration*(.5)*(-1)*kStripeDistance)/(2*nav.acceleration*(.5)));
-  return time;    // would use this time in place of check_time
 }
 
 FakeGpioCounter::StripeCounter FakeGpioCounter::getData(){
