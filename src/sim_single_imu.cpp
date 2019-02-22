@@ -53,17 +53,17 @@ using std::string;
 
 void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, ifstream* dataFile, float refreshRate, float sig) 
 {
-	float t = 0;
+	float t = 0.;
 	float ax, ay, az;
 	// Simulate Gaussian noise
 	default_random_engine generator;
 	normal_distribution<float> noise(0., sig);
 	// Add noise to each reading and store
-	while (dataFile >> ax) {
+	while (*dataFile >> ax) {
 		ax += noise(generator);
 		ay = noise(generator);
 		az = noise(generator);
-		dataQueue->push(DataPoint<NavigationVector>(t, NavigationVector({ax, ay, az})));
+		dataQueue->push(DataPoint<NavigationVector>(t*1e6, NavigationVector({ax, ay, az})));
 		// Increment time
 		t += refreshRate;
 	}
@@ -96,12 +96,12 @@ int main(int argc, char *argv[])
 	bool writeToFile = sys.run_id > 0;
 
 	// Test values
-	float refreshRate = 0.000333;
-	float sig = 0.0001;
+	float refreshRate = 1./3000.;
+	float sig = 0.01;
 
 	// Sim data setup
 	ifstream dataFile;
-	string fname = "acceleration-3k.txt"
+	string fname = "sim_data/acceleration-3k.txt";
 	dataFile.open(fname);
 	queue<DataPoint<NavigationVector>> dataQueue;
 	loadSimData(&dataQueue, &dataFile, refreshRate, sig);
@@ -133,15 +133,15 @@ int main(int argc, char *argv[])
 		log.INFO("MAIN", "a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n", 
 	  					acc.value[0], acc.value[1], acc.value[2], 
 						vel.value[0], vel.value[1], vel.value[2], 
-						pos.value[0], pos.value[1], pos.value[2]);		
-		
-		if (sys.imu_id > 0) 
+						pos.value[0], pos.value[1], pos.value[2]);
+
+		if (writeToFile > 0) 
 		{
 			printToFile(&outfile, &acc, &vel, &pos);
 		}
 	}
 
-	if (sys.imu_id) outfile.close();
+	if (writeToFile) outfile.close();
 
 	return 0;
 }

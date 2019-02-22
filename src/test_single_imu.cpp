@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 	  					accCor.value[0], accCor.value[1], accCor.value[2], 
 	  							 vel.value[0], vel.value[1], vel.value[2], 
 	  							 pos.value[0], pos.value[1], pos.value[2]);		
-		if (sys.imu_id > 0) 
+		if (writeToFile > 0) 
 		{
 			printToFile(&outfile, &accRaw, &accCor, &vel, &pos);
 		}
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 		sleep(queryDelay);
 	}
 
-	if (sys.imu_id) outfile.close();
+	if (writeToFile) outfile.close();
 
 	return 0;
 }
