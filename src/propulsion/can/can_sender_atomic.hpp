@@ -25,34 +25,37 @@
 #include <atomic>
 #include <iostream>
 
-namespace hyped {
-    namespace motor_control {
-        using utils::io::Can;
-        using utils::Logger;
-        using utils::io::CanProccesor;
+namespace hyped
+{
+namespace motor_control
+{
+using utils::Logger;
+using utils::io::Can;
+using utils::io::CanProccesor;
 
-        class CanSenderAtomic : public CanProccesor, public SenderInterface {
-                
-            public:    
-                CanSenderAtomic(Logger& log_);
-                //CanSender(ControllerInterface* controller,Logger& log_);
+class CanSenderAtomic : public CanProccesor, public SenderInterface
+{
 
-                void pushSdoMessageToQueue(utils::io::can::Frame& message) override;
+  public:
+    CanSenderAtomic(Logger &log_);
+    //CanSender(ControllerInterface* controller,Logger& log_);
 
-                void registerController() override;
+    void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
 
-                void processNewData(utils::io::can::Frame& message) override;
+    void registerController() override;
 
-                bool hasId(uint32_t id, bool extended) override;
+    void processNewData(utils::io::can::Frame &message) override;
 
-                bool getIsSending();
+    bool hasId(uint32_t id, bool extended) override;
 
-            private:
-                Logger log_;
-                //Can& can_;
-                std::atomic<bool> isSending;
-        };
-    }
-}
+    bool getIsSending();
+
+  private:
+    Logger log_;
+    //Can& can_;
+    std::atomic<bool> isSending;
+};
+} // namespace motor_control
+} // namespace hyped
 
 #endif //HYPED_2019_CANSENDERATOMIC_HPP

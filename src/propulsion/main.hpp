@@ -28,30 +28,32 @@
 
 #include "state_processor.hpp"
 
-namespace hyped {
-	using utils::concurrent::Thread;
-	using utils::Logger;
-	using utils::System;
-namespace motor_control {
-	class Main: public Thread {
-		public:
-			Main(uint8_t id, Logger& log);
-			
-			/**
+namespace hyped
+{
+using utils::Logger;
+using utils::System;
+using utils::concurrent::Thread;
+namespace motor_control
+{
+class Main : public Thread
+{
+  public:
+	Main(uint8_t id, Logger &log);
+
+	/**
 			 * Gets called when Thread is started. Entrypoint in motor control
 			 * Includes the event loop for motor control
 			 * Responds to the different states with appropriate actions
 			 * */
-			void run() override;
+	void run() override;
 
-		private:
-			bool isRunning;
-			Logger& log_;
-			StateProcessor* stateProcessor;
-	};
+  private:
+	bool isRunning;
+	Logger &log_;
+	StateProcessor *stateProcessor;
+};
 
-
-	/**
+/**
 	 * States (for now):
 	 * 	Idle 		
 	 * 	Calibrating
@@ -64,7 +66,20 @@ namespace motor_control {
 	 * 	Exiting				
 	 * 	Finished			
 	 * */
-	enum States {Idle,Calibrating,Ready,Accelerating,Decelerating,EmergencyBraking,FailureStopped,RunComplete,Exiting,Finished};
-}}  
+enum States
+{
+	Idle,
+	Calibrating,
+	Ready,
+	Accelerating,
+	Decelerating,
+	EmergencyBraking,
+	FailureStopped,
+	RunComplete,
+	Exiting,
+	Finished
+};
+} // namespace motor_control
+} // namespace hyped
 
 #endif //HYPED_MOTORCONTROL_MAIN_HPP_

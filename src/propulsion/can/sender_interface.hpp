@@ -21,20 +21,20 @@
 
 #include "utils/io/can.hpp"
 
-namespace hyped {
+namespace hyped
+{
 
-    namespace motor_control {
+namespace motor_control
+{
 
-        class SenderInterface
-        {
-            public:
-                virtual void pushSdoMessageToQueue(utils::io::can::Frame& message)=0;
-                virtual void registerController()=0;  
-        };
-    
+class SenderInterface
+{
+  public:
+    virtual void pushSdoMessageToQueue(utils::io::can::Frame &message) = 0;
+    virtual void registerController() = 0;
+};
 
-    }
-}
-
+} // namespace motor_control
+} // namespace hyped
 
 #endif //HYPED_2019_SENDERINTERFACE_HPP

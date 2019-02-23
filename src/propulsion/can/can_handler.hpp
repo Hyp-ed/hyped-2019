@@ -28,41 +28,42 @@
 #include "can_sender.hpp"
 #include "propulsion/can/sender_interface.hpp"
 
-namespace hyped {
+namespace hyped
+{
 
-    namespace motor_control {
-        using utils::io::Can;
-        using utils::Logger;
-        using utils::concurrent::Thread;
-        using utils::io::CanProccesor;
+namespace motor_control
+{
+using utils::Logger;
+using utils::concurrent::Thread;
+using utils::io::Can;
+using utils::io::CanProccesor;
 
-        class CanHandler : public CanProccesor, public SenderInterface
-        {
-            friend Can;
+class CanHandler : public CanProccesor, public SenderInterface
+{
+    friend Can;
 
-            public:
-                CanHandler(Logger& log_);
-                //CanSender(ControllerInterface* controller);
+  public:
+    CanHandler(Logger &log_);
+    //CanSender(ControllerInterface* controller);
 
-                void pushSdoMessageToQueue(utils::io::can::Frame& message) override;
+    void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
 
-                void registerController() override;
+    void registerController() override;
 
-                void processNewData(utils::io::can::Frame& message) override;
+    void processNewData(utils::io::can::Frame &message) override;
 
-                bool hasId(uint32_t id, bool extended) override;
-                
-            protected:
-                std::mutex queueMutex;
-                std::condition_variable queueConditionVar;
-                bool processingMessage;
-                Logger& log_;
-                std::queue<utils::io::can::Frame> queue;
-                Thread* sender;
-            };
+    bool hasId(uint32_t id, bool extended) override;
 
-    }
-}
+  protected:
+    std::mutex queueMutex;
+    std::condition_variable queueConditionVar;
+    bool processingMessage;
+    Logger &log_;
+    std::queue<utils::io::can::Frame> queue;
+    Thread *sender;
+};
 
+} // namespace motor_control
+} // namespace hyped
 
 #endif //HYPED_2019_CANHANDLER_HPP

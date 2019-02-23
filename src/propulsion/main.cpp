@@ -18,86 +18,89 @@
 
 #include "main.hpp"
 
-namespace hyped {
+namespace hyped
+{
 
-namespace motor_control {
-	Main::Main(uint8_t id, Logger& log)
-		: Thread(id, log),
-		isRunning(true),
-		log_(log)
+namespace motor_control
+{
+Main::Main(uint8_t id, Logger &log)
+	: Thread(id, log),
+	  isRunning(true),
+	  log_(log)
+{
+	log_.INFO("Motor", "Logger constructor was called");
+
+	stateProcessor = new StateProcessor(6, log);
+}
+
+void Main::run()
+{
+	log_.INFO("Motor", "Thread started");
+
+	System &sys = System::getSystem();
+
+	States state = Idle;
+
+	while (isRunning && sys.running_)
 	{
-        log_.INFO("Motor","Logger constructor was called");
-
-        stateProcessor = new StateProcessor(6,log);
-	}
-
-	void Main::run()
-	{
-		log_.INFO("Motor","Thread started");
-
-		System& sys = System::getSystem();
-
-		States state = Idle;
-
-		while(isRunning && sys.running_) 
+		log_.INFO("Motor", "Thread running");
+		if (state == States::Idle)
 		{
-			log_.INFO("Motor","Thread running");
-			if(state == States::Idle) 
-			{
-				log_.INFO("Motor","State idle");
+			log_.INFO("Motor", "State idle");
 
-				if(!stateProcessor->isInitialized())
-                {
-                    stateProcessor->initMotors();
-                }
+			if (!stateProcessor->isInitialized())
+			{
+				stateProcessor->initMotors();
+			}
 
-				yield();
-			} 
-			else if(state == States::Calibrating)
-			{
-				log_.INFO("Motor","State Calibrating");
-			}
-			else if(state == States::Ready)
-			{
-				log_.INFO("Motor","State Ready");
-			}
-			else if(state == States::Accelerating)
-			{
-				//TODO: Controller should handle the communication with the SpeedCalculator
-			    log_.INFO("Motor","State Accelerating");
-			    stateProcessor->accelerate();
-			}
-			else if(state == States::Decelerating)
-			{
-				log_.INFO("Motor","State Decelerating");
-			}
-			else if(state == States::EmergencyBraking)
-			{
-				log_.INFO("Motor","State EmergencyBraking");
-			}
-			else if(state == States::Exiting)
-			{
-				log_.INFO("Motor","State Exiting");
-			}
-			else if(state == States::FailureStopped)
-			{
-				log_.INFO("Motor","State FailureStopped");
-			}
-			else if(state == States::Finished)
-			{
-				log_.INFO("Motor","State Finished");
-			}
-			else if(state == States::RunComplete)
-			{
-				log_.INFO("Motor","State RunComplete");
-			}
-			else 
-			{
-				log_.INFO("Motor","State Unknown");
-				isRunning = false;
-			}
+			yield();
 		}
-		
-		log_.INFO("Motor","Thread shutting down");
+		else if (state == States::Calibrating)
+		{
+			log_.INFO("Motor", "State Calibrating");
+		}
+		else if (state == States::Ready)
+		{
+			log_.INFO("Motor", "State Ready");
+		}
+		else if (state == States::Accelerating)
+		{
+			//TODO: Controller should handle the communication with the SpeedCalculator
+			log_.INFO("Motor", "State Accelerating");
+			stateProcessor->accelerate();
+		}
+		else if (state == States::Decelerating)
+		{
+			log_.INFO("Motor", "State Decelerating");
+		}
+		else if (state == States::EmergencyBraking)
+		{
+			log_.INFO("Motor", "State EmergencyBraking");
+		}
+		else if (state == States::Exiting)
+		{
+			log_.INFO("Motor", "State Exiting");
+		}
+		else if (state == States::FailureStopped)
+		{
+			log_.INFO("Motor", "State FailureStopped");
+		}
+		else if (state == States::Finished)
+		{
+			log_.INFO("Motor", "State Finished");
+		}
+		else if (state == States::RunComplete)
+		{
+			log_.INFO("Motor", "State RunComplete");
+		}
+		else
+		{
+			log_.INFO("Motor", "State Unknown");
+			isRunning = false;
+		}
 	}
-}} 
+
+	log_.INFO("Motor", "Thread shutting down");
+}
+} // namespace motor_control
+} // namespace hyped

@@ -27,42 +27,42 @@
 #include "utils/logger.hpp"
 #include "utils/concurrent/thread.hpp"
 
-namespace hyped {
+namespace hyped
+{
 
-    namespace motor_control {
-        using utils::io::Can;
-        using utils::concurrent::BusyThread;
-        using utils::Logger;
-        using utils::concurrent::Thread;
-        using utils::io::CanProccesor;
+namespace motor_control
+{
+using utils::Logger;
+using utils::concurrent::BusyThread;
+using utils::concurrent::Thread;
+using utils::io::Can;
+using utils::io::CanProccesor;
 
-        //This is used as the datatype of the queue.
-        //Type = 0 Sdo Message
-        //Type = 1 Pdo Message
-        struct Message {
-            utils::io::can::Frame& msg;
-            int type;
-        };
+//This is used as the datatype of the queue.
+//Type = 0 Sdo Message
+//Type = 1 Pdo Message
+struct Message
+{
+    utils::io::can::Frame &msg;
+    int type;
+};
 
-        class CanSender : public Thread
-        {
-            public:
-                CanSender(Logger& log_);
-                //CanSender(ControllerInterface* controller);
+class CanSender : public Thread
+{
+  public:
+    CanSender(Logger &log_);
+    //CanSender(ControllerInterface* controller);
 
-                void run() override;
-                
-            protected:
-                std::mutex* queueMutex;
-                std::condition_variable* queueConditionVar;
-                bool processingMessage;
-                Logger& log_;
-            };
+    void run() override;
 
-    }
-}
+  protected:
+    std::mutex *queueMutex;
+    std::condition_variable *queueConditionVar;
+    bool processingMessage;
+    Logger &log_;
+};
 
+} // namespace motor_control
+} // namespace hyped
 
 #endif //HYPED_2019_CANSENDER_HPP
-
-

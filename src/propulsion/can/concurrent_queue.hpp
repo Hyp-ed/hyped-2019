@@ -27,29 +27,30 @@
 #include "utils/concurrent/condition_variable.hpp"
 #include "utils/concurrent/lock.hpp"
 
-namespace hyped {
+namespace hyped
+{
 
-    namespace motor_control {
-        using utils::io::can::Frame;
-        using utils::concurrent::ConditionVariable;
-        using utils::concurrent::Lock;
+namespace motor_control
+{
+using utils::concurrent::ConditionVariable;
+using utils::concurrent::Lock;
+using utils::io::can::Frame;
 
-        class ConcurrentQueue
-        {
-            public:
-                ConcurrentQueue();
-                void push(Frame& message);
-                Frame pop();
-                bool getCanRead();
+class ConcurrentQueue
+{
+  public:
+    ConcurrentQueue();
+    void push(Frame &message);
+    Frame pop();
+    bool getCanRead();
 
-            private:
-                Lock lock;
-                ConditionVariable queueConditionVar;
-                std::queue<Frame> messageQueue;
-                bool canRead;
-        };
-    }
-}
-
+  private:
+    Lock lock;
+    ConditionVariable queueConditionVar;
+    std::queue<Frame> messageQueue;
+    bool canRead;
+};
+} // namespace motor_control
+} // namespace hyped
 
 #endif //HYPED_2019_CONCURRENTQUEUE_HPP
