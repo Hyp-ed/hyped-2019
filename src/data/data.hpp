@@ -51,6 +51,7 @@ typedef Vector<NavigationType, 3> NavigationVector;
 struct ImuData : public Sensor {
   NavigationVector acc;
   NavigationVector gyr;
+  // uint16_t temp;
 };
 
 }}  // namespace hyped::data

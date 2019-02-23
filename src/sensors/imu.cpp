@@ -86,6 +86,8 @@ constexpr uint8_t kFifoRW = 0x74;    // bit [7:0]
  * 
  */
 
+constexpr uint8_t kTempoutH = 0x41;
+
 namespace hyped {
 
 utils::io::gpio::Direction kDirection = utils::io::gpio::kOut;
@@ -124,11 +126,10 @@ void Imu::init()
   setGyroScale(gyro_scale_);
 
   // Enable the fifo for Accelerometer and Gyro 
-  // 59-72 except 65,66
   uint8_t data;
   readByte(106, &data);
   log_.INFO("Imu", "Ctrl 0x%x", data);
-  writeByte(106, data | 0x40); // enable fifo
+  writeByte(106, data | 0x40);        // enable fifo
   writeByte(kFifoEnable, 0x78);
   log_.INFO("Imu", "FIFO Enabled");
 
@@ -241,6 +242,7 @@ void Imu::setAcclScale(int scale)
 struct Imu_raw{         // 12 bytes
   uint16_t acc[3];
   uint16_t gyro[3];
+  // uint16_t temp;        // 2 bytes
 };
 #pragma pack(pop)
 
@@ -290,6 +292,7 @@ int Imu::readFifo(std::vector<ImuData>& data)
     imu_data.gyr[0] = raw_data[i].gyro[0];
     imu_data.gyr[1] = raw_data[i].gyro[1];
     imu_data.gyr[2] = raw_data[i].gyro[2];
+    // imu_data.temp   = raw_data[i].temp;
     imu_data.operational = is_online_;
     data.push_back(imu_data);
   }
@@ -305,6 +308,7 @@ void Imu::getData(ImuData* data)
     log_.DBG3("Imu", "Getting Imu data");
     auto& acc = data->acc;
     auto& gyr = data->gyr;
+    // auto& temp = data->temp;
     uint8_t response[14];
     int16_t bit_data;
     float value;
@@ -322,6 +326,10 @@ void Imu::getData(ImuData* data)
       value = static_cast<float>(bit_data);
       gyro_data[i] = value/gyro_divider_;
     }
+
+    // uint16_t temp_data;
+    // readBytes(kTempoutH,reinterpret_cast<uint8_t*>(temp),2);
+
     data->operational = is_online_;
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];
@@ -329,6 +337,7 @@ void Imu::getData(ImuData* data)
     gyr[0] = gyro_data[0];
     gyr[1] = gyro_data[1];
     gyr[2] = gyro_data[2];
+    // temp   = temp_data;
   } else {
     // Try and turn the sensor on again
     log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");
