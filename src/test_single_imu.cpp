@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 	ImuData* imuData = new ImuData();
 
 	// Test values
-	unsigned int nCalQueries = 1000;
+	unsigned int nCalQueries = 10000;
 	unsigned int nTestQueries = 10000;
 	float queryDelay = 0.01;
 
