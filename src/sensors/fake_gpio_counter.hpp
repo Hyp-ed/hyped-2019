@@ -18,6 +18,9 @@
  *    limitations under the License.
  */
 
+#ifndef SENSORS_FAKE_GPIO_COUNTER_HPP_
+#define SENSORS_FAKE_GPIO_COUNTER_HPP_
+
 #include <string>
 #include <vector>
 
@@ -109,3 +112,5 @@ class FakeGpioCounter:public SensorInterface {      // change to gpiointerface, 
 
 
 }}
+
+#endif // SENSORS_FAKE_GPIO_COUNTER_HPP_
