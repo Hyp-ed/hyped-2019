@@ -3,80 +3,54 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "./propulsion/main.hpp"
-#include "./propulsion/concurrent_queue.hpp"
+#include "./propulsion/can_sender_atomic.hpp"
 #include <unistd.h>
 #include "utils/io/can.hpp"
 #include <iostream>
-#include <atomic>
 
-using hyped::utils::concurrent::Thread;
-using hyped::utils::System;
+using hyped::System;
 using hyped::utils::Logger;
-using hyped::motor_control::ConcurrentQueue;
 using hyped::utils::io::can::Frame;
+using hyped::motor_control::CanSenderAtomic;
 
-
-ConcurrentQueue* queue;
+CanSenderAtomic* can;
 Logger* log_motor;
 
-std::atomic<bool> ready;
-
-void sender()
+void callProcessNewData()
 {
-	log_motor->INFO("PRODUCER","START PRODUCING");
-
-	//uint32_t i = 0;
-	int i = 2;
-
 	while(true)
 	{
+		//log_motor->INFO("CALLPROCESSNEWDATA","Checking");
+		if(can->getIsSending()) 
+		{
+			sleep(2);
+
+			Frame fr;
+
+			fr.id=2;
+			log_motor->INFO("CALLPROCESSNEWDATA","Reseting");
+			can->processNewData(fr);
+			log_motor->INFO("CALLPROCESSNEWDATA","Reseted");
+		}
+	}
+	
+}
+
+void producer()
+{
+	while(true)
+	{
+		//log_motor->INFO("PRODUCER","Waiting");
 		sleep(1);
 		log_motor->INFO("PRODUCER","PRODUCING");
+		Frame fr;
 
-		while(ready==false)
-		{
-			log_motor->INFO("PRODUCER","WAITING");
-		}
+		fr.id=1;
 
-		log_motor->INFO("PRODUCER","SENDING");
-
-		ready=false;
-
-		/*Frame msg;
-
-		msg.id = i;
-		i++;
-
-		queue->push(msg);*/
-
-		//log_motor->INFO("PRODUCER","PRODUCED: "+msg.id);
+		can->pushSdoMessageToQueue(fr);
+		log_motor->INFO("PRODUCER","Produced");
 	}
 }
-
-void receiver()
-{
-	log_motor->INFO("CONSUMER","START CONSUMING");
-
-	
-
-	log_motor->INFO("CONSUMER","CONSUMED");
-
-	while(true)
-	{
-		sleep(1);
-
-		//while(ready==false);
-
-		log_motor->INFO("CONSUMER","RECEIVED");
-
-		ready=true;
-
-		//Frame msg = queue->pop();
-
-		//std::cout << "Consumed number: " << msg.id << std::endl;
-	}
-}
-
 
 int main(int argc, char* argv[]) {
 	// System setup
@@ -86,13 +60,12 @@ int main(int argc, char* argv[]) {
 
 	log_motor = new Logger(sys.verbose_motor, sys.debug_motor);
 
-	queue = new ConcurrentQueue();
+	can = new CanSenderAtomic(*log_motor);
 
-	std::thread cons(sender);
+	std::thread prod(producer);
+	std::thread process(callProcessNewData);
 
-	for(int i = 0;i<1000000;i++);
-
-	std::thread prod(receiver);
+	//Test Can_Sender
 	
 	//Thread* main = new hyped::motor_control::Main(1,log_motor);
 

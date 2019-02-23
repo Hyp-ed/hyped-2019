@@ -1,7 +1,11 @@
+#ifndef HYPED_2019_CANSENDERATOMIC_HPP
+#define HYPED_2019_CANSENDERATOMIC_HPP
+
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "sender_interface.hpp"
 #include <atomic>
+#include <iostream>
 
 namespace hyped {
     namespace motor_control {
@@ -23,10 +27,14 @@ namespace hyped {
 
                 bool hasId(uint32_t id, bool extended) override;
 
+                bool getIsSending();
+
             private:
                 Logger log_;
                 //Can& can_;
-                std::atomic<bool> canSend;
+                std::atomic<bool> isSending;
         };
     }
 }
+
+#endif //HYPED_2019_CANSENDERATOMIC_HPP
