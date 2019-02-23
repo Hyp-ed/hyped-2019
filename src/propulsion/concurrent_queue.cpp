@@ -15,13 +15,15 @@ namespace hyped {
             
             messageQueue.push(message);
 
-            lock.unlock();
+            //lock.unlock();
 
             queueConditionVar.notify();
+            lock.unlock();
         }
 
         Frame ConcurrentQueue::pop()
         {
+            std::cout << "Getting first entry" << std::endl;
             lock.lock();
             
             while(messageQueue.empty())

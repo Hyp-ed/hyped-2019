@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include "utils/io/can.hpp"
 #include <iostream>
-
+#include <atomic>
 
 using hyped::utils::concurrent::Thread;
 using hyped::utils::System;
@@ -19,7 +19,9 @@ using hyped::utils::io::can::Frame;
 ConcurrentQueue* queue;
 Logger* log_motor;
 
-void producer()
+std::atomic<bool> ready;
+
+void sender()
 {
 	log_motor->INFO("PRODUCER","START PRODUCING");
 
@@ -31,32 +33,47 @@ void producer()
 		sleep(1);
 		log_motor->INFO("PRODUCER","PRODUCING");
 
-		Frame msg;
+		while(ready==false)
+		{
+			log_motor->INFO("PRODUCER","WAITING");
+		}
+
+		log_motor->INFO("PRODUCER","SENDING");
+
+		ready=false;
+
+		/*Frame msg;
 
 		msg.id = i;
 		i++;
 
-		queue->push(msg);
+		queue->push(msg);*/
 
-		log_motor->INFO("PRODUCER","PRODUCED: "+msg.id);
+		//log_motor->INFO("PRODUCER","PRODUCED: "+msg.id);
 	}
 }
 
-void consumer()
+void receiver()
 {
 	log_motor->INFO("CONSUMER","START CONSUMING");
 
+	
+
+	log_motor->INFO("CONSUMER","CONSUMED");
+
 	while(true)
 	{
-		sleep(3);
+		sleep(1);
 
-		
+		//while(ready==false);
 
-		log_motor->INFO("CONSUMER","CONSUMING");
+		log_motor->INFO("CONSUMER","RECEIVED");
 
-		Frame msg = queue->pop();
+		ready=true;
 
-		std::cout << "Consumed number: " << msg.id << std::endl;
+		//Frame msg = queue->pop();
+
+		//std::cout << "Consumed number: " << msg.id << std::endl;
 	}
 }
 
@@ -71,8 +88,11 @@ int main(int argc, char* argv[]) {
 
 	queue = new ConcurrentQueue();
 
-	std::thread cons(consumer);
-	std::thread prod(producer);
+	std::thread cons(sender);
+
+	for(int i = 0;i<1000000;i++);
+
+	std::thread prod(receiver);
 	
 	//Thread* main = new hyped::motor_control::Main(1,log_motor);
 
