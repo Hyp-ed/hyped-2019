@@ -238,13 +238,13 @@ void Imu::setAcclScale(int scale)
 }
 
 #pragma pack(push, 1)
-struct Imu_raw{
+struct Imu_raw{         // 12 bytes
   uint16_t acc[3];
   uint16_t gyro[3];
 };
 #pragma pack(pop)
 
-constexpr uint16_t kFifo_size = 512;
+constexpr uint16_t kFifo_size = 512;          // max number of bytes in FIFO
 
 Imu_raw raw_data[kFifo_size/sizeof(Imu_raw)];
 
@@ -262,11 +262,11 @@ int Imu::readFifo(std::vector<ImuData>& data)
   for (int i = 0; i < kFifo_size/sizeof(Imu_raw); i++) {
     raw_data[i] = {};
   }
-  // coGet uint of qfifo ueue
+  // byte count of fifo queue into uint count var
   readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(count), 2);
   log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
 
-  uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // big->little endian since BBB reads from little and IMU rads from big
+  uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // convert big->little endian since BBB reads from little and IMU reads from big
   
   
   // Get count make to the nearest lowest even number
@@ -275,7 +275,7 @@ int Imu::readFifo(std::vector<ImuData>& data)
   // fifo_bytes = std::min(kFifo_size, fifo_bytes);  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct 
   
 
-  // Read from fifo queue
+  // Read from fifo queue register into raw_data struct minimum number of complete data sets
   // if (fifo_bytes < fifo_bytes/sizeof(Imu_raw))
   //   return 0;
   readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_bytes);
