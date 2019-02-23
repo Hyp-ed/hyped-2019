@@ -51,21 +51,29 @@ using std::ofstream;
 using std::queue;
 using std::string;
 
-void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, ifstream* dataFile, float refreshRate, float sig) 
+void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, queue<int>* stripeCount,
+				 ifstream* accData, ifstream* posData,
+				 float refreshRate, float sig, float stripeSep) 
 {
 	float t = 0.;
 	float ax, ay, az;
 	// Simulate Gaussian noise
 	default_random_engine generator;
 	normal_distribution<float> noise(0., sig);
-	// Add noise to each reading and store
-	while (*dataFile >> ax) {
+	// Add noise to each acceleration reading and store
+	while (*accData >> ax) {
 		ax += noise(generator);
 		ay = noise(generator);
 		az = noise(generator);
+		// Convert time to microseconds
 		dataQueue->push(DataPoint<NavigationVector>(t*1e6, NavigationVector({ax, ay, az})));
 		// Increment time
 		t += refreshRate;
+	}
+	// Prepare stripe counts
+	float dx;
+	while(*posData >> dx) {
+		stripeCount->push(static_cast<int>(dx/stripeSep));
 	}
 }
 
@@ -89,27 +97,43 @@ void printToFile(ofstream* outfile, DataPoint<NavigationVector>* acc,
 
 int main(int argc, char *argv[])
 {
-	// System setup
+	/*
+		System setup
+	*/
 	System::parseArgs(argc, argv);
 	System& sys = System::getSystem();
 	Logger log(sys.verbose, sys.debug);
 	bool writeToFile = sys.run_id > 0;
 
-	// Test values
-	float refreshRate = 1./3000.;
-	float sig = 0.01;
-
-	// Sim data setup
-	ifstream dataFile;
-	string fname = "sim_data/acceleration-3k.txt";
-	dataFile.open(fname);
+	/* 
+		Sim data setup
+	*/
+	// sim parameters
+	float refreshRate = 1./3000.;	// query frequency
+	float sig = 0.01;				// noise = 2*sensorVariance (empirical)
+	float stripeSep = 100./3.281;	// stipe separation (100ft)
+	// file properties
+	ifstream accData, posData;
+	string accFname = "sim_data/acceleration-3k.txt";
+	string posFname = "sim_data/displacement-3k.txt";
+	// for quick access in sim
 	queue<DataPoint<NavigationVector>> dataQueue;
-	loadSimData(&dataQueue, &dataFile, refreshRate, sig);
+	queue<int> stripeCount;
+	// the main event
+	loadSimData(&dataQueue, &stripeCount,
+				&accData, &velData, &posData, 
+				accFname, velFname, posFname,
+				refreshRate, sig);
 
-	// Output setup
+	/*
+		Output setup
+	*/
 	ofstream outfile;
 	if (writeToFile) outfileSetup(&outfile, sys.run_id);
 
+	/*
+		Simulate run
+	*/
 	// Store measured/estimated values
 	DataPoint<NavigationVector> acc(0., NavigationVector({0.,0.,0.})); 	
 	DataPoint<NavigationVector> vel(0., NavigationVector({0.,0.,0.}));		
@@ -117,7 +141,8 @@ int main(int argc, char *argv[])
 	// Integrate acceleration -> velocity -> position
 	Integrator<NavigationVector> velIntegrator(&vel);
 	Integrator<NavigationVector> posIntegrator(&pos);
-
+	// Check stipe count
+	int stripesSeen = 0;
 	// Perform acceleration, speed and distance queries
 	while (!dataQueue.empty())
 	{
@@ -128,6 +153,14 @@ int main(int argc, char *argv[])
 		// Intergrate
 		velIntegrator.update(acc);
 		posIntegrator.update(vel);
+
+		// Check if stripe has been passed
+		if (stripeCount.front() != stripesSeen) {
+			// Update position if we pass a stripe
+			stripesSeen = stripeCount.front();
+			pos.value = NavigationVector({stripesSeen*stripeSep, 0., 0.});
+		}
+		stripeCount.pop();
 
 		// Output values
 		log.INFO("MAIN", "a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n", 
