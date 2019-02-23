@@ -53,13 +53,17 @@ using std::string;
 
 void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, queue<int>* stripeCount,
 				 ifstream* accData, ifstream* posData,
-				 float refreshRate, float sig, float stripeSep) 
+				 string accFname, string posFname, 
+				 float refreshRate, float stddev, float stripeSep) 
 {
 	float t = 0.;
 	float ax, ay, az;
+	// Open files
+	accData->open(accFname);
+	posData->open(posFname);
 	// Simulate Gaussian noise
 	default_random_engine generator;
-	normal_distribution<float> noise(0., sig);
+	normal_distribution<float> noise(0., stddev);
 	// Add noise to each acceleration reading and store
 	while (*accData >> ax) {
 		ax += noise(generator);
@@ -75,6 +79,9 @@ void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, queue<int>* stri
 	while(*posData >> dx) {
 		stripeCount->push(static_cast<int>(dx/stripeSep));
 	}
+	// Close files
+	accData->close();
+	posData->close();
 }
 
 void outfileSetup(ofstream* outfile, int run_id) 
@@ -110,7 +117,7 @@ int main(int argc, char *argv[])
 	*/
 	// sim parameters
 	float refreshRate = 1./3000.;	// query frequency
-	float sig = 0.01;				// noise = 2*sensorVariance (empirical)
+	float stddev = 0.5;				// noise = 2*sensorVariance (empirical)
 	float stripeSep = 100./3.281;	// stipe separation (100ft)
 	// file properties
 	ifstream accData, posData;
@@ -121,9 +128,9 @@ int main(int argc, char *argv[])
 	queue<int> stripeCount;
 	// the main event
 	loadSimData(&dataQueue, &stripeCount,
-				&accData, &velData, &posData, 
-				accFname, velFname, posFname,
-				refreshRate, sig);
+				&accData, &posData, 
+				accFname, posFname,
+				refreshRate, stddev, stripeSep);
 
 	/*
 		Output setup
@@ -156,6 +163,7 @@ int main(int argc, char *argv[])
 
 		// Check if stripe has been passed
 		if (stripeCount.front() != stripesSeen) {
+			std::cout << "updating stripe count..." << std::endl;
 			// Update position if we pass a stripe
 			stripesSeen = stripeCount.front();
 			pos.value = NavigationVector({stripesSeen*stripeSep, 0., 0.});
@@ -163,10 +171,11 @@ int main(int argc, char *argv[])
 		stripeCount.pop();
 
 		// Output values
-		log.INFO("MAIN", "a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n", 
+		log.INFO("MAIN", "a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f  s:%d\n", 
 	  					acc.value[0], acc.value[1], acc.value[2], 
 						vel.value[0], vel.value[1], vel.value[2], 
-						pos.value[0], pos.value[1], pos.value[2]);
+						pos.value[0], pos.value[1], pos.value[2],
+						stripesSeen);
 
 		if (writeToFile > 0) 
 		{
