@@ -1,5 +1,5 @@
 /*
- * Author: 
+ * Author: Gregor Konzett
  * Organisation: HYPED
  * Date: 
  * Description:
@@ -16,15 +16,15 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_MOTOR_CONTROL_MAIN_HPP_
-#define BEAGLEBONE_BLACK_MOTOR_CONTROL_MAIN_HPP_
+#ifndef HYPED_MOTORCONTROL_MAIN_HPP_
+#define HYPED_MOTORCONTROL_MAIN_HPP_
 
 #include "utils/concurrent/thread.hpp"
 #include "utils/concurrent/barrier.hpp"
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
-#include "can_handler.hpp"
+#include "./can/can_handler.hpp"
 
 #include "state_processor.hpp"
 
@@ -67,4 +67,4 @@ namespace motor_control {
 	enum States {Idle,Calibrating,Ready,Accelerating,Decelerating,EmergencyBraking,FailureStopped,RunComplete,Exiting,Finished};
 }}  
 
-#endif
+#endif //HYPED_MOTORCONTROL_MAIN_HPP_

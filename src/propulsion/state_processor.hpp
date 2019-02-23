@@ -1,5 +1,5 @@
 /*
- * Author: 
+ * Author: Gregor Konzett
  * Organisation: HYPED
  * Date: 
  * Description:
@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_MOTOR_CONTROL_STATEPROCESSOR_HPP_
-#define BEAGLEBONE_BLACK_MOTOR_CONTROL_STATEPROCESSOR_HPP_
+#ifndef HYPED_STATEPROCESSOR_HPP_
+#define HYPED_STATEPROCESSOR_HPP_
 
 
 #include "utils/logger.hpp"
@@ -103,4 +103,4 @@ namespace motor_control {
 
 }}  
 
-#endif
+#endif //HYPED_STATEPROCESSOR_HPP_

@@ -1,5 +1,5 @@
 /*
- * Author: 
+ * Author: Gregor Konzett
  * Organisation: HYPED
  * Date: 
  * Description:
@@ -39,24 +39,12 @@ namespace motor_control {
 
 		States state = Idle;
 
-		utils::io::can::Frame frame;
-
-		frame.id = 12;
-		frame.extended = false;
-		frame.len = 8;
-
-		CanHandler* can = new CanHandler(log_);
-
-		can->pushSdoMessageToQueue(frame);
-
-		//can.sendMessage();
-
-		/*while(isRunning && sys.running_) 
+		while(isRunning && sys.running_) 
 		{
-			std::cout << "Thread running " << state << std::endl;
+			log_.INFO("Motor","Thread running");
 			if(state == States::Idle) 
 			{
-				std::cout << "State idle" << std::endl;
+				log_.INFO("Motor","State idle");
 
 				if(!stateProcessor->isInitialized())
                 {
@@ -67,50 +55,48 @@ namespace motor_control {
 			} 
 			else if(state == States::Calibrating)
 			{
-
+				log_.INFO("Motor","State Calibrating");
 			}
 			else if(state == States::Ready)
 			{
-				
+				log_.INFO("Motor","State Ready");
 			}
 			else if(state == States::Accelerating)
 			{
 				//TODO: Controller should handle the communication with the SpeedCalculator
-			    std::cout << "State Accelerating" << std::endl;
+			    log_.INFO("Motor","State Accelerating");
 			    stateProcessor->accelerate();
 			}
 			else if(state == States::Decelerating)
 			{
-				std::cout << "State Decelerating" << std::endl;
+				log_.INFO("Motor","State Decelerating");
 			}
 			else if(state == States::EmergencyBraking)
 			{
-				std::cout << "State EmergencyBraking" << std::endl;
+				log_.INFO("Motor","State EmergencyBraking");
 			}
 			else if(state == States::Exiting)
 			{
-				std::cout << "State Exiting" << std::endl;
+				log_.INFO("Motor","State Exiting");
 			}
 			else if(state == States::FailureStopped)
 			{
-				std::cout << "State FailureStopped" << std::endl;
+				log_.INFO("Motor","State FailureStopped");
 			}
 			else if(state == States::Finished)
 			{
-				std::cout << "State Finished" << std::endl;
+				log_.INFO("Motor","State Finished");
 			}
 			else if(state == States::RunComplete)
 			{
-				std::cout << "State RunComplete" << std::endl;
+				log_.INFO("Motor","State RunComplete");
 			}
 			else 
 			{
-				std::cout << "Unknown state" << std::endl;
+				log_.INFO("Motor","State Unknown");
 				isRunning = false;
 			}
-
-			Thread::sleep(500);
-		}*/
+		}
 		
 		log_.INFO("Motor","Thread shutting down");
 	}

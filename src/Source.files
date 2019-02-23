@@ -5,10 +5,10 @@ SRCS := \
   data/data.cpp \
   propulsion/state_processor.cpp \
   propulsion/main.cpp \
-  propulsion/concurrent_queue.cpp \
-  propulsion/can_sender_atomic.cpp \
-  propulsion/can_sender.cpp \
-  propulsion/can_handler.cpp \
+  propulsion/can/concurrent_queue.cpp \
+  propulsion/can/can_sender_atomic.cpp \
+  propulsion/can/can_sender.cpp \
+  propulsion/can/can_handler.cpp \
   sensors/imu.cpp \
   utils/io/can.cpp \
   utils/io/gpio.cpp \

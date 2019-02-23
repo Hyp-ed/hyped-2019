@@ -3,7 +3,7 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "./propulsion/main.hpp"
-#include "./propulsion/can_sender_atomic.hpp"
+#include "./propulsion/can/can_sender_atomic.hpp"
 #include <unistd.h>
 #include "utils/io/can.hpp"
 #include <iostream>
