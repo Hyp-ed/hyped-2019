@@ -1,0 +1,11 @@
+IMU data for 5 orientations, sensor still to measure gravity:
+file imu1_runij_data.csv contains info for jth run of orientation i
+
+orientation     position description                                        expected acceleration
+orientation 1: flat on surface (all gravity on z-axis)                      (0, 0, 9.81)
+orientation 2: 45 deg angle flat (gravity on y- and z-axis)                 (0, 6.93, 6.93)
+orientation 3: flat surface pointing upwards (all gravity on y-axis)        (0, 9.81, 0)
+orientation 4: on side (all gravity on x-axis)                              (9.81, 0, 0)
+orientation 5: on side flipped (- all gravity on x-axis)                    (-9.81, 0, 0)
+
+6.93 ~ 9.81/sqrt(2)
