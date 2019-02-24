@@ -84,6 +84,10 @@ void StateProcessor::accelerate()
 {
 }
 
+void StateProcessor::decelerate()
+{
+}
+
 void StateProcessor::sendTargetVelocity(int32_t target_velocity)
 {
 }

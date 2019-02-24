@@ -75,6 +75,11 @@ class StateProcessor : public StateProcessorInterface
 		 */
 	void accelerate() override;
 
+	/*
+		 * @brief {Handles the logic for the deceleration phase}
+		 */
+	void decelerate() override;
+
 	bool isInitialized();
 
 	void setInitialized(bool initialized);
