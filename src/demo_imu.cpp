@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
   while (i < 20) {
     std::vector<ImuData> data;
     int count = imu.readFifo(data);
-    // log.DBG("ReadFifo Count", "%d", count);
+    log.DBG("ReadFifo Count", "%d", count);
     for (int i=0; i < count; i++) {       // two bursts of 42, last gyro reading missing 2 bytes
     // not big enough for missing 8 bytes
       log.DBG("TEST-mpu9250", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);

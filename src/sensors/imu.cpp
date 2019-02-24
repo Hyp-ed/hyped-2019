@@ -66,13 +66,6 @@ constexpr uint8_t kFifoCountL = 0x73;   // bit [7:0]
 constexpr uint8_t kFifoRW = 0x74;    // bit [7:0]
 // Use this register to read and write data from the FIFO buffer
 // Data is written to the FIFO in order of register number (lo->hi)
-// Contents of sensor data registers (59-96) are written into the FIFO buffer when
-//    their corresponding FIFO enable flags are set to 1 in FIFO_enable
-// If the FIFO buffer has overflowed, the status bit FIFO_OFLOW_INT is
-//    automatically set to 1 (located in INT_STATUS)
-// When overflowed the oldest data will be lost and new data will be written to FIFO
-// If the FIFO buffer is empty, reading the register will return the last byte that was
-//    repviously read from the FIFO until new data is available
 // CHECK fifo_bytes TO ENSURE FIFO BUFFER IS NOT READ WHEN EMPTY
 /** (write)
  * Bit 0: SLV_0
@@ -106,7 +99,7 @@ Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale, uint8_t gyro_scale)
     is_online_(false)
 {
   init();
-  log_.ERR("Imu pin: ", "%d", pin);
+  log_.INFO("Imu pin: ", "%d", pin);
   log_.DBG("Imu", "Creating Imu sensor");
 }
 
@@ -132,6 +125,8 @@ void Imu::init()
   writeByte(106, data | 0x40);        // enable fifo
   writeByte(kFifoEnable, 0x78);
   log_.INFO("Imu", "FIFO Enabled");
+
+  // writeByte(kMpuRegConfig, data | 0x40);
 
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
 }
@@ -268,14 +263,17 @@ int Imu::readFifo(std::vector<ImuData>& data)
   readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(count), 2);
   // log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
 
-  uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // convert big->little endian since BBB reads from little and IMU reads from big
+  uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // convert big->little endian of count (2 bytes) since BBB reads from little and IMU reads from big
 
   
   // Get count make to the nearest lowest even number
   fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct 
   // log_.DBG("Fifo Count", "0x%x", fifo_bytes);
-  // fifo_bytes = std::min(kFifo_size, fifo_bytes);  
-  
+  // fifo_bytes = std::min(kFifo_size, fifo_bytes); 
+
+  if(fifo_bytes==0){
+    log_.DBG("Empty reference","No value present here!");     // if fifo is empty
+  } 
 
   // Read from fifo queue register into raw_data struct minimum number of complete data sets
   // if (fifo_bytes < fifo_bytes/sizeof(Imu_raw))
@@ -284,7 +282,17 @@ int Imu::readFifo(std::vector<ImuData>& data)
   // log_.DBG("Raw Fifo data", "x = 0x%x, y = 0x%x, z = 0x%x", raw_data[0].acc[0], raw_data[0].acc[1], raw_data[0].acc[2]);
   
   // need to get rid of empty zeros here
-  for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){
+  // for complete set of FifoCount = 42 (504 bytes total), half are 0s -> 
+  // pointer error to bad data?
+  // fifo overflow error?
+
+  // "If the FIFO buffer has overflowed, the status bit FIFO_OFLOW_INT is automatically set to 1. 
+  // This bit is located in INT_STATUS (Register 58). 
+  // When the FIFO buffer has overflowed, the oldest data will be lost and 
+  // new data will be written to the FIFO unless register 26 CONFIG, bit[6] FIFO_MODE = 1."
+  // need to enable bit? reference line 126
+
+  for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){      // will not read if fifo is empty
     // myPrint(i);
     ImuData imu_data;
     imu_data.acc[0] = raw_data[i].acc[0];
