@@ -126,7 +126,9 @@ void Imu::init()
   writeByte(kFifoEnable, 0x78);
   log_.INFO("Imu", "FIFO Enabled");
 
-  // writeByte(kMpuRegConfig, data | 0x40);
+  // this outputs repetition of data sets
+  // writeByte(kMpuRegConfig, data | 0x40);      // config register to fifo mode, can use address 26
+  // log_.INFO("Imu", "FIFO Mode on, at register 0x%x", kMpuRegConfig);
 
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
 }
@@ -254,7 +256,8 @@ void myPrint(int i)
 }
 
 int Imu::readFifo(std::vector<ImuData>& data)
-{
+{ 
+  Thread::sleep(500);     // wait half second, still doesnt do anything to data
   uint8_t count[2];
   for (int i = 0; i < kFifo_size/sizeof(Imu_raw); i++) {
     raw_data[i] = {};
@@ -275,6 +278,12 @@ int Imu::readFifo(std::vector<ImuData>& data)
     log_.DBG("Empty reference","No value present here!");     // if fifo is empty
   } 
 
+  // see if overflowed by accessing INT_STATUS register @ Bit4
+  uint8_t overflow;
+  readByte(0x3A,reinterpret_cast<uint8_t*>(overflow));    // INT_STATUS register
+  uint8_t is_overflowed = overflow & 10? 1 : 0;
+  log_.DBG("FIFO Overflow","%f",is_overflowed);     // if fifo overflowed == 1
+
   // Read from fifo queue register into raw_data struct minimum number of complete data sets
   // if (fifo_bytes < fifo_bytes/sizeof(Imu_raw))
   //   return 0;
@@ -284,14 +293,10 @@ int Imu::readFifo(std::vector<ImuData>& data)
   // need to get rid of empty zeros here
   // for complete set of FifoCount = 42 (504 bytes total), half are 0s -> 
   // pointer error to bad data?
-  // fifo overflow error?
-
-  // "If the FIFO buffer has overflowed, the status bit FIFO_OFLOW_INT is automatically set to 1. 
-  // This bit is located in INT_STATUS (Register 58). 
-  // When the FIFO buffer has overflowed, the oldest data will be lost and 
+  
+  // "When the FIFO buffer has overflowed, the oldest data will be lost and 
   // new data will be written to the FIFO unless register 26 CONFIG, bit[6] FIFO_MODE = 1."
-  // need to enable bit? reference line 126
-
+  
   for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){      // will not read if fifo is empty
     // myPrint(i);
     ImuData imu_data;
