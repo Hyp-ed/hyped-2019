@@ -19,45 +19,134 @@
  *    limitations under the License.
  */
 
-#include "utils/system.hpp"  // NOLINT
-#include <sys/socket.h>  // NOLINT
-#include <netinet/in.h>  // NOLINT
-#include <netdb.h>  // NOLINT
-#include <unistd.h>  // NOLINT
-#include <thread>  // NOLINT
-#include <iostream>  // NOLINT
-#include <cerrno>  // NOLINT
-#include <cstring>  // NOLINT
+#include <iostream>  // NO LINT
+#include <cerrno>  // NO LINT
+#include <cstring>  // NO LINT
+#include <sys/socket.h>  // NO LINT
+#include <netinet/in.h>  // NO LINT
+#include <netdb.h>  // NO LINT
+#include <unistd.h>  // NO LINT
+#include <thread>  // NO LINT
+#include <google/protobuf/io/coded_stream.h>  // NO LINT
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>  // NO LINT
+#include <google/protobuf/message_lite.h>  // NO LINT
+#include "types/message.pb.h"  // NO LINT
 
 #define PORT 9090
 #define SERVER_IP "192.168.6.1"
-#define BUFFER_SIZE 1024
 
-using hyped::utils::System;
-
-void Read(int sockfd)
+// reads header containing size encoded as varint, returns this size
+google::protobuf::uint32 readHeader(char *buffer)
 {
-    char buffer[BUFFER_SIZE];
+    using namespace google::protobuf::io;
 
-    while (true) {
-        std::memset(&buffer, 0, sizeof(buffer));
-        if (recv(sockfd, buffer, BUFFER_SIZE, 0) <= 0) {
-            std::cerr << "Error: " << strerror(errno) << std::endl;
-            exit(5);
-        }
+    google::protobuf::uint32 size;  // this will hold the size of our message body in bytes
+    ArrayInputStream raw_input(buffer, 4);  // create raw stream containing buffer of varint
+    CodedInputStream coded_input_ptr(&raw_input);  // create CodedInput wrapper
 
-        std::cout << "FROM SERVER: " << buffer;
+    coded_input_ptr.ReadVarint32(&size);  // read size as varint
+
+    return size;
+}
+
+// read body of a message, and print out the contents of this body
+void readBody(int sockfd, google::protobuf::uint32 body_size)
+{
+    using namespace google::protobuf::io;
+
+    int bytes_received;
+    int header_size = CodedOutputStream::VarintSize32(body_size);  // literal amount of bytes that header takes up
+    char buffer[body_size + header_size];
+    std::cout << "header_size: " << header_size << std::endl;  // if we don't print this we run into a lot of corrupt messages, really strange; must fix
+
+    // read whole message (header + body) into buffer
+    if ((bytes_received = recv(sockfd, buffer, header_size + body_size, 0)) == -1) {
+        std::cerr << "Error receiving data (reading body)" << std::endl;
+    }
+    // if for some reason the bytes we read in don't add up to header_size + bodysize
+    // for some reason the bytes we received got messed up somehow and can't be deserialized
+    if (header_size + body_size != bytes_received) {
+        std::cerr << "Error receiving data (corrupt message)" << std::endl;
+        return;  // skip this message
+    }
+
+    ArrayInputStream raw_input(buffer, body_size + header_size);  // raw input stream
+    CodedInputStream coded_input(&raw_input);  // CodedInput wrapper
+
+    // we have to read body size of message again bc buffer contains header + body (move file position indicator to begin of body)
+    // shouldn't change value of uint32 body_size variable we were passed in
+    coded_input.ReadVarint32(&body_size);
+
+    CodedInputStream::Limit msg_limit = coded_input.PushLimit(body_size);  // add limit to prevent reading beyond message length
+    protoTypes::TestMessage msg;
+    msg.ParseFromCodedStream(&coded_input);  // deserialize
+    coded_input.PopLimit(msg_limit);  // remove limit
+
+    switch (msg.command()) {
+        case protoTypes::TestMessage::FINISH:
+            std::cout << "FROM SERVER: " << "FINISH" << std::endl;
+            break;
+        case protoTypes::TestMessage::EM_STOP:
+            std::cout << "FROM SERVER: " << "EM_STOP" << std::endl;
+            break;
+        default:
+            std::cout << "UNRECOGNIZED INPUT FROM SERVER" << std::endl;
     }
 }
 
+void Read(int sockfd)
+{
+    char buffer[4];  // 4 since our varint is highly unlikely to be over 4 bytes (size of message can be up to 2^28 bits)
+    int bytes_received = 0;  // we use this so we can see if we are sent nothing/empty or an error occurs
+
+    std::memset(buffer, 0, sizeof(buffer));
+
+    while (true) {
+        // below we read first four bytes of message into buffer, buffer should contain varint of body size
+        // we only peek into our socket queue bc if the size of our body is less than 2^21 bits
+        // this means our varint takes up less than 4 bytes, which means the remaining bytes are actually
+        // the beginning of the message body, which we need to process later
+        if ((bytes_received = recv(sockfd, buffer, 4, MSG_PEEK)) == -1) {  // error
+            std::cerr << "Error receiving data (reading header)" << std::endl;
+        }
+        else if (bytes_received == 0) {  // empty/nothing/probs connection closed
+            std::cerr << "Didn't receive anything, connection probably closed" << std::endl;
+            break;
+        }
+
+        readBody(sockfd, readHeader(buffer));
+    }
+}
+
+void send(int sockfd, protoTypes::TestMessage::Command cmd, int data)
+{
+    using namespace google::protobuf::io;
+
+    // build message
+    protoTypes::TestMessage msg;
+    msg.set_command(cmd);
+    msg.set_data(data);
+
+    int body_size = msg.ByteSizeLong();
+    int header_size = CodedOutputStream::VarintSize32(body_size);  // literal amount of bytes that header takes up
+    char buffer[header_size + body_size];
+    std::memset(buffer, 0, sizeof(buffer));  // just in case; overwrite garbage data
+
+    // create streams that write to our buffer
+    ArrayOutputStream raw_output(buffer, header_size + body_size);
+    CodedOutputStream *coded_output = new CodedOutputStream(&raw_output);
+
+    // write message size and actual message to buffer
+    coded_output->WriteVarint32(body_size);
+    msg.SerializeToCodedStream(coded_output);
+
+    send(sockfd, buffer, header_size + body_size, 0);
+}
 
 int main(int argc, char *argv[])
 {
-    System::parseArgs(argc, argv);
-    System& sys = System::getSystem();
-
     int sockfd;
-    struct sockaddr_in serv_addr;  // struct containing an internet address (server in this case)
+    struct sockaddr_in serv_addr;  //struct containing an internet address (server in this case)
     struct hostent *server;
 
     // create socket
@@ -93,14 +182,18 @@ int main(int argc, char *argv[])
     // start message reading thread to run in background
     std::thread threadObj(Read, sockfd);
 
-    // send messages
-    char *msg = "hello from client\n";
-    int len = strlen(msg);
-    for (int i = 0; i < 10000000; i++) {
-        if (send(sockfd, msg, len, 0) < 0) {
-            std::cerr << "Error: " << strerror(errno) << std::endl;
-            exit(4);
-        }
+    for (int i = 0; i < 1000000; i++) {
+        send(sockfd, protoTypes::TestMessage::VELOCITY, 222);
+        send(sockfd, protoTypes::TestMessage::ACCELERATION, 333);
+        send(sockfd, protoTypes::TestMessage::BRAKE_TEMP, 777);
+
+        send(sockfd, protoTypes::TestMessage::VELOCITY, 333);
+        send(sockfd, protoTypes::TestMessage::ACCELERATION, 444);
+        send(sockfd, protoTypes::TestMessage::BRAKE_TEMP, 888);
+
+        send(sockfd, protoTypes::TestMessage::VELOCITY, 444);
+        send(sockfd, protoTypes::TestMessage::ACCELERATION, 555);
+        send(sockfd, protoTypes::TestMessage::BRAKE_TEMP, 999);
     }
 
     // wait for message reading thread to finish

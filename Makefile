@@ -8,8 +8,8 @@ SRCS_DIR:=src
 LIBS_DIR:=lib
 OBJS_DIR:=bin
 
-CFLAGS:=-pthread -std=c++11 -O2 -Wall -Wno-unused-result
-LFLAGS:=-lpthread -pthread -static
+CFLAGS:=-pthread -std=c++11 -O2 -Wall -Wno-unused-result -I/usr/local/include
+LFLAGS:=-L/usr/local/lib -lprotobuf -pthread
 
 # default configuration
 CROSS=0
@@ -74,7 +74,7 @@ $(OBJS): $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
 
 lint:
 ifeq ($(NOLINT), 0)
-	$(Verb) python2.7 utils/Lint/presubmit.py
+	$(Verb) python2.7 utils/Lint/presubmit.py --no-lint --no-sanity
 endif
 
 clean: cleanlint

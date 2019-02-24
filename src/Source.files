@@ -9,6 +9,7 @@ SRCS := \
   sensors/main.cpp \
   state_machine/main.cpp \
   telemetry/main.cpp \
+  telemetry/types/message.pb.cpp \
   utils/concurrent/barrier.cpp \
   utils/concurrent/condition_variable.cpp \
   utils/concurrent/lock.cpp \
