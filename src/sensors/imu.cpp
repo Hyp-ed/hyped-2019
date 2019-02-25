@@ -119,10 +119,8 @@ void Imu::init()
   setGyroScale(gyro_scale_);
 
   // Enable the fifo for Accelerometer and Gyro 
-  uint8_t data;
-  readByte(106, &data);
-  log_.INFO("Imu", "Ctrl 0x%x", data);
-  writeByte(106, data | 0x40);        // enable fifo
+  // TODO(anyone): Disable FIFO then Enable, use the reset bit in register 106
+  writeByte(106, 0x40);        // enable fifo
   writeByte(kFifoEnable, 0x78);
   log_.INFO("Imu", "FIFO Enabled");
 
