@@ -19,6 +19,7 @@
  */
 
 #include "utils/concurrent/condition_variable.hpp"
+
 #include "utils/concurrent/lock.hpp"
 
 namespace hyped {
