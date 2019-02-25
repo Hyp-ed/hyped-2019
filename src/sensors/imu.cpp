@@ -218,6 +218,11 @@ void Imu::getData(ImuData* data)
       value = static_cast<float>(bit_data);
       gyro_data[i] = value/gyro_divider_;
     }
+
+    // TODO(anyone): When temperature is read correctly add to the data strucutre
+    int temp = ((response[6] | response[7]))/333.87 + 21;  // Check datasheet
+    log_.ERR("Imu_temp", "Temperature = %d", temp);
+
     data->operational = is_online_;
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];
