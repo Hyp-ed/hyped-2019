@@ -20,18 +20,43 @@
 
 namespace hyped
 {
-
 namespace motor_control
 {
-CanSender::CanSender(Logger &log_) : log_(log_)
+CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
+                                                      node_id_(node_id),
+                                                      can_(Can::getInstance())
+{
+    isSending = false;
+    can_.start();
+}
+
+void CanSender::pushSdoMessageToQueue(utils::io::can::Frame &message)
+{
+    while (isSending)
+        ;
+    std::cout << "sending" << std::endl;
+    can_.send(message);
+    isSending = true;
+}
+
+void CanSender::registerController()
+{
+    can_.registerProcessor(this);
+}
+
+void CanSender::processNewData(utils::io::can::Frame &message)
+{
+    std::cout << "processNewData" << std::endl;
+    isSending = false;
+}
+
+bool CanSender::hasId(uint32_t id, bool extended)
 {
 }
 
-void CanSender::run()
+bool CanSender::getIsSending()
 {
-    log_.INFO("CONSUMER", "START CONSUMING");
-
-    log_.INFO("CONSUMER", "END CONSUMING");
+    return isSending;
 }
 } // namespace motor_control
 } // namespace hyped

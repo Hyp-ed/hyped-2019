@@ -16,41 +16,47 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_2019_CONCURRENTQUEUE_HPP
-#define HYPED_2019_CONCURRENTQUEUE_HPP
+#ifndef HYPED_2019_FAKECANSENDER_HPP
+#define HYPED_2019_FAKECANSENDER_HPP
 
 #include "utils/io/can.hpp"
-#include <queue>
+#include "utils/logger.hpp"
+#include "sender_interface.hpp"
+#include <atomic>
 #include <iostream>
-#include <memory>
-#include <mutex>
-#include "utils/concurrent/condition_variable.hpp"
-#include "utils/concurrent/lock.hpp"
 
 namespace hyped
 {
-
 namespace motor_control
 {
-using utils::concurrent::ConditionVariable;
-using utils::concurrent::Lock;
-using utils::io::can::Frame;
+using utils::Logger;
+using utils::io::Can;
+using utils::io::CanProccesor;
 
-class ConcurrentQueue
+class FakeCanSender : public CanProccesor, public SenderInterface
 {
+
   public:
-    ConcurrentQueue();
-    void push(Frame &message);
-    Frame pop();
-    bool getCanRead();
+    FakeCanSender(Logger &log_, uint8_t id);
+    //CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
+
+    void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
+
+    void registerController() override;
+
+    void processNewData(utils::io::can::Frame &message) override;
+
+    bool hasId(uint32_t id, bool extended) override;
+
+    bool getIsSending();
 
   private:
-    Lock lock;
-    ConditionVariable queueConditionVar;
-    std::queue<Frame> messageQueue;
-    bool canRead;
+    Logger log_;
+    uint8_t node_id_;
+    //Can& can_;
+    std::atomic<bool> isSending;
 };
 } // namespace motor_control
 } // namespace hyped
 
-#endif //HYPED_2019_CONCURRENTQUEUE_HPP
+#endif //HYPED_2019_FAKECANSENDER_HPP

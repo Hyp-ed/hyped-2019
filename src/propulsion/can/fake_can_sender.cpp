@@ -16,46 +16,44 @@
  *    limitations under the License.
  */
 
-#include "concurrent_queue.hpp"
+#include "fake_can_sender.hpp"
 
 namespace hyped
 {
-
 namespace motor_control
 {
-ConcurrentQueue::ConcurrentQueue()
+FakeCanSender::FakeCanSender(Logger &log_, uint8_t node_id) : log_(log_),
+                                                              node_id_(node_id)
 {
-    std::cout << "Queue initialized" << std::endl;
+    isSending = false;
 }
 
-void ConcurrentQueue::push(Frame &message)
+void FakeCanSender::pushSdoMessageToQueue(utils::io::can::Frame &message)
 {
-    std::cout << "Queue push with id:" << message.id << std::endl;
-    lock.lock();
+    while (isSending)
+        ;
+    std::cout << "sending" << std::endl;
 
-    messageQueue.push(message);
-
-    //lock.unlock();
-
-    queueConditionVar.notify();
-    lock.unlock();
+    isSending = true;
 }
 
-Frame ConcurrentQueue::pop()
+void FakeCanSender::registerController()
 {
-    std::cout << "Getting first entry" << std::endl;
-    lock.lock();
-
-    while (messageQueue.empty())
-    {
-        queueConditionVar.wait(&lock);
-    }
-
-    Frame fr = messageQueue.front();
-    messageQueue.pop();
-
-    return fr;
 }
 
+void FakeCanSender::processNewData(utils::io::can::Frame &message)
+{
+    std::cout << "processNewData" << std::endl;
+    isSending = false;
+}
+
+bool FakeCanSender::hasId(uint32_t id, bool extended)
+{
+}
+
+bool FakeCanSender::getIsSending()
+{
+    return isSending;
+}
 } // namespace motor_control
 } // namespace hyped

@@ -24,7 +24,7 @@
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
-#include "./can/can_handler.hpp"
+#include "./can/can_sender.hpp"
 
 #include "state_processor.hpp"
 

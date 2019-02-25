@@ -19,49 +19,43 @@
 #ifndef HYPED_2019_CANSENDER_HPP
 #define HYPED_2019_CANSENDER_HPP
 
-#include <cstdint>
-#include <condition_variable>
-#include <mutex>
-#include <queue>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
-#include "utils/concurrent/thread.hpp"
+#include "sender_interface.hpp"
+#include <atomic>
+#include <iostream>
 
 namespace hyped
 {
-
 namespace motor_control
 {
 using utils::Logger;
-using utils::concurrent::BusyThread;
-using utils::concurrent::Thread;
 using utils::io::Can;
 using utils::io::CanProccesor;
 
-//This is used as the datatype of the queue.
-//Type = 0 Sdo Message
-//Type = 1 Pdo Message
-struct Message
+class CanSender : public CanProccesor, public SenderInterface
 {
-    utils::io::can::Frame &msg;
-    int type;
+
+public:
+  CanSender(Logger &log_, uint8_t id);
+  //CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
+
+  void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
+
+  void registerController() override;
+
+  void processNewData(utils::io::can::Frame &message) override;
+
+  bool hasId(uint32_t id, bool extended) override;
+
+  bool getIsSending();
+
+private:
+  Logger log_;
+  uint8_t node_id_;
+  Can &can_;
+  std::atomic<bool> isSending;
 };
-
-class CanSender : public Thread
-{
-  public:
-    CanSender(Logger &log_);
-    //CanSender(ControllerInterface* controller);
-
-    void run() override;
-
-  protected:
-    std::mutex *queueMutex;
-    std::condition_variable *queueConditionVar;
-    bool processingMessage;
-    Logger &log_;
-};
-
 } // namespace motor_control
 } // namespace hyped
 
