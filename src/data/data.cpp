@@ -85,6 +85,18 @@ void Data::setSensorsImuData(const DataPoint<array<Imu, Sensors::kNumImus>>& imu
   sensors_.imu = imu;
 }
 
+void Data::setCalibrationData(const SensorCalibration sensor_calibration_data)
+{
+  ScopedLock L(&lock_calibration_data_);
+  calibration_data_ = sensor_calibration_data;
+}
+
+SensorCalibration Data::getCalibrationData()
+{
+  ScopedLock L(&lock_calibration_data_);
+  return calibration_data_;
+}
+
 Batteries Data::getBatteriesData()
 {
   ScopedLock L(&lock_batteries_);

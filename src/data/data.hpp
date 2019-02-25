@@ -73,6 +73,22 @@ struct ImuData : public Sensor {
   NavigationVector acc;
 };
 
+struct SensorCalibration {
+  array<array<NavigationVector, 2>, Sensors::kNumImus> imu_variance;
+};
+
+struct StripeCounter : public Sensor {
+  DataPoint<uint32_t> count;
+};
+
+struct Sensors : public Module {
+  static constexpr int kNumImus = 8;
+  static constexpr int kNumKeyence = 2;
+
+  DataPoint<array<Imu, kNumImus>> imu;
+  array<StripeCounter, kNumKeyence>  keyence_stripe_counter;  
+};
+
 struct Battery {
   uint16_t  voltage; // V
   int16_t   current; // mA
@@ -215,6 +231,14 @@ class Data {
    * @brief      Should be called to update sensor imu data.
    */
   void setSensorsImuData(const DataPoint<array<Imu, Sensors::kNumImus>>& imu);
+  /**
+   * @brief      Should be called to update sensor calibration data
+   */
+  void setCalibrationData(const SensorCalibration sensor_calibration_data);
+  /**
+   * @brief      Retrieves data from the calibrated sensors
+   */
+  SensorCalibration getCalibrationData()
 
   /**
    * @brief      Retrieves data from the batteries.
