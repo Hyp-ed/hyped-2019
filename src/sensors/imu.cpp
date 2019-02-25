@@ -64,6 +64,7 @@ constexpr uint8_t kFifoEnable = 0x23;   // set FIFO enable flags to have sensor 
 constexpr uint8_t kFifoCountH = 0x72;   // bit [4:0]- ONLY 5 BITS
 constexpr uint8_t kFifoCountL = 0x73;   // bit [7:0]
 constexpr uint8_t kFifoRW = 0x74;    // bit [7:0]
+constexpr uint8_t kUserCtrl = 0x6A;
 // Use this register to read and write data from the FIFO buffer
 // Data is written to the FIFO in order of register number (lo->hi)
 // CHECK fifo_bytes TO ENSURE FIFO BUFFER IS NOT READ WHEN EMPTY
@@ -119,9 +120,15 @@ void Imu::init()
   setGyroScale(gyro_scale_);
 
   // Enable the fifo for Accelerometer and Gyro 
-  // TODO(anyone): Disable FIFO then Enable, use the reset bit in register 106
-  writeByte(106, 0x40);        // enable fifo
+  // TODO(anyone): Disable FIFO then Enable, use the reset bit in register kUserCtrl
+
+  writeByte(kUserCtrl, 0x00);   // Disable fifo on both registers
+  writeByte(kFifoEnable, 0x00);
+
+  writeByte(kUserCtrl, 0x40);        // enable fifo
   writeByte(kFifoEnable, 0x78);
+  writeByte(kUserCtrl, 0x04);         // reset fifo
+
   log_.INFO("Imu", "FIFO Enabled");
 
   // this outputs repetition of data sets
