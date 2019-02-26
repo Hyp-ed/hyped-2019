@@ -237,65 +237,65 @@ void Imu::setAcclScale(int scale)
   }
 }
 
-#pragma pack(push, 1)
-struct Imu_raw{
-  uint16_t acc[3];
-  uint16_t gyro[3];
-};
-#pragma pack(pop)
+// #pragma pack(push, 1)
+// struct Imu_raw{
+//   uint16_t acc[3];
+//   uint16_t gyro[3];
+// };
+// #pragma pack(pop)
 
-constexpr uint16_t kFifo_size = 512;
+// constexpr uint16_t kFifo_size = 512;
 
-Imu_raw raw_data[kFifo_size/sizeof(Imu_raw)];
+// Imu_raw raw_data[kFifo_size/sizeof(Imu_raw)];
 
-void myPrint(int i)
-{
-  Imu_raw& data = raw_data[i];
-  printf("acc 0x%x 0x%x 0x%x\n", data.acc[0], data.acc[1], data.acc[2]);
-  printf("gyro 0x%x 0x%x 0x%x\n", data.gyro[0], data.gyro[1], data.gyro[2]);
+// void myPrint(int i)
+// {
+//   Imu_raw& data = raw_data[i];
+//   printf("acc 0x%x 0x%x 0x%x\n", data.acc[0], data.acc[1], data.acc[2]);
+//   printf("gyro 0x%x 0x%x 0x%x\n", data.gyro[0], data.gyro[1], data.gyro[2]);
 
-}
+// }
 
-int Imu::readFifo(std::vector<ImuData>& data)
-{
-  uint8_t count[2];
-  for (int i = 0; i < kFifo_size/sizeof(Imu_raw); i++) {
-    raw_data[i] = {};
-  }
-  // coGet uint of qfifo ueue
-  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(count), 2);
-  log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
+// int Imu::readFifo(std::vector<ImuData>& data)
+// {
+//   uint8_t count[2];
+//   for (int i = 0; i < kFifo_size/sizeof(Imu_raw); i++) {
+//     raw_data[i] = {};
+//   }
+//   // coGet uint of qfifo ueue
+//   readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(count), 2);
+//   log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
 
-  uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // big->little endian since BBB reads from little and IMU rads from big
+//   uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // big->little endian since BBB reads from little and IMU rads from big
   
   
-  // Get count make to the nearest lowest even number
-  fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));
-  log_.DBG("Fifo Count", "0x%x", fifo_bytes);
-  // fifo_bytes = std::min(kFifo_size, fifo_bytes);  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct 
+//   // Get count make to the nearest lowest even number
+//   fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));
+//   log_.DBG("Fifo Count", "0x%x", fifo_bytes);
+//   // fifo_bytes = std::min(kFifo_size, fifo_bytes);  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct 
   
 
-  // Read from fifo queue
-  // if (fifo_bytes < fifo_bytes/sizeof(Imu_raw))
-  //   return 0;
-  readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_bytes);
-  // log_.DBG("Raw Fifo data", "x = 0x%x, y = 0x%x, z = 0x%x", raw_data[0].acc[0], raw_data[0].acc[1], raw_data[0].acc[2]);
+//   // Read from fifo queue
+//   // if (fifo_bytes < fifo_bytes/sizeof(Imu_raw))
+//   //   return 0;
+//   readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_bytes);
+//   // log_.DBG("Raw Fifo data", "x = 0x%x, y = 0x%x, z = 0x%x", raw_data[0].acc[0], raw_data[0].acc[1], raw_data[0].acc[2]);
   
-  for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){
-    myPrint(i);
-    ImuData imu_data;
-    imu_data.acc[0] = raw_data[i].acc[0];
-    imu_data.acc[1] = raw_data[i].acc[1];
-    imu_data.acc[2] = raw_data[i].acc[2];
-    imu_data.gyr[0] = raw_data[i].gyro[0];
-    imu_data.gyr[1] = raw_data[i].gyro[1];
-    imu_data.gyr[2] = raw_data[i].gyro[2];
-    imu_data.operational = is_online_;
-    data.push_back(imu_data);
-  }
+//   for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){
+//     myPrint(i);
+//     ImuData imu_data;
+//     imu_data.acc[0] = raw_data[i].acc[0];
+//     imu_data.acc[1] = raw_data[i].acc[1];
+//     imu_data.acc[2] = raw_data[i].acc[2];
+//     imu_data.gyr[0] = raw_data[i].gyro[0];
+//     imu_data.gyr[1] = raw_data[i].gyro[1];
+//     imu_data.gyr[2] = raw_data[i].gyro[2];
+//     imu_data.operational = is_online_;
+//     data.push_back(imu_data);
+//   }
 
-  return fifo_bytes/sizeof(Imu_raw);
-}
+//   return fifo_bytes/sizeof(Imu_raw);
+// }
 
 
 
@@ -304,13 +304,13 @@ void Imu::getData(ImuData* data)
   if (is_online_) {
     log_.DBG3("Imu", "Getting Imu data");
     auto& acc = data->acc;
-    auto& gyr = data->gyr;
+    // auto& gyr = data->gyr;
     uint8_t response[14];
     int16_t bit_data;
     float value;
     int i;
     float accel_data[3];
-    float gyro_data[3];
+    // float gyro_data[3];
 
     readBytes(kAccelXoutH, response, 14);
     for (i = 0; i < 3; i++) {
@@ -320,15 +320,15 @@ void Imu::getData(ImuData* data)
 
       bit_data = ((int16_t) response[i*2 + 8] << 8) | response[i*2+9];
       value = static_cast<float>(bit_data);
-      gyro_data[i] = value/gyro_divider_;
+      // gyro_data[i] = value/gyro_divider_;
     }
     data->operational = is_online_;
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];
     acc[2] = accel_data[2];
-    gyr[0] = gyro_data[0];
-    gyr[1] = gyro_data[1];
-    gyr[2] = gyro_data[2];
+    // gyr[0] = gyro_data[0];
+    // gyr[1] = gyro_data[1];
+    // gyr[2] = gyro_data[2];
   } else {
     // Try and turn the sensor on again
     log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");
