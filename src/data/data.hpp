@@ -69,12 +69,8 @@ struct Sensor {
 };
 
 typedef Vector<NavigationType, 3> NavigationVector;
-struct Imu : public Sensor {
+struct ImuData : public Sensor {
   NavigationVector acc;
-};
-
-struct SensorCalibration {
-  array<array<NavigationVector, 2>, Sensors::kNumImus> imu_variance;
 };
 
 struct StripeCounter : public Sensor {
@@ -85,8 +81,12 @@ struct Sensors : public Module {
   static constexpr int kNumImus = 8;
   static constexpr int kNumKeyence = 2;
 
-  DataPoint<array<Imu, kNumImus>> imu;
+  DataPoint<array<ImuData, kNumImus>> imu;
   array<StripeCounter, kNumKeyence>  keyence_stripe_counter;  
+};
+
+struct SensorCalibration {
+  array<array<NavigationVector, 2>, Sensors::kNumImus> imu_variance;
 };
 
 struct Battery {
@@ -206,7 +206,7 @@ class Data {
   /**
    * @brief      Should be called to update sensor imu data.
    */
-  void setSensorsImuData(const DataPoint<array<Imu, Sensors::kNumImus>>& imu);
+  void setSensorsImuData(const DataPoint<array<ImuData, Sensors::kNumImus>>& imu);
   /**
    * @brief      Should be called to update sensor calibration data
    */
