@@ -40,7 +40,7 @@ namespace sensors {
 
 FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
     : log_(log),
-      data_(0),//(Data::getInstance()),       // need to update data structures
+      data_(Data::getInstance()),       // need to update data structures
       start_time_(0),                // just zero?
       ref_time_(start_time_),        // current time
       check_time_(3150000),          // 3.15 seconds

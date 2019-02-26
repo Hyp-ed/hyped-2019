@@ -32,13 +32,13 @@ int main(int argc, char* argv[]) {
   uint64_t start_time = timer.getMicros();
 
   while(stripe_count<kStripeNum){
-    keyence.run();                        // will it reach next line if waiting for value?
+    keyence.start();                        // start gpio_counter thread
     if(timer.getMicros()-start_time>kCheckTime){      // if time between stripe suceeded
       stripe_count++;
       log.DBG("TEST-KEYENCE", "Missed stripe at time %f",timer.getMicros());
       start_time = timer.getMicros();
     }
-    StripeCounter stripe_data = keyence.getStripeCounter();
+    StripeCounter stripe_data = keyence.getStripeCounter();       // to get value
     stripe_count += stripe_data.count.value;
     log.DBG("TEST-KEYENCE", "Stripe hit at time %f",stripe_data.count.timestamp);
   }

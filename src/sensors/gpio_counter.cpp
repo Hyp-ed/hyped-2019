@@ -24,7 +24,7 @@
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
 #include "sensors/gpio_counter.hpp"
-
+#include "data/data.hpp"
 
 
 namespace hyped {
