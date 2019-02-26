@@ -69,7 +69,7 @@ struct Sensor {
 };
 
 typedef Vector<NavigationType, 3> NavigationVector;
-struct ImuData : public Sensor {
+struct Imu : public Sensor {
   NavigationVector acc;
 };
 
@@ -159,30 +159,6 @@ struct StateMachine {
   bool critical_failure;
   State current_state;
 };
-
-private:
-  StateMachine state_machine_;
-  Navigation navigation_;
-  Sensors sensors_;
-  Motors motors_;
-  Batteries batteries_;
-  Communications communications_;
-  SensorCalibration calibration_data_;
-  EmergencyBrakes emergency_brakes_;
-
-
-  // locks for data substructures
-  Lock lock_state_machine_;
-  Lock lock_navigation_;
-  Lock lock_sensors_;
-  Lock lock_motors_;
-
-  Lock lock_communications_;
-  Lock lock_batteries_;
-  Lock lock_emergency_brakes_;
-  Lock lock_calibration_data_;
-};
-
 
 // -------------------------------------------------------------------------------------------------
 // Common Data structure/class
@@ -279,6 +255,29 @@ class Data {
    * @brief      Should be called to update communications data.
    */
   void setCommunicationsData(const Communications& communications_data);
+
+private:
+  StateMachine state_machine_;
+  Navigation navigation_;
+  Sensors sensors_;
+  Motors motors_;
+  Batteries batteries_;
+  Communications communications_;
+  SensorCalibration calibration_data_;
+  EmergencyBrakes emergency_brakes_;
+
+
+  // locks for data substructures
+  Lock lock_state_machine_;
+  Lock lock_navigation_;
+  Lock lock_sensors_;
+  Lock lock_motors_;
+
+  Lock lock_communications_;
+  Lock lock_batteries_;
+  Lock lock_emergency_brakes_;
+  Lock lock_calibration_data_;
+};
 
 }}  // namespace hyped::data
 
