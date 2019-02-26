@@ -73,10 +73,6 @@ struct ImuData : public Sensor {
   NavigationVector acc;
 };
 
-struct SensorCalibration {
-  array<array<NavigationVector, 2>, Sensors::kNumImus> imu_variance;
-};
-
 struct StripeCounter : public Sensor {
   DataPoint<uint32_t> count;
 };
@@ -85,8 +81,12 @@ struct Sensors : public Module {
   static constexpr int kNumImus = 8;
   static constexpr int kNumKeyence = 2;
 
-  DataPoint<array<Imu, kNumImus>> imu;
+  DataPoint<array<ImuData, kNumImus>> imu;
   array<StripeCounter, kNumKeyence>  keyence_stripe_counter;  
+};
+
+struct SensorCalibration {
+  array<array<NavigationVector, 2>, Sensors::kNumImus> imu_variance;
 };
 
 struct Battery {
@@ -160,30 +160,6 @@ struct StateMachine {
   State current_state;
 };
 
-private:
-  StateMachine state_machine_;
-  Navigation navigation_;
-  Sensors sensors_;
-  Motors motors_;
-  Batteries batteries_;
-  Communications communications_;
-  SensorCalibration calibration_data_;
-  EmergencyBrakes emergency_brakes_;
-
-
-  // locks for data substructures
-  Lock lock_state_machine_;
-  Lock lock_navigation_;
-  Lock lock_sensors_;
-  Lock lock_motors_;
-
-  Lock lock_communications_;
-  Lock lock_batteries_;
-  Lock lock_emergency_brakes_;
-  Lock lock_calibration_data_;
-};
-
-
 // -------------------------------------------------------------------------------------------------
 // Common Data structure/class
 // -------------------------------------------------------------------------------------------------
@@ -230,7 +206,7 @@ class Data {
   /**
    * @brief      Should be called to update sensor imu data.
    */
-  void setSensorsImuData(const DataPoint<array<Imu, Sensors::kNumImus>>& imu);
+  void setSensorsImuData(const DataPoint<array<ImuData, Sensors::kNumImus>>& imu);
   /**
    * @brief      Should be called to update sensor calibration data
    */
@@ -238,7 +214,7 @@ class Data {
   /**
    * @brief      Retrieves data from the calibrated sensors
    */
-  SensorCalibration getCalibrationData()
+  SensorCalibration getCalibrationData();
 
   /**
    * @brief      Retrieves data from the batteries.
@@ -279,6 +255,29 @@ class Data {
    * @brief      Should be called to update communications data.
    */
   void setCommunicationsData(const Communications& communications_data);
+
+private:
+  StateMachine state_machine_;
+  Navigation navigation_;
+  Sensors sensors_;
+  Motors motors_;
+  Batteries batteries_;
+  Communications communications_;
+  SensorCalibration calibration_data_;
+  EmergencyBrakes emergency_brakes_;
+
+
+  // locks for data substructures
+  Lock lock_state_machine_;
+  Lock lock_navigation_;
+  Lock lock_sensors_;
+  Lock lock_motors_;
+
+  Lock lock_communications_;
+  Lock lock_batteries_;
+  Lock lock_emergency_brakes_;
+  Lock lock_calibration_data_;
+};
 
 }}  // namespace hyped::data
 

@@ -79,7 +79,7 @@ void Data::setSensorsData(const Sensors& sensors_data)
   sensors_ = sensors_data;
 }
 
-void Data::setSensorsImuData(const DataPoint<array<Imu, Sensors::kNumImus>>& imu)
+void Data::setSensorsImuData(const DataPoint<array<ImuData, Sensors::kNumImus>>& imu)
 {
   ScopedLock L(&lock_sensors_);
   sensors_.imu = imu;
