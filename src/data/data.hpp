@@ -214,7 +214,7 @@ class Data {
   /**
    * @brief      Retrieves data from the calibrated sensors
    */
-  SensorCalibration getCalibrationData()
+  SensorCalibration getCalibrationData();
 
   /**
    * @brief      Retrieves data from the batteries.
