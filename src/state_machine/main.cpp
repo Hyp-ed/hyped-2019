@@ -1,10 +1,10 @@
 /*
- * Author: Ragnor Comerford
+ * Author:
  * Organisation: HYPED
- * Date: 11. March 2018
+ * Date:
  * Description:
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -17,8 +17,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
-
 
 #include <cstdint>
 
@@ -73,11 +71,7 @@ void Main::run()
         if (checkTimer())                break;
         if (checkMaxDistanceReached())   break;
         break;
-<<<<<<< HEAD
-      case data::State::kNominalBraking:
-=======
       case data::State::kBraking:
->>>>>>> 7545161b1c96fc2b76e371c6fc45ecb04d0a2ca0
         if (checkCriticalFailure())      break;
         if (checkTimer())                break;
         if (checkVelocityZeroReached())  break;
@@ -259,4 +253,4 @@ bool Main::checkTimer()
   return false;
 }
 
-}}  // namespace hyped::state_machine
+}} // namespace hyped::state_machine
