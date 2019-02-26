@@ -109,4 +109,4 @@ class StateProcessor : public StateProcessorInterface
 } // namespace motor_control
 } // namespace hyped
 
-#endif //HYPED_STATEPROCESSOR_HPP_
+#endif // HYPED_STATEPROCESSOR_HPP_

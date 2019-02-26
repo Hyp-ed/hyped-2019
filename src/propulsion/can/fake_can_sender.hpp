@@ -59,4 +59,4 @@ class FakeCanSender : public CanProccesor, public SenderInterface
 } // namespace motor_control
 } // namespace hyped
 
-#endif //HYPED_2019_FAKECANSENDER_HPP
+#endif // HYPED_2019_FAKECANSENDER_HPP

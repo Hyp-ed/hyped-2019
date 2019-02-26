@@ -37,4 +37,4 @@ class SenderInterface
 } // namespace motor_control
 } // namespace hyped
 
-#endif //HYPED_2019_SENDERINTERFACE_HPP
+#endif // HYPED_2019_SENDERINTERFACE_HPP

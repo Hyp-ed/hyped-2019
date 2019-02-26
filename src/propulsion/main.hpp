@@ -82,4 +82,4 @@ enum States
 } // namespace motor_control
 } // namespace hyped
 
-#endif //HYPED_MOTORCONTROL_MAIN_HPP_
+#endif // HYPED_MOTORCONTROL_MAIN_HPP_

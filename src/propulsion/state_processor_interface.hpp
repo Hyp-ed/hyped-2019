@@ -80,4 +80,4 @@ protected:
 } // namespace motor_control
 } // namespace hyped
 
-#endif //HYPED_2019_STATEPROCESSORINTERFACE_HPP
+#endif // HYPED_2019_STATEPROCESSORINTERFACE_HPP

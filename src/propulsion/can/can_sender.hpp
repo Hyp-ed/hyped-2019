@@ -59,4 +59,4 @@ private:
 } // namespace motor_control
 } // namespace hyped
 
-#endif //HYPED_2019_CANSENDER_HPP
+#endif // HYPED_2019_CANSENDER_HPP
