@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
   timer.stop();
   log.DBG("TEST-TIMER", "Time for 1 million cycles: %f", timer.getMillis());
 
-  log.DBG("TEST","Test pin readings");
-  pin_39.set();
-  log.DBG("TEST","Read value: %d", pin_38.read());      // hmm still always zero
+  log.DBG("TEST","Test time readings");
+  log.DBG("TEST","%f",timer.getTimeMicros());
+  
 }
