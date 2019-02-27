@@ -25,6 +25,7 @@
 #include "utils/timer.hpp"
 #include "sensors/gpio_counter.hpp"
 #include "data/data.hpp"
+#include "utils/logger.hpp"
 
 
 namespace hyped {
@@ -32,6 +33,7 @@ namespace hyped {
 using data::StripeCounter;      // data.hpp
 using utils::concurrent::Thread;
 using utils::io::GPIO;
+using hyped::utils::Logger;
 
 namespace sensors {
 
@@ -41,14 +43,17 @@ GpioCounter::GpioCounter(int pin)
 
 void GpioCounter::run()
 {
-  GPIO thepin(pin_, utils::io::gpio::kIn);
+  Logger log(true, 0);
+  GPIO thepin(pin_, utils::io::gpio::kIn);                // exports pin
   uint8_t val = thepin.wait();  // Ignore first reading
   stripe_counter_.count.value = 0;
   stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
 
   while (1) {
+    log.DBG("GPIOCOUNTER", "Waiting");
     val = thepin.wait();
     if (val == 1) {
+      log.DBG("GPIOCOUNTER", "Has hit stripe!");
       stripe_counter_.count.value = stripe_counter_.count.value+1;
       stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
       stripe_counter_.operational = true;
