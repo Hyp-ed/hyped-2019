@@ -6,6 +6,7 @@ SRCS := \
   navigation/main.cpp \
   propulsion/main.cpp \
   sensors/imu.cpp \
+  sensors/gpio_counter.cpp \
   sensors/main.cpp \
   state_machine/main.cpp \
   telemetry/main.cpp \
