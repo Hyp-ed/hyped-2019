@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
   GPIO keyence_pin(67, io::gpio::kIn);           // 4 down on right
   GPIO test_68(68, io::gpio::kOut);          // 5 down on right
 
-  hyped::sensors::GpioCounter keyence(67);
+  GpioCounter keyence(67);
 
   int stripe_count = 0;
   Timer timer;
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
       log.DBG("TEST-KEYENCE", "Missed stripe at time %f",timer.getMicros());
       start_time = timer.getMicros();
     }
-    StripeCounter stripe_data = keyence.hyped::sensors::GpioCounter::getStripeCounter();       // to get value
+    StripeCounter stripe_data = keyence.getStripeCounter();       // to get value
     stripe_count += stripe_data.count.value;
     log.DBG("TEST-KEYENCE", "Stripe hit at time %f",stripe_data.count.timestamp);
 
