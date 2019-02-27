@@ -90,11 +90,7 @@ void Accelerating::react(HypedMachine &machine, Event event)
 
 void NominalBraking::entry()
 {
-<<<<<<< HEAD
   state_ = state::kNominalBraking;
-=======
-  state_ = state::kBraking;
->>>>>>> 7545161b1c96fc2b76e371c6fc45ecb04d0a2ca0
 }
 
 void NominalBraking::react(HypedMachine &machine, Event event)
