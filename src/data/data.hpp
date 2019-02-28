@@ -19,11 +19,11 @@
 #ifndef DATA_DATA_HPP_
 #define DATA_DATA_HPP_
 
-#include "utils/math/vector.hpp"
+#include "../utils/math/vector.hpp"
 #include <cstdint>
 #include <array>
-#include "data/data_point.hpp"
-#include "utils/concurrent/lock.hpp"
+#include "data_point.hpp"
+#include "../utils/concurrent/lock.hpp"
 
 using std::array;
 
