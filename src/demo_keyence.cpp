@@ -24,12 +24,12 @@ int main(int argc, char* argv[]) {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, 0);
 
-  GPIO test_39(39, io::gpio::kOut,log);          // 6 down on left
-  log.INFO("TEST-KEYENCE", "Pin created");
-  test_39.clear();
-  test_39.set();
+  // GPIO test_39(66, io::gpio::kOut,log);          // 6 down on left
+  // log.INFO("TEST-KEYENCE", "Pin created");
+  // test_39.clear();
+  // test_39.set();
 
-  GpioCounter keyence(38);        // 4 down on left
+  GpioCounter keyence(66);        // 4 down on left
 
   uint32_t stripe_count = 0;
   uint32_t prev_count = 0;
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 
     if(timer.getTimeMicros()-start_time>kCheckTime&&stripe_count==prev_count){      // too much time && count not changed
       log.INFO("TEST-KEYENCE", "No stripe detected!");  
-      log.INFO("TEST-KEYENCE", "Missed stripe at time %f",timer.getTimeMicros());
+      // log.INFO("TEST-KEYENCE", "Missed stripe at time %f",timer.getTimeMicros());
       start_time = timer.getTimeMicros();
     }
     else if(stripe_count!=prev_count){      // has hit stripe
@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
     }
 
     // log.DBG("TEST-KEYENCE", "Stripe_data count: %f", current_stripe_data.count.value);
-    Thread::sleep(100);
+    //Thread::sleep(100);
     run_counter++;
     
     log.DBG("TEST-KEYENCE","run_counter: %d", run_counter);
