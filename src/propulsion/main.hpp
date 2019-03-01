@@ -1,7 +1,11 @@
 /*
+<<<<<<< HEAD
  * Author: Gregor Konzett
+=======
+ * Author:
+>>>>>>> develop
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED

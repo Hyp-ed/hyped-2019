@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_DATA_DATA_POINT_HPP_
-#define BEAGLEBONE_BLACK_DATA_DATA_POINT_HPP_
+#ifndef DATA_DATA_POINT_HPP_
+#define DATA_DATA_POINT_HPP_
 
 #include <cstdint>
 
@@ -43,4 +43,4 @@ class DataPoint
 
 }}  // namespace hyped::data
 
-#endif  // BEAGLEBONE_BLACK_DATA_DATA_POINT_HPP_
+#endif  // DATA_DATA_POINT_HPP_

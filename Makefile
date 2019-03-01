@@ -13,7 +13,7 @@ LFLAGS:=-lpthread -pthread -static
 
 # default configuration
 CROSS=0
-NOLINT=1
+NOLINT=0
 
 ifeq ($(CROSS), 0)
 	CC:=g++
@@ -81,6 +81,8 @@ clean: cleanlint
 	$(Verb) rm -rf $(OBJS_DIR)/*
 	$(Verb) rm -f $(TARGET)
 	$(Verb) rm -f $(MAINS)
+	$(Verb) find src | xargs touch
+	$(Verb) touch Makefile
 
 cleanlint:
 	$(Verb) rm -f .cpplint-cache

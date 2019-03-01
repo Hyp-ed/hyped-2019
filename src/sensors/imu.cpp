@@ -29,8 +29,8 @@ constexpr uint8_t kAccelConfig2             = 0x1D;
 
 constexpr uint8_t  kGyroConfig              = 0x1B;
 
-constexpr uint8_t kWhoAmIImu            = 0x75;
-constexpr uint8_t kWhoAmIResetValue1        = 0x71;
+constexpr uint8_t kWhoAmIImu                = 0x75;   // sensor to be at this address
+constexpr uint8_t kWhoAmIResetValue1        = 0x71;   // data to be at these addresses when read from sensor else not initialised
 constexpr uint8_t kWhoAmIResetValue2        = 0x70;
 
 // Power Management
@@ -98,7 +98,7 @@ bool Imu::whoAmI()
   uint8_t data;
   int send_counter;
 
-  for (send_counter = 0; send_counter < 10; send_counter++) {
+  for (send_counter = 1; send_counter < 10; send_counter++) {
     // Who am I checks what address the sensor is at
     readByte(kWhoAmIImu, &data);
     log_.INFO("Imu", "Imu connected to SPI, data: %d", data);

@@ -18,8 +18,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_CONCURRENT_LOCK_HPP_
-#define BEAGLEBONE_BLACK_UTILS_CONCURRENT_LOCK_HPP_
+#ifndef UTILS_CONCURRENT_LOCK_HPP_
+#define UTILS_CONCURRENT_LOCK_HPP_
 
 
 #include <mutex>
@@ -82,4 +82,4 @@ class ScopedLock {
 }}}   // namespace hyped::utils::concurrent
 
 
-#endif  // BEAGLEBONE_BLACK_UTILS_CONCURRENT_LOCK_HPP_
+#endif  // UTILS_CONCURRENT_LOCK_HPP_

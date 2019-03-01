@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED

@@ -1,7 +1,7 @@
 /*
- * Authors: 
+ * Authors:
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED

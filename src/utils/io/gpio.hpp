@@ -18,8 +18,8 @@
  *    limitations under the License.
 */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_IO_GPIO_HPP_
-#define BEAGLEBONE_BLACK_UTILS_IO_GPIO_HPP_
+#ifndef UTILS_IO_GPIO_HPP_
+#define UTILS_IO_GPIO_HPP_
 
 
 #include <cstdint>
@@ -43,7 +43,21 @@ enum Direction {
 
 class GPIO {
  public:
+    /**
+     * @brief to be called on when logger is not initialized
+     * will call on following constructor after initializing logger with getLogger()
+     *
+     * @param pin address on BBB
+     * @param direction to write into file system of gpio pin
+     */
   GPIO(uint32_t pin, gpio::Direction direction);
+    /**
+     * @brief overload constructor with logger initialized for debugging purposes
+     *
+     * @param pin address on BBB
+     * @param direction to write into file system of gpio pin
+     * @param log
+     */
   GPIO(uint32_t pin, gpio::Direction direction, Logger& log);
 
   void    set();     // set high
@@ -64,10 +78,41 @@ class GPIO {
    * @brief Fill in base_mapping_ with pointers to mmap-ed /dev/mem
    * to 4 GPIO banks/ports.
    */
+
+  /**
+   * @brief Remaps each address for GPIO pins from kBankNum array.
+   * Uses mmap, which creates a new mapping in the virtual address space
+   * of the calling process based on a starting address and argument length.
+   *
+   * No logger initialized
+   */
   static void initialise();
+
+  /**
+   * @brief Releases exported GPIO pins and writes value to buffer
+   * of addresses of those pins to uninitialise them
+   *
+   * Double check this!
+   *
+   */
   static void uninitialise();
+
+  /**
+   * @brief boolean if is initialised
+   *
+   */
   static bool initialised_;
+
+  /**
+   * @brief arary of size kBankNum, used in initialize() and attatchGPIO()
+   *
+   */
   static void* base_mapping_[gpio::kBankNum];
+
+  /**
+   * @brief vector of currently used (exported) pins
+   *
+   */
   static std::vector<uint32_t> exported_pins;
 
   /**
@@ -100,4 +145,4 @@ class GPIO {
 
 }}}   // namespace hyped::utils::io
 
-#endif  // BEAGLEBONE_BLACK_UTILS_IO_GPIO_HPP_
+#endif  // UTILS_IO_GPIO_HPP_
