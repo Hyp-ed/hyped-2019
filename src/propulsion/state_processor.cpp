@@ -26,9 +26,9 @@ namespace motor_control
 
 StateProcessor::StateProcessor(int motorAmount, Logger &log)
     : log_(log),
-      initialized(false),
       sys_(System::getSystem()),
-      motorAmount(motorAmount)
+      motorAmount(motorAmount),
+      initialized(false)
 {
 
     log_.DBG1("Motor", "StateProcessor constructor was called");

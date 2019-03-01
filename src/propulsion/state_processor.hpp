@@ -80,9 +80,9 @@ class StateProcessor : public StateProcessorInterface
 		 */
 	void decelerate() override;
 
-	bool isInitialized();
+	bool isInitialized() override;
 
-	void setInitialized(bool initialized);
+	void setInitialized(bool initialized) override;
 
   protected:
 	/**

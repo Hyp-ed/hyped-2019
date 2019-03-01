@@ -52,6 +52,7 @@ void CanSender::processNewData(utils::io::can::Frame &message)
 
 bool CanSender::hasId(uint32_t id, bool extended)
 {
+    return true;
 }
 
 bool CanSender::getIsSending()

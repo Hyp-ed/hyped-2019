@@ -49,6 +49,7 @@ void FakeCanSender::processNewData(utils::io::can::Frame &message)
 
 bool FakeCanSender::hasId(uint32_t id, bool extended)
 {
+    return true;
 }
 
 bool FakeCanSender::getIsSending()
