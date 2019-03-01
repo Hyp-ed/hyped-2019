@@ -32,7 +32,7 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
 {
 
     log_.DBG1("Motor", "StateProcessor constructor was called");
-    useTestControllers = sys_.fake_motors;
+    useTestControllers = false;//sys_.fake_motors;
 
     //controllers = new ControllerInterface[motorAmount];
 
