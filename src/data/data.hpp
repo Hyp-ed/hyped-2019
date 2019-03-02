@@ -53,12 +53,14 @@ struct Module {
 // Navigation
 // -------------------------------------------------------------------------------------------------
 typedef float NavigationType;
-struct Navigation {
+struct Navigation{
   NavigationType  distance; //m
   NavigationType  velocity; //m/s
   NavigationType  acceleration; //m/s^2
   NavigationType  emergency_braking_distance; //m
   NavigationType  braking_distance = 750;  // TODO(Brano): Remove default,publish the actual dist.
+  //try
+  ModuleStatus module_status;
 };
 
 // -------------------------------------------------------------------------------------------------

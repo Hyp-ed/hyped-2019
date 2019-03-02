@@ -19,7 +19,7 @@
  *    limitations under the License.
  */
 
-#include "state_machine/hyped-machine.hpp"
+#include "hyped-machine.hpp"
 
 namespace hyped {
 namespace state_machine {
