@@ -83,7 +83,7 @@ class System {
 
   int8_t imu_id;
   int8_t run_id;
-  int8_t n_imus;
+  int8_t imu_count;
 
  private:
   Logger* log_;
