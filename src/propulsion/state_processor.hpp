@@ -36,6 +36,9 @@ using utils::System;
 class StateProcessor : public StateProcessorInterface
 {
   public:
+	/**
+   * @brief {Initializes the state processors with the amount of motors and the logger}
+   * */
 	StateProcessor(int motorAmount, Logger &log);
 
 	/**
