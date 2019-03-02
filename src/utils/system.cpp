@@ -26,12 +26,13 @@
 #include <getopt.h>
 #include <csignal>
 
-#define DEFAULT_VERBOSE -1
-#define DEFAULT_DEBUG   -1
-#define DEFAULT_IMU     -1
-#define DEFAULT_RUN		-1
-#define DEFAULT_QUERIES -1
-#define DEFAULT_Q_DELAY -1
+#define DEFAULT_VERBOSE   -1
+#define DEFAULT_DEBUG     -1
+#define DEFAULT_IMU_ID    -1
+#define DEFAULT_IMU_COUNT -1
+#define DEFAULT_RUN_ID		-1
+#define DEFAULT_QUERIES   -1
+#define DEFAULT_Q_DELAY   -1
 
 namespace hyped {
 namespace utils {
@@ -62,6 +63,8 @@ void printUsage()
     "    IMU ID number to assign to written datafile."
     "\n  --run_id\n"
     "    Run ID number to assign to written datafile."
+    "\n  --imu_count\n"
+    "    Number of IMUs to simulate."
     "");
 }
 }
@@ -96,8 +99,9 @@ System::System(int argc, char* argv[])
       double_keyence(false),
       accurate(false),
       running_(true),
-      imu_id(DEFAULT_IMU),
-      run_id(DEFAULT_RUN)
+      imu_id(DEFAULT_IMU_ID),
+      imu_count(DEFAULT_IMU_COUNT),
+      run_id(DEFAULT_RUN_ID)
 
 {
   int c;
@@ -131,7 +135,8 @@ System::System(int argc, char* argv[])
       {"accurate", optional_argument, 0, 'N'},
       {"fake_batteries", optional_argument, 0, 'o'},
       {"imu_id", optional_argument, 0, 'p'},
-      {"run_id", optional_argument, 0, 'P'},
+      {"imu_count", optional_argument, 0, 'P'},
+      {"run_id", optional_argument, 0, 'q'},
       {0, 0, 0, 0}
     };
     c = getopt_long(argc, argv, "vd::h", long_options, &option_index);
@@ -249,6 +254,10 @@ System::System(int argc, char* argv[])
         else        imu_id = 1;
         break;
       case 'P':
+        if (optarg) imu_count = atoi(optarg);
+        else        imu_count = 8;
+        break;
+      case 'q':
         if (optarg) run_id = atoi(optarg);
         else        run_id = 1;
         break;
