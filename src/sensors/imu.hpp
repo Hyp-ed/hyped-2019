@@ -55,10 +55,6 @@ class Imu : public ImuInterface {
 
  private:
   /*
-   *  @brief Sets the range for the gyroscope
-   */
-  void setGyroScale(int scale);
-  /*
    *  @brief Sets the range for the accelerometer by writing to the IMU given the write register address
    */
   void setAcclScale(int scale);
@@ -115,9 +111,7 @@ class Imu : public ImuInterface {
   Logger& log_;
   GPIO    gpio_;
   uint8_t acc_scale_;
-  uint8_t gyro_scale_;
   double  acc_divider_;
-  double  gyro_divider_;
   bool    is_online_;
 };
 
