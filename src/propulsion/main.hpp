@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD
  * Author: Gregor Konzett
-=======
- * Author:
->>>>>>> develop
  * Organisation: HYPED
  * Date:
  * Description:
@@ -45,10 +41,8 @@ class Main : public Thread
 	Main(uint8_t id, Logger &log);
 
 	/**
-			 * Gets called when Thread is started. Entrypoint in motor control
-			 * Includes the event loop for motor control
-			 * Responds to the different states with appropriate actions
-			 * */
+	 * @brief {This function is the entrypoint to the propulsion module and reacts to the certain states}
+	* */
 	void run() override;
 
   private:

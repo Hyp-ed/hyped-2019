@@ -33,21 +33,63 @@ using utils::Logger;
 using utils::io::Can;
 using utils::io::CanProccesor;
 
+// Types of CANopen messages, these are used for CAN ID's
+constexpr uint32_t kEmgyTransmit = 0x80;
+constexpr uint32_t kSdoReceive = 0x600;
+constexpr uint32_t kSdoTransmit = 0x580;
+constexpr uint32_t kNmtReceive = 0x000;
+constexpr uint32_t kNmtTransmit = 0x700;
+constexpr uint32_t kPdo1Transmit = 0x180;
+constexpr uint32_t kPdo1Receive = 0x200;
+constexpr uint32_t kPdo2Transmit = 0x280;
+constexpr uint32_t kPdo2Receive = 0x300;
+constexpr uint32_t kPdo3Transmit = 0x380;
+constexpr uint32_t kPdo3Receive = 0x400;
+constexpr uint32_t kPdo4Transmit = 0x480;
+constexpr uint32_t kPdo4Receive = 0x500;
+
+constexpr uint32_t canIds[13]{0x80, 0x600, 0x580, 0x000, 0x700,
+                              0x180, 0x200, 0x280, 0x300, 0x380,
+                              0x400, 0x480, 0x500};
+
 class CanSender : public CanProccesor, public SenderInterface
 {
 
 public:
+  /**
+		 * @brief { Initialise the CanSender with the logger and the id }
+		 */
   CanSender(Logger &log_, uint8_t id);
+
+  /**
+		 * @brief { Initialise the CanSender with the logger, the id and the controller as an attribute,
+     * to access it's attributes }
+		 */
   //CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
 
-  void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
+  /**
+		 * @brief { Sends CAN messages }
+		 */
+  void sendMessage(utils::io::can::Frame &message) override;
 
+  /**
+		 * @brief { Registers the controller to process incoming CAN messages }
+		 */
   void registerController() override;
 
+  /**
+		 * @brief { This function processes incoming CAN messages }
+		 */
   void processNewData(utils::io::can::Frame &message) override;
 
+  /**
+		 * @brief { If this function returns true, the CAN message is ment for this CAN node }
+		 */
   bool hasId(uint32_t id, bool extended) override;
 
+  /**
+		 * @brief { Return if the can_sender is sending a CAN message right now }
+		 */
   bool getIsSending();
 
 private:

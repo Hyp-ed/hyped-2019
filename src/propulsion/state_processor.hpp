@@ -39,63 +39,54 @@ class StateProcessor : public StateProcessorInterface
 	StateProcessor(int motorAmount, Logger &log);
 
 	/**
-		 * @brief { Initializes the motor controllers and prepare the motors }
+		 * @brief { Sends the desired settings to the motors }
 		 */
 	void initMotors() override;
 
+	/**
+		 * @brief { Changes the state of the motor controller to preOperational }
+		 */
 	void enterPreOperational() override;
+
 	/**
-          *  @brief  { Set target velocity for each controller }
-          *
-          *  @param[in] { Target velocity calculated in Main }
-          */
-	void sendTargetVelocity(int32_t target_velocity) override;
-	/**
-          *  @brief  { Read actual velocity from each controller }
-          *
-          *  @return { Motor velocity struct }
-          */
-	MotorVelocity requestActualVelocity() override;
-	/*
-         *  @brief  { Sets all controllers into quickStop mode. Use in case of critical failure }
-         */
+		 * @brief { Stops all motors }
+		 */
 	void quickStopAll() override;
-	/*
-         *  @brief { Checks the error status and warning status in each controller object
-         *           Sets critical failure flag true if there is an error }
-         */
+
+	/**
+		 * @brief { Checks the motor controller's health }
+		 */
 	void healthCheck() override;
-	/*
-         *  @return { Critical failure flag }
-         */
+
+	/**
+		 * @brief { Checks if the motor controller's error registers }
+		 */
 	bool getFailure() override;
 
-	/*
-		 * @brief {Handles the logic for the acceleration phase}
+	/**
+		 * @brief { Tells the controllers to start accelerating the motors }
 		 */
 	void accelerate() override;
 
-	/*
-		 * @brief {Handles the logic for the deceleration phase}
+	/**
+		 * @brief { Returns if the motors are initialised already }
 		 */
-	void decelerate() override;
-
 	bool isInitialized() override;
-
-	void setInitialized(bool initialized) override;
 
   protected:
 	/**
-          *   @brief  Registers the motor controllers to the can
-          */
+		 * @brief { Registers the controllers to handle CAN transmissions }
+		 */
 	void registerControllers() override;
+
 	/**
-          *   @brief  Applies configuration settings and sets controllers to Operational mode
-          */
+		 * @brief { Configures the controllers }
+		 */
 	void configureControllers() override;
+
 	/**
-          *   @brief  { Controllers are entered into Operational mode }
-          */
+		 * @brief { Send settings data to the motors }
+		 */
 	void prepareMotors() override;
 
 	bool useTestControllers;

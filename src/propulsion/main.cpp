@@ -72,7 +72,7 @@ void Main::run()
 		else if (state == States::Decelerating) //Decelerate the motors (probably just shutting down the motors)
 		{
 			log_.INFO("Motor", "State Decelerating");
-			stateProcessor->decelerate();
+			stateProcessor->quickStopAll();
 		}
 		else if (state == States::EmergencyBraking) //Stop all motors
 		{

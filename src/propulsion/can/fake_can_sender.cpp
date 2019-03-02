@@ -28,7 +28,7 @@ FakeCanSender::FakeCanSender(Logger &log_, uint8_t node_id) : log_(log_),
     isSending = false;
 }
 
-void FakeCanSender::pushSdoMessageToQueue(utils::io::can::Frame &message)
+void FakeCanSender::sendMessage(utils::io::can::Frame &message)
 {
     while (isSending)
         ;

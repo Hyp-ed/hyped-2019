@@ -29,9 +29,16 @@ namespace motor_control
 
 class SenderInterface
 {
-  public:
-    virtual void pushSdoMessageToQueue(utils::io::can::Frame &message) = 0;
-    virtual void registerController() = 0;
+public:
+  /**
+		 * @brief { Sends CAN messages }
+		 */
+  virtual void sendMessage(utils::io::can::Frame &message) = 0;
+
+  /**
+   * @brief { Registers the controller to process incoming CAN messages}
+   * */
+  virtual void registerController() = 0;
 };
 
 } // namespace motor_control

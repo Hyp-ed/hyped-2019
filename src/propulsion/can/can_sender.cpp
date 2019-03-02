@@ -30,7 +30,7 @@ CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
     can_.start();
 }
 
-void CanSender::pushSdoMessageToQueue(utils::io::can::Frame &message)
+void CanSender::sendMessage(utils::io::can::Frame &message)
 {
     while (isSending)
         ;
@@ -52,7 +52,15 @@ void CanSender::processNewData(utils::io::can::Frame &message)
 
 bool CanSender::hasId(uint32_t id, bool extended)
 {
-    return true;
+    for (uint32_t cobId : canIds)
+    {
+        if (cobId + node_id_ == id)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool CanSender::getIsSending()
