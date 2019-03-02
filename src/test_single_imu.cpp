@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
 	// Test values
 	unsigned int nCalQueries = 10000;
-	unsigned int nTestQueries = 10000;
+	unsigned int nTestQueries = 50000;
 	float queryDelay = 0.01;
 
 	// File setup
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
 	// Calibrate gravitational acceleration
 	NavigationVector gVector = calibrateGravity(imu, imuData, nCalQueries, &timer);
-	
+//	std::cout << "Calibration complete, measuring." << std::endl;
 	// Return measured gravity vector
 	log.INFO("MAIN", "Measured gravity vector:\n\tgx=%+6.3f\tgy=%+6.3f\tgz=%+6.3f\n\n",
 						gVector[0], gVector[1], gVector[2]);
