@@ -27,8 +27,6 @@ constexpr uint8_t kAccelXoutH               = 0x3B;
 constexpr uint8_t kAccelConfig              = 0x1C;
 constexpr uint8_t kAccelConfig2             = 0x1D;
 
-// constexpr uint8_t  kGyroConfig              = 0x1B;
-
 constexpr uint8_t kWhoAmIImu                = 0x75;   // sensor to be at this address
 constexpr uint8_t kWhoAmIResetValue1        = 0x71;   // data to be at these addresses when read from sensor else not initialised
 constexpr uint8_t kWhoAmIResetValue2        = 0x70;
