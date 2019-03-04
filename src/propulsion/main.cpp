@@ -1,5 +1,5 @@
 /*
- * Author:
+ * Author: Gregor Konzett
  * Organisation: HYPED
  * Date:
  * Description:
@@ -16,8 +16,94 @@
  *    limitations under the License.
  */
 
-namespace hyped {
+#include "main.hpp"
 
-namespace motor_control {
+namespace hyped
+{
 
-}}
+namespace motor_control
+{
+Main::Main(uint8_t id, Logger &log)
+	: Thread(id, log),
+	  isRunning(true),
+	  log_(log)
+{
+	log_.INFO("Motor", "Logger constructor was called");
+
+	stateProcessor = new StateProcessor(6, log);
+}
+
+void Main::run()
+{
+	log_.INFO("Motor", "Thread started");
+
+	System &sys = System::getSystem();
+
+	States state = Idle;
+
+	while (isRunning && sys.running_)
+	{
+		log_.INFO("Motor", "Thread running");
+		if (state == States::Idle) //Initialize motors
+		{
+			log_.INFO("Motor", "State idle");
+
+			if (!stateProcessor->isInitialized())
+			{
+				stateProcessor->initMotors();
+			}
+
+			yield();
+		}
+		else if (state == States::Calibrating) //Calculate slip values
+		{
+			log_.INFO("Motor", "State Calibrating");
+		}
+		else if (state == States::Ready) //Standby and wait
+		{
+			log_.INFO("Motor", "State Ready");
+		}
+		else if (state == States::Accelerating) //Accelerate the motors
+		{
+			//TODO: Controller should handle the communication with the SpeedCalculator
+			log_.INFO("Motor", "State Accelerating");
+			stateProcessor->accelerate();
+		}
+		else if (state == States::Decelerating) //Decelerate the motors (probably just shutting down the motors)
+		{
+			log_.INFO("Motor", "State Decelerating");
+			stateProcessor->decelerate();
+		}
+		else if (state == States::EmergencyBraking) //Stop all motors
+		{
+			log_.INFO("Motor", "State EmergencyBraking");
+			stateProcessor->quickStopAll();
+		}
+		else if (state == States::Exiting) //Move very slowly out of tube
+		{
+			log_.INFO("Motor", "State Exiting");
+		}
+		else if (state == States::FailureStopped) //Enter preoperational
+		{
+			log_.INFO("Motor", "State FailureStopped");
+			stateProcessor->enterPreOperational();
+		}
+		else if (state == States::Finished)
+		{
+			log_.INFO("Motor", "State Finished");
+		}
+		else if (state == States::RunComplete) //Run complete
+		{
+			log_.INFO("Motor", "State RunComplete");
+		}
+		else
+		{
+			log_.INFO("Motor", "State Unknown");
+			isRunning = false;
+		}
+	}
+
+	log_.INFO("Motor", "Thread shutting down");
+}
+} // namespace motor_control
+} // namespace hyped

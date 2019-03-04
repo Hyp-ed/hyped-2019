@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
+ * Author: Gregor Konzett
+=======
  * Author:
+>>>>>>> develop
  * Organisation: HYPED
  * Date:
  * Description:
@@ -16,13 +20,70 @@
  *    limitations under the License.
  */
 
-#ifndef PROPULSION_MAIN_HPP_
-#define PROPULSION_MAIN_HPP_
+#ifndef HYPED_MOTORCONTROL_MAIN_HPP_
+#define HYPED_MOTORCONTROL_MAIN_HPP_
 
-namespace hyped {
+#include "utils/concurrent/thread.hpp"
+#include "utils/concurrent/barrier.hpp"
+#include "utils/system.hpp"
+#include "utils/timer.hpp"
+#include "utils/logger.hpp"
+#include "./can/can_sender.hpp"
 
-namespace motor_control {
+#include "state_processor.hpp"
 
-}}
+namespace hyped
+{
+using utils::Logger;
+using utils::System;
+using utils::concurrent::Thread;
+namespace motor_control
+{
+class Main : public Thread
+{
+  public:
+	Main(uint8_t id, Logger &log);
 
-#endif  // PROPULSION_MAIN_HPP_
+	/**
+			 * Gets called when Thread is started. Entrypoint in motor control
+			 * Includes the event loop for motor control
+			 * Responds to the different states with appropriate actions
+			 * */
+	void run() override;
+
+  private:
+	bool isRunning;
+	Logger &log_;
+	StateProcessor *stateProcessor;
+};
+
+/**
+	 * States (for now):
+	 * 	Idle 		
+	 * 	Calibrating
+	 * 	Ready
+	 * 	Accelerating  		
+	 * 	Braking		
+	 * 	EmergencyBraking	
+	 * 	FailureStopped		
+	 * 	RunComplete			
+	 * 	Exiting				
+	 * 	Finished			
+	 * */
+enum States
+{
+	Idle,
+	Calibrating,
+	Ready,
+	Accelerating,
+	Decelerating,
+	EmergencyBraking,
+	FailureStopped,
+	RunComplete,
+	Exiting,
+	Finished
+};
+} // namespace motor_control
+} // namespace hyped
+
+#endif // HYPED_MOTORCONTROL_MAIN_HPP_
