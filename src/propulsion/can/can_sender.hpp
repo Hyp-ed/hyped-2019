@@ -37,17 +37,40 @@ class CanSender : public CanProccesor, public SenderInterface
 {
 
 public:
+  /**
+		 * @brief { Initialise the CanSender with the logger and the id }
+		 */
   CanSender(Logger &log_, uint8_t id);
+
+  /**
+		 * @brief { Initialise the CanSender with the logger, the id and the controller as an attribute,
+     * to access it's attributes }
+		 */
   //CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
 
-  void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
+  /**
+		 * @brief { Sends CAN messages }
+		 */
+  void sendMessage(utils::io::can::Frame &message) override;
 
+  /**
+		 * @brief { Registers the controller to process incoming CAN messages }
+		 */
   void registerController() override;
 
+  /**
+		 * @brief { This function processes incoming CAN messages }
+		 */
   void processNewData(utils::io::can::Frame &message) override;
 
+  /**
+		 * @brief { If this function returns true, the CAN message is ment for this CAN node }
+		 */
   bool hasId(uint32_t id, bool extended) override;
 
+  /**
+		 * @brief { Return if the can_sender is sending a CAN message right now }
+		 */
   bool getIsSending();
 
 private:

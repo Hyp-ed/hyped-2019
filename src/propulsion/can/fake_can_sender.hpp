@@ -36,25 +36,25 @@ using utils::io::CanProccesor;
 class FakeCanSender : public CanProccesor, public SenderInterface
 {
 
-  public:
-    FakeCanSender(Logger &log_, uint8_t id);
-    //CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
+public:
+  FakeCanSender(Logger &log_, uint8_t id);
+  //CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
 
-    void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
+  void sendMessage(utils::io::can::Frame &message) override;
 
-    void registerController() override;
+  void registerController() override;
 
-    void processNewData(utils::io::can::Frame &message) override;
+  void processNewData(utils::io::can::Frame &message) override;
 
-    bool hasId(uint32_t id, bool extended) override;
+  bool hasId(uint32_t id, bool extended) override;
 
-    bool getIsSending();
+  bool getIsSending();
 
-  private:
-    Logger log_;
-    uint8_t node_id_;
-    //Can& can_;
-    std::atomic<bool> isSending;
+private:
+  Logger log_;
+  uint8_t node_id_;
+  //Can& can_;
+  std::atomic<bool> isSending;
 };
 } // namespace motor_control
 } // namespace hyped
