@@ -24,13 +24,13 @@
 #ifndef BEAGLEBONE_BLACK_STATE_MACHINE_HYPED_MACHINE_HPP_
 #define BEAGLEBONE_BLACK_STATE_MACHINE_HYPED_MACHINE_HPP_
 
-#include "data/data.hpp"
+#include "../data/data.hpp"
 
-#include "state_machine/event.hpp"
-#include "state_machine/states.hpp"
+#include "event.hpp"
+#include "states.hpp"
 
-#include "utils/logger.hpp"
-#include "utils/io/gpio.hpp"
+#include "../utils/logger.hpp"
+#include "../utils/io/gpio.hpp"
 namespace hyped {
 using utils::io::GPIO;
 namespace state_machine {

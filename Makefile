@@ -99,7 +99,7 @@ info:
 	$(call echo_var,CC)
 	$(call echo_var,TOP)
 #	$(call echo_var,SRCS)
-#	$(call echo_var,OBJS)
+	$(call echo_var,OBJS)
 #	$(call echo_var,MAINS)
 	$(call echo_var,UNAME)
 	$(call echo_var,CFLAGS)
