@@ -53,7 +53,7 @@ struct Module {
 // Navigation
 // -------------------------------------------------------------------------------------------------
 typedef float NavigationType;
-struct Navigation {
+struct Navigation : public Module {
   NavigationType  distance; //m
   NavigationType  velocity; //m/s
   NavigationType  acceleration; //m/s^2
