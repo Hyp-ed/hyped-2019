@@ -59,8 +59,6 @@ struct Navigation : public Module {
   NavigationType  acceleration; //m/s^2
   NavigationType  emergency_braking_distance; //m
   NavigationType  braking_distance = 750;  // TODO(Brano): Remove default,publish the actual dist.
-  //try
-  // ModuleStatus module_status;
 };
 
 // -------------------------------------------------------------------------------------------------
