@@ -27,8 +27,6 @@ constexpr uint8_t kAccelXoutH               = 0x3B;
 constexpr uint8_t kAccelConfig              = 0x1C;
 constexpr uint8_t kAccelConfig2             = 0x1D;
 
-constexpr uint8_t  kGyroConfig              = 0x1B;
-
 constexpr uint8_t kWhoAmIImu                = 0x75;   // sensor to be at this address
 // data to be at these addresses when read from sensor else not initialised
 constexpr uint8_t kWhoAmIResetValue1        = 0x71;
@@ -69,7 +67,6 @@ Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale, uint8_t gyro_scale)
     log_(log),
     gpio_(pin, kDirection, log),
     acc_scale_(acc_scale),
-    gyro_scale_(gyro_scale),
     is_online_(false)
 {
   init();
@@ -90,7 +87,6 @@ void Imu::init()
   writeByte(kMpuRegConfig, 0x01);
   writeByte(kAccelConfig2, 0x01);
   setAcclScale(acc_scale_);
-  setGyroScale(gyro_scale_);
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
 }
 
@@ -156,26 +152,6 @@ void  Imu::deSelect()
   gpio_.set();
 }
 
-void Imu::setGyroScale(int scale)
-{
-  writeByte(kGyroConfig, scale);
-
-  switch (scale) {
-    case kBitsFs250Dps:
-      gyro_divider_ = 131;
-    break;
-    case kBitsFs500Dps:
-      gyro_divider_ = 65.5;
-      break;
-    case kBitsFs1000Dps:
-      gyro_divider_ = 32.8;
-    break;
-    case kBitsFs2000Dps:
-      gyro_divider_ = 16.4;
-    break;
-  }
-}
-
 void Imu::setAcclScale(int scale)
 {
   writeByte(kAccelConfig, scale);
@@ -201,13 +177,11 @@ void Imu::getData(ImuData* data)
   if (is_online_) {
     log_.DBG3("Imu", "Getting Imu data");
     auto& acc = data->acc;
-    auto& gyr = data->gyr;
     uint8_t response[14];
     int16_t bit_data;
     float value;
     int i;
     float accel_data[3];
-    float gyro_data[3];
 
     readBytes(kAccelXoutH, response, 14);
     for (i = 0; i < 3; i++) {
@@ -217,7 +191,6 @@ void Imu::getData(ImuData* data)
 
       bit_data = ((int16_t) response[i*2 + 8] << 8) | response[i*2+9];
       value = static_cast<float>(bit_data);
-      gyro_data[i] = value/gyro_divider_;
     }
 
     // TODO(anyone): When temperature is read correctly add to the data strucutre
@@ -228,9 +201,6 @@ void Imu::getData(ImuData* data)
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];
     acc[2] = accel_data[2];
-    gyr[0] = gyro_data[0];
-    gyr[1] = gyro_data[1];
-    gyr[2] = gyro_data[2];
   } else {
     // Try and turn the sensor on again
     log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");

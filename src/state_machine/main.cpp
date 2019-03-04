@@ -1,10 +1,10 @@
 /*
- * Author:
+ * Author: Ragnor Comerford
  * Organisation: HYPED
- * Date:
+ * Date: 11. March 2018
  * Description:
  *
- *    Copyright 2019 HYPED
+ *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -18,14 +18,16 @@
  *    limitations under the License.
  */
 
+
+
 #include <cstdint>
 
-#include "state_machine/hyped-machine.hpp"
-#include "state_machine/main.hpp"
+#include "hyped-machine.hpp"
+#include "main.hpp"
 
-#include "data/data.hpp"
-#include "utils/timer.hpp"
-#include "utils/system.hpp"
+#include "../data/data.hpp"
+#include "../utils/timer.hpp"
+#include "../utils/system.hpp"
 
 namespace hyped {
 namespace state_machine {
@@ -55,7 +57,7 @@ void Main::run()
 
     switch (sm_data_.current_state) {
       case data::State::kIdle:
-        if (checkCommsCriticalFailure()) break;   // TODO(anyone): discuss this transition again
+        if (checkCommsCriticalFailure()) break;   // TODO(anyone): discuss this transition again 
         if (checkInitialised())          break;
         break;
       case data::State::kCalibrating:
@@ -71,7 +73,7 @@ void Main::run()
         if (checkTimer())                break;
         if (checkMaxDistanceReached())   break;
         break;
-      case data::State::kBraking:
+      case data::State::kNominalBraking:
         if (checkCriticalFailure())      break;
         if (checkTimer())                break;
         if (checkVelocityZeroReached())  break;
@@ -253,4 +255,4 @@ bool Main::checkTimer()
   return false;
 }
 
-}} // namespace hyped::state_machine
+}}  // namespace hyped::state_machine

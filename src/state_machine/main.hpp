@@ -1,13 +1,13 @@
 /*
- * Author:
+ * Author: Ragnor Comerford
  * Organisation: HYPED
- * Date:
+ * Date: 11. March 2018
  * Description:
  * Main instantiates HypedMachine. It also monitors other data and generates Events
  * for the HypedMachine. Note, StateMachine structure in Data is not updated here but
  * in HypedMachine.
  *
- *    Copyright 2019 HYPED
+ *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -21,13 +21,13 @@
  *    limitations under the License.
  */
 
-#ifndef STATE_MACHINE_MAIN_HPP_
-#define STATE_MACHINE_MAIN_HPP_
+#ifndef BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
+#define BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
 
 #include <cstdint>
-#include "utils/concurrent/thread.hpp"
-#include "state_machine/hyped-machine.hpp"
-#include "data/data.hpp"
+#include "../utils/concurrent/thread.hpp"
+#include "hyped-machine.hpp"
+#include "../data/data.hpp"
 
 namespace hyped {
 
@@ -68,6 +68,6 @@ class Main: public Thread {
   data::Sensors         sensors_data_;
 };
 
-}} // namespace hyped::motor_control
+}}  // namespace hyped::motor_control
 
-#endif  // STATE_MACHINE_MAIN_HPP_
+#endif  // BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
