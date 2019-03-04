@@ -62,7 +62,7 @@ using data::NavigationVector;
 
 namespace sensors {
 
-Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale, uint8_t gyro_scale)
+Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale)
     : spi_(SPI::getInstance()),
     log_(log),
     gpio_(pin, kDirection, log),
@@ -177,24 +177,21 @@ void Imu::getData(ImuData* data)
   if (is_online_) {
     log_.DBG3("Imu", "Getting Imu data");
     auto& acc = data->acc;
-    uint8_t response[14];
+    uint8_t response[8];
     int16_t bit_data;
     float value;
     int i;
     float accel_data[3];
 
-    readBytes(kAccelXoutH, response, 14);
+    readBytes(kAccelXoutH, response, 8);
     for (i = 0; i < 3; i++) {
       bit_data = ((int16_t) response[i*2] << 8) | response[i*2+1];
       value = static_cast<float>(bit_data);
       accel_data[i] = value/acc_divider_  * 9.80665;
-
-      bit_data = ((int16_t) response[i*2 + 8] << 8) | response[i*2+9];
-      value = static_cast<float>(bit_data);
     }
 
     // TODO(anyone): When temperature is read correctly add to the data strucutre
-    int temp = ((response[6] | response[7]))/333.87 + 21;  // Check datasheet
+    int temp = ((response[6] | response[7]))/333.87 + 21;  // TODO(anyone): Check datasheet
     log_.ERR("Imu_temp", "Temperature = %d", temp);
 
     data->operational = is_online_;

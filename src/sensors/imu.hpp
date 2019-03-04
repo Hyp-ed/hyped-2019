@@ -38,7 +38,7 @@ namespace sensors {
 
 class Imu : public ImuInterface {
  public:
-  Imu(Logger& log, uint32_t pin, uint8_t acc_scale = 0x08, uint8_t gyro_scale = 0x00);
+  Imu(Logger& log, uint32_t pin, uint8_t acc_scale = 0x08);
   ~Imu();
   /*
    *  @brief Returns if the sensor is online
@@ -58,7 +58,6 @@ class Imu : public ImuInterface {
    *  @brief Sets the range for the accelerometer by writing to the IMU given the write register address
    */
   void setAcclScale(int scale);
-  static const uint64_t time_start;
   void init();
 
   /**
@@ -113,6 +112,7 @@ class Imu : public ImuInterface {
   uint8_t acc_scale_;
   double  acc_divider_;
   bool    is_online_;
+  static const uint64_t time_start;
 };
 
 }}  // namespace hyped::sensors
