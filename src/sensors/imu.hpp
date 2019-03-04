@@ -67,27 +67,27 @@ class Imu : public ImuInterface {
 
   /**
    * @brief used for SPI chipselect with GPIO pin for IMU
-   * 
+   *
    */
   void select();
 
   /**
    * @brief used for SPI chipselect with GPIO pin for IMU
-   * 
+   *
    */
   void deSelect();
 
   /**
    * @brief checks what address the sensor is at
-   * 
-   * @return true 
-   * @return false 
+   *
+   * @return true
+   * @return false
    */
   bool whoAmI();
 
   /**
    * @brief chipselects and and writes data (byte) to register address
-   * 
+   *
    * @param write_reg write register address
    * @param write_data byte of data to write
    */
@@ -95,7 +95,7 @@ class Imu : public ImuInterface {
 
   /**
    * @brief uses chip select and reads necessary data
-   * 
+   *
    * @param read_reg read register address
    * @param read_data pointer to data desired to read
    */
@@ -103,9 +103,9 @@ class Imu : public ImuInterface {
 
   /**
    * @brief same as readByte but with desired length
-   * 
-   * @param read_reg 
-   * @param read_buff 
+   *
+   * @param read_reg
+   * @param read_buff
    * @param length number of bytes to read
    */
   void readBytes(uint8_t read_reg, uint8_t *read_buff, uint8_t length);
