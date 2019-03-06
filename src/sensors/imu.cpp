@@ -27,6 +27,9 @@ constexpr uint8_t kAccelXoutH               = 0x3B;
 constexpr uint8_t kAccelConfig              = 0x1C;
 constexpr uint8_t kAccelConfig2             = 0x1D;
 
+// Temperature address
+constexpr uint8_t kTempOutH                 = 65;
+
 constexpr uint8_t kWhoAmIImu                = 0x75;   // sensor to be at this address
 // data to be at these addresses when read from sensor else not initialised
 constexpr uint8_t kWhoAmIResetValue1        = 0x71;
@@ -190,10 +193,6 @@ void Imu::getData(ImuData* data)
       accel_data[i] = value/acc_divider_  * 9.80665;
     }
 
-    // TODO(anyone): When temperature is read correctly add to the data strucutre
-    int temp = ((response[6] | response[7]))/333.87 + 21;  // TODO(anyone): Check datasheet
-    log_.ERR("Imu_temp", "Temperature = %d", temp);
-
     data->operational = is_online_;
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];
@@ -203,6 +202,18 @@ void Imu::getData(ImuData* data)
     log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");
     init();
   }
+}
+
+void Imu::getTemperature(int* data)
+{
+  uint8_t response[2];
+  readBytes(kTempOutH, response, 2);
+
+  // TODO(anyone): When temperature is read correctly add to the data strucutre
+  int temp = ((response[0] | response[1]))/333.87 + 21;  // TODO(anyone): Check datasheet
+  log_.ERR("Imu_temp", "Temperature = %d", temp);
+
+  *data = temp;
 }
 
 }}   // namespace hyped::sensors

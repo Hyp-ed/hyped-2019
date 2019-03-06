@@ -53,6 +53,13 @@ class Imu : public ImuInterface {
    */
   void getData(ImuData* data) override;
 
+  /**
+   * @brief Get the Temperature from the IMU
+   *
+   * @param temp - the variable to be updated
+   */
+  void getTemperature(int* temp);
+
  private:
   /*
    *  @brief Sets the range for the accelerometer by writing to the IMU given the write register address
