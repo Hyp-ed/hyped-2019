@@ -25,6 +25,7 @@
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <unistd.h>
 #include <cstdio>
@@ -51,15 +52,18 @@ using std::ofstream;
 using std::queue;
 using std::string;
 using std::vector;
+using std::copy;
 
-void loadSimData(queue<DataPoint<NavigationVector*>>* dataQueue, int numImus,
+typedef vector<NavigationVector> NavigationArray;
+
+void loadSimData(queue<DataPoint<NavigationArray>>* dataQueue, int numImus,
 				 queue<int>* stripeCount,
 				 ifstream* accData, ifstream* posData,
 				 string accFname, string posFname, 
 				 float refreshRate, float stddev, float stripeSep) 
 {
 	float t = 0.;
-	float ax, ay, az;
+	float ax, nx, ny, nz;
 	// Open files
 	accData->open(accFname);
 	posData->open(posFname);
@@ -68,17 +72,17 @@ void loadSimData(queue<DataPoint<NavigationVector*>>* dataQueue, int numImus,
 	normal_distribution<float> noise(0., stddev);
 	// Add noise to each acceleration reading and store
 	while (*accData >> ax) {
-		NavigationVector imus[numImus];
+		NavigationArray imus;
 		// Add noise independently to each virtual imu
 		for (int i = 0; i < numImus; ++i)
 		{
-			ax += noise(generator);
-			ay = noise(generator);
-			az = noise(generator);
-			imus[i] = NavigationVector({ax, ay, az})
+			nx = noise(generator);
+			ny = noise(generator);
+			nz = noise(generator);
+			imus.push_back(NavigationVector({ax+nx, ny, nz}));
 		}
 		// Convert time to microseconds
-		dataQueue->push(DataPoint<NavigationVector*>(t*1e6, imus));
+		dataQueue->push(DataPoint<NavigationArray>(t*1e6, imus));
 		// Increment time
 		t += refreshRate;
 	}
@@ -92,7 +96,7 @@ void loadSimData(queue<DataPoint<NavigationVector*>>* dataQueue, int numImus,
 	posData->close();
 }
 
-void getSensorAverage(NavigationVector* imus, int numImus, 
+void getSensorAverage(NavigationArray imus, int numImus, 
 		  			  RollingStatistics<NavigationVector>* rolling) 
 {
 	for (int i = 0; i < numImus; ++i) rolling->update(imus[i]);
@@ -139,9 +143,6 @@ int main(int argc, char *argv[])
 	string accFname = "sim_data/acceleration-3k.txt";
 	string posFname = "sim_data/displacement-3k.txt";
 	// for quick access in sim
-	struct NavigationArray {
-		NavigationVector imus[kNumImus];
-	};
 	queue<DataPoint<NavigationArray>> dataQueue;
 	queue<int> stripeCount;
 	// the main event
@@ -150,7 +151,6 @@ int main(int argc, char *argv[])
 				&accData, &posData, 
 				accFname, posFname,
 				refreshRate, stddev, stripeSep);
-
 	/*
 		Output setup
 	*/
@@ -160,8 +160,7 @@ int main(int argc, char *argv[])
 	/*
 		Simulate run
 	*/
-	// Store measured/estimated values
-	DataPoint<NavigationArray> imus(0., NavigationArray);
+	// Store measured/estimated values;
 	DataPoint<NavigationVector> acc(0., NavigationVector({0.,0.,0.})); 	
 	DataPoint<NavigationVector> vel(0., NavigationVector({0.,0.,0.}));		
 	DataPoint<NavigationVector> pos(0., NavigationVector({0.,0.,0.}));
@@ -175,13 +174,11 @@ int main(int argc, char *argv[])
 	// Perform acceleration, speed and distance queries
 	while (!dataQueue.empty())
 	{
-		// ``Query'' sensor
-		imus = dataQueue.front();
+		// ``Query'' sensors and filter
+		getSensorAverage(dataQueue.front().value, kNumImus, &rolling);
+		acc.value     = rolling.getMean();
+		acc.timestamp = dataQueue.front().timestamp;
 		dataQueue.pop();
-		
-		// Filter for value
-		getSensorAverage(imus, kNumImus, &rolling);
-		acc = rolling.getMean();
 
 		// Intergrate
 		velIntegrator.update(acc);

@@ -82,8 +82,8 @@ class System {
   bool running_;
 
   int8_t imu_id;
-  int8_t run_id;
   int8_t imu_count;
+  int8_t run_id;
 
  private:
   Logger* log_;
