@@ -210,10 +210,10 @@ void Imu::getTemperature(int* data)
   readBytes(kTempOutH, response, 2);
 
   // TODO(anyone): When temperature is read correctly add to the data strucutre
-  int temp = ((response[0] | response[1]))/333.87 + 21;  // TODO(anyone): Check datasheet
-  log_.ERR("Imu_temp", "Temperature = %d", temp);
+  // TODO(anyone): Check datasheet
+  uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21; 
 
-  *data = temp;
+  *data = static_cast<int>(temp);
 }
 
 }}   // namespace hyped::sensors
