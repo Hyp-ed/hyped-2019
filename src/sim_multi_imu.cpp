@@ -186,7 +186,6 @@ int main(int argc, char *argv[])
 
 		// Check if stripe has been passed
 		if (stripeCount.front() != stripesSeen) {
-			std::cout << "updating stripe count..." << std::endl;
 			// Update position if we pass a stripe
 			stripesSeen = stripeCount.front();
 			pos.value = NavigationVector({stripesSeen*stripeSep, 0., 0.});
