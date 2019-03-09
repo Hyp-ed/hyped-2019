@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -52,10 +52,8 @@ void CanSender::processNewData(utils::io::can::Frame &message)
 
 bool CanSender::hasId(uint32_t id, bool extended)
 {
-    for (uint32_t cobId : canIds)
-    {
-        if (cobId + node_id_ == id)
-        {
+    for (uint32_t cobId : canIds) {
+        if (cobId + node_id_ == id) {
             return true;
         }
     }
@@ -67,5 +65,5 @@ bool CanSender::getIsSending()
 {
     return isSending;
 }
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
