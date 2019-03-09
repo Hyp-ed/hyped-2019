@@ -1,15 +1,15 @@
 sudo: required
 language: bash
-services:
+# services:
 # - docker
 
-install: true
+# install: true
 
-git:
-  depth: 1
+# git:
+#   depth: 1
 
-before_script:
-- docker run --rm --privileged multiarch/qemu-user-static:register --reset
+# before_script:
+# - docker run --rm --privileged multiarch/qemu-user-static:register --reset
 
 script:
 - echo DONE
@@ -18,10 +18,10 @@ script:
 # - docker commit travis hyped/current
 # - docker run -it hyped/current make -j --silent clean hyped
 
-notifications:
-  slack:
-    rooms:
-        - hypedunlimited:gEtbY2l7hNP2rwgfelMxr6j1#tech-software-repo
+# notifications:
+#   slack:
+#     rooms:
+#         - hypedunlimited:gEtbY2l7hNP2rwgfelMxr6j1#tech-software-repo
    
    
    
