@@ -1,5 +1,5 @@
 /*
- * Author:
+ * Author: Gregor Konzett
  * Organisation: HYPED
  * Date:
  * Description:
@@ -16,8 +16,96 @@
  *    limitations under the License.
  */
 
-namespace hyped {
+#include "main.hpp"
 
-namespace motor_control {
+namespace hyped
+{
 
-}}
+namespace motor_control
+{
+Main::Main(uint8_t id, Logger &log)
+	: Thread(id, log),
+	  isRunning(true),
+	  log_(log)
+{
+	log_.INFO("Motor", "Logger constructor was called");
+
+	stateProcessor = new StateProcessor(6, log);
+}
+
+void Main::run()
+{
+	log_.INFO("Motor", "Thread started");
+
+	System &sys = System::getSystem();
+
+	Data stateMachineData = Data::getInstance();
+
+	while (isRunning && sys.running_)
+	{
+		//Get the current state of the system from the state machine's data
+		currentState = stateMachineData.getStateMachineData().current_state;
+
+		if (currentState == State::kIdle) //Initialize motors
+		{
+			log_.INFO("Motor", "State idle");
+
+			if (!stateProcessor->isInitialized())
+			{
+				stateProcessor->initMotors();
+			}
+
+			yield();
+		}
+		else if (currentState == State::kCalibrating) //Calculate slip values
+		{
+			log_.INFO("Motor", "State Calibrating");
+		}
+		else if (currentState == State::kReady) //Standby and wait
+		{
+			log_.INFO("Motor", "State Ready");
+		}
+		else if (currentState == State::kAccelerating) //Accelerate the motors
+		{
+			//TODO: Controller should handle the communication with the SpeedCalculator
+			log_.INFO("Motor", "State Accelerating");
+			stateProcessor->accelerate();
+		}
+		else if (currentState == State::kNominalBraking) //Shutting down the motors
+		{
+			log_.INFO("Motor", "State Decelerating");
+			stateProcessor->quickStopAll();
+		}
+		else if (currentState == State::kEmergencyBraking) //Stop all motors
+		{
+			log_.INFO("Motor", "State EmergencyBraking");
+			stateProcessor->quickStopAll();
+		}
+		else if (currentState == State::kExiting) //Move very slowly out of tube
+		{
+			log_.INFO("Motor", "State Exiting");
+		}
+		else if (currentState == State::kFailureStopped) //Enter preoperational
+		{
+			log_.INFO("Motor", "State FailureStopped");
+			stateProcessor->enterPreOperational();
+		}
+		else if (currentState == State::kFinished)
+		{
+			log_.INFO("Motor", "State Finished");
+		}
+		else if (currentState == State::kRunComplete) //Run complete
+		{
+			log_.INFO("Motor", "State RunComplete");
+		}
+		else
+		{
+			log_.INFO("Motor", "State Unknown");
+			isRunning = false;
+		}
+	}
+
+	log_.INFO("Motor", "Thread shutting down");
+}
+} // namespace motor_control
+} // namespace hyped
