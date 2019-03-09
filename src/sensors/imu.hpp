@@ -69,6 +69,7 @@ class Imu : public ImuInterface {
    * @param temp - the variable to be updated
    */
   void getTemperature(int* temp);
+  int readFifoNew();
 
  private:
   /*
@@ -76,6 +77,7 @@ class Imu : public ImuInterface {
    */
   void setAcclScale(int scale);
   void init();
+  void enableFifo();
 
   /**
    * @brief used for SPI chipselect with GPIO pin for IMU
@@ -130,6 +132,7 @@ class Imu : public ImuInterface {
   double  acc_divider_;
   bool    is_online_;
   static const uint64_t time_start;
+  size_t frame_size_;
 };
 
 }}  // namespace hyped::sensors
