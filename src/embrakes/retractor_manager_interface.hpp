@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef EMBRAKES_RETRACTORINTERFACE_HPP_
-#define EMBRAKES_RETRACTORINTERFACE_HPP_
+#ifndef EMBRAKES_RETRACTOR_MANAGER_INTERFACE_HPP_
+#define EMBRAKES_RETRACTOR_MANAGER_INTERFACE_HPP_
 
 #include <cstdint> 
 
@@ -30,7 +30,7 @@ struct Pins {
     uint32_t step;
 };
 
-class RetractorInterface
+class RetractorManagerInterface
 {
     public:
         virtual int retract() = 0;
@@ -38,4 +38,4 @@ class RetractorInterface
 
 }}
 
-#endif  // EMBRAKES_RETRACTORINTERFACE_HPP_
+#endif  // EMBRAKES_RETRACTOR_MANAGER_INTERFACE_HPP_

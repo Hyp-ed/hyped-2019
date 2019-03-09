@@ -3,6 +3,7 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "./propulsion/main.hpp"
+#include "./propulsion/can/sender_interface.hpp"
 #include "./propulsion/can/fake_can_sender.hpp"
 #include <unistd.h>
 #include "utils/io/can.hpp"
@@ -10,10 +11,11 @@
 
 using hyped::System;
 using hyped::motor_control::FakeCanSender;
+using hyped::motor_control::SenderInterface;
 using hyped::utils::Logger;
 using hyped::utils::io::can::Frame;
 
-FakeCanSender *can;
+SenderInterface *can;
 Logger *log_motor;
 
 void callProcessNewData()
@@ -29,7 +31,7 @@ void callProcessNewData()
 
 			fr.id = 2;
 			log_motor->INFO("CALLPROCESSNEWDATA", "Reseting");
-			can->processNewData(fr);
+			
 			log_motor->INFO("CALLPROCESSNEWDATA", "Reseted");
 		}
 	}
@@ -46,7 +48,7 @@ void producer()
 
 		fr.id = 1;
 
-		can->pushSdoMessageToQueue(fr);
+		can->sendMessage(fr);
 		log_motor->INFO("PRODUCER", "Produced");
 	}
 }

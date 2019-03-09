@@ -47,7 +47,7 @@ class Main : public Thread
     private:
         bool retracted;
         State currentState;
-        RetractorInterface *retractor;
+        RetractorManagerInterface *retractor;
         Logger &log_;
 };
 

@@ -43,7 +43,9 @@ void Main::run()
 		{2,2}
 	};
 
-	retractor = new Retractor(pins);
+	retractor = new RetractorManager(pins,log_);
+
+	retractor->retract();
 
 	/*while (sys.running_)
 	{

@@ -16,38 +16,24 @@
  *    limitations under the License.
  */
 
-#ifndef EMBRAKES_RETRACTOR_MANAGER_HPP_
-#define EMBRAKES_RETRACTOR_MANAGER_HPP_
+#ifndef EMBRAKES_RETRACTOR_HPP_
+#define EMBRAKES_RETRACTOR_HPP_
 
-#include <cstdint>
-#include <iostream>
-#include <future>
-#include "retractor_manager_interface.hpp"
-#include "utils/logger.hpp"
-
-
-#define EMBRAKEAMOUNT 2
+#include <cstdint> 
+#include "utils/concurrent/thread.hpp"
 
 namespace hyped {
 
-using utils::Logger;
+using utils::concurrent::Thread;
 
 namespace embrakes {
 
-
-class RetractorManager : public RetractorManagerInterface
+class Retractor : Thread
 {
     public:
-        RetractorManager(Pins pins[EMBRAKEAMOUNT],Logger& log);
-        int retract() override;
-
-    private:
-        Pins *pins_;
-        Logger &log_;
-        std::future<int> *retractingErrors;
-
+        void run() override;
 }; 
 
 }}
 
-#endif  // EMBRAKES_RETRACTOR_MANAGER_HPP_
+#endif  // EMBRAKES_RETRACTOR_HPP_
