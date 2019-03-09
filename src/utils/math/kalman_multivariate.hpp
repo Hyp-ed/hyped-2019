@@ -9,8 +9,8 @@
 #include <Eigen/Dense>
 
 
-#ifndef BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_HPP_
-#define BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_HPP_
+#ifndef BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_MVAR_HPP_
+#define BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_MVAR_HPP_
 
 namespace hyped {
 namespace utils {
@@ -19,7 +19,7 @@ namespace math {
 /**
  * @brief    This class is for filtering the data from sensors to smoothen it.
  */
-class Kalman_mvar {
+class KalmanMvar {
  public:
   /**
    * @brief    Construct a new Kalman object with respective dimensions (without control)
@@ -27,7 +27,7 @@ class Kalman_mvar {
    * @param[in] n                       state dimensionality
    * @param[in] m                       measurement dimensionality
    */
-  Kalman(unsigned int n, unsigned int m);
+  KalmanMvar(unsigned int _n, unsigned int _m);
 
   /**
    * @brief    Construct a new Kalman object with respective dimensions (with control)
@@ -36,7 +36,7 @@ class Kalman_mvar {
    * @param[in] m                       measurement dimensionality
    * @param[in] k                       control dimensionality
    */
-  Kalman(unsigned int n, unsigned int m, unsigned int k);
+  KalmanMvar(unsigned int _n, unsigned int _m, unsigned int _k);
 
   /**
    * @brief    Set dynamics model matrices (without control)
@@ -44,7 +44,7 @@ class Kalman_mvar {
    * @param[in] A                       state transition matrix
    * @param[in] Q                       process noise covariance
    */
-  void setDynamicsModel(Eigen::MatrixXd A, Eigen::MatrixXd Q);
+  void setDynamicsModel(Eigen::MatrixXd _A, Eigen::MatrixXd _Q);
 
   /**
    * @brief    Set dynamics model matrices (with control)
@@ -53,7 +53,7 @@ class Kalman_mvar {
    * @param[in] B                       control matrix
    * @param[in] Q                       process noise covariance
    */
-  void setDynamicsModel(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd Q);
+  void setDynamicsModel(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q);
 
   /**
    * @brief    Set measurement model matrices
@@ -61,7 +61,7 @@ class Kalman_mvar {
    * @param[in] H                       measurement matrix
    * @param[in] R                       measurement noise covariance
    */
-  void setMeasurementModel(Eigen::MatrixXd H, Eigen::MatrixXd R);
+  void setMeasurementModel(Eigen::MatrixXd _H, Eigen::MatrixXd _R);
 
   /**
    * @brief    Set model matrices (without control)
@@ -71,7 +71,7 @@ class Kalman_mvar {
    * @param[in] H                       measurement matrix
    * @param[in] R                       measurement noise covariance
    */
-  void setModels(Eigen::MatrixXd A, Eigen::MatrixXd Q, Eigen::MatrixXd H, Eigen::MatrixXd R);
+  void setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R);
 
   /**
    * @brief    Set model matrices (with control)
@@ -82,7 +82,7 @@ class Kalman_mvar {
    * @param[in] H                       measurement matrix
    * @param[in] R                       measurement noise covariance
    */
-  void setModels(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd Q, Eigen::MatrixXd H, Eigen::MatrixXd R);
+  void setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R);
 
   /**
    * @brief    Set initial beliefs
@@ -112,14 +112,14 @@ class Kalman_mvar {
    *
    * @return    Returns the current state estimate
    */
-  Eigen::VectorXf getStateEstimate();
+  Eigen::VectorXf& getStateEstimate();
 
   /**
    * @brief     Get the state uncertainty
    *
    * @return    Returns the current state covariance
    */
-  Eigen::MatrixXd getStateCovariance();
+  Eigen::MatrixXd& getStateCovariance();
 
  private:
   /* problem dimensions */
@@ -139,6 +139,7 @@ class Kalman_mvar {
   /* state estimates */
   Eigen::VectorXf x;                    // state vector: n x 1
   Eigen::MatrixXd P;                    // state covariance: n x n
+  Eigen::MatrixXd I;                    // identity matrix: n x n
 
   /**
    * @brief    Predict state belief with covariance based on dynamics (without control) 
@@ -162,4 +163,95 @@ class Kalman_mvar {
 
 }}}  // hyped::util::math
 
-#endif  // BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_HPP_
+KalmanMvar::KalmanMvar(unsigned int _n, unsigned int _m)
+    : n(_n),
+      m(_m),
+      k(0)
+{}
+
+KalmanMvar::KalmanMvar(unsigned int _n, unsigned int _m, unsigned int _k)
+    : n(_n),
+      m(_m),
+      k(_k)
+{}
+
+void KalmanMvar::setDynamicsModel(Eigen::MatrixXd _A, Eigen::MatrixXd _Q)
+{
+    A = _A;
+    Q = _Q;
+}
+
+void KalmanMvar::setDynamicsModel(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q)
+{
+    A = _A;
+    B = _B;
+    Q = _Q;
+}
+
+void KalmanMvar::setMeasurementModel(Eigen::MatrixXd _H, Eigen::MatrixXd _R)
+{
+    H = _H;
+    R = _R;
+}
+
+void KalmanMvar::setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R)
+{
+    setDynamicsModel(_A, _Q);
+    setMeasurementModel(_H, _R);
+}
+
+void KalmanMvar::setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R)
+{
+    setDynamicsModel(_A, _B, _Q);
+    setMeasurementModel(_H, _R);
+}
+
+void KalmanMvar::setInitial(Eigen::VectorXf x0, Eigen::MatrixXd P0)
+{
+    x = x0;
+    P = P0;
+    I = Eigen::MatrixXd.Identity(n, n);
+}
+
+void KalmanMvar::predict()
+{
+    x = A * x;
+    P = A * P * A.transpose() + Q;
+}
+
+void KalmanMvar::predict(Eigen::VectorXf u)
+{
+    x = A * x + B * u;
+    P = (A * P * A.transpose()) + Q;
+}
+
+void KalmanMvar::correct(Eigen::VectorXf z)
+{
+    K = (P * H.transpose()) * (H * P * H.transpose() + R).inverse();
+    x = x + K * (z - H * x);
+    P = (I - K * H) * P;
+}
+
+void KalmanMvar::filter(Eigen::VectorXf z)
+{
+    predict();
+    correct(z);
+}
+
+void KalmanMvar::filter(Eigen::VectorXf u, Eigen::VectorXf z)
+{
+    predict(u);
+    correct(z);
+}
+
+Eigen::VectorXf& KalmanMvar::getStateEstimate()
+{
+    return x;
+}
+
+Eigen::MatrixXd& KalmanMvar::getStateCovariance()
+{
+    return P;
+}
+
+#endif  // BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_MVAR_HPP_
