@@ -1,7 +1,7 @@
 sudo: required
 language: bash
 services:
-- docker
+# - docker
 
 install: true
 
@@ -12,10 +12,11 @@ before_script:
 - docker run --rm --privileged multiarch/qemu-user-static:register --reset
 
 script:
-- docker run --name travis -it hyped/hyped-2018:latest uname -a
-- docker cp . travis:/test/
-- docker commit travis hyped/current
-- docker run -it hyped/current make -j --silent clean hyped
+- echo DONE
+# - docker run --name travis -it hyped/hyped-2018:latest uname -a
+# - docker cp . travis:/test/
+# - docker commit travis hyped/current
+# - docker run -it hyped/current make -j --silent clean hyped
 
 notifications:
   slack:
