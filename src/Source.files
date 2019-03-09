@@ -4,6 +4,8 @@
 SRCS := \
   data/data.cpp \
   navigation/main.cpp \
+  embrakes/main.cpp \
+  embrakes/retractor_manager.cpp \
   propulsion/state_processor.cpp \
   propulsion/main.cpp \
   propulsion/can/can_sender.cpp \
