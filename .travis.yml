@@ -5,14 +5,15 @@ language: bash
 
 # install: true
 
-# git:
-#   depth: 1
+git:
+  depth: 1
 
 # before_script:
 # - docker run --rm --privileged multiarch/qemu-user-static:register --reset
 
 script:
 - echo DONE
+- make -j --silent clean hyped
 # - docker run --name travis -it hyped/hyped-2018:latest uname -a
 # - docker cp . travis:/test/
 # - docker commit travis hyped/current
