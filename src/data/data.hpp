@@ -197,14 +197,14 @@ class Data {
 
   /**
    * @brief Get the Temperature from the IMU
-   * 
+   *
    * @return int temperature in degrees C
    */
   int getTemperature();
 
   /**
    * @brief Set the Temperature from the IMU
-   * 
+   *
    * @param temp - temp in degrees C
    */
   void setTemperature(int temp);
