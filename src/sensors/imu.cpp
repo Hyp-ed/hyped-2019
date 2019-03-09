@@ -27,8 +27,12 @@ constexpr uint8_t kAccelXoutH               = 0x3B;
 constexpr uint8_t kAccelConfig              = 0x1C;
 constexpr uint8_t kAccelConfig2             = 0x1D;
 
+// Temperature address
+constexpr uint8_t kTempOutH                 = 65;
+
 constexpr uint8_t kWhoAmIImu                = 0x75;   // sensor to be at this address
-constexpr uint8_t kWhoAmIResetValue1        = 0x71;   // data to be at these addresses when read from sensor else not initialised
+// data to be at these addresses when read from sensor else not initialised
+constexpr uint8_t kWhoAmIResetValue1        = 0x71;
 constexpr uint8_t kWhoAmIResetValue2        = 0x70;
 
 // Power Management
@@ -61,7 +65,7 @@ using data::NavigationVector;
 
 namespace sensors {
 
-Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale, uint8_t gyro_scale)
+Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale)
     : spi_(SPI::getInstance()),
     log_(log),
     gpio_(pin, kDirection, log),
@@ -176,21 +180,19 @@ void Imu::getData(ImuData* data)
   if (is_online_) {
     log_.DBG3("Imu", "Getting Imu data");
     auto& acc = data->acc;
-    uint8_t response[14];
+    uint8_t response[8];
     int16_t bit_data;
     float value;
     int i;
     float accel_data[3];
 
-    readBytes(kAccelXoutH, response, 14);
+    readBytes(kAccelXoutH, response, 8);
     for (i = 0; i < 3; i++) {
       bit_data = ((int16_t) response[i*2] << 8) | response[i*2+1];
       value = static_cast<float>(bit_data);
       accel_data[i] = value/acc_divider_  * 9.80665;
-
-      bit_data = ((int16_t) response[i*2 + 8] << 8) | response[i*2+9];
-      value = static_cast<float>(bit_data);
     }
+
     data->operational = is_online_;
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];
@@ -200,6 +202,18 @@ void Imu::getData(ImuData* data)
     log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");
     init();
   }
+}
+
+void Imu::getTemperature(int* data)
+{
+  uint8_t response[2];
+  readBytes(kTempOutH, response, 2);
+
+  // TODO(anyone): When temperature is read correctly add to the data strucutre
+  // TODO(anyone): compare imu temperature values with reliable temperature source
+  uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21; 
+
+  *data = static_cast<int>(temp);
 }
 
 }}   // namespace hyped::sensors
