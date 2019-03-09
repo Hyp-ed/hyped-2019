@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -16,14 +16,14 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_2019_FAKECANSENDER_HPP
-#define HYPED_2019_FAKECANSENDER_HPP
+#ifndef PROPULSION_CAN_FAKE_CAN_SENDER_HPP_
+#define PROPULSION_CAN_FAKE_CAN_SENDER_HPP_
 
+#include <atomic>
+#include <iostream>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "sender_interface.hpp"
-#include <atomic>
-#include <iostream>
 
 namespace hyped
 {
@@ -35,10 +35,9 @@ using utils::io::CanProccesor;
 
 class FakeCanSender : public CanProccesor, public SenderInterface
 {
-
   public:
     FakeCanSender(Logger &log_, uint8_t id);
-    //CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
+    // CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
 
     void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
 
@@ -53,10 +52,10 @@ class FakeCanSender : public CanProccesor, public SenderInterface
   private:
     Logger log_;
     uint8_t node_id_;
-    //Can& can_;
+    // Can& can_;
     std::atomic<bool> isSending;
 };
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_2019_FAKECANSENDER_HPP
+#endif  // PROPULSION_CAN_FAKE_CAN_SENDER_HPP_

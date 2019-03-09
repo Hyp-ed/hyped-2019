@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -30,35 +30,30 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
       motorAmount(motorAmount),
       initialized(false)
 {
-
     log_.DBG1("Motor", "StateProcessor constructor was called");
-    useTestControllers = false;//sys_.fake_motors;
+    useTestControllers = false;  // sys_.fake_motors;
 
-    //controllers = new ControllerInterface[motorAmount];
+    // controllers = new ControllerInterface[motorAmount];
 
-    if (useTestControllers) //Use the test controller implementation
-    {
-    }
-    else //Use real controllers
-    {
-        for (int i = 0; i < motorAmount; i++)
-        {
-            //controllers[i] = new Controller();
+    if (useTestControllers) {  // Use the test controller implementation
+    } else {  // Use real controllers
+        for (int i = 0; i < motorAmount; i++) {
+            // controllers[i] = new Controller();
         }
     }
 }
 
 void StateProcessor::initMotors()
 {
-    //Register controllers on CAN bus
+    // Register controllers on CAN bus
     registerControllers();
 
-    //Configure controller parameters
+    // Configure controller parameters
     configureControllers();
 
-    //TODO: Handle errors
+    // TODO(gregor): Handle errors
 
-    //If no error
+    // If no error
     prepareMotors();
 
     initialized = true;
@@ -120,5 +115,5 @@ void StateProcessor::setInitialized(bool initialized)
     this->initialized = initialized;
 }
 
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped

@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_2019_STATEPROCESSORINTERFACE_HPP
-#define HYPED_2019_STATEPROCESSORINTERFACE_HPP
+#ifndef PROPULSION_STATE_PROCESSOR_INTERFACE_HPP_
+#define PROPULSION_STATE_PROCESSOR_INTERFACE_HPP_
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -31,7 +31,6 @@ namespace motor_control
 using utils::Logger;
 using utils::System;
 
-//TODO: change to array (ask state machine how they want the data
 struct MotorVelocity
 {
   int32_t velocity_1;
@@ -44,40 +43,39 @@ struct MotorVelocity
 
 class StateProcessorInterface
 {
+  public:
+    virtual void initMotors() = 0;
 
-public:
-  virtual void initMotors() = 0;
+    virtual void enterPreOperational() = 0;
 
-  virtual void enterPreOperational() = 0;
+    virtual void sendTargetVelocity(int32_t target_velocity) = 0;
 
-  virtual void sendTargetVelocity(int32_t target_velocity) = 0;
+    virtual MotorVelocity requestActualVelocity() = 0;
 
-  virtual MotorVelocity requestActualVelocity() = 0;
+    virtual void quickStopAll() = 0;
 
-  virtual void quickStopAll() = 0;
+    virtual void healthCheck() = 0;
 
-  virtual void healthCheck() = 0;
+    virtual bool getFailure() = 0;
 
-  virtual bool getFailure() = 0;
+    virtual void accelerate() = 0;
 
-  virtual void accelerate() = 0;
+    virtual void decelerate() = 0;
 
-  virtual void decelerate() = 0;
+    // Getters
+    virtual bool isInitialized() = 0;
 
-  //Getters
-  virtual bool isInitialized() = 0;
+    // Setters
+    virtual void setInitialized(bool initialized) = 0;
 
-  //Setters
-  virtual void setInitialized(bool initialized) = 0;
+  protected:
+    virtual void registerControllers() = 0;
 
-protected:
-  virtual void registerControllers() = 0;
+    virtual void configureControllers() = 0;
 
-  virtual void configureControllers() = 0;
-
-  virtual void prepareMotors() = 0;
+    virtual void prepareMotors() = 0;
 };
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_2019_STATEPROCESSORINTERFACE_HPP
+#endif  // PROPULSION_STATE_PROCESSOR_INTERFACE_HPP_

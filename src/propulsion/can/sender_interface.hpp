@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_2019_SENDERINTERFACE_HPP
-#define HYPED_2019_SENDERINTERFACE_HPP
+#ifndef PROPULSION_CAN_SENDER_INTERFACE_HPP_
+#define PROPULSION_CAN_SENDER_INTERFACE_HPP_
 
 #include "utils/io/can.hpp"
 
@@ -34,7 +34,7 @@ class SenderInterface
     virtual void registerController() = 0;
 };
 
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_2019_SENDERINTERFACE_HPP
+#endif  // PROPULSION_CAN_SENDER_INTERFACE_HPP_

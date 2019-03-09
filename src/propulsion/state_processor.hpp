@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_STATEPROCESSOR_HPP_
-#define HYPED_STATEPROCESSOR_HPP_
+#ifndef PROPULSION_STATE_PROCESSOR_HPP_
+#define PROPULSION_STATE_PROCESSOR_HPP_
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -36,77 +36,77 @@ using utils::System;
 class StateProcessor : public StateProcessorInterface
 {
   public:
-	StateProcessor(int motorAmount, Logger &log);
+    StateProcessor(int motorAmount, Logger &log);
 
-	/**
-		 * @brief { Initializes the motor controllers and prepare the motors }
-		 */
-	void initMotors() override;
+    /**
+         * @brief { Initializes the motor controllers and prepare the motors }
+         */
+    void initMotors() override;
 
-	void enterPreOperational() override;
-	/**
+    void enterPreOperational() override;
+    /**
           *  @brief  { Set target velocity for each controller }
           *
           *  @param[in] { Target velocity calculated in Main }
           */
-	void sendTargetVelocity(int32_t target_velocity) override;
-	/**
+    void sendTargetVelocity(int32_t target_velocity) override;
+    /**
           *  @brief  { Read actual velocity from each controller }
           *
           *  @return { Motor velocity struct }
           */
-	MotorVelocity requestActualVelocity() override;
-	/*
+    MotorVelocity requestActualVelocity() override;
+    /*
          *  @brief  { Sets all controllers into quickStop mode. Use in case of critical failure }
          */
-	void quickStopAll() override;
-	/*
+    void quickStopAll() override;
+    /*
          *  @brief { Checks the error status and warning status in each controller object
          *           Sets critical failure flag true if there is an error }
          */
-	void healthCheck() override;
-	/*
+    void healthCheck() override;
+    /*
          *  @return { Critical failure flag }
          */
-	bool getFailure() override;
+    bool getFailure() override;
 
-	/*
-		 * @brief {Handles the logic for the acceleration phase}
-		 */
-	void accelerate() override;
+    /*
+         * @brief {Handles the logic for the acceleration phase}
+         */
+    void accelerate() override;
 
-	/*
-		 * @brief {Handles the logic for the deceleration phase}
-		 */
-	void decelerate() override;
+    /*
+         * @brief {Handles the logic for the deceleration phase}
+         */
+    void decelerate() override;
 
-	bool isInitialized() override;
+    bool isInitialized() override;
 
-	void setInitialized(bool initialized) override;
+    void setInitialized(bool initialized) override;
 
   protected:
-	/**
+    /**
           *   @brief  Registers the motor controllers to the can
           */
-	void registerControllers() override;
-	/**
+    void registerControllers() override;
+    /**
           *   @brief  Applies configuration settings and sets controllers to Operational mode
           */
-	void configureControllers() override;
-	/**
+    void configureControllers() override;
+    /**
           *   @brief  { Controllers are entered into Operational mode }
           */
-	void prepareMotors() override;
+    void prepareMotors() override;
 
-	bool useTestControllers;
-	Logger &log_;
-	System &sys_;
-	int motorAmount;
-	bool initialized;
-	//ControllerInterface* controllers[];
+    bool useTestControllers;
+    Logger &log_;
+    System &sys_;
+    int motorAmount;
+    bool initialized;
+    // ControllerInterface* controllers[];
 };
 
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_STATEPROCESSOR_HPP_
+#endif  // PROPULSION_STATE_PROCESSOR_HPP_
