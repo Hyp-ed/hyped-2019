@@ -25,9 +25,9 @@
 #define BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
 
 #include <cstdint>
-#include "utils/concurrent/thread.hpp"
-#include "state_machine/hyped-machine.hpp"
-#include "data/data.hpp"
+#include "../utils/concurrent/thread.hpp"
+#include "hyped-machine.hpp"
+#include "../data/data.hpp"
 
 namespace hyped {
 

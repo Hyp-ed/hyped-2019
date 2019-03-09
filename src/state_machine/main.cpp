@@ -22,12 +22,12 @@
 
 #include <cstdint>
 
-#include "state_machine/hyped-machine.hpp"
-#include "state_machine/main.hpp"
+#include "hyped-machine.hpp"
+#include "main.hpp"
 
-#include "data/data.hpp"
-#include "utils/timer.hpp"
-#include "utils/system.hpp"
+#include "../data/data.hpp"
+#include "../utils/timer.hpp"
+#include "../utils/system.hpp"
 
 namespace hyped {
 namespace state_machine {
@@ -57,7 +57,7 @@ void Main::run()
 
     switch (sm_data_.current_state) {
       case data::State::kIdle:
-        if (checkCommsCriticalFailure()) break;   // TODO(anyone): discuss this transition again
+        if (checkCommsCriticalFailure()) break;   // TODO(anyone): discuss this transition again 
         if (checkInitialised())          break;
         break;
       case data::State::kCalibrating:

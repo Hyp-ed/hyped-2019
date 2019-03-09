@@ -39,11 +39,13 @@ void Main::run()
 
     System &sys = System::getSystem();
 
-    States state = Idle;
+    Data stateMachineData = Data::getInstance();
 
     while (isRunning && sys.running_) {
-        log_.INFO("Motor", "Thread running");
-        if (state == States::Idle) {  // Initialize motors
+        // Get the current state of the system from the state machine's data
+        currentState = stateMachineData.getStateMachineData().current_state;
+
+        if (currentState == State::kIdle) {  // Initialize motors
             log_.INFO("Motor", "State idle");
 
             if (!stateProcessor->isInitialized()) {
@@ -51,35 +53,35 @@ void Main::run()
             }
 
             yield();
-        } else if (state == States::Calibrating) {
+        } else if (currentState == State::kCalibrating) {
             // Calculate slip values
             log_.INFO("Motor", "State Calibrating");
-        } else if (state == States::Ready) {
+        } else if (currentState == State::kReady) {
             // Standby and wait
             log_.INFO("Motor", "State Ready");
-        } else if (state == States::Accelerating) {
+        } else if (currentState == State::kAccelerating) {
             // Accelerate the motors
             // TODO(gregor): Controller should handle the communication with the SpeedCalculator
             log_.INFO("Motor", "State Accelerating");
             stateProcessor->accelerate();
-        } else if (state == States::Decelerating) {
-            // Decelerate the motors (probably just shutting down the motors)
-            log_.INFO("Motor", "State Decelerating");
-            stateProcessor->decelerate();
-        } else if (state == States::EmergencyBraking) {
+        } else if (currentState == State::kNominalBraking) {
+            // Stop all motors
+            log_.INFO("Motor", "State NominalBraking");
+            stateProcessor->quickStopAll();
+        } else if (currentState == State::kEmergencyBraking) {
             // Stop all motors
             log_.INFO("Motor", "State EmergencyBraking");
             stateProcessor->quickStopAll();
-        } else if (state == States::Exiting) {
+        } else if (currentState == State::kExiting) {
             // Move very slowly out of tube
             log_.INFO("Motor", "State Exiting");
-        } else if (state == States::FailureStopped) {
+        } else if (currentState == State::kFailureStopped) {
             // Enter preoperational
             log_.INFO("Motor", "State FailureStopped");
             stateProcessor->enterPreOperational();
-        } else if (state == States::Finished) {
+        } else if (currentState == State::kFinished) {
             log_.INFO("Motor", "State Finished");
-        } else if (state == States::RunComplete) {
+        } else if (currentState == State::kRunComplete) {
             // Run complete
             log_.INFO("Motor", "State RunComplete");
         } else {

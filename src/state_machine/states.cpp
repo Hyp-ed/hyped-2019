@@ -18,7 +18,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#include "state_machine/states.hpp"
+#include "states.hpp"
 #include <stdlib.h>
 
 namespace hyped {

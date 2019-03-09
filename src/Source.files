@@ -11,6 +11,8 @@ SRCS := \
   sensors/imu.cpp \
   sensors/main.cpp \
   state_machine/main.cpp \
+  state_machine/hyped-machine.cpp \
+  state_machine/states.cpp \
   telemetry/main.cpp \
   utils/concurrent/barrier.cpp \
   utils/concurrent/condition_variable.cpp \

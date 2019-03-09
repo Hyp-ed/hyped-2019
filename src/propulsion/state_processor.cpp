@@ -79,19 +79,6 @@ void StateProcessor::accelerate()
 {
 }
 
-void StateProcessor::decelerate()
-{
-}
-
-void StateProcessor::sendTargetVelocity(int32_t target_velocity)
-{
-}
-
-MotorVelocity StateProcessor::requestActualVelocity()
-{
-    return MotorVelocity();
-}
-
 void StateProcessor::quickStopAll()
 {
 }
@@ -108,11 +95,6 @@ bool StateProcessor::getFailure()
 bool StateProcessor::isInitialized()
 {
     return this->initialized;
-}
-
-void StateProcessor::setInitialized(bool initialized)
-{
-    this->initialized = initialized;
 }
 
 }  // namespace motor_control

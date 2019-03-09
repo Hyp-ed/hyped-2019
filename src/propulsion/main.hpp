@@ -25,14 +25,18 @@
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
 #include "./can/can_sender.hpp"
+#include "data/data.hpp"
 
 #include "state_processor.hpp"
 
 namespace hyped
 {
+using data::Data;
+using data::State;
 using utils::Logger;
 using utils::System;
 using utils::concurrent::Thread;
+
 namespace motor_control
 {
 class Main : public Thread
@@ -40,32 +44,18 @@ class Main : public Thread
     public:
         Main(uint8_t id, Logger &log);
 
-        /**
-         * Gets called when Thread is started. Entrypoint in motor control
-         * Includes the event loop for motor control
-         * Responds to the different states with appropriate actions
-         * */
-        void run() override;
+    /**
+     * @brief {This function is the entrypoint to the propulsion module and reacts to the certain states}
+    * */
+    void run() override;
 
-    private:
-        bool isRunning;
-        Logger &log_;
-        StateProcessor *stateProcessor;
+  private:
+    bool isRunning;
+    Logger &log_;
+    StateProcessor *stateProcessor;
+    State currentState;
 };
 
-enum States
-{
-    Idle,
-    Calibrating,
-    Ready,
-    Accelerating,
-    Decelerating,
-    EmergencyBraking,
-    FailureStopped,
-    RunComplete,
-    Exiting,
-    Finished
-};
 }  // namespace motor_control
 }  // namespace hyped
 
