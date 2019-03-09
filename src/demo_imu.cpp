@@ -1,4 +1,24 @@
 
+/*
+ * Author: Jack Horsburgh
+ * Organisation: HYPED
+ * Date: 6/03/19
+ * Description: Demo for MPU9250 sensor
+ *
+ *    Copyright 2018 HYPED
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 
 #include "sensors/imu.hpp"
 #include "utils/logger.hpp"
@@ -12,36 +32,25 @@ using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using namespace hyped::data;
 using namespace std;
+using hyped::data::ImuData;
 
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, 0);
-  Imu imu(log, 66, 0x08, 0x00);
+  Imu imu(log, 66, 0x08);
 
   log.INFO("TEST-Imu", "MPU9250 instance successfully created");
-  // int count = imu.readFifo(data);
-  // log.DBG("FIFO_COUNT", "%d", count);
   int i = 0;
   while (i < 20) {
     std::vector<ImuData> data;
     int count = imu.readFifo(data);
     log.DBG("ReadFifo Count", "%d", count);
-    for (int i=0; i < count; i++) {       // two bursts of 42, last gyro reading missing 2 bytes
-    // not big enough for missing 8 bytes
-      log.DBG("TEST-mpu9250", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);
-      log.DBG("TEST-mpu9250", "gyroscope readings     x: %f rad/s, y: %f rad/s, z: %f rad/s", data[i].gyr[0], data[i].gyr[1], data[i].gyr[2]);
+    for (int i=0; i < count; i++) {
+      log.DBG("TEST-mpu9250", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);    
     }
     Thread::sleep(10);
     i++;
   }
-  
-
-  // for (int i=0; i< 100; i++) {
-  //   log.DBG("TEST-mpu9250", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", imu.acc[0], imu.acc[1], imu.acc[2]);
-  //   log.DBG("TEST-mpu9250", "gyroscope readings     x: %f rad/s, y: %f rad/s, z: %f rad/s", imu.gyr[0], imu.gyr[1], imu.gyr[2]);
-  //   Thread::sleep(500);
-  // }
-
  	return 0;
 }

@@ -31,8 +31,12 @@ constexpr uint8_t kAccelXoutH               = 0x3B;
 constexpr uint8_t kAccelConfig              = 0x1C;
 constexpr uint8_t kAccelConfig2             = 0x1D;
 
+// Temperature address
+constexpr uint8_t kTempOutH                 = 65;
+
 constexpr uint8_t kWhoAmIImu                = 0x75;   // sensor to be at this address
-constexpr uint8_t kWhoAmIResetValue1        = 0x71;   // data to be at these addresses when read from sensor else not initialised
+// data to be at these addresses when read from sensor else not initialised
+constexpr uint8_t kWhoAmIResetValue1        = 0x71;
 constexpr uint8_t kWhoAmIResetValue2        = 0x70;
 
 // Power Management
@@ -75,7 +79,6 @@ constexpr uint8_t kUserCtrl = 0x6A;
  * Bit 5: gyro Y H/L
  * Bit 6: gyro X H/L
  * Bit 7: temp H/L
- * 
  */
 
 constexpr uint8_t kTempoutH = 0x41;
@@ -89,7 +92,7 @@ using data::NavigationVector;
 
 namespace sensors {
 
-Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale, uint8_t gyro_scale)
+Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale)
     : spi_(SPI::getInstance()),
     log_(log),
     gpio_(pin, kDirection, log),
@@ -114,21 +117,18 @@ void Imu::init()
   writeByte(kMpuRegConfig, 0x01);
   writeByte(kAccelConfig2, 0x01);
   setAcclScale(acc_scale_);
-  // Enable the fifo for Accelerometer and Gyro 
+  // Enable the fifo for Accelerometer and Gyro
   // TODO(anyone): Disable FIFO then Enable, use the reset bit in register kUserCtrl
 
-  writeByte(kUserCtrl, 0x00);   // Disable fifo on both registers
+  writeByte(kUserCtrl, 0x00);   // Disable fifo on both registers and reset
   writeByte(kFifoEnable, 0x00);
 
-  writeByte(kUserCtrl, 0x40);        // enable fifo
-  writeByte(kFifoEnable, 0x78);
-  writeByte(kUserCtrl, 0x04);         // reset fifo
+  Thread::sleep(200);
+
+  writeByte(kFifoEnable, 0x08);
+  writeByte(kUserCtrl, 0x40);         // reset fifo
 
   log_.INFO("Imu", "FIFO Enabled");
-
-  // this outputs repetition of data sets
-  // writeByte(kMpuRegConfig, data | 0x40);      // config register to fifo mode, can use address 26
-  // log_.INFO("Imu", "FIFO Mode on, at register 0x%x", kMpuRegConfig);
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
 }
 
@@ -215,10 +215,8 @@ void Imu::setAcclScale(int scale)
 }
 
 #pragma pack(push, 1)
-struct Imu_raw{         // 12 bytes
+struct Imu_raw {   // 6 bytes
   uint16_t acc[3];
-  uint16_t gyro[3];
-  // uint16_t temp;        // 2 bytes
 };
 #pragma pack(pop)
 
@@ -230,15 +228,12 @@ void myPrint(int i)
 {
   Imu_raw& data = raw_data[i];
   printf("acc 0x%x 0x%x 0x%x\n", data.acc[0], data.acc[1], data.acc[2]);
-  printf("gyro 0x%x 0x%x 0x%x\n", data.gyro[0], data.gyro[1], data.gyro[2]);
-
 }
 
 int Imu::readFifo(std::vector<ImuData>& data)
-{ 
-  Thread::sleep(500);     // wait half second, still doesnt do anything to data
+{
   uint8_t count[2];
-  for (int i = 0; i < kFifo_size/sizeof(Imu_raw); i++) {
+  for (int i = 0; i < kFifo_size/sizeof(Imu_raw); i++) {        // clear struct
     raw_data[i] = {};
   }
   // byte count of fifo queue into uint count var
@@ -247,42 +242,40 @@ int Imu::readFifo(std::vector<ImuData>& data)
 
   uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // convert big->little endian of count (2 bytes) since BBB reads from little and IMU reads from big
 
-  
   // Get count make to the nearest lowest even number
-  fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct 
+  fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct
+  
   // log_.DBG("Fifo Count", "0x%x", fifo_bytes);
-  // fifo_bytes = std::min(kFifo_size, fifo_bytes); 
+  // fifo_bytes = std::min(kFifo_size, fifo_bytes);
 
-  if(fifo_bytes==0){
-    log_.DBG("Empty reference","No value present here!");     // if fifo is empty
-  } 
+  if (fifo_bytes == 0) {
+    log_.DBG("Empty reference", "No value present here!");     // if fifo is empty
+    return 0;
+  }
 
   // see if overflowed by accessing INT_STATUS register @ Bit4
-  uint8_t overflow;
-  readByte(0x3A,reinterpret_cast<uint8_t*>(overflow));    // INT_STATUS register
-  uint8_t is_overflowed = overflow & 10? 1 : 0;
-  log_.DBG("FIFO Overflow","%f",is_overflowed);     // if fifo overflowed == 1
-
+  uint8_t overflow = 0;
+  readByte(0x3A, reinterpret_cast<uint8_t*>(overflow));    // INT_STATUS register
+  uint8_t is_overflowed = overflow & 0x10? 1 : 0;
+  if (is_overflowed)
+    log_.DBG("FIFO Overflow", " = True");     // if fifo overflowed == 1
+  
   // Read from fifo queue register into raw_data struct minimum number of complete data sets
   // if (fifo_bytes < fifo_bytes/sizeof(Imu_raw))
   //   return 0;
   readBytes(kFifoRW, reinterpret_cast<uint8_t*>(raw_data), fifo_bytes);
   // log_.DBG("Raw Fifo data", "x = 0x%x, y = 0x%x, z = 0x%x", raw_data[0].acc[0], raw_data[0].acc[1], raw_data[0].acc[2]);
-  
-  // need to get rid of empty zeros here
-  // for complete set of FifoCount = 42 (504 bytes total), half are 0s -> 
-  // pointer error to bad data?
-  
-  // "When the FIFO buffer has overflowed, the oldest data will be lost and 
+
+
+  // "When the FIFO buffer has overflowed, the oldest data will be lost and
   // new data will be written to the FIFO unless register 26 CONFIG, bit[6] FIFO_MODE = 1."
-  
+
   for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){      // will not read if fifo is empty
     // myPrint(i);
     ImuData imu_data;
     imu_data.acc[0] = raw_data[i].acc[0];
     imu_data.acc[1] = raw_data[i].acc[1];
     imu_data.acc[2] = raw_data[i].acc[2];
-    // imu_data.temp   = raw_data[i].temp;
     imu_data.operational = is_online_;
     data.push_back(imu_data);
   }
@@ -297,25 +290,18 @@ void Imu::getData(ImuData* data)
   if (is_online_) {
     log_.DBG3("Imu", "Getting Imu data");
     auto& acc = data->acc;
-    uint8_t response[14];
+    uint8_t response[8];
     int16_t bit_data;
     float value;
     int i;
     float accel_data[3];
 
-    readBytes(kAccelXoutH, response, 14);
+    readBytes(kAccelXoutH, response, 8);
     for (i = 0; i < 3; i++) {
       bit_data = ((int16_t) response[i*2] << 8) | response[i*2+1];
       value = static_cast<float>(bit_data);
       accel_data[i] = value/acc_divider_  * 9.80665;
-
-      bit_data = ((int16_t) response[i*2 + 8] << 8) | response[i*2+9];
-      value = static_cast<float>(bit_data);
     }
-
-    // uint16_t temp_data;
-    // readBytes(kTempoutH,reinterpret_cast<uint8_t*>(temp),2);
-
     data->operational = is_online_;
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];
@@ -325,6 +311,18 @@ void Imu::getData(ImuData* data)
     log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");
     init();
   }
+}
+
+void Imu::getTemperature(int* data)
+{
+  uint8_t response[2];
+  readBytes(kTempOutH, response, 2);
+
+  // TODO(anyone): When temperature is read correctly add to the data strucutre
+  // TODO(anyone): compare imu temperature values with reliable temperature source
+  uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21;
+
+  *data = static_cast<int>(temp);
 }
 
 }}   // namespace hyped::sensors
