@@ -19,11 +19,11 @@
 #ifndef DATA_DATA_HPP_
 #define DATA_DATA_HPP_
 
-#include "utils/math/vector.hpp"
+#include "../utils/math/vector.hpp"
 #include <cstdint>
 #include <array>
-#include "data/data_point.hpp"
-#include "utils/concurrent/lock.hpp"
+#include "data_point.hpp"
+#include "../utils/concurrent/lock.hpp"
 
 using std::array;
 
@@ -53,7 +53,7 @@ struct Module {
 // Navigation
 // -------------------------------------------------------------------------------------------------
 typedef float NavigationType;
-struct Navigation {
+struct Navigation : public Module {
   NavigationType  distance; //m
   NavigationType  velocity; //m/s
   NavigationType  acceleration; //m/s^2
@@ -195,6 +195,20 @@ class Data {
   void setNavigationData(const Navigation& nav_data);
 
   /**
+   * @brief Get the Temperature from the IMU
+   * 
+   * @return int temperature in degrees C
+   */
+  int getTemperature();
+
+  /**
+   * @brief Set the Temperature from the IMU
+   * 
+   * @param temp - temp in degrees C
+   */
+  void setTemperature(int temp);
+
+  /**
    * @brief      Retrieves data from all sensors
    */
   Sensors getSensorsData();
@@ -265,6 +279,7 @@ private:
   Communications communications_;
   SensorCalibration calibration_data_;
   EmergencyBrakes emergency_brakes_;
+  int temperature_;  // In degrees C
 
 
   // locks for data substructures
@@ -272,6 +287,7 @@ private:
   Lock lock_navigation_;
   Lock lock_sensors_;
   Lock lock_motors_;
+  Lock lock_temp_;
 
   Lock lock_communications_;
   Lock lock_batteries_;
