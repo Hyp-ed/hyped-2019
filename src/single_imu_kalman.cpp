@@ -45,7 +45,6 @@ using hyped::utils::math::OnlineStatistics;
 using hyped::utils::math::KalmanMvar;
 using hyped::utils::System;
 using hyped::utils::Timer;
-using hyped::utils::ScopedTimer;
 
 const Eigen::MatrixXd createStateTransitionMatrix(unsigned int n, double dt)
 {
@@ -110,9 +109,8 @@ int main(int argc, char *argv[])
 	System& sys = System::getSystem();
 	Logger log(sys.verbose, sys.debug);
 	Timer timer;
-	Timer filterTimer;
-    double last_time = 0.0;
-    double dt = 0.0;
+
+    double current_time = -1.0;
 	bool writeToFile = (sys.imu_id > 0) || (sys.run_id > 0);
 
 	// Sensor setup
@@ -124,7 +122,7 @@ int main(int argc, char *argv[])
     unsigned int n = 9;
     unsigned int m = 3;
     KalmanMvar kalmanFilter = KalmanMvar(n, m);
-    Eigen::MatrixXd A = createStateTransitionMatrix(n, dt);
+    Eigen::MatrixXd A = createStateTransitionMatrix(n, 0.0);
     Eigen::MatrixXd H = Eigen::MatrixXd::Zero(m, n);
     for (unsigned int i = 0; i < m; i++)
     {
@@ -176,17 +174,20 @@ int main(int argc, char *argv[])
 	{
 		// Query sensor and correct values
         {
-            ScopedTimer scopeTimer(&filterTimer);
             accRaw = queryImuAcceleration(imu, imuData, &timer);
         }
 		accCor = DataPoint<NavigationVector>(accRaw.timestamp, accRaw.value - gVector);
 
-        double current_time = filterTimer.getMillis();
-        dt = (current_time - last_time)/ 1000.0;
-        last_time = current_time;
+        Eigen::MatrixXd A;
+        if (current_time == -1.0)
+        {
+            A = createStateTransitionMatrix(n, 0.0);
+        } else
+        {
+            A = createStateTransitionMatrix(n, (accRaw.timestamp - current_time)/1000000.0);
+        }
+        current_time = accRaw.timestamp;
 
-
-        Eigen::MatrixXd A = createStateTransitionMatrix(n, dt);
         kalmanFilter.update(A);
         Eigen::VectorXd z(m);
         for (unsigned int i = 0; i < m; i++)
