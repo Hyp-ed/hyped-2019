@@ -16,7 +16,7 @@
 ###### On Access Point Computer
 - Configure static IP address for ethernet interface
   - This will depend on your operating system, but typically under network settings somewhere (watch video for reference)
-  - Set IP address to `192.168.1.50`
+  - Set IP address to `192.168.1.40`
   - Set Subnet Mask to `255.255.255.0`
 - Try `ping 192.168.1.20`
   - If request times out or other error, restart rocket and try again
@@ -28,7 +28,7 @@
   - Set `Wireless Mode` to `Access Point`
   - Check `WDS (Transparent Bridge Mode)` box
   - Set `SSID` to `ubnt-bridge`
-  - Set `Frequency` to `912` - *not sure why, seems to work better when this is set*
+  - Set `Frequency` to `917` - *not sure why, seems to work better when this is set, feel free to mess around with this*
   - Set `Security` to `WPA2-AES`
   - Set `WPA Authentication` to `PSK`
   - Set `WPA Preshared Key` to `password1234` - *can be what you want, but we use password1234 just to keep things simple*
@@ -63,3 +63,4 @@
   - Set `IP Address` to `192.168.1.160`
   - Set `Subnet Mask` to `255.255.255.0`
   - Click `Change` button in bottom right, and apply changes
+- Open up port 9090 by running `sudo ufw allow 9090` - *command is for Ubuntu, use respective command for your OS*
