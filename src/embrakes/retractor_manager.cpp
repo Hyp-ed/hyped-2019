@@ -4,10 +4,12 @@ namespace hyped {
     namespace embrakes {
         RetractorManager::RetractorManager(Pins pins[EMBRAKEAMOUNT],Logger& log) : log_(log)
         {
-            pins_ = new Pins[sizeof(pins)/sizeof(pins[0])];
+            errors = new std::atomic<int>[sizeof(pins)/sizeof(pins[0])];  
+            retractors_ = new Retractor*[sizeof(pins)/sizeof(pins[0])]; 
 
             for(int i = 0;i <= (sizeof(pins)/sizeof(Pins));i++) {
-                pins_[i] = pins[i];
+                errors[0] = 0;
+                retractors_[i] = new Retractor(pins[i].activate,pins[i].step,&errors[0]);
             }
         }
 
@@ -17,8 +19,8 @@ namespace hyped {
         //return the according response. 0 for everything is fine
         int RetractorManager::retract()
         {
-            for(int i = 0;i <= (sizeof(pins_)/sizeof(pins_[0]));i++) {
-                std::cout << "Elem " << i << " Activate: " << pins_[i].activate << " Step: " << pins_[i].step << std::endl;
+            for(int i = 0; i <= (sizeof(errors)/sizeof(errors[0]));i++) {
+                
             }
 
             return 0;

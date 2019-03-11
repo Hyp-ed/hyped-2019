@@ -20,6 +20,7 @@
 #define EMBRAKES_RETRACTOR_HPP_
 
 #include <cstdint> 
+#include <atomic>
 #include "utils/concurrent/thread.hpp"
 
 namespace hyped {
@@ -31,7 +32,13 @@ namespace embrakes {
 class Retractor : Thread
 {
     public:
+        Retractor(uint32_t activate,uint32_t step,std::atomic<int> *error);
         void run() override;
+
+    private:
+        uint32_t activate_;
+        uint32_t step_;
+        std::atomic<int> *error_;
 }; 
 
 }}

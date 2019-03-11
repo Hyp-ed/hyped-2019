@@ -20,9 +20,9 @@
 #define EMBRAKES_RETRACTOR_MANAGER_HPP_
 
 #include <cstdint>
-#include <iostream>
-#include <future>
+#include <atomic>
 #include "retractor_manager_interface.hpp"
+#include "retractor.hpp"
 #include "utils/logger.hpp"
 
 
@@ -44,8 +44,8 @@ class RetractorManager : public RetractorManagerInterface
     private:
         Pins *pins_;
         Logger &log_;
-        std::future<int> *retractingErrors;
-
+        Retractor **retractors_;
+        std::atomic<int> *errors;
 }; 
 
 }}
