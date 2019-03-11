@@ -47,9 +47,9 @@ using hyped::utils::System;
 using hyped::utils::Timer;
 using hyped::utils::ScopedTimer;
 
-const Eigen::MatrixXd createStateTransitionMatrix(double dt)
+const Eigen::MatrixXd createStateTransitionMatrix(unsigned int n, double dt)
 {
-    Eigen::MatrixXd A;
+    Eigen::MatrixXd A(n, n);
     double acc_ddt = 0.5 * sqrt(dt);
     A << 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt, 0.0, 0.0,
          0.0, 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt, 0.0,
@@ -91,7 +91,7 @@ void outfileSetup(std::ofstream* outfile, int imu_id, int run_id)
 
 void printToFile(std::ofstream* outfile, DataPoint<NavigationVector>* accRaw, DataPoint<NavigationVector>* accCor,
 										 DataPoint<NavigationVector>*    vel, DataPoint<NavigationVector>*    pos,
-                                         Eigen::VectorXf* x)
+                                         Eigen::VectorXd* x)
 {
 	*outfile << accRaw->value[0] << "," << accRaw->value[1] << "," << accRaw->value[2] << ","
 	 		 << accCor->value[0] << "," << accCor->value[1] << "," << accCor->value[2] << ","
@@ -120,43 +120,29 @@ int main(int argc, char *argv[])
 	Imu* imu = new Imu(log, i2c, 0x08, 0x00);
 	ImuData* imuData = new ImuData();
 
-    // Filter setup
-    KalmanMvar kalmanFilter = KalmanMvar(9, 3);
-    Eigen::MatrixXd A = createStateTransitionMatrix(dt);
-    Eigen::MatrixXd H;
-    H << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
-    Eigen::MatrixXd Q;
-    Q << 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
-         0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
-         0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
-         0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
-         0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
-         0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
-         0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
-         0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
-         0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01;
+    // Filter setup: dynamics & measurement models + initial estimates
+    unsigned int n = 9;
+    unsigned int m = 3;
+    KalmanMvar kalmanFilter = KalmanMvar(n, m);
+    Eigen::MatrixXd A = createStateTransitionMatrix(n, dt);
+    Eigen::MatrixXd H = Eigen::MatrixXd::Zero(m, n);
+    for (unsigned int i = 0; i < m; i++)
+    {
+        H(m, n - (m - i)) = 1.0;
+    }
+    Eigen::MatrixXd Q = Eigen::MatrixXd::Constant(n, n, 0.01);
 
-    Eigen::MatrixXd R;
-    R << 0.05, 0.0, 0.0,
-         0.0, 0.05, 0.0,
-         0.0, 0.0, 0.05;
+    Eigen::MatrixXd R = Eigen::MatrixXd::Zero(m, m);
+    for (unsigned int i = 0; i < m; i++)
+    {
+        R(i, i) = 0.05;
+    }
 
     kalmanFilter.setModels(A, Q, H, R);
 
-    Eigen::VectorXf x0;
-    x0 << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-    Eigen::MatrixXd P0;
-    P0 << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+    // set initial estimates
+    Eigen::VectorXd x0 = Eigen::VectorXd::Zero(n);
+    Eigen::MatrixXd P0 = Eigen::MatrixXd::Zero(n, n);
     kalmanFilter.setInitial(x0, P0);
     
 
@@ -200,9 +186,9 @@ int main(int argc, char *argv[])
         last_time = current_time;
 
 
-        Eigen::MatrixXd A = createStateTransitionMatrix(dt);
+        Eigen::MatrixXd A = createStateTransitionMatrix(n, dt);
         kalmanFilter.update(A);
-        Eigen::VectorXf z;
+        Eigen::VectorXd z;
         z << accCor.value[0], accCor.value[1], accCor.value[2];
         kalmanFilter.filter(z);
 
@@ -216,11 +202,11 @@ int main(int argc, char *argv[])
 	  							 vel.value[0], vel.value[1], vel.value[2], 
 	  							 pos.value[0], pos.value[1], pos.value[2]);		
 
-        Eigen::VectorXf x = kalmanFilter.getStateEstimate();
+        Eigen::VectorXd x = kalmanFilter.getStateEstimate();
 		log.INFO("FILTERED", "p_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\ta_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\n", 
-	  					x[0], x[1], x[2],
-                        x[3], x[4], x[5],
-                        x[6], x[7], x[8]);
+	  					x(0), x(1), x(2),
+                        x(3), x(4), x(5),
+                        x(6), x(7), x(8));
 		if (writeToFile > 0) 
 		{
 			printToFile(&outfile, &accRaw, &accCor, &vel, &pos, &x);
