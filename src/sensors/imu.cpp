@@ -63,26 +63,10 @@ constexpr uint8_t kBitHReset                = 0x80;
 
 // values for FIFO
 constexpr uint8_t kFifoEnable = 0x23;   // set FIFO enable flags to have sensor data registers be written to data
-constexpr uint8_t kFifoCountH = 0x72;   // bit [4:0]- ONLY 5 BITS
-constexpr uint8_t kFifoCountL = 0x73;   // bit [7:0]
-constexpr uint8_t kFifoRW = 0x74;    // bit [7:0]
-constexpr uint8_t kUserCtrl = 0x6A;
-constexpr uint8_t kIntEnable = 0x38;
-// Use this register to read and write data from the FIFO buffer
-// Data is written to the FIFO in order of register number (lo->hi)
-// CHECK fifo_bytes TO ENSURE FIFO BUFFER IS NOT READ WHEN EMPTY
-/** (write)
- * Bit 0: SLV_0
- * Bit 1: SLV_1
- * Bit 2: SLV_2
- * Bit 3: acceleration H/L in XYZ directions
- * Bit 4: gyro Z H/L
- * Bit 5: gyro Y H/L
- * Bit 6: gyro X H/L
- * Bit 7: temp H/L
- */
-
-// Below used for FIFO
+constexpr uint8_t kFifoCountH = 0x72;   // 2 bytes for H and L registers
+constexpr uint8_t kFifoRW = 0x74;       // bit [7:0]
+constexpr uint8_t kUserCtrl = 0x6A;     // to reset and enable FIFO
+constexpr uint8_t kIntEnable = 0x38;    // for FIFO overflow, read 0x10 at this register
 
 constexpr uint8_t kFifoAccel = 0x08;
 
@@ -122,12 +106,6 @@ void Imu::init()
   writeByte(kMpuRegConfig, 0x01);
   writeByte(kAccelConfig2, 0x01);
   setAcclScale(acc_scale_);
-  // Enable the fifo for Accelerometer and Gyro
-  // TODO(anyone): Disable FIFO then Enable, use the reset bit in register kUserCtrl
-
-  // writeByte(kFifoEnable, 0x08);
-  // writeByte(kUserCtrl, 0x04);
-  // writeByte(kIntEnable,0x04);       // enable overflow interrupt flag
   enableFifo();
 
   log_.INFO("Imu", "FIFO Enabled");
@@ -135,11 +113,11 @@ void Imu::init()
 }
 
 void Imu::enableFifo() {
-  writeByte(kUserCtrl, 0x04);   // Put serial interface to SPI only
-  Thread::sleep(500);
-  writeByte(kUserCtrl, 0x40);
+  writeByte(kUserCtrl, 0x04);       // Put serial interface to SPI only, FIFO reset
+  Thread::sleep(500);               // TODO(Jack): adjust sleep
+  writeByte(kUserCtrl, 0x40);       // FIFO enable
   writeByte(kFifoEnable, kFifoAccel);
-  frame_size_ = 6;
+  frame_size_ = 6;                  // only for acceleration xyz
 }
 
 bool Imu::whoAmI()
@@ -241,122 +219,49 @@ void myPrint(int i)
   printf("acc 0x%x 0x%x 0x%x\n", data.acc[0], data.acc[1], data.acc[2]);
 }
 
-int Imu::readFifoNew(){
+int Imu::readFifoNew(std::vector<ImuData>& data){
   // get fifo size
   uint8_t buffer[frame_size_];
-  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);
+  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);    // read FIFO count from H and L registers
   
-  size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));    // convert big->little endian of count (2 bytes) since BBB reads from little and IMU reads from big
+  // convert big->little endian of count (2 bytes) since BBB reads from little and IMU reads from big
+  size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
+ 
   if (fifo_size == 0) {
-    log_.DBG("Fifo", "Buffer size = %d", fifo_size);
+    log_.DBG("FIFO", "FIFO EMPTY");
     return 0;
     }
-  log_.DBG("Fifo", "Buffer size = %d", fifo_size);
-  int16_t axcounts, aycounts, azcounts;
+  log_.DBG("FIFO", "Buffer size = %d", fifo_size);
+  int16_t axcounts, aycounts, azcounts;           // include negative int
   float value_x, value_y, value_z;
   float accel_data[3];
-  for (size_t i = 0; i < (fifo_size/frame_size_); i++) {
+  for (size_t i = 0; i < (fifo_size/frame_size_); i++) {    // frame_size_ private member, declared in enableFifo()
     readBytes(kFifoRW, buffer, frame_size_);
-    axcounts = (((int16_t)buffer[0]) << 8) | buffer[1];  
+    axcounts = (((int16_t)buffer[0]) << 8) | buffer[1];     // 2 byte acc data for xyz
     aycounts = (((int16_t)buffer[2]) << 8) | buffer[3];
     azcounts = (((int16_t)buffer[4]) << 8) | buffer[5];
 
+    // convert to floats for accel_data
     value_x = static_cast<float>(axcounts);
     value_y = static_cast<float>(aycounts);
     value_z = static_cast<float>(azcounts);
-    accel_data[0] = value_x/acc_divider_  * 9.80665;
-    accel_data[1] = value_y/acc_divider_  * 9.80665;
-    accel_data[2] = value_z/acc_divider_  * 9.80665;
-  
+    // accel_data[0] = value_x/acc_divider_  * 9.80665;
+    // accel_data[1] = value_y/acc_divider_  * 9.80665;
+    // accel_data[2] = value_z/acc_divider_  * 9.80665;
 
+    // put data in struct and add to data vector (param)
+    ImuData imu_data;
+    imu_data.operational = is_online_;
+    imu_data.acc[0] = value_x/acc_divider_  * 9.80665;
+    imu_data.acc[1] = value_y/acc_divider_  * 9.80665;
+    imu_data.acc[2] = value_z/acc_divider_  * 9.80665;
+    data.push_back(imu_data);
 
-    log_.DBG("Raw Fifo data", "x = %f, y = %f, z = %f", accel_data[0], accel_data[1], accel_data[2]);
-    // transform and convert to float
-    
+    log_.DBG("Raw FIFO data", "x = %f, y = %f, z = %f", imu_data.acc[0], imu_data.acc[1], imu_data.acc[2]);
   }
-  
+
   return 1;
 }
-
-int Imu::readFifo(std::vector<ImuData>& data)
-{
-  uint8_t count[2];
-  for (int i = 0; i < kFifo_size/sizeof(Imu_raw); i++) {        // clear struct
-    raw_data[i] = {};
-  }
-  // byte count of fifo queue into uint count var
-  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(count), 2);
-  // log_.DBG("Raw Count", "0x%x, 0x%x", count[0], count[1]);
-
-  uint16_t fifo_bytes = ((count[1]) | (count[0]<<8));    // convert big->little endian of count (2 bytes) since BBB reads from little and IMU reads from big
-
-  // Get count make to the nearest lowest even number
-  fifo_bytes = fifo_bytes-(fifo_bytes % sizeof(Imu_raw));  // chooses smallest from fifo_bytes (amt in fifo buffer), and how much we can store in struct
-  
-  // log_.DBG("Fifo Count", "0x%x", fifo_bytes);
-  // fifo_bytes = std::min(kFifo_size, fifo_bytes);
-
-  if (fifo_bytes == 0) {
-    log_.DBG("Empty reference", "No value present here!");     // if fifo is empty
-    return 0;
-  }
-
-  // see if overflowed by accessing INT_STATUS register @ Bit4
-  uint8_t overflow = 0;
-  readByte(0x3A, reinterpret_cast<uint8_t*>(overflow));    // INT_STATUS register
-  uint8_t is_overflowed = overflow & 0x10? 1 : 0;
-  if (is_overflowed)
-    log_.DBG("FIFO Overflow", " = True");     // if fifo overflowed == 1
-  
-  // Read from fifo queue register into raw_data struct minimum number of complete data sets
-  // if (fifo_bytes < fifo_bytes/sizeof(Imu_raw))
-  //   return 0;
-  // 
-  for (int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++) {
-    float arr[3] = {};
-    for (int j = 0; j < 3; j++) {
-      uint8_t data_h;
-      uint8_t data_l;
-      readByte(kFifoRW, &data_h);
-      readByte(kFifoRW, &data_l);
-      int16_t data = ((int16_t) data_h) | data_l;
-      float value = static_cast<float>(data);
-      float accel_data = value/acc_divider_  * 9.80665;
-      arr[i] = accel_data;
-    }
-    log_.DBG("Raw Fifo data", "x = %f, y = %f, z = %f", arr[0], arr[1], arr[2]);
-  }
-
-  // read bytes individually
-  // uint16_t accData[3];
-  // readBytes(kFifoRW, reinterpret_cast<uint8_t*>(accData),6);
-  // uint16_t accX = accData[0];
-  // uint16_t accY = accData[1];
-  // uint16_t accZ = accData[2];
-  
-
-
-  // "When the FIFO buffer has overflowed, the oldest data will be lost and
-  // new data will be written to the FIFO unless register 26 CONFIG, bit[6] FIFO_MODE = 1."
-
-  // for(int i = 0; i < fifo_bytes/sizeof(Imu_raw); i++){      // will not read if fifo is empty
-    
-  //   ImuData imu_data;
-
-  //   imu_data.acc[0] = raw_data[i].acc[0]/acc_divider_  * 9.80665;
-  //   imu_data.acc[1] = raw_data[i].acc[1]/acc_divider_  * 9.80665;
-  //   imu_data.acc[2] = raw_data[i].acc[2]/acc_divider_  * 9.80665;
-  //   imu_data.operational = is_online_;
-  //   data.push_back(imu_data);
-  //   // accX=0;
-  //   // accY=0;
-  //   // accZ=0;
-  // }
-
-  return fifo_bytes/sizeof(Imu_raw);
-}
-
-
 
 void Imu::getData(ImuData* data)
 {

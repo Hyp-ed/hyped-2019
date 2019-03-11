@@ -42,8 +42,8 @@ int main(int argc, char* argv[])
 
   log.INFO("TEST-Imu", "MPU9250 instance successfully created");
   for (int j = 0; j < 100; j++) {
-    // std::vector<ImuData> data;
-    int count = imu.readFifoNew();
+    std::vector<ImuData> data;
+    int count = imu.readFifoNew(data);
     // log.DBG("ReadFifo Count", "%d", count);
     // for (int i=0; i < count; i++) {
     //   // log.DBG("TEST-mpu9250", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);    
