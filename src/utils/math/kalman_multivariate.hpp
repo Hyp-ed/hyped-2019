@@ -4,6 +4,18 @@
  * Date: 9 March 2019
  * Description: This is a multivariate Kalman filter implementation to filter sensor measurement
  *              considering the dynamics of the system
+ *
+ *    Copyright 2019 HYPED
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ *    except in compliance with the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software distributed under
+ *    the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ *    either express or implied. See the License for the specific language governing permissions and
+ *    limitations under the License.
+
  */
 
 #include <Eigen/Dense>
@@ -85,6 +97,13 @@ class KalmanMvar {
   void setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R);
 
   /**
+   * @brief    Update state transition matrix
+   *
+   * @param[in] A                       state transition matrix
+   */
+  void update(Eigen::MatrixXd _A);
+
+  /**
    * @brief    Set initial beliefs
    *
    * @param[in] x0                      initial state belief
@@ -161,7 +180,6 @@ class KalmanMvar {
   void correct(Eigen::VectorXf z);
 };
 
-}}}  // hyped::util::math
 
 KalmanMvar::KalmanMvar(unsigned int _n, unsigned int _m)
     : n(_n),
@@ -206,11 +224,16 @@ void KalmanMvar::setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::Matrix
     setMeasurementModel(_H, _R);
 }
 
+void KalmanMvar::update(Eigen::MatrixXd _A)
+{
+    A = _A;
+}
+
 void KalmanMvar::setInitial(Eigen::VectorXf x0, Eigen::MatrixXd P0)
 {
     x = x0;
     P = P0;
-    I = Eigen::MatrixXd.Identity(n, n);
+    I = Eigen::MatrixXd::Identity(n, n);
 }
 
 void KalmanMvar::predict()
@@ -227,7 +250,7 @@ void KalmanMvar::predict(Eigen::VectorXf u)
 
 void KalmanMvar::correct(Eigen::VectorXf z)
 {
-    K = (P * H.transpose()) * (H * P * H.transpose() + R).inverse();
+    Eigen::MatrixXd K = (P * H.transpose()) * (H * P * H.transpose() + R).inverse();
     x = x + K * (z - H * x);
     P = (I - K * H) * P;
 }
@@ -253,5 +276,7 @@ Eigen::MatrixXd& KalmanMvar::getStateCovariance()
 {
     return P;
 }
+
+}}}  // hyped::util::math
 
 #endif  // BEAGLEBONE_BLACK_UTILS_MATH_KALMAN_MVAR_HPP_
