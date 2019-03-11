@@ -1,7 +1,7 @@
 /*
  * Author: Jack Horsburgh
  * Organisation: HYPED
- * Date: 11/03/19
+ * Date: 23/05/18
  * Description: Main file for Imu
  *
  *    Copyright 2018 HYPED
@@ -67,7 +67,6 @@ constexpr uint8_t kFifoCountH = 0x72;   // 2 bytes for H and L registers
 constexpr uint8_t kFifoRW = 0x74;
 constexpr uint8_t kUserCtrl = 0x6A;     // to reset and enable FIFO
 constexpr uint8_t kIntEnable = 0x38;    // for FIFO overflow, read 0x10 at this register
-
 constexpr uint8_t kFifoAccel = 0x08;
 
 constexpr uint8_t kTempoutH = 0x41;
@@ -118,7 +117,7 @@ void Imu::enableFifo()
   Thread::sleep(500);
   writeByte(kUserCtrl, 0x40);       // FIFO enable
   writeByte(kFifoEnable, kFifoAccel);
-  kFrameSize = 6;                  // only for acceleration xyz
+  kFrameSize = 6;                   // only for acceleration xyz
 }
 
 bool Imu::whoAmI()
@@ -212,7 +211,7 @@ int Imu::readFifo(std::vector<ImuData>& data)
   size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
 
   if (fifo_size == 0) {
-    log_.DBG("FIFO", "FIFO EMPTY");
+    log_.INFO("FIFO", "FIFO EMPTY");
     return 0;
   }
   log_.DBG("FIFO", "Buffer size = %d", fifo_size);

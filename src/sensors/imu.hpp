@@ -56,12 +56,11 @@ class Imu : public ImuInterface {
   void getData(ImuData* data) override;
 
   /**
-   * @brief calculates number of bytes in FIFO and reads number of full sets (12 bytes) into
-   * vector of ImuData
+   * @brief calculates number of bytes in FIFO and reads number of full sets (6 bytes) into vector of ImuData
    * See data.hpp for ImuData struct
    *
-   * @param data ImuData vector to read number of full sets into (acc and gyro)
-   * @return int fifo count
+   * @param data ImuData vector to read number of full sets into
+   * @return 0 if empty
    */
   int readFifo(std::vector<ImuData>& data);
 
@@ -78,6 +77,11 @@ class Imu : public ImuInterface {
    */
   void setAcclScale(int scale);
   void init();
+
+  /**
+   * @brief Resets and enables fifo after sleeping 500 ms, frame size is set to 6 for xyz acceleration
+   * 
+   */
   void enableFifo();
 
   /**
@@ -133,7 +137,7 @@ class Imu : public ImuInterface {
   double  acc_divider_;
   bool    is_online_;
   static const uint64_t time_start;
-  size_t kFrameSize;               // declared as 6 in enableFifo()
+  size_t kFrameSize;               // initialised as 6 in enableFifo()
 };
 
 }}  // namespace hyped::sensors
