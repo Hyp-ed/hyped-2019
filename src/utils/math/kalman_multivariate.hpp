@@ -56,7 +56,7 @@ class KalmanMvar {
    * @param[in] A                       state transition matrix
    * @param[in] Q                       process noise covariance
    */
-  void setDynamicsModel(Eigen::MatrixXd _A, Eigen::MatrixXd _Q);
+  void setDynamicsModel(Eigen::MatrixXd& _A, Eigen::MatrixXd& _Q);
 
   /**
    * @brief    Set dynamics model matrices (with control)
@@ -65,7 +65,7 @@ class KalmanMvar {
    * @param[in] B                       control matrix
    * @param[in] Q                       process noise covariance
    */
-  void setDynamicsModel(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q);
+  void setDynamicsModel(Eigen::MatrixXd& _A, Eigen::MatrixXd& _B, Eigen::MatrixXd& _Q);
 
   /**
    * @brief    Set measurement model matrices
@@ -73,7 +73,7 @@ class KalmanMvar {
    * @param[in] H                       measurement matrix
    * @param[in] R                       measurement noise covariance
    */
-  void setMeasurementModel(Eigen::MatrixXd _H, Eigen::MatrixXd _R);
+  void setMeasurementModel(Eigen::MatrixXd& _H, Eigen::MatrixXd& _R);
 
   /**
    * @brief    Set model matrices (without control)
@@ -83,7 +83,7 @@ class KalmanMvar {
    * @param[in] H                       measurement matrix
    * @param[in] R                       measurement noise covariance
    */
-  void setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R);
+  void setModels(Eigen::MatrixXd& _A, Eigen::MatrixXd& _Q, Eigen::MatrixXd& _H, Eigen::MatrixXd& _R);
 
   /**
    * @brief    Set model matrices (with control)
@@ -94,14 +94,14 @@ class KalmanMvar {
    * @param[in] H                       measurement matrix
    * @param[in] R                       measurement noise covariance
    */
-  void setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R);
+  void setModels(Eigen::MatrixXd& _A, Eigen::MatrixXd& _B, Eigen::MatrixXd& _Q, Eigen::MatrixXd& _H, Eigen::MatrixXd& _R);
 
   /**
    * @brief    Update state transition matrix
    *
    * @param[in] A                       state transition matrix
    */
-  void update(Eigen::MatrixXd _A);
+  void update(Eigen::MatrixXd& _A);
 
   /**
    * @brief    Set initial beliefs
@@ -109,14 +109,14 @@ class KalmanMvar {
    * @param[in] x0                      initial state belief
    * @param[in] P0                      initial state covariance (uncertainty)
    */
-  void setInitial(Eigen::VectorXf x0, Eigen::MatrixXd P0);
+  void setInitial(Eigen::VectorXd& x0, Eigen::MatrixXd& P0);
 
   /**
    * @brief    Filter measurement and update state belief with covariance (without control)
    *
    * @param[in] z                       measurement vector
    */
-  void filter(Eigen::VectorXf z);
+  void filter(Eigen::VectorXd& z);
 
   /**
    * @brief    Filter measurement and update state belief with covariance (with control)
@@ -124,14 +124,14 @@ class KalmanMvar {
    * @param[in] u                       control vector
    * @param[in] z                       measurement vector
    */
-  void filter(Eigen::VectorXf u, Eigen::VectorXf z);
+  void filter(Eigen::VectorXd& u, Eigen::VectorXd& z);
 
   /**
    * @brief     Get the state estimate
    *
    * @return    Returns the current state estimate
    */
-  Eigen::VectorXf& getStateEstimate();
+  Eigen::VectorXd& getStateEstimate();
 
   /**
    * @brief     Get the state uncertainty
@@ -156,7 +156,7 @@ class KalmanMvar {
   Eigen::MatrixXd R;                    // measurement noise covariance: m x m
 
   /* state estimates */
-  Eigen::VectorXf x;                    // state vector: n x 1
+  Eigen::VectorXd x;                    // state vector: n x 1
   Eigen::MatrixXd P;                    // state covariance: n x n
   Eigen::MatrixXd I;                    // identity matrix: n x n
 
@@ -170,14 +170,14 @@ class KalmanMvar {
    *
    * @param[in] u                       control vector
    */
-  void predict(Eigen::VectorXf u);
+  void predict(Eigen::VectorXd& u);
 
   /**
    * @brief    Correct state belief with covariance based on measurement
    *
    * @param[in] z                       measurement vector
    */
-  void correct(Eigen::VectorXf z);
+  void correct(Eigen::VectorXd& z);
 };
 
 
@@ -193,43 +193,43 @@ KalmanMvar::KalmanMvar(unsigned int _n, unsigned int _m, unsigned int _k)
       k(_k)
 {}
 
-void KalmanMvar::setDynamicsModel(Eigen::MatrixXd _A, Eigen::MatrixXd _Q)
+void KalmanMvar::setDynamicsModel(Eigen::MatrixXd& _A, Eigen::MatrixXd& _Q)
 {
     A = _A;
     Q = _Q;
 }
 
-void KalmanMvar::setDynamicsModel(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q)
+void KalmanMvar::setDynamicsModel(Eigen::MatrixXd& _A, Eigen::MatrixXd& _B, Eigen::MatrixXd& _Q)
 {
     A = _A;
     B = _B;
     Q = _Q;
 }
 
-void KalmanMvar::setMeasurementModel(Eigen::MatrixXd _H, Eigen::MatrixXd _R)
+void KalmanMvar::setMeasurementModel(Eigen::MatrixXd& _H, Eigen::MatrixXd& _R)
 {
     H = _H;
     R = _R;
 }
 
-void KalmanMvar::setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R)
+void KalmanMvar::setModels(Eigen::MatrixXd& _A, Eigen::MatrixXd& _Q, Eigen::MatrixXd& _H, Eigen::MatrixXd& _R)
 {
     setDynamicsModel(_A, _Q);
     setMeasurementModel(_H, _R);
 }
 
-void KalmanMvar::setModels(Eigen::MatrixXd _A, Eigen::MatrixXd _B, Eigen::MatrixXd _Q, Eigen::MatrixXd _H, Eigen::MatrixXd _R)
+void KalmanMvar::setModels(Eigen::MatrixXd& _A, Eigen::MatrixXd& _B, Eigen::MatrixXd& _Q, Eigen::MatrixXd& _H, Eigen::MatrixXd& _R)
 {
     setDynamicsModel(_A, _B, _Q);
     setMeasurementModel(_H, _R);
 }
 
-void KalmanMvar::update(Eigen::MatrixXd _A)
+void KalmanMvar::update(Eigen::MatrixXd& _A)
 {
     A = _A;
 }
 
-void KalmanMvar::setInitial(Eigen::VectorXf x0, Eigen::MatrixXd P0)
+void KalmanMvar::setInitial(Eigen::VectorXd& x0, Eigen::MatrixXd& P0)
 {
     x = x0;
     P = P0;
@@ -242,32 +242,32 @@ void KalmanMvar::predict()
     P = A * P * A.transpose() + Q;
 }
 
-void KalmanMvar::predict(Eigen::VectorXf u)
+void KalmanMvar::predict(Eigen::VectorXd& u)
 {
     x = A * x + B * u;
     P = (A * P * A.transpose()) + Q;
 }
 
-void KalmanMvar::correct(Eigen::VectorXf z)
+void KalmanMvar::correct(Eigen::VectorXd& z)
 {
     Eigen::MatrixXd K = (P * H.transpose()) * (H * P * H.transpose() + R).inverse();
     x = x + K * (z - H * x);
     P = (I - K * H) * P;
 }
 
-void KalmanMvar::filter(Eigen::VectorXf z)
+void KalmanMvar::filter(Eigen::VectorXd& z)
 {
     predict();
     correct(z);
 }
 
-void KalmanMvar::filter(Eigen::VectorXf u, Eigen::VectorXf z)
+void KalmanMvar::filter(Eigen::VectorXd& u, Eigen::VectorXd& z)
 {
     predict(u);
     correct(z);
 }
 
-Eigen::VectorXf& KalmanMvar::getStateEstimate()
+Eigen::VectorXd& KalmanMvar::getStateEstimate()
 {
     return x;
 }
