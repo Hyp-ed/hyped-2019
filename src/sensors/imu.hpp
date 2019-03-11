@@ -21,6 +21,8 @@
 #ifndef SENSORS_IMU_HPP_
 #define SENSORS_IMU_HPP_
 
+#include <vector>
+
 #include "sensors/interface.hpp"
 #include "utils/logger.hpp"
 #include "utils/io/spi.hpp"
@@ -131,7 +133,7 @@ class Imu : public ImuInterface {
   double  acc_divider_;
   bool    is_online_;
   static const uint64_t time_start;
-  size_t frame_size_;
+  size_t kFrameSize;               // declared as 6 in enableFifo()
 };
 
 }}  // namespace hyped::sensors
