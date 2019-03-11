@@ -38,7 +38,7 @@ namespace sensors {
 
 class Imu : public ImuInterface {
  public:
-  Imu(Logger& log, uint32_t pin, uint8_t acc_scale = 0x08, uint8_t gyro_scale = 0x00);
+  Imu(Logger& log, uint32_t pin, uint8_t acc_scale = 0x08);
   ~Imu();
   /*
    *  @brief Returns if the sensor is online
@@ -53,37 +53,43 @@ class Imu : public ImuInterface {
    */
   void getData(ImuData* data) override;
 
+  /**
+   * @brief Get the Temperature from the IMU
+   *
+   * @param temp - the variable to be updated
+   */
+  void getTemperature(int* temp);
+
  private:
   /*
    *  @brief Sets the range for the accelerometer by writing to the IMU given the write register address
    */
   void setAcclScale(int scale);
-  static const uint64_t time_start;
   void init();
 
   /**
    * @brief used for SPI chipselect with GPIO pin for IMU
-   * 
+   *
    */
   void select();
 
   /**
    * @brief used for SPI chipselect with GPIO pin for IMU
-   * 
+   *
    */
   void deSelect();
 
   /**
    * @brief checks what address the sensor is at
-   * 
-   * @return true 
-   * @return false 
+   *
+   * @return true
+   * @return false
    */
   bool whoAmI();
 
   /**
    * @brief chipselects and and writes data (byte) to register address
-   * 
+   *
    * @param write_reg write register address
    * @param write_data byte of data to write
    */
@@ -91,7 +97,7 @@ class Imu : public ImuInterface {
 
   /**
    * @brief uses chip select and reads necessary data
-   * 
+   *
    * @param read_reg read register address
    * @param read_data pointer to data desired to read
    */
@@ -99,9 +105,9 @@ class Imu : public ImuInterface {
 
   /**
    * @brief same as readByte but with desired length
-   * 
-   * @param read_reg 
-   * @param read_buff 
+   *
+   * @param read_reg
+   * @param read_buff
    * @param length number of bytes to read
    */
   void readBytes(uint8_t read_reg, uint8_t *read_buff, uint8_t length);
@@ -113,6 +119,7 @@ class Imu : public ImuInterface {
   uint8_t acc_scale_;
   double  acc_divider_;
   bool    is_online_;
+  static const uint64_t time_start;
 };
 
 }}  // namespace hyped::sensors
