@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
     Eigen::MatrixXd H = Eigen::MatrixXd::Zero(m, n);
     for (unsigned int i = 0; i < m; i++)
     {
-        H(m, n - (m - i)) = 1.0;
+        H(i, n - (m - i)) = 1.0;
     }
     Eigen::MatrixXd Q = Eigen::MatrixXd::Constant(n, n, 0.01);
 
@@ -188,8 +188,11 @@ int main(int argc, char *argv[])
 
         Eigen::MatrixXd A = createStateTransitionMatrix(n, dt);
         kalmanFilter.update(A);
-        Eigen::VectorXd z;
-        z << accCor.value[0], accCor.value[1], accCor.value[2];
+        Eigen::VectorXd z(m);
+        for (unsigned int i = 0; i < m; i++)
+        {
+            z(i) = accCor.value[i];
+        }
         kalmanFilter.filter(z);
 
 		// Intergrate
@@ -203,10 +206,10 @@ int main(int argc, char *argv[])
 	  							 pos.value[0], pos.value[1], pos.value[2]);		
 
         Eigen::VectorXd x = kalmanFilter.getStateEstimate();
-		log.INFO("FILTERED", "p_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\ta_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\n", 
-	  					x(0), x(1), x(2),
+		log.INFO("FILTERED", "a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n", 
+	  					x(6), x(7), x(8),
                         x(3), x(4), x(5),
-                        x(6), x(7), x(8));
+                        x(0), x(1), x(2));
 		if (writeToFile > 0) 
 		{
 			printToFile(&outfile, &accRaw, &accCor, &vel, &pos, &x);
