@@ -13,7 +13,7 @@ git:
 
 script:
 - echo DONE
-- make -j --silent clean hyped
+- make clean hyped
 # - docker run --name travis -it hyped/hyped-2018:latest uname -a
 # - docker cp . travis:/test/
 # - docker commit travis hyped/current
