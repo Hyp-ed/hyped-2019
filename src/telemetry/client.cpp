@@ -33,7 +33,7 @@
 #include "types/message.pb.h"  // NO LINT
 
 #define PORT 9090
-#define SERVER_IP "192.168.6.1"
+#define SERVER_IP "192.168.1.150" // macbook as client and linux machine as base-station
 
 // reads header containing size encoded as varint, returns this size
 google::protobuf::uint32 readHeader(char *buffer)
