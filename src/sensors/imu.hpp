@@ -54,24 +54,9 @@ class Imu : public ImuInterface {
   void getData(ImuData* data) override;
 
   /**
-<<<<<<< HEAD
-   * @brief calculates number of bytes in FIFO and reads number of full sets (12 bytes) into 
-   * vector of ImuData
-   * See data.hpp for ImuData struct
-   * 
-   * @param data ImuData vector to read number of full sets into (acc and gyro)
-   * @return int fifo count
-   */
-  int readFifo(std::vector<ImuData>& data);
-
- private:
-  /*
-   *  @brief Sets the range for the gyroscope
-=======
    * @brief Get the Temperature from the IMU
    *
    * @param temp - the variable to be updated
->>>>>>> develop
    */
   void getTemperature(int* temp);
 

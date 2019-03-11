@@ -94,11 +94,7 @@ void Imu::init()
   writeByte(kMpuRegConfig, 0x01);
   writeByte(kAccelConfig2, 0x01);
   setAcclScale(acc_scale_);
-<<<<<<< HEAD
-  setGyroScale(gyro_scale_);
-=======
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
->>>>>>> develop
 }
 
 bool Imu::whoAmI()
@@ -188,45 +184,23 @@ void Imu::getData(ImuData* data)
   if (is_online_) {
     log_.DBG3("Imu", "Getting Imu data");
     auto& acc = data->acc;
-<<<<<<< HEAD
-    // auto& gyr = data->gyr;
-    uint8_t response[14];
-=======
     uint8_t response[8];
->>>>>>> develop
     int16_t bit_data;
     float value;
     int i;
     float accel_data[3];
-<<<<<<< HEAD
-    // float gyro_data[3];
-=======
->>>>>>> develop
 
     readBytes(kAccelXoutH, response, 8);
     for (i = 0; i < 3; i++) {
       bit_data = ((int16_t) response[i*2] << 8) | response[i*2+1];
       value = static_cast<float>(bit_data);
       accel_data[i] = value/acc_divider_  * 9.80665;
-<<<<<<< HEAD
-
-      bit_data = ((int16_t) response[i*2 + 8] << 8) | response[i*2+9];
-      value = static_cast<float>(bit_data);
-      // gyro_data[i] = value/gyro_divider_;
-=======
->>>>>>> develop
     }
 
     data->operational = is_online_;
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];
     acc[2] = accel_data[2];
-<<<<<<< HEAD
-    // gyr[0] = gyro_data[0];
-    // gyr[1] = gyro_data[1];
-    // gyr[2] = gyro_data[2];
-=======
->>>>>>> develop
   } else {
     // Try and turn the sensor on again
     log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");

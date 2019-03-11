@@ -18,7 +18,7 @@
  *    limitations under the License.
  */
 
-// #include <cstdint>
+#include <cstdint>
 
 #include "state_machine/hyped-machine.hpp"
 #include "state_machine/main.hpp"
