@@ -114,7 +114,7 @@ void Imu::init()
 
 void Imu::enableFifo() {
   writeByte(kUserCtrl, 0x04);       // Put serial interface to SPI only, FIFO reset
-  Thread::sleep(500);               // TODO(Jack): adjust sleep
+  Thread::sleep(500);
   writeByte(kUserCtrl, 0x40);       // FIFO enable
   writeByte(kFifoEnable, kFifoAccel);
   frame_size_ = 6;                  // only for acceleration xyz
@@ -202,24 +202,7 @@ void Imu::setAcclScale(int scale)
   }
 }
 
-#pragma pack(push, 1)
-struct Imu_raw {   // 6 bytes
-  uint16_t acc[3];
-};
-#pragma pack(pop)
-
-constexpr uint16_t kFifo_size = 512;          // max number of bytes in FIFO
-// constexpr uint16_t kFifoFrameSize = 6;
-
-Imu_raw raw_data[kFifo_size/sizeof(Imu_raw)];
-
-void myPrint(int i)
-{
-  Imu_raw& data = raw_data[i];
-  printf("acc 0x%x 0x%x 0x%x\n", data.acc[0], data.acc[1], data.acc[2]);
-}
-
-int Imu::readFifoNew(std::vector<ImuData>& data){
+int Imu::readFifo(std::vector<ImuData>& data){
   // get fifo size
   uint8_t buffer[frame_size_];
   readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);    // read FIFO count from H and L registers
@@ -234,7 +217,6 @@ int Imu::readFifoNew(std::vector<ImuData>& data){
   log_.DBG("FIFO", "Buffer size = %d", fifo_size);
   int16_t axcounts, aycounts, azcounts;           // include negative int
   float value_x, value_y, value_z;
-  float accel_data[3];
   for (size_t i = 0; i < (fifo_size/frame_size_); i++) {    // frame_size_ private member, declared in enableFifo()
     readBytes(kFifoRW, buffer, frame_size_);
     axcounts = (((int16_t)buffer[0]) << 8) | buffer[1];     // 2 byte acc data for xyz
@@ -245,9 +227,6 @@ int Imu::readFifoNew(std::vector<ImuData>& data){
     value_x = static_cast<float>(axcounts);
     value_y = static_cast<float>(aycounts);
     value_z = static_cast<float>(azcounts);
-    // accel_data[0] = value_x/acc_divider_  * 9.80665;
-    // accel_data[1] = value_y/acc_divider_  * 9.80665;
-    // accel_data[2] = value_z/acc_divider_  * 9.80665;
 
     // put data in struct and add to data vector (param)
     ImuData imu_data;
@@ -257,9 +236,8 @@ int Imu::readFifoNew(std::vector<ImuData>& data){
     imu_data.acc[2] = value_z/acc_divider_  * 9.80665;
     data.push_back(imu_data);
 
-    log_.DBG("Raw FIFO data", "x = %f, y = %f, z = %f", imu_data.acc[0], imu_data.acc[1], imu_data.acc[2]);
+    // log_.DBG("Raw FIFO data", "x = %f, y = %f, z = %f", imu_data.acc[0], imu_data.acc[1], imu_data.acc[2]);
   }
-
   return 1;
 }
 

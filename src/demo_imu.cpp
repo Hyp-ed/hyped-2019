@@ -40,16 +40,23 @@ int main(int argc, char* argv[])
   Logger log(true, 0);
   Imu imu(log, 66, 0x08);
 
-  log.INFO("TEST-Imu", "MPU9250 instance successfully created");
-  for (int j = 0; j < 100; j++) {
+  int frame_size = 6;
+
+  log.INFO("TEST-Imu", "Imu instance successfully created");
+  for (int j = 0; j < 20; j++) {
     std::vector<ImuData> data;
-    int count = imu.readFifoNew(data);
-    // log.DBG("ReadFifo Count", "%d", count);
-    // for (int i=0; i < count; i++) {
-    //   // log.DBG("TEST-mpu9250", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);    
-    // }
-    // Thread::sleep(30);
-    // data.clear();
+    int count = imu.readFifo(data);
+    if (count){
+      log.DBG("ReadFifo Count", "%d", data.size());
+      for (int i=0; i < data.size(); i++) {
+        log.DBG("TEST-Imu", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);    
+      }
+    }
+    else{
+      log.DBG("ReadFifo", "Fifo is empty!");
+    }
+    Thread::sleep(30);
+    data.clear();
   }
  	return 0;
 }

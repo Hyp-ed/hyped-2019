@@ -69,7 +69,6 @@ class Imu : public ImuInterface {
    * @param temp - the variable to be updated
    */
   void getTemperature(int* temp);
-  int readFifoNew(std::vector<ImuData>& data);
 
  private:
   /*
