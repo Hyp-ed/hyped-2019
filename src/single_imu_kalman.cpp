@@ -50,7 +50,7 @@ using hyped::utils::ScopedTimer;
 const Eigen::MatrixXd createStateTransitionMatrix(unsigned int n, double dt)
 {
     Eigen::MatrixXd A(n, n);
-    double acc_ddt = 0.5 * sqrt(dt);
+    double acc_ddt = 0.5 * dt*dt;
     A << 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt, 0.0, 0.0,
          0.0, 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt, 0.0,
          0.0, 0.0, 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt,
