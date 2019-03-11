@@ -34,4 +34,32 @@
   - Set `WPA Preshared Key` to `password1234` - *can be what you want, but we use password1234 just to keep things simple*
   - Click `Change` button in bottom right, and apply changes
 - On AirOS page, click on `Network` tab
+  - Set `IP Address` to `192.168.1.159`
+  - Set `Subnet Mask` to `255.255.255.0`
+  - Click `Change` button in bottom right, and apply changes
  
+###### On Station Computer
+- Configure static IP address for ethernet interface
+  - This will depend on your operating system, but typically under network settings somewhere (watch video for reference)
+  - Set IP address to `192.168.1.50`
+  - Set Subnet Mask to `255.255.255.0`
+- Try `ping 192.168.1.20`
+  - If request times out or other error, restart rocket and try again
+- If ping above works, go to `192.168.1.20` in browser, where AirOS login screen should show up
+- Login
+  - *Username*: `ubnt`
+  - *Password*: should be `ubnt` as well, but if not try `password1234`
+- On AirOS page, click on `Wireless` tab
+  - Set `Wireless Mode` to `Station`
+  - Check `WDS (Transparent Bridge Mode)` box
+  - Click `Select...` button next to `SSID` text box to start site survey
+    - Select `ubnt-bridge` (this is our access point Rocket M900)
+    - Click `Lock to AP`
+  - Set `Security` to `WPA2-AES`
+  - Set `WPA Authentication` to `PSK`
+  - Set `WPA Preshared Key` to the **same password** we set for our access point Rocket (should be `password1234`)!!
+  - Click `Change` button in bottom right, and apply changes
+- On AirOS page, click on `Network` tab
+  - Set `IP Address` to `192.168.1.160`
+  - Set `Subnet Mask` to `255.255.255.0`
+  - Click `Change` button in bottom right, and apply changes
