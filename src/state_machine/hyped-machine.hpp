@@ -21,8 +21,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef BEAGLEBONE_BLACK_STATE_MACHINE_HYPED_MACHINE_HPP_
-#define BEAGLEBONE_BLACK_STATE_MACHINE_HYPED_MACHINE_HPP_
+#ifndef STATE_MACHINE_HYPED_MACHINE_HPP_
+#define STATE_MACHINE_HYPED_MACHINE_HPP_
 
 #include "../data/data.hpp"
 
@@ -57,4 +57,4 @@ class HypedMachine {
 
 }}   // namespace hyped::state_machine
 
-#endif  // BEAGLEBONE_BLACK_STATE_MACHINE_HYPED_MACHINE_HPP_
+#endif  // STATE_MACHINE_HYPED_MACHINE_HPP_

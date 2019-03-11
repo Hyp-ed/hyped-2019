@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_MOTORCONTROL_MAIN_HPP_
-#define HYPED_MOTORCONTROL_MAIN_HPP_
+#ifndef PROPULSION_MAIN_HPP_
+#define PROPULSION_MAIN_HPP_
 
 #include "utils/concurrent/thread.hpp"
 #include "utils/concurrent/barrier.hpp"
@@ -41,22 +41,22 @@ namespace motor_control
 {
 class Main : public Thread
 {
-  public:
-	Main(uint8_t id, Logger &log);
+    public:
+        Main(uint8_t id, Logger &log);
 
-	/**
-	 * @brief {This function is the entrypoint to the propulsion module and reacts to the certain states}
-	* */
-	void run() override;
+    /**
+     * @brief {This function is the entrypoint to the propulsion module and reacts to the certain states}
+    * */
+    void run() override;
 
   private:
-	bool isRunning;
-	Logger &log_;
-	StateProcessor *stateProcessor;
-	State currentState;
+    bool isRunning;
+    Logger &log_;
+    StateProcessor *stateProcessor;
+    State currentState;
 };
 
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_MOTORCONTROL_MAIN_HPP_
+#endif  // PROPULSION_MAIN_HPP_

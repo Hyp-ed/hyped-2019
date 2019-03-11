@@ -21,8 +21,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
-#define BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
+#ifndef STATE_MACHINE_MAIN_HPP_
+#define STATE_MACHINE_MAIN_HPP_
 
 #include <cstdint>
 #include "../utils/concurrent/thread.hpp"
@@ -70,4 +70,4 @@ class Main: public Thread {
 
 }}  // namespace hyped::motor_control
 
-#endif  // BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
+#endif  // STATE_MACHINE_MAIN_HPP_
