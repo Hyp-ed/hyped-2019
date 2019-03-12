@@ -68,6 +68,6 @@ class Main: public Thread {
   data::Sensors         sensors_data_;
 };
 
-}} // namespace hyped::motor_control
+}}      // namespace hyped::motor_control
 
 #endif  // STATE_MACHINE_MAIN_HPP_

@@ -101,9 +101,6 @@ void Main::run()
         break;
     }
 
-<<<<<<< HEAD
-}} // namespace hyped::state_machine
-=======
     yield();
   }
 }
@@ -263,4 +260,3 @@ bool Main::checkTimer()
 }
 
 }}  // namespace hyped::state_machine
->>>>>>> develop

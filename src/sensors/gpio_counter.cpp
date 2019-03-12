@@ -52,7 +52,7 @@ void GpioCounter::run()
   while (1) {
     log.DBG("GPIOCOUNTER", "Waiting");
     val = thepin.wait();
-    log.DBG("GPIOCOUNTER", "Wait value: %d",val);
+    log.DBG("GPIOCOUNTER", "Wait value: %d", val);
     if (val == 1) {
       log.DBG("GPIOCOUNTER", "Has hit stripe!");
       stripe_counter_.count.value = stripe_counter_.count.value+1;

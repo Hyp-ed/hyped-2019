@@ -17,12 +17,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+#include <algorithm>
+#include <vector>
+
 #include "sensors/imu.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/math/statistics.hpp"
-
-#include <algorithm>
-#include <vector>
 
 
 // Accelerometer addresses
@@ -48,10 +48,10 @@ constexpr uint8_t kMpuRegConfig             = 0x1A;
 constexpr uint8_t kReadFlag                 = 0x80;
 
 // Configuration bits Imu
-constexpr uint8_t kBitsFs250Dps             = 0x00;
-constexpr uint8_t kBitsFs500Dps             = 0x08;
-constexpr uint8_t kBitsFs1000Dps            = 0x10;
-constexpr uint8_t kBitsFs2000Dps            = 0x18;
+// constexpr uint8_t kBitsFs250Dps             = 0x00;
+// constexpr uint8_t kBitsFs500Dps             = 0x08;
+// constexpr uint8_t kBitsFs1000Dps            = 0x10;
+// constexpr uint8_t kBitsFs2000Dps            = 0x18;
 constexpr uint8_t kBitsFs2G                 = 0x00;
 constexpr uint8_t kBitsFs4G                 = 0x08;
 constexpr uint8_t kBitsFs8G                 = 0x10;
@@ -59,6 +59,16 @@ constexpr uint8_t kBitsFs16G                = 0x18;
 
 // Resets the device to defaults
 constexpr uint8_t kBitHReset                = 0x80;
+
+
+// values for FIFO
+constexpr uint8_t kFifoEnable = 0x23;   // set FIFO enable flags
+constexpr uint8_t kFifoCountH = 0x72;   // 2 bytes for H and L registers
+constexpr uint8_t kFifoRW = 0x74;
+constexpr uint8_t kUserCtrl = 0x6A;     // to reset and enable FIFO
+// constexpr uint8_t kIntEnable = 0x38;    // for FIFO overflow, read 0x10 at this register
+constexpr uint8_t kFifoAccel = 0x08;
+
 
 namespace hyped {
 
@@ -77,7 +87,7 @@ Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale)
     is_online_(false)
 {
   init();
-  log_.ERR("Imu pin: ", "%d", pin);
+  log_.INFO("Imu pin: ", "%d", pin);
   log_.DBG("Imu", "Creating Imu sensor");
 }
 
@@ -94,7 +104,19 @@ void Imu::init()
   writeByte(kMpuRegConfig, 0x01);
   writeByte(kAccelConfig2, 0x01);
   setAcclScale(acc_scale_);
+  enableFifo();
+
+  log_.INFO("Imu", "FIFO Enabled");
   log_.INFO("Imu", "Imu sensor created. Initialisation complete");
+}
+
+void Imu::enableFifo()
+{
+  writeByte(kUserCtrl, 0x04);       // Put serial interface to SPI only, FIFO reset
+  Thread::sleep(500);
+  writeByte(kUserCtrl, 0x40);       // FIFO enable
+  writeByte(kFifoEnable, kFifoAccel);
+  kFrameSize = 6;                   // only for acceleration xyz
 }
 
 bool Imu::whoAmI()
@@ -179,6 +201,43 @@ void Imu::setAcclScale(int scale)
   }
 }
 
+int Imu::readFifo(std::vector<ImuData>& data)
+{
+  // get fifo size
+  uint8_t buffer[kFrameSize];
+  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);    // from count H/L registers
+  // convert big->little endian of count (2 bytes)
+  size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
+
+  if (fifo_size == 0) {
+    log_.INFO("FIFO", "FIFO EMPTY");
+    return 0;
+  }
+  log_.DBG("FIFO", "Buffer size = %d", fifo_size);
+  int16_t axcounts, aycounts, azcounts;           // include negative int
+  float value_x, value_y, value_z;
+  for (size_t i = 0; i < (fifo_size/kFrameSize); i++) {
+    readBytes(kFifoRW, buffer, kFrameSize);
+    axcounts = (((int16_t)buffer[0]) << 8) | buffer[1];     // 2 byte acc data for xyz
+    aycounts = (((int16_t)buffer[2]) << 8) | buffer[3];
+    azcounts = (((int16_t)buffer[4]) << 8) | buffer[5];
+
+    // convert to floats for accel_data
+    value_x = static_cast<float>(axcounts);
+    value_y = static_cast<float>(aycounts);
+    value_z = static_cast<float>(azcounts);
+
+    // put data in struct and add to data vector (param)
+    ImuData imu_data;
+    imu_data.operational = is_online_;
+    imu_data.acc[0] = value_x/acc_divider_  * 9.80665;
+    imu_data.acc[1] = value_y/acc_divider_  * 9.80665;
+    imu_data.acc[2] = value_z/acc_divider_  * 9.80665;
+    data.push_back(imu_data);
+  }
+  return 1;
+}
+
 void Imu::getData(ImuData* data)
 {
   if (is_online_) {
@@ -196,7 +255,6 @@ void Imu::getData(ImuData* data)
       value = static_cast<float>(bit_data);
       accel_data[i] = value/acc_divider_  * 9.80665;
     }
-
     data->operational = is_online_;
     acc[0] = accel_data[0];
     acc[1] = accel_data[1];

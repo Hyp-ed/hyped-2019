@@ -24,31 +24,36 @@
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
+#include <vector>
 
 using hyped::sensors::Imu;
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
+using namespace hyped::data;
+using namespace std;
 using hyped::data::ImuData;
-
-
 
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, 0);
   Imu imu(log, 66, 0x08);
-  int data;
 
-  log.INFO("TEST-mpu9260", "MPU9250 instance successfully created");
-
-  
-
-  for (int i=0; i< 100; i++) {
-    imu.getTemperature(&data);
-    log.DBG("TEST-mpu9250", "Imu temp %u degrees C", data);
-    Thread::sleep(500);
+  log.INFO("TEST-Imu", "Imu instance successfully created");
+  for (int j = 0; j < 20; j++) {
+    std::vector<ImuData> data;
+    int count = imu.readFifo(data);
+    if (count){
+      log.DBG("ReadFifo Count", "%d", data.size());
+      for (int i=0; i < data.size(); i++) {
+        log.DBG("TEST-Imu", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);    
+      }
+    }
+    else{
+      log.DBG("ReadFifo", "Fifo is empty!");
+    }
+    Thread::sleep(30);
+    data.clear();
   }
-
-
  	return 0;
 }
