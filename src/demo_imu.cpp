@@ -40,8 +40,6 @@ int main(int argc, char* argv[])
   Logger log(true, 0);
   Imu imu(log, 66, 0x08);
 
-  int frame_size = 6;
-
   log.INFO("TEST-Imu", "Imu instance successfully created");
   for (int j = 0; j < 20; j++) {
     std::vector<ImuData> data;

@@ -48,10 +48,10 @@ constexpr uint8_t kMpuRegConfig             = 0x1A;
 constexpr uint8_t kReadFlag                 = 0x80;
 
 // Configuration bits Imu
-constexpr uint8_t kBitsFs250Dps             = 0x00;
-constexpr uint8_t kBitsFs500Dps             = 0x08;
-constexpr uint8_t kBitsFs1000Dps            = 0x10;
-constexpr uint8_t kBitsFs2000Dps            = 0x18;
+// constexpr uint8_t kBitsFs250Dps             = 0x00;
+// constexpr uint8_t kBitsFs500Dps             = 0x08;
+// constexpr uint8_t kBitsFs1000Dps            = 0x10;
+// constexpr uint8_t kBitsFs2000Dps            = 0x18;
 constexpr uint8_t kBitsFs2G                 = 0x00;
 constexpr uint8_t kBitsFs4G                 = 0x08;
 constexpr uint8_t kBitsFs8G                 = 0x10;
@@ -66,10 +66,9 @@ constexpr uint8_t kFifoEnable = 0x23;   // set FIFO enable flags
 constexpr uint8_t kFifoCountH = 0x72;   // 2 bytes for H and L registers
 constexpr uint8_t kFifoRW = 0x74;
 constexpr uint8_t kUserCtrl = 0x6A;     // to reset and enable FIFO
-constexpr uint8_t kIntEnable = 0x38;    // for FIFO overflow, read 0x10 at this register
+// constexpr uint8_t kIntEnable = 0x38;    // for FIFO overflow, read 0x10 at this register
 constexpr uint8_t kFifoAccel = 0x08;
 
-constexpr uint8_t kTempoutH = 0x41;
 
 namespace hyped {
 

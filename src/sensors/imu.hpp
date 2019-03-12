@@ -80,7 +80,7 @@ class Imu : public ImuInterface {
 
   /**
    * @brief Resets and enables fifo after sleeping 500 ms, frame size is set to 6 for xyz acceleration
-   * 
+   *
    */
   void enableFifo();
 
