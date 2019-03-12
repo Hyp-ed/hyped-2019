@@ -29,6 +29,14 @@ int main(int argc, char* argv[]) {
   // test_39.clear();
   // test_39.set();
 
+
+  /*
+  varying speed with potentiometer at speed w = 2*pi*f
+
+  have code count number of times stripe is detected
+
+  */
+
   GpioCounter keyence(66);        // 4 down on left
 
   uint32_t stripe_count = 0;
