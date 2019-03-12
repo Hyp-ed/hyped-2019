@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_STATEPROCESSOR_HPP_
-#define HYPED_STATEPROCESSOR_HPP_
+#ifndef PROPULSION_STATE_PROCESSOR_HPP_
+#define PROPULSION_STATE_PROCESSOR_HPP_
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -36,71 +36,71 @@ using utils::System;
 class StateProcessor : public StateProcessorInterface
 {
   public:
-	/**
+     /**
    * @brief {Initializes the state processors with the amount of motors and the logger}
    * */
-	StateProcessor(int motorAmount, Logger &log);
+     StateProcessor(int motorAmount, Logger &log);
 
-	/**
-		 * @brief { Sends the desired settings to the motors }
-		 */
-	void initMotors() override;
+     /**
+           * @brief { Sends the desired settings to the motors }
+           */
+     void initMotors() override;
 
-	/**
-		 * @brief { Changes the state of the motor controller to preOperational }
-		 */
-	void enterPreOperational() override;
+     /**
+           * @brief { Changes the state of the motor controller to preOperational }
+           */
+     void enterPreOperational() override;
 
-	/**
-		 * @brief { Stops all motors }
-		 */
-	void quickStopAll() override;
+     /**
+           * @brief { Stops all motors }
+           */
+     void quickStopAll() override;
 
-	/**
-		 * @brief { Checks the motor controller's health }
-		 */
-	void healthCheck() override;
+     /**
+           * @brief { Checks the motor controller's health }
+           */
+     void healthCheck() override;
 
-	/**
-		 * @brief { Checks if the motor controller's error registers }
-		 */
-	bool getFailure() override;
+     /**
+           * @brief { Checks if the motor controller's error registers }
+           */
+     bool getFailure() override;
 
-	/**
-		 * @brief { Tells the controllers to start accelerating the motors }
-		 */
-	void accelerate() override;
+     /**
+           * @brief { Tells the controllers to start accelerating the motors }
+           */
+     void accelerate() override;
 
-	/**
-		 * @brief { Returns if the motors are initialised already }
-		 */
-	bool isInitialized() override;
+     /**
+           * @brief { Returns if the motors are initialised already }
+           */
+     bool isInitialized() override;
 
   protected:
-	/**
-		 * @brief { Registers the controllers to handle CAN transmissions }
-		 */
-	void registerControllers() override;
+     /**
+           * @brief { Registers the controllers to handle CAN transmissions }
+           */
+     void registerControllers() override;
 
-	/**
-		 * @brief { Configures the controllers }
-		 */
-	void configureControllers() override;
+     /**
+           * @brief { Configures the controllers }
+           */
+     void configureControllers() override;
 
-	/**
-		 * @brief { Send settings data to the motors }
-		 */
-	void prepareMotors() override;
+     /**
+           * @brief { Send settings data to the motors }
+           */
+     void prepareMotors() override;
 
-	bool useTestControllers;
-	Logger &log_;
-	System &sys_;
-	int motorAmount;
-	bool initialized;
-	//ControllerInterface* controllers[];
+     bool useTestControllers;
+     Logger &log_;
+     System &sys_;
+     int motorAmount;
+     bool initialized;
+     // ControllerInterface* controllers[];
 };
 
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_STATEPROCESSOR_HPP_
+#endif  // PROPULSION_STATE_PROCESSOR_HPP_

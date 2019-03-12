@@ -49,7 +49,7 @@ Main::Main(uint8_t id, Logger& log)
 void Main::run()
 {
   utils::System& sys = utils::System::getSystem();
-  
+
   while (sys.running_) {
     comms_data_     = data_.getCommunicationsData();
     nav_data_       = data_.getNavigationData();
@@ -60,7 +60,7 @@ void Main::run()
 
     switch (sm_data_.current_state) {
       case data::State::kIdle:
-        if (checkCommsCriticalFailure()) break;   // TODO(anyone): discuss this transition again 
+        if (checkCommsCriticalFailure()) break;  // TODO(anyone): discuss this transition again
         if (checkInitialised())          break;
         break;
       case data::State::kCalibrating:
@@ -101,4 +101,166 @@ void Main::run()
         break;
     }
 
+<<<<<<< HEAD
 }} // namespace hyped::state_machine
+=======
+    yield();
+  }
+}
+
+bool Main::checkInitialised()
+{
+  // all modules must be initialised
+  if (comms_data_.module_status     == data::ModuleStatus::kInit &&
+      nav_data_.module_status       == data::ModuleStatus::kInit &&
+      motor_data_.module_status     == data::ModuleStatus::kInit &&
+      // sensors_data_.module_status   == data::ModuleStatus::kInit &&
+      batteries_data_.module_status == data::ModuleStatus::kInit) {
+    log_.INFO("STATE", "all modules are initialised");
+    hypedMachine.handleEvent(kInitialised);
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkSystemsChecked()
+{
+  // nav and motors must be ready
+  if (nav_data_.module_status   == data::ModuleStatus::kReady &&
+      motor_data_.module_status == data::ModuleStatus::kReady) {
+    log_.INFO("STATE", "systems ready");
+    hypedMachine.handleEvent(kSystemsChecked);
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkOnStart()
+{
+  if (comms_data_.launch_command) {
+    log_.INFO("STATE", "launch command received");
+    hypedMachine.handleEvent(kOnStart);
+
+    // also setup timer for going to emergency braking state
+    time_start_ = utils::Timer::getTimeMicros();
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkCommsCriticalFailure()
+{
+  if (comms_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+    log_.ERR("STATE", "Critical failure caused by communications ");
+    hypedMachine.handleEvent(kCriticalFailure);
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkCriticalFailure()
+{
+  bool criticalFailureFound = false;
+  // check if any of the module has failed (except sensors)
+  if (comms_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+    log_.ERR("STATE", "Critical failure caused by communications ");
+    criticalFailureFound = true;
+    // return true
+  }
+  if (nav_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+    log_.ERR("STATE", "Critical failure caused by navigation ");
+    criticalFailureFound = true;
+    // return true;
+  }
+  if (motor_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+    log_.ERR("STATE", "Critical failure caused by motors ");
+    criticalFailureFound = true;
+    // return true;
+  }
+  if (batteries_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+    log_.ERR("STATE", "Critical failure caused by batteries ");
+    criticalFailureFound = true;
+    // return true;
+  }
+  if (criticalFailureFound) {
+    hypedMachine.handleEvent(kCriticalFailure);
+    return true;
+  }
+
+
+  // also check if emergency braking distance has been reached
+  if (nav_data_.distance +
+      nav_data_.emergency_braking_distance +
+      20 >= comms_data_.run_length) {
+    log_.ERR("STATE", "Critical failure, emergency braking distance reached");
+    log_.ERR("STATE", "current distance, emergency distance: %f %f"
+      , nav_data_.distance
+      , comms_data_.run_length - nav_data_.emergency_braking_distance);
+    hypedMachine.handleEvent(kCriticalFailure);
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkMaxDistanceReached()
+{
+  if (nav_data_.distance +
+      nav_data_.braking_distance +
+      20 >= comms_data_.run_length) {
+    log_.INFO("STATE", "max distance reached");
+    log_.INFO("STATE", "current distance, braking distance: %f %f"
+      , nav_data_.distance
+      , comms_data_.run_length - nav_data_.braking_distance);
+    hypedMachine.handleEvent(kMaxDistanceReached);
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkOnExit()
+{
+  if (comms_data_.service_propulsion_go) {
+    log_.INFO("STATE", "initialising service propulsion");
+    hypedMachine.handleEvent(kOnExit);
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkFinish()
+{
+  // not moving and at end of tube, leniency of 20m
+  if (motor_data_.velocity_1 == 0 && motor_data_.velocity_2 == 0
+      && motor_data_.velocity_3 == 0 && motor_data_.velocity_4 == 0
+      && (nav_data_.distance + 20 >= comms_data_.run_length))
+      {
+        log_.INFO("STATE", "ready for collection");
+        hypedMachine.handleEvent(kFinish);
+        return true;
+      }
+  return false ;
+}
+
+bool Main::checkVelocityZeroReached()
+{
+  if (motor_data_.velocity_1 == 0 && motor_data_.velocity_2 == 0
+      && motor_data_.velocity_3 == 0 && motor_data_.velocity_4 == 0) {
+    log_.INFO("STATE", "RPM reached zero.");
+    hypedMachine.handleEvent(kVelocityZeroReached);
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkTimer()
+{
+  if (utils::Timer::getTimeMicros() > time_start_ + timeout_) {
+    log_.ERR("STATE", "Timer expired");
+    hypedMachine.handleEvent(kCriticalFailure);
+    return true;
+  }
+  return false;
+}
+
+}}  // namespace hyped::state_machine
+>>>>>>> develop

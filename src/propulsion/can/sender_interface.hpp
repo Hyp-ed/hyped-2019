@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_2019_SENDERINTERFACE_HPP
-#define HYPED_2019_SENDERINTERFACE_HPP
+#ifndef PROPULSION_CAN_SENDER_INTERFACE_HPP_
+#define PROPULSION_CAN_SENDER_INTERFACE_HPP_
 
 #include "utils/io/can.hpp"
 
@@ -42,25 +42,25 @@ constexpr uint32_t kPdo3Receive = 0x400;
 constexpr uint32_t kPdo4Transmit = 0x480;
 constexpr uint32_t kPdo4Receive = 0x500;
 
-constexpr uint32_t canIds[13]{0x80, 0x600, 0x580, 0x000, 0x700,
+constexpr uint32_t canIds[13] {0x80, 0x600, 0x580, 0x000, 0x700,
                               0x180, 0x200, 0x280, 0x300, 0x380,
                               0x400, 0x480, 0x500};
 
 class SenderInterface
 {
-public:
-  /**
-		 * @brief { Sends CAN messages }
-		 */
-  virtual void sendMessage(utils::io::can::Frame &message) = 0;
+  public:
+    /**
+       * @brief { Sends CAN messages }
+       */
+    virtual void sendMessage(utils::io::can::Frame &message) = 0;
 
-  /**
-   * @brief { Registers the controller to process incoming CAN messages}
-   * */
-  virtual void registerController() = 0;
+    /**
+     * @brief { Registers the controller to process incoming CAN messages}
+     * */
+    virtual void registerController() = 0;
 };
 
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_2019_SENDERINTERFACE_HPP
+#endif  // PROPULSION_CAN_SENDER_INTERFACE_HPP_
