@@ -31,18 +31,18 @@
 namespace hyped {
 
 using utils::Logger;
-//using data::Data;
+using data::Data;
 
 namespace sensors {
 
-class FakeGpioCounter:public SensorInterface {      // change to gpiointerface, but not included yet
+class FakeGpioCounter:public GpioInterface {
     public:
         FakeGpioCounter(Logger& log, bool miss_stripe);
-        // data::StripeCounter getStripeCounter() override;    // data from struct
-        struct StripeCounter {          // all raw data in form of this
-            uint64_t timestamp;
-            int value;
-        };
+        data::StripeCounter getStripeCounter() override;    // data from struct
+        // struct StripeCounter {          // all raw data in form of this
+        //     uint64_t timestamp;
+        //     int value;
+        // };
         StripeCounter getData();
     private:
         bool timeCheck();               // return if check_time_ exceeded
@@ -50,8 +50,7 @@ class FakeGpioCounter:public SensorInterface {      // change to gpiointerface, 
         bool getDistance();             // return if OK or keyence_fail
         uint64_t getAccTime();
         Logger&     log_;
-        // data&       data_;
-        int data_;
+        Data&       data_;
 
         uint64_t              start_time_;      // just zero
         uint64_t              ref_time_;        // current time?
