@@ -6,14 +6,14 @@
 <br>
 <br>
 
-###### Physical setup
+### Physical setup
 - Plug in both rocket adapters into sockets
 - Plug in ethernet cable from rocket into POE socket of adapter (for both rockets)
 - Plug in ethernet cable from laptop into LAN socket of adapter (for both laptops)
 - Screw in antenna (for both rockets)
 - **Restart** both rockets (use pen to hold restart button for ten seconds) - *idk why but without a restart connections seems to stop working later*
 
-###### On Access Point Computer
+### On Access Point Computer
 - Configure static IP address for ethernet interface
   - This will depend on your operating system, but typically under network settings somewhere (watch video for reference)
   - Set IP address to `192.168.1.40`
@@ -38,7 +38,7 @@
   - Set `Subnet Mask` to `255.255.255.0`
   - Click `Change` button in bottom right, and apply changes
  
-###### On Station Computer
+### On Station Computer
 - Configure static IP address for ethernet interface
   - This will depend on your operating system, but typically under network settings somewhere (watch video for reference)
   - Set IP address to `192.168.1.50`
