@@ -125,9 +125,16 @@ int main(int argc, char *argv[])
 	ImuData sensorDataArray [kNumImus] = {ImuData(), ImuData(), ImuData(), ImuData(),
 										  ImuData(), ImuData(), ImuData(), ImuData()};
 										  */
-	int kNumImus = 1;	
-	Imu* sensorArray [kNumImus] = {new Imu(log, 66, 0x08, 0x00)};
-	ImuData sensorDataArray [kNumImus] = {ImuData()};
+	int kNumImus = 7;	
+	Imu* sensorArray [kNumImus] = {new Imu(log,  66, 0x08, 0x00), 
+								   new Imu(log,  67, 0x08, 0x00), 
+								   new Imu(log,  68, 0x08, 0x00),
+								   new Imu(log,  20, 0x08, 0x00),
+								   new Imu(log, 115, 0x08, 0x00),
+								   new Imu(log, 117, 0x08, 0x00),
+								   new Imu(log,  49, 0x08, 0x00)};
+	ImuData sensorDataArray [kNumImus] = {ImuData(), ImuData(), ImuData(), ImuData(),
+										  ImuData(), ImuData(), ImuData()};
 
   	DataPoint<NavigationVector> sensorReading;
 
@@ -136,7 +143,7 @@ int main(int argc, char *argv[])
 
 	// Test-run setup parameters
 	int kNumCalQueries = 10000;
-	int kNumTestQueries = 100000;
+	int kNumTestQueries = 10000;
 
 
 	/******************************************
