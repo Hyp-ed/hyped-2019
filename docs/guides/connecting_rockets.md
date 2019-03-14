@@ -2,6 +2,8 @@
 ***Read instructions below sequentially***
 <br>
 ***Use [this video](https://www.youtube.com/watch?v=4zKNIveuCxM&feature=youtu.be) as reference***
+<br>
+*Access Point Computer refers to the computer with the designated access point Rocket plugged in; Station Computer refers to the computer with the designated Station Rocket plugged in*
 
 <br>
 <br>
