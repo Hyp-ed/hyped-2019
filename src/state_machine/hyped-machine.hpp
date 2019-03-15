@@ -26,8 +26,8 @@
 
 #include "data/data.hpp"
 
-#include "data/event.hpp"
-#include "data/states.hpp"
+#include "state_machine/event.hpp"
+#include "state_machine/states.hpp"
 
 #include "utils/logger.hpp"
 #include "utils/io/gpio.hpp"
