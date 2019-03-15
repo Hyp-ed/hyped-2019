@@ -24,13 +24,13 @@
 #ifndef STATE_MACHINE_HYPED_MACHINE_HPP_
 #define STATE_MACHINE_HYPED_MACHINE_HPP_
 
-#include "../data/data.hpp"
+#include "data/data.hpp"
 
-#include "event.hpp"
-#include "states.hpp"
+#include "data/event.hpp"
+#include "data/states.hpp"
 
-#include "../utils/logger.hpp"
-#include "../utils/io/gpio.hpp"
+#include "utils/logger.hpp"
+#include "utils/io/gpio.hpp"
 namespace hyped {
 using utils::io::GPIO;
 namespace state_machine {
