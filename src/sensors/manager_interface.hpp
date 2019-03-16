@@ -1,8 +1,8 @@
 /*
- * Author: Uday Patel, Jack Horsburgh and Ragnor Comerford
+ * Author: Jack Horsburgh
  * Organisation: HYPED
- * Date: 28/05/18
- * Description: Main interface for IMU class.
+ * Date: 21/06/18
+ * Description: Main interface for the manager classes.
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,47 +18,39 @@
  *    limitations under the License.
  */
 
-#ifndef SENSORS_INTERFACE_HPP_
-#define SENSORS_INTERFACE_HPP_
+#ifndef SENSORS_MANAGER_INTERFACE_HPP_
+#define SENSORS_MANAGER_INTERFACE_HPP_
 
-#include <string>
 #include "data/data.hpp"
+#include "utils/concurrent/thread.hpp"
 
 namespace hyped {
 
 using data::ImuData;
+using data::Battery;
+using utils::concurrent::Thread;
 using data::NavigationVector;
 
 namespace sensors {
 
-class SensorInterface {
+class ManagerInterface : public Thread {
  public:
   /**
-   * @brief Check if sensor is responding, i.e. connected to the system
-   * @return true - if sensor is online
+   * @brief Checks if the data has been updated
+   * 
    */
-  virtual bool isOnline() = 0;
+  virtual bool updated() = 0;
+  virtual void resetTimestamp() = 0;
+  ManagerInterface(utils::Logger& log) : Thread(log), old_timestamp_(0) {}
+ protected:
+  uint64_t old_timestamp_;
 };
 
-class ImuInterface: public SensorInterface {
+class ImuManagerInterface : public ManagerInterface {
  public:
-  /**
-   * @brief Get IMU data
-   * @param imu - output pointer to be filled by this sensor
-   */
-  virtual void getData(ImuData* imu) = 0;
+  ImuManagerInterface(utils::Logger& log) : ManagerInterface(log) {}
+  virtual array<NavigationVector, data::Sensors::kNumImus> getCalibrationData() = 0;
 };
-
-class BMSInterface: public SensorInterface {
- public:
-  /**
-   * @brief Get Battery data
-   * @param battery - output pointer to be filled by this sensor
-   */
-  virtual void getData(Battery* battery) = 0;
-};
-
 }}  // namespace hyped::sensors
 
-
-#endif  // SENSORS_INTERFACE_HPP_
+#endif  // BEAGLEBONE_BLACK_SENSORS_MANAGER_INTERFACE_HPP_
