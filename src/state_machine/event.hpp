@@ -24,7 +24,7 @@
 namespace hyped {
 namespace state_machine {
 
-enum Event {               
+enum Event {
   kInitialised,
   kSystemsChecked,
   kOnStart,

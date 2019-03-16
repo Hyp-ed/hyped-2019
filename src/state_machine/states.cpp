@@ -123,6 +123,9 @@ void FailureStopped::entry()
 
 void FailureStopped::react(HypedMachine &machine, Event event)
 {
+  if (event == kReset){
+    machine.transition(Idle());
+  }
 }
 
 void RunComplete::entry()
@@ -160,6 +163,9 @@ void Finished::entry()
 
 void Finished::react(HypedMachine &machine, Event event)
 {
+  if (event == kReset){
+    machine.transition(Idle());
+  }
 }
 
 

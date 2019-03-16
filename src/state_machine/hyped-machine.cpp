@@ -57,7 +57,7 @@ void HypedMachine::transition(State *state)
 
 void HypedMachine::reset()
 {
-  log_.INFO("STATE", "State Machine resetted");
+  log_.INFO("STATE", "State Machine reset");
   transition(new(current_state_) Idle());
 }
 

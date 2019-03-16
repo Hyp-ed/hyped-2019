@@ -1,5 +1,5 @@
 /*
- * Author: Ragnor Comerford
+ * Author: Ragnor Comerford and Calum McMeekin
  * Organisation: HYPED
  * Date: 11. March 2018
  * Description:
@@ -47,6 +47,7 @@ class Main: public Thread {
   // return true iff the event has been fired
   bool checkInitialised();
   bool checkSystemsChecked();
+  bool checkReset();
   bool checkOnStart();
   bool checkCommsCriticalFailure();
   bool checkCriticalFailure();

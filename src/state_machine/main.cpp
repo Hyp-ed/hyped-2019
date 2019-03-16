@@ -1,5 +1,5 @@
 /*
- * Author: Ragnor Comerford
+ * Author: Ragnor Comerford and Calum McMeekin
  * Organisation: HYPED
  * Date: 11. March 2018
  * Description:
@@ -124,6 +124,16 @@ bool Main::checkSystemsChecked()
       motor_data_.module_status == data::ModuleStatus::kReady) {
     log_.INFO("STATE", "systems ready");
     hypedMachine.handleEvent(kSystemsChecked);
+    return true;
+  }
+  return false;
+}
+
+bool Main::checkReset()
+{
+  if(comms_data_.reset_command) {
+    log_.INFO("STATE", "reset command received");
+    hypedMachine.handleEvent(kReset);
     return true;
   }
   return false;
