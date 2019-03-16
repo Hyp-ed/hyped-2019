@@ -1,5 +1,5 @@
 /*
- * Author: Ragnor Comerford and Calum McMeekin
+ * Author: Ragnor Comerford
  * Organisation: HYPED
  * Date: 11. March 2018
  * Description:
@@ -93,7 +93,9 @@ void Main::run()
       case data::State::kInvalid:
         log_.ERR("STATE", "we are in Invalid state");
       case data::State::kFinished:
+        if (checkReset())                break;
       case data::State::kFailureStopped:
+        if (checkReset())                break;
       default:
         break;
     }
@@ -124,16 +126,6 @@ bool Main::checkSystemsChecked()
       motor_data_.module_status == data::ModuleStatus::kReady) {
     log_.INFO("STATE", "systems ready");
     hypedMachine.handleEvent(kSystemsChecked);
-    return true;
-  }
-  return false;
-}
-
-bool Main::checkReset()
-{
-  if(comms_data_.reset_command) {
-    log_.INFO("STATE", "reset command received");
-    hypedMachine.handleEvent(kReset);
     return true;
   }
   return false;
