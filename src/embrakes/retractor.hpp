@@ -29,16 +29,18 @@ using utils::concurrent::Thread;
 
 namespace embrakes {
 
-class Retractor : Thread
+enum StatusCodes { ERROR, IDLE, STARTED, FINISHED};
+
+class Retractor : public Thread
 {
     public:
-        Retractor(uint32_t activate,uint32_t step,std::atomic<int> *error);
+        Retractor(uint32_t activate,uint32_t step,std::atomic<StatusCodes> *status);
         void run() override;
 
     private:
         uint32_t activate_;
         uint32_t step_;
-        std::atomic<int> *error_;
+        std::atomic<StatusCodes> *status_;
 }; 
 
 }}

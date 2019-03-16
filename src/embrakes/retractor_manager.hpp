@@ -20,13 +20,11 @@
 #define EMBRAKES_RETRACTOR_MANAGER_HPP_
 
 #include <cstdint>
+#include <iostream>
 #include <atomic>
 #include "retractor_manager_interface.hpp"
 #include "retractor.hpp"
 #include "utils/logger.hpp"
-
-
-#define EMBRAKEAMOUNT 2
 
 namespace hyped {
 
@@ -34,18 +32,24 @@ using utils::Logger;
 
 namespace embrakes {
 
-
 class RetractorManager : public RetractorManagerInterface
 {
     public:
-        RetractorManager(Pins pins[EMBRAKEAMOUNT],Logger& log);
-        int retract() override;
+        RetractorManager(Pins *pins,Logger& log);
+        void retract() override;
+
+        /**
+         * @brief {Returns if an error occured while retracting the brakes}
+         * @returns {-1 Not retracted yet, 0 No errors, 1 Brake 1 Error, 2 Brake 2 Error, 3 Both Brakes Error}
+        */
+        int getStatus() override;
 
     private:
         Pins *pins_;
         Logger &log_;
         Retractor **retractors_;
-        std::atomic<int> *errors;
+        std::atomic<StatusCodes> *status;
+        bool retracting;
 }; 
 
 }}

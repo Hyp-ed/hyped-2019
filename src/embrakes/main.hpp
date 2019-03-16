@@ -45,9 +45,8 @@ class Main : public Thread
         bool isRetracted();
 
     private:
-        bool retracted;
         State currentState;
-        RetractorManagerInterface *retractor;
+        RetractorManagerInterface *retractorManager;
         Logger &log_;
 };
 

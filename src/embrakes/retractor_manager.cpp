@@ -2,14 +2,15 @@
 
 namespace hyped {
     namespace embrakes {
-        RetractorManager::RetractorManager(Pins pins[EMBRAKEAMOUNT],Logger& log) : log_(log)
+        RetractorManager::RetractorManager(Pins *pins,Logger& log) : log_(log)
         {
-            errors = new std::atomic<int>[sizeof(pins)/sizeof(pins[0])];  
+            status = new std::atomic<StatusCodes>[sizeof(pins)/sizeof(pins[0])];  
             retractors_ = new Retractor*[sizeof(pins)/sizeof(pins[0])]; 
 
             for(int i = 0;i <= (sizeof(pins)/sizeof(Pins));i++) {
-                errors[0] = 0;
-                retractors_[i] = new Retractor(pins[i].activate,pins[i].step,&errors[0]);
+                status[i] = StatusCodes::IDLE;
+                std::cout << i << " " << pins[i].activate << " " << pins[i].step << " " << status[i] << std::endl;
+                retractors_[i] = new Retractor(pins[i].activate,pins[i].step,&status[i]);
             }
         }
 
@@ -17,13 +18,24 @@ namespace hyped {
         //are completed --> then return 0 if there was no error
         //have an atomic int, which the threads write to --> check when both are finished and
         //return the according response. 0 for everything is fine
-        int RetractorManager::retract()
+        void RetractorManager::retract()
         {
-            for(int i = 0; i <= (sizeof(errors)/sizeof(errors[0]));i++) {
-                
+            for(int i = 0; i < (sizeof(status)/sizeof(status[0]));i++) {
+                retractors_[i]->start();
+            }
+        }
+
+        int RetractorManager::getStatus()
+        {
+            StatusCodes statusCode = StatusCodes::FINISHED;
+
+            for(int i = 0; i < (sizeof(status)/sizeof(status[0]));i++) {
+                if(status[i] < statusCode) {
+                    statusCode = status[i];
+                }
             }
 
-            return 0;
+            return statusCode;
         }
     }
 }

@@ -33,7 +33,8 @@ struct Pins {
 class RetractorManagerInterface
 {
     public:
-        virtual int retract() = 0;
+        virtual void retract() = 0;
+        virtual int getStatus() = 0;
 }; 
 
 }}

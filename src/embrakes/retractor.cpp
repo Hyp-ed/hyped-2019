@@ -22,17 +22,19 @@ namespace hyped
 {
 namespace embrakes
 {
-    Retractor::Retractor(uint32_t activate,uint32_t step,std::atomic<int> *error)
+    Retractor::Retractor(uint32_t activate,uint32_t step,std::atomic<StatusCodes> *status)
         : activate_(activate),
         step_(step),
-        error_(error)
+        status_(status)
     {
 
     }
 
     void Retractor::run()
     {
-        *error_=2;
+        *status_ = StatusCodes::STARTED;
+        sleep(1000);
+        *status_ = StatusCodes::FINISHED;
     }
 }
 }

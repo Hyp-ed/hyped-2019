@@ -43,33 +43,35 @@ void Main::run()
 		{2,2}
 	};
 
-	retractor = new RetractorManager(pins,log_);
+	retractorManager = new RetractorManager(pins,log_);
 
-	retractor->retract();
-
-	/*while (sys.running_)
+	while (sys.running_)
 	{
-		log_.INFO("Embrakes", "Thread running");
+		//log_.INFO("Embrakes", "Thread running");
 
-        //Get the current state of the system from the state machine's data
-        currentState = stateMachineData.getStateMachineData().current_state;
+        // Get the current state of the system from the state machine's data
+        //currentState = stateMachineData.getStateMachineData().current_state;
+		currentState = State::kCalibrating;
 
         int x = 2;
 
-		if (currentState == State::kCalibrating) //Retract screw
+		if (currentState == State::kCalibrating) // Retract screw
 		{
-            if(!retracted) {
-                
-            }
+			std::cout << retractorManager->getStatus() << std::endl;
+            if(retractorManager->getStatus() == StatusCodes::IDLE) {
+                retractorManager->retract();
+            } else if(retractorManager->getStatus() == StatusCodes::ERROR) {
+				log_.ERR("Embrakes","An error occured");
+			}
 		}
-	}*/
+	}
 
 	log_.INFO("Embrakes", "Thread shutting down");
 }
 
 bool Main::isRetracted()
 {
-    return retracted;
+    return retractorManager->getStatus()==FINISHED? true : false;
 }
 
 } // namespace motor_control
