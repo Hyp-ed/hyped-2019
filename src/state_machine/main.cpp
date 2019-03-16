@@ -131,6 +131,15 @@ bool Main::checkSystemsChecked()
   return false;
 }
 
+bool Main::checkReset()
+{
+  if (comms_data_.reset_command) {
+    log_.INFO("STATE", "reset command received");
+    hypedMachine.handleEvent(kReset);
+    return true;
+  }
+  return false;
+}
 bool Main::checkOnStart()
 {
   if (comms_data_.launch_command) {
