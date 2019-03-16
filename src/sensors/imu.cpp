@@ -211,7 +211,7 @@ void Imu::getTemperature(int* data)
 
   // TODO(anyone): When temperature is read correctly add to the data strucutre
   // TODO(anyone): compare imu temperature values with reliable temperature source
-  uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21; 
+  uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21;
 
   *data = static_cast<int>(temp);
 }
