@@ -37,11 +37,10 @@ namespace sensors {
 /**
  * @brief Construct a new Imu Manager object
  * 
- * @param log 
- * @param imu 
+ * @param log
+ * @param imu
  */
-ImuManager::ImuManager(Logger& log,
-                       ImuManager::DataArray *imu)
+ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       sensors_imu_(imu),

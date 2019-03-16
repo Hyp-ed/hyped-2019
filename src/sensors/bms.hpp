@@ -165,4 +165,4 @@ class BMSHP : public CanProccesor, public BMSInterface {
 
 }}  // namespace hyped::sensors
 
-#endif  // BEAGLEBONE_BLACK_SENSORS_BMS_HPP_
+#endif  // SENSORS_BMS_HPP_

@@ -29,8 +29,6 @@
 
 namespace hyped {
 
-using data::Data;
-
 namespace sensors {
 
 std::vector<uint8_t> BMS::existing_ids_;    // NOLINT [build/include_what_you_use]

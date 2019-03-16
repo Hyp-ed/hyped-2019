@@ -53,4 +53,4 @@ class ImuManagerInterface : public ManagerInterface {
 };
 }}  // namespace hyped::sensors
 
-#endif  // BEAGLEBONE_BLACK_SENSORS_MANAGER_INTERFACE_HPP_
+#endif  // SENSORS_MANAGER_INTERFACE_HPP_
