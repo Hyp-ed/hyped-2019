@@ -123,8 +123,8 @@ void FailureStopped::entry()
 
 void FailureStopped::react(HypedMachine &machine, Event event)
 {
-  if (event == kReset){
-    machine.transition(Idle());
+  if (event == kReset) {
+    machine.transition(new(alloc_) Idle());
   }
 }
 
@@ -163,8 +163,8 @@ void Finished::entry()
 
 void Finished::react(HypedMachine &machine, Event event)
 {
-  if (event == kReset){
-    machine.transition(Idle());
+  if (event == kReset) {
+    machine.transition(new(alloc_) Idle());
   }
 }
 
