@@ -1,5 +1,5 @@
 /*
- * Author: Ragnor Comerford ,Calum McMeekin, Kornelija Sukyte, Sneha Sinha and Ian Ma
+ * Author: Ragnor Comerford, Calum McMeekin, Kornelija Sukyte, Sneha Sinha and Siu Wang (Ian) Ma
  * Organisation: HYPED
  * Date: 11. March 2018
  * Description:
