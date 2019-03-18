@@ -36,7 +36,7 @@ using data::NavigationVector;
 namespace sensors {
 /**
  * @brief Construct a new Imu Manager object
- * 
+ *
  * @param log
  * @param imu
  */
@@ -53,17 +53,16 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
   // if (sys_.fake_imu || sys_.fake_sensors) is_fake_ = true;
 
   if (!is_fake_) {
-
     utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);
-    for (int i = 0; i < data::Sensors::kNumImus; i++) { // creates new IMU objects for every non-fake IMU connected
-      imu_[i] = new Imu(log, chip_select_[i], 0x08); 
+    for (int i = 0; i < data::Sensors::kNumImus; i++) {   // creates new real IMU objects
+      imu_[i] = new Imu(log, chip_select_[i], 0x08);
     }
     utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
-  // } else {
+  // } else {   // TODO(Iain): refactor fake txt files
   //   if (sys_.fail_acc_imu) { // creates fake IMUs if there are problems
   //     for (int i = 0; i < data::Sensors::kNumImus - 1; i++) {
   //       imu_[i] = new FakeImu(log,
-  //               "../BeagleBone_black/data/in/fake_imu_acc_offline_suddenly.txt",    // TODO(Iain): refactor fake txt files
+  //               "../BeagleBone_black/data/in/fake_imu_acc_offline_suddenly.txt",
   //               "../BeagleBone_black/data/in/fake_imu_input_dec.txt",
   //               "../BeagleBone_black/data/in/fake_imu_input_em.txt",
   //               "../BeagleBone_black/data/in/fake_imu_input_gyr.txt");
@@ -104,7 +103,7 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
 }
 /**
  * @brief Calibrate IMUs then begin collecting data.
- * 
+ *
  */
 void ImuManager::run()
 {
@@ -132,9 +131,9 @@ void ImuManager::run()
   }
 }
 /**
- * @brief Get statistic information while the IMU calibrates and put it in an array. 
- * 
- * @return ImuManager::CalibrationArray 
+ * @brief Get statistic information while the IMU calibrates and put it in an array.
+ *
+ * @return ImuManager::CalibrationArray
  */
 ImuManager::CalibrationArray ImuManager::getCalibrationData()
 {
@@ -148,9 +147,9 @@ ImuManager::CalibrationArray ImuManager::getCalibrationData()
 }
 /**
  * @brief Check if the timestamp has been updated.
- * 
- * @return true 
- * @return false 
+ *
+ * @return true
+ * @return false
  */
 bool ImuManager::updated()
 {
@@ -161,10 +160,10 @@ bool ImuManager::updated()
 }
 /**
  * @brief Store the timestamp value as old_timestamp and reset the timestamp value.
- * 
+ *
  */
 void ImuManager::resetTimestamp()
 {
-  old_timestamp_ = sensors_imu_->timestamp; 
+  old_timestamp_ = sensors_imu_->timestamp;
 }
 }}  // namespace hyped::sensors

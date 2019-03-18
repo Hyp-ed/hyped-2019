@@ -203,7 +203,7 @@ void Imu::setAcclScale(int scale)
 
 int Imu::readFifo(std::vector<ImuData>& data)
 {
-  if(is_online_) {
+  if (is_online_) {
     // get fifo size
     uint8_t buffer[kFrameSize];
     readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);    // from count H/L registers
@@ -278,7 +278,6 @@ void Imu::getTemperature(int* data)
   uint8_t response[2];
   readBytes(kTempOutH, response, 2);
 
-  // TODO(anyone): When temperature is read correctly add to the data strucutre
   // TODO(anyone): compare imu temperature values with reliable temperature source
   uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21;
 

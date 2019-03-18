@@ -40,7 +40,7 @@ using utils::math::OnlineStatistics;
 namespace sensors {
 /**
  * @brief creates class to hold multiple IMUs and respective data.
- * 
+ *
  */
 class ImuManager: public ImuManagerInterface {
   typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;

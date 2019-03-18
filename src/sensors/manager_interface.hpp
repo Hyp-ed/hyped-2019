@@ -37,18 +37,18 @@ class ManagerInterface : public Thread {
  public:
   /**
    * @brief Checks if the data has been updated
-   * 
+   *
    */
   virtual bool updated() = 0;
   virtual void resetTimestamp() = 0;
-  ManagerInterface(utils::Logger& log) : Thread(log), old_timestamp_(0) {}
+  explicit ManagerInterface(utils::Logger& log) : Thread(log), old_timestamp_(0) {}
  protected:
   uint64_t old_timestamp_;
 };
 
 class ImuManagerInterface : public ManagerInterface {
  public:
-  ImuManagerInterface(utils::Logger& log) : ManagerInterface(log) {}
+  explicit ImuManagerInterface(utils::Logger& log) : ManagerInterface(log) {}
   virtual array<NavigationVector, data::Sensors::kNumImus> getCalibrationData() = 0;
 };
 }}  // namespace hyped::sensors

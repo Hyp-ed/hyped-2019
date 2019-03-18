@@ -42,7 +42,7 @@ BmsManager::BmsManager(Logger& log,
   for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
     // if (sys_.fake_batteries) {
     //   bms_[i] = new FakeBatteries(log, false, true);
-    // } else 
+    // } else
     {
       BMS* bms = new BMS(i, log_);
       bms->start();
@@ -52,7 +52,7 @@ BmsManager::BmsManager(Logger& log,
   for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
     // if (sys_.fake_batteries) {
     //   bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log, true, true);
-    // } else 
+    // } else
     {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }

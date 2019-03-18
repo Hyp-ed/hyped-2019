@@ -22,8 +22,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_SENSORS_BMS_HPP_
-#define BEAGLEBONE_BLACK_SENSORS_BMS_HPP_
+#ifndef SENSORS_BMS_HPP_
+#define SENSORS_BMS_HPP_
 
 #include <cstdint>
 #include <vector>
