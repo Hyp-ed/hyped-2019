@@ -1,6 +1,6 @@
 
 /*
- * Authors: Yash Mittal and Ragnor Comerford
+ * Authors: Yash Mittal, Ragnor Comerford and Calum McMeekin
  * Organisation: HYPED
  * Date: 11. February 2018
  * Description:
@@ -18,7 +18,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#include "states.hpp"
+#include "state_machine/states.hpp"
 #include <stdlib.h>
 
 namespace hyped {
@@ -123,6 +123,9 @@ void FailureStopped::entry()
 
 void FailureStopped::react(HypedMachine &machine, Event event)
 {
+  if (event == kReset) {
+    machine.transition(new(alloc_) Idle());
+  }
 }
 
 void RunComplete::entry()
@@ -160,6 +163,9 @@ void Finished::entry()
 
 void Finished::react(HypedMachine &machine, Event event)
 {
+  if (event == kReset) {
+    machine.transition(new(alloc_) Idle());
+  }
 }
 
 
