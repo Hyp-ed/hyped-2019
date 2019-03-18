@@ -8,6 +8,7 @@ SRCS := \
   propulsion/main.cpp \
   propulsion/can/can_sender.cpp \
   propulsion/can/fake_can_sender.cpp \
+  sensors/fake_imu.ccp \
   sensors/imu.cpp \
   sensors/main.cpp \
   state_machine/main.cpp \
@@ -23,4 +24,4 @@ SRCS := \
   utils/io/spi.cpp \
   utils/logger.cpp \
   utils/system.cpp \
-  utils/timer.cpp  \
+  utils/timer.cpp \

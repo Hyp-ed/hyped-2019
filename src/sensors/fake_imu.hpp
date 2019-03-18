@@ -109,13 +109,11 @@ class FakeImuFromFile : public ImuInterface {
    *            some data points need to be skipped
    */
   bool accCheckTime();
-  bool gyrCheckTime();
 
   NavigationVector acc_val_;
   NavigationVector acc_noise_;
 
   NavigationVector prev_acc_;
-  NavigationVector prev_gyr_;
 
   std::vector<NavigationVector> acc_val_read_;
   std::vector<bool>             acc_val_operational_;
@@ -135,18 +133,20 @@ class FakeImuFromFile : public ImuInterface {
   data::Data&  data_;
 };
 
-class FakeAccurateImu: public ImuInterface {
- public:
-  explicit FakeAccurateImu(utils::Logger& log_);
+// todo - implement different options for fake imus
 
-  bool isOnline() override { return true; }
-  void getData(ImuData* imu) override;
+// class FakeAccurateImu: public ImuInterface {
+//  public:
+//   explicit FakeAccurateImu(utils::Logger& log_);
 
- private:
-  data::Data&    data_;
-  NavigationVector acc_noise_;
-  utils::Logger& log_;
-};
+//   bool isOnline() override { return true; }
+//   void getData(ImuData* imu) override;
+
+//  private:
+//   data::Data&    data_;
+//   NavigationVector acc_noise_;
+//   utils::Logger& log_;
+// };
 
 }}  // namespace hyped::sensors
 

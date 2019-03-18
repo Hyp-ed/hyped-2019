@@ -1,10 +1,10 @@
 /*
- * Author: Uday Patel
+ * Author:
  * Organisation: HYPED
- * Date: 28/05/18
- * Description: Main class for fake IMUs.
+ * Date: 11/03/2019
+ * Description: Main class for fake IMUs
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -104,15 +104,6 @@ void FakeImuFromFile::getData(ImuData* imu)
       }
     }
 
-    // if (gyrCheckTime()) {
-    //   gyr_count_ = std::min(gyr_count_, (int64_t) gyr_val_read_.size());
-    //   // Check so you don't go out of bounds
-    //   if (gyr_count_ ==  (int64_t) gyr_val_read_.size()) {
-    //     prev_gyr_ = gyr_val_read_[gyr_count_-1];
-    //   } else {
-    //     prev_gyr_ = gyr_val_read_[gyr_count_];
-    //   }
-    // }
   } else if (state == data::State::kNominalBraking) {
     if (!dec_started_) {
       log_.INFO("Fake-IMUs", "Start decelerating...");
@@ -132,14 +123,6 @@ void FakeImuFromFile::getData(ImuData* imu)
       }
     }
 
-    // if (gyrCheckTime()) {
-    //   gyr_count_ = std::min(gyr_count_, (int64_t) gyr_val_read_.size());
-    //   if (gyr_count_ ==  (int64_t) gyr_val_read_.size()) {
-    //     prev_gyr_ = gyr_val_read_[gyr_count_-1];
-    //   } else {
-    //     prev_gyr_ = gyr_val_read_[gyr_count_];
-    //   }
-    // }
   } else if (state == data::State::kEmergencyBraking) {
     if (!em_started_) {
       log_.INFO("Fake-IMUs", "Start emergency breaking...");
@@ -158,21 +141,11 @@ void FakeImuFromFile::getData(ImuData* imu)
       operational = true;
     }
 
-    // if (gyrCheckTime()) {
-    //   gyr_count_ = std::min(gyr_count_, (int64_t) gyr_val_read_.size());
-    //   if (gyr_count_ ==  (int64_t) gyr_val_read_.size()) {
-    //     prev_gyr_ = gyr_val_read_[gyr_count_-1];
-    //   } else {
-    //     prev_gyr_ = gyr_val_read_[gyr_count_];
-    //   }
-    // }
   } else {
     prev_acc_ = addNoiseToData(acc_val_, acc_noise_);
-    // prev_gyr_ = addNoiseToData(gyr_val_, gyr_noise_);
     operational = true;
   }
   imu->acc = prev_acc_;
-  // imu->gyr = prev_gyr_;
   imu->operational = operational;
 }
 
@@ -213,15 +186,7 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
       timestamp = kAccTimeInterval;
       val_read  = &em_val_read_;
       bool_read = &em_val_operational_;
-      }
-    // not needed
-    // } else {
-    // file_path = gyr_file_path;
-    // timestamp = kGyrTimeInterval;
-    // val_read  = &gyr_val_read_;
-    // bool_read = &gyr_val_operational_;
-    // }
-
+    }
     std::ifstream file;
     file.open(file_path);
     if (!file.is_open()) {
@@ -278,63 +243,42 @@ bool FakeImuFromFile::accCheckTime()
   return true;
 }
 
-// not needed
-// bool FakeImu::gyrCheckTime()
+// FakeAccurateImu::FakeAccurateImu(utils::Logger& log)
+//     : data_(data::Data::getInstance()),
+//       acc_noise_(1),
+//       log_(log)
+// { /* EMPTY */ }
+
+// void FakeAccurateImu::getData(ImuData* imu)
 // {
-//   uint64_t now = utils::Timer::getTimeMicros();
-//   uint64_t time_span = (now - imu_ref_time_) / 1000;
+//   data::Navigation nav = data_.getNavigationData();
+//   data::Motors     mot = data_.getMotorData();
+//   data::StateMachine      stm = data_.getStateMachineData();
 
-//   if (time_span < kGyrTimeInterval*gyr_count_) {
-//     return false;
+//   if (stm.current_state == data::State::kEmergencyBraking) {
+//     imu->acc[0] = -25;
+//   } else {
+//     // get average rmp
+//     double rpm = 0;
+//     rpm += mot.velocity_1;
+//     rpm += mot.velocity_2;
+//     rpm += mot.velocity_3;
+//     rpm += mot.velocity_4;
+//     rpm /= 4;
+
+//     // get angular velocity
+//     double velocity = (rpm*2*3.14159265358979323846*0.148)/60;
+//     uint32_t scale = 4;
+//     if (!std::isnan(nav.velocity))
+//       imu->acc[0] = (velocity - nav.velocity)/scale;
+//     else
+//       imu->acc[0] = 0.0;
 //   }
+//   imu->acc[1] = 0;
+//   imu->acc[2] = 9.8;
 
-//   gyr_count_ = time_span/kGyrTimeInterval + 1;
-//   return true;
+//   imu->acc = FakeImuFromFile::addNoiseToData(imu->acc, acc_noise_);
+//   imu->operational = true;
 // }
-
-
-FakeAccurateImu::FakeAccurateImu(utils::Logger& log)
-    : data_(data::Data::getInstance()),
-      acc_noise_(1),
-      // gyr_noise_(1),      not needed
-      log_(log)
-{ /* EMPTY */ }
-
-void FakeAccurateImu::getData(ImuData* imu)
-{
-  data::Navigation nav = data_.getNavigationData();
-  data::Motors     mot = data_.getMotorData();
-  data::StateMachine      stm = data_.getStateMachineData();
-
-  if (stm.current_state == data::State::kEmergencyBraking) {
-    imu->acc[0] = -25;
-  } else {
-    // get average rmp
-    double rpm = 0;
-    rpm += mot.velocity_1;
-    rpm += mot.velocity_2;
-    rpm += mot.velocity_3;
-    rpm += mot.velocity_4;
-    rpm /= 4;
-
-    // get angular velocity
-    double velocity = (rpm*2*3.14159265358979323846*0.148)/60;
-    uint32_t scale = 4;
-    if (!std::isnan(nav.velocity))
-      imu->acc[0] = (velocity - nav.velocity)/scale;
-    else
-      imu->acc[0] = 0.0;
-  }
-  imu->acc[1] = 0;
-  imu->acc[2] = 9.8;
-
-  // imu->gyr[0] = 0;
-  // imu->gyr[1] = 0;
-  // imu->gyr[2] = 0;
-
-  imu->acc = FakeImuFromFile::addNoiseToData(imu->acc, acc_noise_);
-  // imu->gyr = FakeImu::addNoiseToData(imu->gyr, gyr_noise_);
-  imu->operational = true;
-}
 
 }}  // namespace hyped::sensors
