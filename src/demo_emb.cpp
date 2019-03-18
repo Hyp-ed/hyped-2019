@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include "./embrakes/retractor_manager.hpp"
-#include "./embrakes/retractor_manager_interface.hpp"
 
 using hyped::System;
 using hyped::utils::Logger;

@@ -34,8 +34,6 @@ enum StatusCodes { ERROR, IDLE, STARTED, FINISHED};
 class RetractorInterface : public Thread
 {
     protected:
-        uint32_t activate_;
-        uint32_t step_;
         std::atomic<StatusCodes> *status_;
 }; 
 

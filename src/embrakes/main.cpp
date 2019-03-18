@@ -25,7 +25,8 @@ namespace embrakes
 {
     Main::Main(uint8_t id, Logger &log)
 	: Thread(id, log),
-	  log_(log)
+	  log_(log),
+	  finishedRetracting_(false)
 {
 	
 }
@@ -47,31 +48,27 @@ void Main::run()
 
 	while (sys.running_)
 	{
-		//log_.INFO("Embrakes", "Thread running");
-
         // Get the current state of the system from the state machine's data
-        //currentState = stateMachineData.getStateMachineData().current_state;
-		currentState = State::kCalibrating;
-
-        int x = 2;
+        currentState = stateMachineData.getStateMachineData().current_state;
 
 		if (currentState == State::kCalibrating) // Retract screw
 		{
-			std::cout << retractorManager->getStatus() << std::endl;
             if(retractorManager->getStatus() == StatusCodes::IDLE) {
+				log_.INFO("Embrakes","Start Retracting");
                 retractorManager->retract();
             } else if(retractorManager->getStatus() == StatusCodes::ERROR) {
 				log_.ERR("Embrakes","An error occured");
+			} else if(retractorManager->getStatus() == StatusCodes::FINISHED) {
+				if(!finishedRetracting_) {
+					log_.INFO("Embrakes","Brakes are retracted");
+					// Set the initialized field in the data structure
+					finishedRetracting_ = true;
+				}
 			}
 		}
 	}
 
 	log_.INFO("Embrakes", "Thread shutting down");
-}
-
-bool Main::isRetracted()
-{
-    return retractorManager->getStatus()==FINISHED? true : false;
 }
 
 } // namespace motor_control

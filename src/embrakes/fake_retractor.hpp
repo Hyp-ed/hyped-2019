@@ -21,7 +21,6 @@
 
 #include <cstdint> 
 #include <atomic>
-#include "utils/concurrent/thread.hpp"
 #include "retractor_interface.hpp"
 
 namespace hyped {
@@ -32,14 +31,14 @@ namespace embrakes {
 
 enum StatusCodes { ERROR, IDLE, STARTED, FINISHED};
 
-class FakeRetractor : public Thread
+class FakeRetractor : public RetractorInterface
 {
     public:
+        /*
+         * @brief {Assign the}
+         */
         FakeRetractor(std::atomic<StatusCodes> *status);
         void run() override;
-
-    private:
-        std::atomic<StatusCodes> *status_;
 }; 
 
 }}

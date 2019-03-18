@@ -41,12 +41,12 @@ class Main : public Thread
     public:
         Main(uint8_t id, Logger &log);
 	    void run() override;
-        bool isRetracted();
 
     private:
         State currentState;
         RetractorManager *retractorManager;
         Logger &log_;
+        bool finishedRetracting_;
 };
 
 }}
