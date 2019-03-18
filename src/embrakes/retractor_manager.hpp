@@ -22,7 +22,6 @@
 #include <cstdint>
 #include <iostream>
 #include <atomic>
-#include "retractor_manager_interface.hpp"
 #include "retractor.hpp"
 #include "retractor_interface.hpp"
 #include "utils/logger.hpp"
@@ -35,17 +34,22 @@ using utils::System;
 
 namespace embrakes {
 
-class RetractorManager : public RetractorManagerInterface
+struct Pins {
+    uint32_t activate;
+    uint32_t step;
+};
+
+class RetractorManager
 {
     public:
         RetractorManager(Pins *pins,Logger& log);
-        void retract() override;
+        void retract();
 
         /**
          * @brief {Returns if an error occured while retracting the brakes}
          * @returns {-1 Not retracted yet, 0 No errors, 1 Brake 1 Error, 2 Brake 2 Error, 3 Both Brakes Error}
         */
-        int getStatus() override;
+        int getStatus();
 
     private:
         Pins *pins_;

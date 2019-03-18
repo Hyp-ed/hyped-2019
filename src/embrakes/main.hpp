@@ -23,7 +23,6 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "data/data.hpp"
-#include "retractor_manager_interface.hpp"
 #include "retractor_manager.hpp"
 
 namespace hyped {
@@ -46,7 +45,7 @@ class Main : public Thread
 
     private:
         State currentState;
-        RetractorManagerInterface *retractorManager;
+        RetractorManager *retractorManager;
         Logger &log_;
 };
 
