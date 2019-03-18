@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     FakeImuFromFile fake_imu(log,acc_file_path,dec_file_path,em_file_path);
     fake_imu.getData(&imu);
     NavigationVector naviationData = imu.acc;
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < 7; i++){
         NavigationType d = naviationData[i];
         log.INFO("IMU_DATA", "Acc %f",d);
     }
