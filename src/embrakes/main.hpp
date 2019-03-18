@@ -39,7 +39,14 @@ namespace embrakes {
 class Main : public Thread 
 {
     public:
+        /*
+         * @brief Initialises essential variables
+        */
         Main(uint8_t id, Logger &log);
+
+        /*
+         * @brief Checks for State kCalibrating to start retracting process
+        */
 	    void run() override;
 
     private:

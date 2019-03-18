@@ -32,7 +32,16 @@ namespace embrakes {
 class Retractor : public RetractorInterface
 {
     public:
+        /*
+         * @brief {Assigns the stepper motor gpio pins to the class and enables 
+         *          it to change the status variable of the base class}
+        */
         Retractor(uint32_t activate,uint32_t step,std::atomic<StatusCodes> *status);
+
+        /*
+         * @brief Runs the retracting process
+         * @description Updates the status variable when it is finished or when an error occured
+        */
         void run() override;
 
     private:

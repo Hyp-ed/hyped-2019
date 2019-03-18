@@ -29,15 +29,17 @@ using utils::concurrent::Thread;
 
 namespace embrakes {
 
-enum StatusCodes { ERROR, IDLE, STARTED, FINISHED};
-
 class FakeRetractor : public RetractorInterface
 {
     public:
         /*
-         * @brief {Assign the}
+         * @brief {Enables the FakeRetractor's to change the status variable of the manager}
          */
         FakeRetractor(std::atomic<StatusCodes> *status);
+
+        /*
+         * @brief {Sets the status to Started waits 1 second and then sets it to Finished}
+        */
         void run() override;
 }; 
 

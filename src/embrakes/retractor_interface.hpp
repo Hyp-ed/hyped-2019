@@ -34,6 +34,9 @@ enum StatusCodes { ERROR, IDLE, STARTED, FINISHED};
 class RetractorInterface : public Thread
 {
     protected:
+        /*
+         * @brief Holds the current state of the retracting process
+        */
         std::atomic<StatusCodes> *status_;
 }; 
 

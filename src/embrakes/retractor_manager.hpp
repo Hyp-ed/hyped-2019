@@ -42,12 +42,19 @@ struct Pins {
 class RetractorManager
 {
     public:
+        /*
+         * @brief Assigns an array of gpio pins for the stepper motors to the class
+        */
         RetractorManager(Pins *pins,Logger& log);
+
+        /*
+         * @brief Starts the retracting process of the embrakes
+        */
         void retract();
 
         /**
-         * @brief {Returns if an error occured while retracting the brakes}
-         * @returns {-1 Not retracted yet, 0 No errors, 1 Brake 1 Error, 2 Brake 2 Error, 3 Both Brakes Error}
+         * @brief Returns if an error occured while retracting the brakes
+         * @returns 0 Error, 1 Idle, 2 Started, 3 Finished
         */
         int getStatus();
 
