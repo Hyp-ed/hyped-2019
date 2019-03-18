@@ -59,7 +59,6 @@ class ImuManager: public ImuManagerInterface {
   uint8_t           chip_select_[data::Sensors::kNumImus];
   ImuInterface*     imu_[data::Sensors::kNumImus];
   CalibrationArray  imu_calibrations_;
-  bool              is_fake_;
   bool              is_calibrated_;
   uint32_t          calib_counter_;
 

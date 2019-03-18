@@ -24,7 +24,6 @@
 #include "sensors/bms.hpp"
 #include "data/data.hpp"
 #include "utils/timer.hpp"
-// #include "sensors/fake_batteries.hpp"
 
 namespace hyped {
 namespace sensors {
@@ -40,22 +39,12 @@ BmsManager::BmsManager(Logger& log,
   old_timestamp_ = utils::Timer::getTimeMicros();
   // create BMS LP
   for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
-    // if (sys_.fake_batteries) {
-    //   bms_[i] = new FakeBatteries(log, false, true);
-    // } else
-    {
-      BMS* bms = new BMS(i, log_);
-      bms->start();
-      bms_[i] = bms;
-    }
+    BMS* bms = new BMS(i, log_);
+    bms->start();
+    bms_[i] = bms;
   }
   for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-    // if (sys_.fake_batteries) {
-    //   bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log, true, true);
-    // } else
-    {
-      bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
-    }
+    bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
   }
 }
 
