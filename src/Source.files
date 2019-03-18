@@ -12,7 +12,7 @@ SRCS := \
   sensors/imu_manager.cpp \
   sensors/main.cpp \
   sensors/bms.cpp \
-  sensors.bms_manager.cpp \
+  sensors/bms_manager.cpp \
   state_machine/main.cpp \
   state_machine/hyped-machine.cpp \
   state_machine/states.cpp \
