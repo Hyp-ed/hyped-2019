@@ -4,12 +4,16 @@ namespace hyped {
     namespace embrakes {
         RetractorManager::RetractorManager(Pins *pins,Logger& log) : log_(log)
         {
+            System &sys = System::getSystem();
             status = new std::atomic<StatusCodes>[sizeof(pins)/sizeof(pins[0])];  
-            retractors_ = new Retractor*[sizeof(pins)/sizeof(pins[0])]; 
+            retractors_ = new RetractorInterface*[sizeof(pins)/sizeof(pins[0])]; 
 
             for(int i = 0;i <= (sizeof(pins)/sizeof(Pins));i++) {
                 status[i] = StatusCodes::IDLE;
                 std::cout << i << " " << pins[i].activate << " " << pins[i].step << " " << status[i] << std::endl;
+                
+                
+                // TODO{gregor}: Add check if fake retractors should be loaded instead
                 retractors_[i] = new Retractor(pins[i].activate,pins[i].step,&status[i]);
             }
         }

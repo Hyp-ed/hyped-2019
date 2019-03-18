@@ -24,11 +24,14 @@
 #include <atomic>
 #include "retractor_manager_interface.hpp"
 #include "retractor.hpp"
+#include "retractor_interface.hpp"
 #include "utils/logger.hpp"
+#include "utils/system.hpp"
 
 namespace hyped {
 
 using utils::Logger;
+using utils::System;
 
 namespace embrakes {
 
@@ -47,7 +50,7 @@ class RetractorManager : public RetractorManagerInterface
     private:
         Pins *pins_;
         Logger &log_;
-        Retractor **retractors_;
+        RetractorInterface **retractors_;
         std::atomic<StatusCodes> *status;
         bool retracting;
 }; 

@@ -16,25 +16,32 @@
  *    limitations under the License.
  */
 
-#include "retractor.hpp"
+#ifndef EMBRAKES_FAKE_RETRACTOR_HPP_
+#define EMBRAKES_FAKE_RETRACTOR_HPP_
 
-namespace hyped
+#include <cstdint> 
+#include <atomic>
+#include "utils/concurrent/thread.hpp"
+#include "retractor_interface.hpp"
+
+namespace hyped {
+
+using utils::concurrent::Thread;
+
+namespace embrakes {
+
+enum StatusCodes { ERROR, IDLE, STARTED, FINISHED};
+
+class FakeRetractor : public Thread
 {
-namespace embrakes
-{
-    Retractor::Retractor(uint32_t activate,uint32_t step,std::atomic<StatusCodes> *status)
-    {
-        step_=step;
-        status_=status;
-        activate_=activate;
-    }
+    public:
+        FakeRetractor(std::atomic<StatusCodes> *status);
+        void run() override;
 
-    void Retractor::run()
-    {
-        *status_ = StatusCodes::STARTED;
-        sleep(1000);
-        *status_ = StatusCodes::FINISHED;
-    }
-}
-}
+    private:
+        std::atomic<StatusCodes> *status_;
+}; 
 
+}}
+
+#endif  // EMBRAKES_FAKE_RETRACTOR_HPP_

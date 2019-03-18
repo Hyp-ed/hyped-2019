@@ -16,25 +16,29 @@
  *    limitations under the License.
  */
 
-#include "retractor.hpp"
+#ifndef EMBRAKES_RETRACTOR_INTERFACE_HPP_
+#define EMBRAKES_RETRACTOR_INTERFACE_HPP_
 
-namespace hyped
+#include <cstdint> 
+#include <atomic>
+#include "utils/concurrent/thread.hpp"
+
+namespace hyped {
+
+using utils::concurrent::Thread;
+
+namespace embrakes {
+
+enum StatusCodes { ERROR, IDLE, STARTED, FINISHED};
+
+class RetractorInterface : public Thread
 {
-namespace embrakes
-{
-    Retractor::Retractor(uint32_t activate,uint32_t step,std::atomic<StatusCodes> *status)
-    {
-        step_=step;
-        status_=status;
-        activate_=activate;
-    }
+    protected:
+        uint32_t activate_;
+        uint32_t step_;
+        std::atomic<StatusCodes> *status_;
+}; 
 
-    void Retractor::run()
-    {
-        *status_ = StatusCodes::STARTED;
-        sleep(1000);
-        *status_ = StatusCodes::FINISHED;
-    }
-}
-}
+}}
 
+#endif  // EMBRAKES_RETRACTOR_INTERFACE_HPP_

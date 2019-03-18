@@ -16,20 +16,18 @@
  *    limitations under the License.
  */
 
-#include "retractor.hpp"
+#include "fake_retractor.hpp"
 
 namespace hyped
 {
 namespace embrakes
 {
-    Retractor::Retractor(uint32_t activate,uint32_t step,std::atomic<StatusCodes> *status)
+    FakeRetractor::FakeRetractor(std::atomic<StatusCodes> *status)
     {
-        step_=step;
         status_=status;
-        activate_=activate;
     }
 
-    void Retractor::run()
+    void FakeRetractor::run()
     {
         *status_ = StatusCodes::STARTED;
         sleep(1000);

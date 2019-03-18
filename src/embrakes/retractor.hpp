@@ -21,7 +21,7 @@
 
 #include <cstdint> 
 #include <atomic>
-#include "utils/concurrent/thread.hpp"
+#include "retractor_interface.hpp"
 
 namespace hyped {
 
@@ -29,18 +29,11 @@ using utils::concurrent::Thread;
 
 namespace embrakes {
 
-enum StatusCodes { ERROR, IDLE, STARTED, FINISHED};
-
-class Retractor : public Thread
+class Retractor : public RetractorInterface
 {
     public:
         Retractor(uint32_t activate,uint32_t step,std::atomic<StatusCodes> *status);
         void run() override;
-
-    private:
-        uint32_t activate_;
-        uint32_t step_;
-        std::atomic<StatusCodes> *status_;
 }; 
 
 }}
