@@ -1,5 +1,5 @@
 /*
- * Author: Ragnor Comerford
+ * Author: Ragnor Comerford, Calum McMeekin, Sneha Sinha and Siu Wang (Ian) Ma
  * Organisation: HYPED
  * Date: 11. March 2018
  * Description:
@@ -21,13 +21,13 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
-#define BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
+#ifndef STATE_MACHINE_MAIN_HPP_
+#define STATE_MACHINE_MAIN_HPP_
 
 #include <cstdint>
-#include "../utils/concurrent/thread.hpp"
-#include "hyped-machine.hpp"
-#include "../data/data.hpp"
+#include "utils/concurrent/thread.hpp"
+#include "state_machine/hyped-machine.hpp"
+#include "data/data.hpp"
 
 namespace hyped {
 
@@ -47,6 +47,7 @@ class Main: public Thread {
   // return true iff the event has been fired
   bool checkInitialised();
   bool checkSystemsChecked();
+  bool checkReset();
   bool checkOnStart();
   bool checkCommsCriticalFailure();
   bool checkCriticalFailure();
@@ -70,4 +71,4 @@ class Main: public Thread {
 
 }}  // namespace hyped::motor_control
 
-#endif  // BEAGLEBONE_BLACK_STATE_MACHINE_MAIN_HPP_
+#endif  // STATE_MACHINE_MAIN_HPP_

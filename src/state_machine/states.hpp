@@ -24,15 +24,15 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_STATE_MACHINE_STATES_HPP_
-#define BEAGLEBONE_BLACK_STATE_MACHINE_STATES_HPP_
+#ifndef STATE_MACHINE_STATES_HPP_
+#define STATE_MACHINE_STATES_HPP_
 
-#include "event.hpp"
-#include "../data/data.hpp"
-#include "hyped-machine.hpp"
-#include "../utils/logger.hpp"
-#include "../utils/system.hpp"
-#include "../utils/io/gpio.hpp"
+#include "state_machine/event.hpp"
+#include "data/data.hpp"
+#include "state_machine/hyped-machine.hpp"
+#include "utils/logger.hpp"
+#include "utils/system.hpp"
+#include "utils/io/gpio.hpp"
 
 namespace hyped {
 
@@ -116,4 +116,4 @@ class Finished : public State {
 }  // namespace state_machine
 }  // namespace hyped
 
-#endif  // BEAGLEBONE_BLACK_STATE_MACHINE_STATES_HPP_
+#endif  // STATE_MACHINE_STATES_HPP_

@@ -16,14 +16,15 @@
  *    limitations under the License.
  */
 
+
 #ifndef DATA_DATA_HPP_
 #define DATA_DATA_HPP_
 
-#include "../utils/math/vector.hpp"
 #include <cstdint>
 #include <array>
-#include "data_point.hpp"
-#include "../utils/concurrent/lock.hpp"
+#include "utils/math/vector.hpp"
+#include "data/data_point.hpp"
+#include "utils/concurrent/lock.hpp"
 
 using std::array;
 
@@ -54,11 +55,11 @@ struct Module {
 // -------------------------------------------------------------------------------------------------
 typedef float NavigationType;
 struct Navigation : public Module {
-  NavigationType  distance; //m
-  NavigationType  velocity; //m/s
-  NavigationType  acceleration; //m/s^2
-  NavigationType  emergency_braking_distance; //m
-  NavigationType  braking_distance = 750;  // TODO(Brano): Remove default,publish the actual dist.
+  NavigationType  distance;  // m
+  NavigationType  velocity;  // m/s
+  NavigationType  acceleration;  // m/s^2
+  NavigationType  emergency_braking_distance;  // m
+  NavigationType  braking_distance = 750;  // m
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -82,7 +83,7 @@ struct Sensors : public Module {
   static constexpr int kNumKeyence = 2;
 
   DataPoint<array<ImuData, kNumImus>> imu;
-  array<StripeCounter, kNumKeyence>  keyence_stripe_counter;  
+  array<StripeCounter, kNumKeyence>  keyence_stripe_counter;
 };
 
 struct SensorCalibration {
@@ -90,12 +91,12 @@ struct SensorCalibration {
 };
 
 struct Battery {
-  uint16_t  voltage; // V
-  int16_t   current; // mA
-  uint8_t   charge;      
-  int8_t    temperature; // C
-  uint16_t  low_voltage_cell; // V
-  uint16_t  high_voltage_cell; // V
+  uint16_t  voltage;  // V
+  int16_t   current;  // mA
+  uint8_t   charge;
+  int8_t    temperature;  // C
+  uint16_t  low_voltage_cell;  // V
+  uint16_t  high_voltage_cell;  // V
 };
 
 struct Batteries : public Module {
@@ -195,6 +196,20 @@ class Data {
   void setNavigationData(const Navigation& nav_data);
 
   /**
+   * @brief Get the Temperature from the IMU
+   *
+   * @return int temperature in degrees C
+   */
+  int getTemperature();
+
+  /**
+   * @brief Set the Temperature from the IMU
+   *
+   * @param temp - temp in degrees C
+   */
+  void setTemperature(int temp);
+
+  /**
    * @brief      Retrieves data from all sensors
    */
   Sensors getSensorsData();
@@ -256,7 +271,7 @@ class Data {
    */
   void setCommunicationsData(const Communications& communications_data);
 
-private:
+ private:
   StateMachine state_machine_;
   Navigation navigation_;
   Sensors sensors_;
@@ -265,6 +280,7 @@ private:
   Communications communications_;
   SensorCalibration calibration_data_;
   EmergencyBrakes emergency_brakes_;
+  int temperature_;  // In degrees C
 
 
   // locks for data substructures
@@ -272,6 +288,7 @@ private:
   Lock lock_navigation_;
   Lock lock_sensors_;
   Lock lock_motors_;
+  Lock lock_temp_;
 
   Lock lock_communications_;
   Lock lock_batteries_;

@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_STATEPROCESSOR_HPP_
-#define HYPED_STATEPROCESSOR_HPP_
+#ifndef PROPULSION_STATE_PROCESSOR_HPP_
+#define PROPULSION_STATE_PROCESSOR_HPP_
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -36,77 +36,71 @@ using utils::System;
 class StateProcessor : public StateProcessorInterface
 {
   public:
-	StateProcessor(int motorAmount, Logger &log);
+     /**
+   * @brief {Initializes the state processors with the amount of motors and the logger}
+   * */
+     StateProcessor(int motorAmount, Logger &log);
 
-	/**
-		 * @brief { Initializes the motor controllers and prepare the motors }
-		 */
-	void initMotors() override;
+     /**
+           * @brief { Sends the desired settings to the motors }
+           */
+     void initMotors() override;
 
-	void enterPreOperational() override;
-	/**
-          *  @brief  { Set target velocity for each controller }
-          *
-          *  @param[in] { Target velocity calculated in Main }
-          */
-	void sendTargetVelocity(int32_t target_velocity) override;
-	/**
-          *  @brief  { Read actual velocity from each controller }
-          *
-          *  @return { Motor velocity struct }
-          */
-	MotorVelocity requestActualVelocity() override;
-	/*
-         *  @brief  { Sets all controllers into quickStop mode. Use in case of critical failure }
-         */
-	void quickStopAll() override;
-	/*
-         *  @brief { Checks the error status and warning status in each controller object
-         *           Sets critical failure flag true if there is an error }
-         */
-	void healthCheck() override;
-	/*
-         *  @return { Critical failure flag }
-         */
-	bool getFailure() override;
+     /**
+           * @brief { Changes the state of the motor controller to preOperational }
+           */
+     void enterPreOperational() override;
 
-	/*
-		 * @brief {Handles the logic for the acceleration phase}
-		 */
-	void accelerate() override;
+     /**
+           * @brief { Stops all motors }
+           */
+     void quickStopAll() override;
 
-	/*
-		 * @brief {Handles the logic for the deceleration phase}
-		 */
-	void decelerate() override;
+     /**
+           * @brief { Checks the motor controller's health }
+           */
+     void healthCheck() override;
 
-	bool isInitialized() override;
+     /**
+           * @brief { Checks if the motor controller's error registers }
+           */
+     bool getFailure() override;
 
-	void setInitialized(bool initialized) override;
+     /**
+           * @brief { Tells the controllers to start accelerating the motors }
+           */
+     void accelerate() override;
+
+     /**
+           * @brief { Returns if the motors are initialised already }
+           */
+     bool isInitialized() override;
 
   protected:
-	/**
-          *   @brief  Registers the motor controllers to the can
-          */
-	void registerControllers() override;
-	/**
-          *   @brief  Applies configuration settings and sets controllers to Operational mode
-          */
-	void configureControllers() override;
-	/**
-          *   @brief  { Controllers are entered into Operational mode }
-          */
-	void prepareMotors() override;
+     /**
+           * @brief { Registers the controllers to handle CAN transmissions }
+           */
+     void registerControllers() override;
 
-	bool useTestControllers;
-	Logger &log_;
-	System &sys_;
-	int motorAmount;
-	bool initialized;
-	//ControllerInterface* controllers[];
+     /**
+           * @brief { Configures the controllers }
+           */
+     void configureControllers() override;
+
+     /**
+           * @brief { Send settings data to the motors }
+           */
+     void prepareMotors() override;
+
+     bool useTestControllers;
+     Logger &log_;
+     System &sys_;
+     int motorAmount;
+     bool initialized;
+     // ControllerInterface* controllers[];
 };
 
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_STATEPROCESSOR_HPP_
+#endif  // PROPULSION_STATE_PROCESSOR_HPP_

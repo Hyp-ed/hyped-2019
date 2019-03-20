@@ -22,12 +22,12 @@
 
 #include <cstdint>
 
-#include "hyped-machine.hpp"
-#include "main.hpp"
+#include "state_machine/hyped-machine.hpp"
+#include "state_machine/main.hpp"
 
-#include "../data/data.hpp"
-#include "../utils/timer.hpp"
-#include "../utils/system.hpp"
+#include "data/data.hpp"
+#include "utils/timer.hpp"
+#include "utils/system.hpp"
 
 namespace hyped {
 namespace state_machine {
@@ -46,7 +46,7 @@ Main::Main(uint8_t id, Logger& log)
 void Main::run()
 {
   utils::System& sys = utils::System::getSystem();
-  
+
   while (sys.running_) {
     comms_data_     = data_.getCommunicationsData();
     nav_data_       = data_.getNavigationData();
@@ -57,7 +57,7 @@ void Main::run()
 
     switch (sm_data_.current_state) {
       case data::State::kIdle:
-        if (checkCommsCriticalFailure()) break;   // TODO(anyone): discuss this transition again 
+        if (checkCommsCriticalFailure()) break;  // TODO(anyone): discuss this transition again
         if (checkInitialised())          break;
         break;
       case data::State::kCalibrating:
@@ -93,7 +93,9 @@ void Main::run()
       case data::State::kInvalid:
         log_.ERR("STATE", "we are in Invalid state");
       case data::State::kFinished:
+        if (checkReset())                break;
       case data::State::kFailureStopped:
+        if (checkReset())                break;
       default:
         break;
     }
@@ -108,7 +110,7 @@ bool Main::checkInitialised()
   if (comms_data_.module_status     == data::ModuleStatus::kInit &&
       nav_data_.module_status       == data::ModuleStatus::kInit &&
       motor_data_.module_status     == data::ModuleStatus::kInit &&
-      //sensors_data_.module_status   == data::ModuleStatus::kInit &&
+      // sensors_data_.module_status   == data::ModuleStatus::kInit &&
       batteries_data_.module_status == data::ModuleStatus::kInit) {
     log_.INFO("STATE", "all modules are initialised");
     hypedMachine.handleEvent(kInitialised);
@@ -129,6 +131,15 @@ bool Main::checkSystemsChecked()
   return false;
 }
 
+bool Main::checkReset()
+{
+  if (comms_data_.reset_command) {
+    log_.INFO("STATE", "reset command received");
+    hypedMachine.handleEvent(kReset);
+    return true;
+  }
+  return false;
+}
 bool Main::checkOnStart()
 {
   if (comms_data_.launch_command) {
@@ -159,24 +170,24 @@ bool Main::checkCriticalFailure()
   if (comms_data_.module_status == data::ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by communications ");
     criticalFailureFound = true;
-    //return true
+    // return true
   }
   if (nav_data_.module_status == data::ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by navigation ");
     criticalFailureFound = true;
-    //return true;
+    // return true;
   }
   if (motor_data_.module_status == data::ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by motors ");
     criticalFailureFound = true;
-    //return true;
+    // return true;
   }
   if (batteries_data_.module_status == data::ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by batteries ");
     criticalFailureFound = true;
-    //return true;
+    // return true;
   }
-  if (criticalFailureFound){
+  if (criticalFailureFound) {
     hypedMachine.handleEvent(kCriticalFailure);
     return true;
   }
@@ -223,10 +234,11 @@ bool Main::checkOnExit()
 
 bool Main::checkFinish()
 {
-  //not moving and at end of tube, leniency of 20m
+  // not moving and at end of tube, leniency of 20m
   if (motor_data_.velocity_1 == 0 && motor_data_.velocity_2 == 0
-      && motor_data_.velocity_3 == 0 && motor_data_.velocity_4 == 0 
-      && (nav_data_.distance + 20 >= comms_data_.run_length)){
+      && motor_data_.velocity_3 == 0 && motor_data_.velocity_4 == 0
+      && (nav_data_.distance + 20 >= comms_data_.run_length))
+      {
         log_.INFO("STATE", "ready for collection");
         hypedMachine.handleEvent(kFinish);
         return true;

@@ -1,7 +1,7 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date: 
+ * Date:
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -16,14 +16,14 @@
  *    limitations under the License.
  */
 
-#ifndef HYPED_2019_CANSENDER_HPP
-#define HYPED_2019_CANSENDER_HPP
+#ifndef PROPULSION_CAN_CAN_SENDER_HPP_
+#define PROPULSION_CAN_CAN_SENDER_HPP_
 
+#include <atomic>
+#include <iostream>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "sender_interface.hpp"
-#include <atomic>
-#include <iostream>
 
 namespace hyped
 {
@@ -35,28 +35,50 @@ using utils::io::CanProccesor;
 
 class CanSender : public CanProccesor, public SenderInterface
 {
+  public:
+    /**
+       * @brief { Initialise the CanSender with the logger and the id }
+       */
+    CanSender(Logger &log_, uint8_t id);
 
-public:
-  CanSender(Logger &log_, uint8_t id);
-  //CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
+    /**
+       * @brief { Initialise the CanSender with the logger, the id and the controller as an attribute,
+       * to access it's attributes }
+       */
+    // CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
 
-  void pushSdoMessageToQueue(utils::io::can::Frame &message) override;
+    /**
+       * @brief { Sends CAN messages }
+       */
+    void sendMessage(utils::io::can::Frame &message) override;
 
-  void registerController() override;
+    /**
+       * @brief { Registers the controller to process incoming CAN messages }
+       */
+    void registerController() override;
 
-  void processNewData(utils::io::can::Frame &message) override;
+    /**
+       * @brief { This function processes incoming CAN messages }
+       */
+    void processNewData(utils::io::can::Frame &message) override;
 
-  bool hasId(uint32_t id, bool extended) override;
+    /**
+       * @brief { If this function returns true, the CAN message is ment for this CAN node }
+       */
+    bool hasId(uint32_t id, bool extended) override;
 
-  bool getIsSending();
+    /**
+       * @brief { Return if the can_sender is sending a CAN message right now }
+       */
+    bool getIsSending();
 
-private:
-  Logger log_;
-  uint8_t node_id_;
-  Can &can_;
-  std::atomic<bool> isSending;
+  private:
+    Logger log_;
+    uint8_t node_id_;
+    Can &can_;
+    std::atomic<bool> isSending;
 };
-} // namespace motor_control
-} // namespace hyped
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif // HYPED_2019_CANSENDER_HPP
+#endif  // PROPULSION_CAN_CAN_SENDER_HPP_

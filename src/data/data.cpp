@@ -15,7 +15,7 @@
  *    limitations under the License.
  */
 
-#include "data.hpp"
+#include "data/data.hpp"
 
 namespace hyped {
 
@@ -71,6 +71,18 @@ Sensors Data::getSensorsData()
 {
   ScopedLock L(&lock_sensors_);
   return sensors_;
+}
+
+int Data::getTemperature()
+{
+  ScopedLock L(&lock_temp_);
+  return temperature_;
+}
+
+void Data::setTemperature(int temp)
+{
+  ScopedLock L(&lock_temp_);
+  temperature_ = temp;
 }
 
 void Data::setSensorsData(const Sensors& sensors_data)
