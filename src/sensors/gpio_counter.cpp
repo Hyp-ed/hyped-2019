@@ -30,6 +30,7 @@
 
 namespace hyped {
 
+using data::Data;
 using data::StripeCounter;      // data.hpp
 using utils::concurrent::Thread;
 using utils::io::GPIO;
@@ -38,7 +39,8 @@ using hyped::utils::Logger;
 namespace sensors {
 
 GpioCounter::GpioCounter(int pin)
-     : pin_(pin)
+     : pin_(pin),
+       data_(Data::getInstance())
 {}
 
 void GpioCounter::run()
@@ -59,6 +61,7 @@ void GpioCounter::run()
       stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
       stripe_counter_.operational = true;
     }
+    // data_.setSensorsKeyenceData(*stripe_counter_);     // need array of two
   }
 }
 

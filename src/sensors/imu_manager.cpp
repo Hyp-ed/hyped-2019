@@ -43,6 +43,7 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       sensors_imu_(imu),
+      data_(Data::getInstance()),
       chip_select_ {49, 117, 125, 123, 111, 112, 110, 20},
       is_calibrated_(false),
       calib_counter_(0)
@@ -81,6 +82,7 @@ void ImuManager::run()
       imu_[i]->getData(&(sensors_imu_->value[i]));
     }
     sensors_imu_->timestamp = utils::Timer::getTimeMicros();
+    data_.setSensorsImuData(*sensors_imu_);
   }
 }
 /**

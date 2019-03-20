@@ -47,7 +47,8 @@ class GpioCounter: public GpioInterface, public Thread {            // interface
   void run() override;
 
  private:
-  int pin_;
+  int           pin_;
+  data::Data    data_;
 
   data::StripeCounter stripe_counter_;
 };

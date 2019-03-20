@@ -223,6 +223,10 @@ class Data {
    */
   void setSensorsImuData(const DataPoint<array<ImuData, Sensors::kNumImus>>& imu);
   /**
+   * @brief      Should be called to update sensor keyence data.
+   */
+  void setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>&  keyence_stripe_counter);
+  /**
    * @brief      Should be called to update sensor calibration data
    */
   void setCalibrationData(const SensorCalibration sensor_calibration_data);
