@@ -33,7 +33,8 @@
 #include "types/message.pb.h"  // NO LINT
 
 #define PORT 9090
-#define SERVER_IP "192.168.1.150" // macbook as client and linux machine as base-station
+#define SERVER_IP "192.168.1.50" // macbook as client and linux machine as base-station
+// #define SERVER_IP "localhost" // macbook as client and linux machine as base-station
 
 // reads header containing size encoded as varint, returns this size
 google::protobuf::uint32 readHeader(char *buffer)
@@ -57,7 +58,7 @@ void readBody(int sockfd, google::protobuf::uint32 body_size)
     int bytes_received;
     int header_size = CodedOutputStream::VarintSize32(body_size);  // literal amount of bytes that header takes up
     char buffer[body_size + header_size];
-    std::cout << "header_size: " << header_size << std::endl;  // if we don't print this we run into a lot of corrupt messages, really strange; must fix
+    std::cout << "header_size: " << header_size << "\n";  // if we don't print this we run into a lot of corrupt messages, really strange; must fix
 
     // read whole message (header + body) into buffer
     if ((bytes_received = recv(sockfd, buffer, header_size + body_size, 0)) == -1) {

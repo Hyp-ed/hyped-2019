@@ -8,8 +8,8 @@ SRCS_DIR:=src
 LIBS_DIR:=lib
 OBJS_DIR:=bin
 
-CFLAGS:=-pthread -std=c++11 -O2 -Wall -Wno-unused-result -I/usr/local/include
-LFLAGS:=-L/usr/local/lib -lprotobuf -pthread
+CFLAGS:=-Qunused-arguments -pthread -std=c++11 -O2 -Wall -Wno-unused-result -I/usr/local/include
+LFLAGS:=-L/usr/local/lib -lprotobuf -Qunused-arguments -pthread
 
 # default configuration
 CROSS=0
