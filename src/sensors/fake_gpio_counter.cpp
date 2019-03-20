@@ -18,7 +18,6 @@
  *    limitations under the License.
  */
 
-#include "sensors/fake_gpio_counter.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -26,57 +25,62 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <fstream>
 
+#include "sensors/fake_gpio_counter.hpp"
 #include "utils/timer.hpp"
 #include "data/data.hpp"
+#include "utils/concurrent/thread.hpp"
 
 constexpr uint64_t kBrakeTime = 10000000;
 constexpr uint32_t kTrackDistance = 2000;
-constexpr uint32_t kStripeDistance = 30;          // TODO(Greg): check units
+constexpr uint32_t kStripeDistance = 30.48;     // metres
 
 namespace hyped {
 
 using data::StripeCounter;
+using hyped::utils::concurrent::Thread;
 
 namespace sensors {
 
-FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
+FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stripe)
     : log_(log),
-      data_(Data::getInstance()),    // need to update data structures
-      start_time_(0),                // just zero?
-      ref_time_(start_time_),        // current time
-      check_time_(3150000),          // 3.15 seconds
-      brake_time_(kBrakeTime),
-      // stripe_count_(0);
+      data_(Data::getInstance()),
+      start_time_(0),
+      check_time_(358588),
+      brake_time_(kBrakeTime),        // TODO(Greg): not used
       miss_stripe_(miss_stripe),
-      is_accelerating_(false)
+      double_stripe_(double_stripe)
 {
-  stripe_count_.count.timestamp = utils::Timer::getTimeMicros();      // the start time
   stripe_count_.count.value = 0;                                      // start stripe count
+  stripe_count_.operational = true;
+  init_ = true;
 }
 
-StripeCounter FakeGpioCounter::getData()     // calc if missed stripe here
+StripeCounter FakeGpioCounter::getData()     // returns incorrect stripe count
 {
+  if(init_) {
+    stripe_count_.count.timestamp = utils::Timer::getTimeMicros();      // the start time
+    start_time_ = stripe_count_.count.timestamp;
+    init_ = false;
+  }
+
   if (timeCheck()) {    // only do this if it's time to check
     data::Navigation nav   = data_.getNavigationData();
-    uint32_t prev_count    = stripe_count_.count.value;
-    uint32_t current_sector = stripe_count_.count.value*kStripeDistance;  // which sector pod is in
-    uint32_t next_sector = stripe_count_.count.value*kStripeDistance;     // distance of next stripe
+    uint32_t current = stripe_count_.count.value;
+    
+    int nav_distance = int (nav.distance/kStripeDistance);      // cast int;
 
-    if (nav.distance > current_sector&&nav.distance < next_sector) {
-    // if correct
-      stripe_count_.count.value = prev_count;
-      stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+    if (nav_distance == current) {             // if correct
       log_.INFO("fake_gpio_counter", "correct count");
-    } else if (nav.distance < current_sector) {       // counted too many stripes
-      stripe_count_.count.value--;
-      stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+    } else if (nav.distance < current) {       // counted too many stripes
       log_.INFO("fake_gpio_counter", "incorrect count, substracting stripe");
-    } else if (nav.distance > next_sector) {      // if missed extra_count number of stripes
-      uint64_t extra_count = std::floor((nav.distance-current_sector)/kStripeDistance);
-      stripe_count_.count.value += extra_count;
-      stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
-      log_.INFO("fake_gpio_counter", "incorrect count, %d stripes missed", extra_count);
+      double_stripe_ = true;
+    } else if (nav.distance > current) {      // if missed extra_count number of stripes
+      
+      log_.INFO("fake_gpio_counter", "incorrect count, %d stripes missed", nav.distance-current);
+      miss_stripe_ = true;
     }
       log_.INFO("fake_gpio_counter", "nav.distance=%f, new_count=%d, timestamp=%f",
                   nav.distance, stripe_count_.count.value, stripe_count_.count.timestamp);
@@ -84,35 +88,20 @@ StripeCounter FakeGpioCounter::getData()     // calc if missed stripe here
   return stripe_count_;
 }
 
-bool FakeGpioCounter::getDistance()
+void FakeGpioCounter::checkData()
 {
-  data::Navigation nav = data_.getNavigationData();
-  data::State state = data_.getStateMachineData().current_state;
-
-  StripeCounter current_data = getData();
-  if (nav.acceleration < 0 && state == data::State::kNominalBraking) {      // TODO(Greg): check stm paths
-    is_accelerating_ = false;
-  } else if (nav.acceleration > 0 || state == data::State::kAccelerating) {
-    is_accelerating_ = true;
+  // let pod wait at first...then start comparing data
+  if (stripe_count_.count.timestamp - start_time_ > 5000000) Thread::sleep(300);
+  if (miss_stripe_) {
+    log_.INFO("fake_gpio_counter", "missed stripe, changing now");
+    stripe_count_.count.value++;
+    miss_stripe_ = false;
   }
-  if (timeout(current_data)) {    // based on stripe_count_ only
-    // need to stop
-    log_.INFO("fake_gpio_counter", "Need to break...breaking now");
-  } else {
-    log_.INFO("fake_gpio_counter", "Keyence online...continue run");
+  else if(double_stripe_) {
+    log_.INFO("fake_gpio_counter", "missed stripe, changing now");
+    stripe_count_.count.value--;
+    double_stripe_ = false;
   }
-}
-
-bool FakeGpioCounter::timeout(StripeCounter stripe_data)         // check braking distance
-{
-  data::Navigation nav = data_.getNavigationData();
-  uint32_t current_distance = stripe_data.count.value*kStripeDistance;
-
-  if (kTrackDistance-current_distance < nav.braking_distance) {     // exceeded min bDistance
-    log_.ERR("fake_gpio_counter", "Distance too short! We're gonna crash!");
-    return true;
-  }
-  return false;
 }
 
 bool FakeGpioCounter::timeCheck()             // used to see if it is time to check
@@ -121,6 +110,30 @@ bool FakeGpioCounter::timeCheck()             // used to see if it is time to ch
     return true;
   }
   return false;
+}
+
+void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
+{
+  std::ifstream data_file ("fake_gpio_counter.txt");
+  float count;
+  float time;
+  if (data_file.is_open()) {
+    while (data_file >> count) {
+      data_file >> time;
+      StripeCounter this_line;
+      this_line.count.value = count;
+      this_line.count.timestamp = time;
+      data.push_back(this_line);
+    }
+  }
+  data_file.close();
+}
+
+void FakeGpioCounter::readData(std::vector<StripeCounter> data)
+{
+  stripe_count_.count.value = data.front().count.value;
+  stripe_count_.count.value = data.front().count.timestamp;
+  data.erase(data.begin());
 }
 
 }}

@@ -36,25 +36,80 @@ using data::Data;
 namespace sensors {
 
 class FakeGpioCounter:public GpioInterface {
-    public:
-        FakeGpioCounter(Logger& log, bool miss_stripe);
-        data::StripeCounter getStripeCounter() override;    // data from struct
-        StripeCounter getData();
-    private:
-        bool timeCheck();                                       // return if check_time_ exceeded
-        bool timeout(StripeCounter stripe_data);                // if needs to break out
-        bool getDistance();                                     // return if OK or keyence_fail
-        uint64_t getAccTime();
-        Logger&     log_;
-        Data&       data_;
+ public:
+  /**
+  * @brief Construct a new Fake Gpio Counter object
+  * 
+  * @param log 
+  * @param miss_stripe if missed single stripe
+  * @param double_stripe_ if counted one extra stripe
+  */
+  FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stripe_);
 
-        uint64_t              start_time_;      // just zero
-        uint64_t              ref_time_;        // current time?
-        uint64_t              check_time_;      // base this time off imuData
-        uint64_t              brake_time_;
-        StripeCounter         stripe_count_;
-        bool                  miss_stripe_;
-        bool                  is_accelerating_;
+  /**
+   * @brief from data.hpp
+   * 
+   * @return data::StripeCounter stripe count and timestamp (microseconds)
+   */
+  data::StripeCounter getStripeCounter() override;    // data from struct
+
+  /**
+   * @brief compares navigation data and sets miss_stripe_, double_stripe_ true 
+   * if stripe_count_ does not match the data
+   * 
+   * @return StripeCounter 
+   */
+  StripeCounter getData();
+
+  /**
+   * @brief based on flags from getData(), overrides stripe_count_ if not correct
+   * continues after first 5 seconds of run 
+   */
+  void checkData();
+private:
+  bool timeCheck();                                       // return if check_time_ exceeded
+  bool timeout(StripeCounter stripe_data);                // if needs to break out
+  void readFromFile(std::vector<StripeCounter>& data);
+  void FakeGpioCounter::readData(std::vector<StripeCounter> data);
+  Logger&     log_;
+  Data&       data_;
+
+  /**
+   * @brief check if 5 seconds have passed to start comparing navigation data with stripe counter
+   * 
+   */
+  uint64_t              start_time_;      // just zero
+  /**
+   * @brief minimum time between stripes ().358588 seconds, max speeed 85 m/s) 
+   * make sure not to miss two stripes in a row
+   * 
+   */
+  uint64_t              check_time_;
+  uint64_t              brake_time_;              // not used
+
+  /**
+   * @brief current stripe data
+   * 
+   */
+  StripeCounter         stripe_count_;
+
+  /**
+   * @brief if missed single stripe, set true if does not match navigation data
+   * 
+   */
+  bool                  miss_stripe_;
+
+  /**
+   * @brief if counted extra stripe, set true if does not match navigation data
+   * 
+   */
+  bool                  double_stripe_;
+
+  /**
+   * @brief timestamp at beginning of run, used to get start time within getData()
+   * 
+   */
+  bool                  init_;
 };
 
 }}
