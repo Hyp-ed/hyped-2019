@@ -31,6 +31,7 @@
 using hyped::sensors::Imu;
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
+using hyped::utils::concurrent::BusyThread;
 using namespace hyped::data;
 using namespace std;
 using hyped::data::ImuData;
@@ -47,7 +48,8 @@ int main(int argc, char* argv[])
 
   log.INFO("TEST-Imu", "Imu instance successfully created");
   for (int j = 0; j < 20; j++) {
-    log.DBG("TEST-Imu", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", imu.value[0].acc[0], imu.value[0].acc[1], imu.value[0].acc[2]);    
+    Thread::sleep(100);
+    log.DBG("TEST-Imu", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2",imu.value[0].acc[0], imu.value[0].acc[1], imu.value[0].acc[2]);    
     Thread::sleep(30);
 
   }

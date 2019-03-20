@@ -43,7 +43,7 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       sensors_imu_(imu),
-      chip_select_ {66},//{49, 117, 125, 123, 111, 112, 110, 20},
+      chip_select_ {49, 117, 125, 123, 111, 112, 110, 20},
       is_calibrated_(false),
       calib_counter_(0)
 {

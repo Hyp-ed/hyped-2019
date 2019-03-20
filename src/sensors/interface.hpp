@@ -50,6 +50,15 @@ class ImuInterface: public SensorInterface {
   virtual void getData(ImuData* imu) = 0;
 };
 
+class GpioInterface {
+ public:
+  /**
+   * @brief Get GPIO data
+   * @param
+   */
+  virtual data::StripeCounter getStripeCounter() = 0;
+};
+
 class BMSInterface: public SensorInterface {
  public:
   /**
