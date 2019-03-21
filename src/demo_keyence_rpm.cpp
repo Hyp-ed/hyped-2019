@@ -14,7 +14,6 @@ constexpr uint32_t kStripeNum = 10000;          // depending on configuration of
 
 int main() {
     Logger log;
-    uint32_t stripe_count = 0;
     GPIO pin(66, hyped::utils::io::gpio::kIn);          // initialise gpio
 
     uint32_t stripe_count = 0;
