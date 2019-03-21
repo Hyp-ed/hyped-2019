@@ -34,7 +34,8 @@ BmsManager::BmsManager(Logger& log,
     : ManagerInterface(log),
       lp_batteries_(lp_batteries),
       hp_batteries_(hp_batteries),
-      sys_(utils::System::getSystem())
+      sys_(utils::System::getSystem()),
+      data_(Data::getInstance())
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
   // create BMS LP
@@ -60,6 +61,7 @@ void BmsManager::run()
       bms_[i + data::Batteries::kNumLPBatteries]->getData(&(*hp_batteries_)[i]);
       if (!bms_[i + data::Batteries::kNumLPBatteries]->isOnline()) (*hp_batteries_)[i].voltage = 0;
     }
+    // data_.setBatteryData(*bms_);           // TODO(Greg): reconfigure data.hpp or main to accept list of bms
     timestamp = utils::Timer::getTimeMicros();
     sleep(100);
   }
