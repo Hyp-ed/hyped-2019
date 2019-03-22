@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <iostream>
-#include <thread>
+// #include <thread>
 
 // using hyped::client::port;
 // using hyped::client::server_ip;
@@ -93,25 +93,4 @@ bool Client::receiveData() {
     std::cout << "FROM SERVER: " << buffer;
 
     return true;
-}
-
-int main(void) {
-    Client client {};
-
-    // while (true) {
-        // if (client.sendData("hello from client\n")) {
-            // std::cout << "sent data to server\n";
-        // }
-        // else {
-            // std::cout << "error sending data to server\n";
-        // }
-    // }
-
-    while (true) {
-        if (!client.receiveData()) {
-            std::cout << "error receiving data from server\n";
-        }
-    }
-
-    return 0;
 }

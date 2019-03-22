@@ -17,10 +17,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+#include "client.hpp"
+#include <thread>
 
 namespace hyped {
-
 namespace communications {
 
-}
+}  // namespace communications
+}  // namespace hyped
+
+using hyped::client::Client;
+
+int main(void) {
+    Client client {};
+
+    // std::thread recvThread {&Client::receiveData, client};
+
+    while (true) {
+        client.sendData("hello from client\n");
+        // client.receiveData();
+    }
+
+    // recvThread.join();
+    return 0;
 }
