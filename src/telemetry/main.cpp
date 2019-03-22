@@ -28,16 +28,21 @@ namespace communications {
 
 using hyped::client::Client;
 
+void recvLoop(Client& c) {
+    while (true) {
+        c.receiveData();
+    }
+}
+
 int main(void) {
     Client client {};
 
-    // std::thread recvThread {&Client::receiveData, client};
+    std::thread recvThread {recvLoop, std::ref(client)};
 
     while (true) {
         client.sendData("hello from client\n");
-        // client.receiveData();
     }
 
-    // recvThread.join();
+    recvThread.join();
     return 0;
 }

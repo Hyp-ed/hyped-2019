@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <cstring>
 #include <iostream>
-// #include <thread>
 
 // using hyped::client::port;
 // using hyped::client::server_ip;
