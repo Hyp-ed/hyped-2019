@@ -18,13 +18,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <cstring>
-#include <iostream>
-#include <thread>
+#include "client.hpp"
 
 constexpr auto port = "9090";
 constexpr auto server_ip = "localhost";
