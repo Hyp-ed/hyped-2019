@@ -13,8 +13,9 @@ namespace client {
     class Client {
         public:
             Client();
-            int sendData(std::string message);  // will need to take a protobuf message in the future
-            int receiveData(std::string message);  // will need to take a protobuf message in the future
+            ~Client();
+            bool sendData(std::string message);  // will need to take a protobuf message in the future
+            bool receiveData(std::string message);  // will need to take a protobuf message in the future
         private:
             int sockfd;
     };

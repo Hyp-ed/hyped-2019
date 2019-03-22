@@ -27,26 +27,14 @@
 #include <iostream>
 #include <thread>
 
-using hyped::client::port;
-using hyped::client::server_ip;
+// using hyped::client::port;
+// using hyped::client::server_ip;
+// using hyped::client::Client;
+using namespace hyped::client;
 
-void myRead(int sockfd) {
-    char buffer[1024];
-    int bytes_received;
+Client::Client() {
+    std::cout << "Called Client() constructor\n";
 
-    while (true) {
-        memset(&buffer, 0, sizeof(buffer));
-        if ((bytes_received = recv(sockfd, buffer, 1024, 0)) < 0) {
-            std::cerr << "Error " << strerror(errno) << "\n";
-            exit(5);
-        }
-
-        buffer[bytes_received] = '\0';
-        std::cout << "FROM SERVER: " << buffer;
-    }
-}
-
-int main(void) {
     struct addrinfo hints;
     struct addrinfo* server_info; // will contain possible addresses to connect to according to hints
 
@@ -63,7 +51,7 @@ int main(void) {
     }
 
     // get a socket file descriptor 
-    int sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+    sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
     if (sockfd == -1) {
         std::cerr << "Error " << strerror(errno) << "\n";
         exit(2);
@@ -77,21 +65,55 @@ int main(void) {
     }
 
     std::cout << "Connected to server" << std::endl;
+}
 
-    // read messages
-    std::thread readThread {myRead, sockfd};
+Client::~Client() {
+    close(sockfd);
+}
 
-    // send messages
-    char *msg = "hello from client\n";
-    int len = strlen(msg);
-    for (int i = 0; i < 10000000; i++) {
-        if (send(sockfd, msg, len, 0) < 0) {
-            std::cerr << "Error: " << strerror(errno) << std::endl;
-            exit(4);
+// message has to be terminated by newline bc we read messages on server using in.readLine()
+bool Client::sendData(std::string message) {
+    if (send(sockfd, message.c_str(), message.length(), 0) < 0) {
+        std::cerr << "Error: " << strerror(errno) << "\n";
+        return false;
+    }
+
+    return true;
+}
+
+// void myRead(int sockfd) {
+    // char buffer[1024];
+    // int bytes_received;
+// 
+    // while (true) {
+        // memset(&buffer, 0, sizeof(buffer));
+        // if ((bytes_received = recv(sockfd, buffer, 1024, 0)) < 0) {
+            // std::cerr << "Error " << strerror(errno) << "\n";
+            // exit(5);
+        // }
+// 
+        // buffer[bytes_received] = '\0';
+        // std::cout << "FROM SERVER: " << buffer;
+    // }
+// }
+
+int main(void) {
+    Client client {};
+
+    while (true) {
+        if (client.sendData("hello from client\n")) {
+            std::cout << "sent data to server\n";
+        }
+        else {
+            std::cout << "error sending data to server\n";
         }
     }
 
-    readThread.join();
-    close(sockfd);
     return 0;
+    // // read messages
+    // std::thread readThread {myRead, sockfd};
+// 
+    // readThread.join();
+    // close(sockfd);
+    // return 0;
 }
