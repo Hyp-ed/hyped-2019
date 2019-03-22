@@ -33,8 +33,6 @@
 using namespace hyped::client;
 
 Client::Client() {
-    std::cout << "Called Client() constructor\n";
-
     struct addrinfo hints;
     struct addrinfo* server_info; // will contain possible addresses to connect to according to hints
 
@@ -81,39 +79,39 @@ bool Client::sendData(std::string message) {
     return true;
 }
 
-// void myRead(int sockfd) {
-    // char buffer[1024];
-    // int bytes_received;
-// 
-    // while (true) {
-        // memset(&buffer, 0, sizeof(buffer));
-        // if ((bytes_received = recv(sockfd, buffer, 1024, 0)) < 0) {
-            // std::cerr << "Error " << strerror(errno) << "\n";
-            // exit(5);
-        // }
-// 
-        // buffer[bytes_received] = '\0';
-        // std::cout << "FROM SERVER: " << buffer;
-    // }
-// }
+bool Client::receiveData() {
+    char buffer[256];
+    int bytes_received;
+
+    memset(&buffer, 0, sizeof(buffer));
+    if ((bytes_received = recv(sockfd, buffer, sizeof(buffer), 0)) < 0) {
+        std::cerr << "Error: " << strerror(errno) << "\n";
+        return false;
+    }
+
+    buffer[bytes_received] = '\0';
+    std::cout << "FROM SERVER: " << buffer;
+
+    return true;
+}
 
 int main(void) {
     Client client {};
 
+    // while (true) {
+        // if (client.sendData("hello from client\n")) {
+            // std::cout << "sent data to server\n";
+        // }
+        // else {
+            // std::cout << "error sending data to server\n";
+        // }
+    // }
+
     while (true) {
-        if (client.sendData("hello from client\n")) {
-            std::cout << "sent data to server\n";
-        }
-        else {
-            std::cout << "error sending data to server\n";
+        if (!client.receiveData()) {
+            std::cout << "error receiving data from server\n";
         }
     }
 
     return 0;
-    // // read messages
-    // std::thread readThread {myRead, sockfd};
-// 
-    // readThread.join();
-    // close(sockfd);
-    // return 0;
 }
