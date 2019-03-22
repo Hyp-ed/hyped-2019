@@ -87,7 +87,7 @@ struct Sensors : public Module {
 };
 
 struct SensorCalibration {
-  array<array<NavigationVector, 2>, Sensors::kNumImus> imu_variance;
+  array<NavigationVector, Sensors::kNumImus> imu_variance;
 };
 
 struct Battery {

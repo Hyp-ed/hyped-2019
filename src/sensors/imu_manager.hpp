@@ -46,10 +46,39 @@ class ImuManager: public ImuManagerInterface {
   typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;
   typedef data::DataPoint<array<ImuData, 8>>      DataArray;
  public:
+  /**
+   * @brief Construct a new Imu Manager object
+   * 
+   * @param log 
+   * @param imu 
+   */
   ImuManager(Logger& log, DataArray *imu);
+
+  /**
+   * @brief Calibrate IMUs then begin collecting data.
+   *
+   */
   void run()                            override;
+
+  /**
+   * @brief Check if the timestamp has been updated.
+   *
+   * @return true
+   * @return false
+   */
   bool updated()                        override;
+
+  /**
+   * @brief Store the timestamp value as old_timestamp and reset the timestamp value.
+   *
+   */
   void resetTimestamp()                 override;
+
+  /**
+   * @brief Get statistic information while the IMU calibrates and put it in an array.
+   *
+   * @return ImuManager::CalibrationArray
+   */
   CalibrationArray getCalibrationData() override;
 
  private:

@@ -33,12 +33,6 @@ using utils::System;
 using data::NavigationVector;
 
 namespace sensors {
-/**
- * @brief Construct a new Imu Manager object
- *
- * @param log
- * @param imu
- */
 ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
@@ -56,10 +50,7 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
 }
-/**
- * @brief Calibrate IMUs then begin collecting data.
- *
- */
+
 void ImuManager::run()
 {
   // collect calibration data
@@ -85,11 +76,7 @@ void ImuManager::run()
     data_.setSensorsImuData(*sensors_imu_);
   }
 }
-/**
- * @brief Get statistic information while the IMU calibrates and put it in an array.
- *
- * @return ImuManager::CalibrationArray
- */
+
 ImuManager::CalibrationArray ImuManager::getCalibrationData()
 {
   while (!is_calibrated_) {
@@ -98,14 +85,10 @@ ImuManager::CalibrationArray ImuManager::getCalibrationData()
   for (int i = 0; i < data::Sensors::kNumImus; i++) {
     imu_calibrations_[i] = stats_[i].getVariance();
   }
+  // data_.setCalibrationData(* (data::SensorCalibration) imu_calibrations_);   // TODO(Greg): cast type
   return imu_calibrations_;
 }
-/**
- * @brief Check if the timestamp has been updated.
- *
- * @return true
- * @return false
- */
+
 bool ImuManager::updated()
 {
   if (old_timestamp_ != sensors_imu_->timestamp) {
@@ -113,10 +96,7 @@ bool ImuManager::updated()
   }
   return false;
 }
-/**
- * @brief Store the timestamp value as old_timestamp and reset the timestamp value.
- *
- */
+
 void ImuManager::resetTimestamp()
 {
   old_timestamp_ = sensors_imu_->timestamp;
