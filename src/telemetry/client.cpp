@@ -27,9 +27,8 @@
 #include <iostream>
 #include <thread>
 
-constexpr auto port = "9090";
-constexpr auto server_ip = "localhost";
-// constexpr auto server_ip = "192.168.1.50";
+using hyped::client::port;
+using hyped::client::server_ip;
 
 void myRead(int sockfd) {
     char buffer[1024];

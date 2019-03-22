@@ -6,6 +6,10 @@
 namespace hyped {
 namespace client {
 
+    constexpr auto port = "9090";
+    constexpr auto server_ip = "localhost";
+    // constexpr auto server_ip = "192.168.1.50";
+
     class Client {
         public:
             Client();
