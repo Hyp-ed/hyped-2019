@@ -26,6 +26,8 @@
 #include <cstring>
 #include <iostream>
 
+#include <google/protobuf/util/delimited_message_util.h>
+
 // using hyped::client::port;
 // using hyped::client::server_ip;
 // using hyped::client::Client;
@@ -69,9 +71,11 @@ Client::~Client() {
 }
 
 // message has to be terminated by newline bc we read messages on server using in.readLine()
-bool Client::sendData(std::string message) {
-    if (send(sockfd, message.c_str(), message.length(), 0) < 0) {
-        std::cerr << "Error: " << strerror(errno) << "\n";
+bool Client::sendData(protoTypes::TestMessage message) {
+    using namespace google::protobuf::util;
+
+    if (!SerializeDelimitedToFileDescriptor(message, sockfd)) {
+        std::cerr << "Error: SerializeDelimitedToFileDescriptor didn't work\n";
         return false;
     }
 

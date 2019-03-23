@@ -1,6 +1,7 @@
 #ifndef TELEMETRY_CLIENT_HPP_
 #define TELEMETRY_CLIENT_HPP_
 
+#include "types/message.pb.h"
 #include <string>
 
 namespace hyped {
@@ -14,8 +15,8 @@ namespace client {
         public:
             Client();
             ~Client();
-            bool sendData(std::string message);  // will need to take a protobuf message in the future
-            bool receiveData();  // will need to take a protobuf message in the future
+            bool sendData(protoTypes::TestMessage message);
+            bool receiveData();
         private:
             int sockfd;
     };

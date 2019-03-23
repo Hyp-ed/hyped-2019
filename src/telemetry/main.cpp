@@ -18,6 +18,7 @@
  *    limitations under the License.
  */
 #include "client.hpp"
+#include "types/message.pb.h"
 #include <thread>
 
 namespace hyped {
@@ -40,7 +41,31 @@ int main(void) {
     std::thread recvThread {recvLoop, std::ref(client)};
 
     while (true) {
-        client.sendData("hello from client\n");
+        protoTypes::TestMessage msg;
+
+        msg.set_command(protoTypes::TestMessage::VELOCITY);
+        msg.set_data(222);
+        client.sendData(msg);
+
+        msg.set_command(protoTypes::TestMessage::ACCELERATION);
+        msg.set_data(333);
+        client.sendData(msg);
+
+        msg.set_command(protoTypes::TestMessage::BRAKE_TEMP);
+        msg.set_data(777);
+        client.sendData(msg);
+
+        msg.set_command(protoTypes::TestMessage::VELOCITY);
+        msg.set_data(333);
+        client.sendData(msg);
+
+        msg.set_command(protoTypes::TestMessage::ACCELERATION);
+        msg.set_data(444);
+        client.sendData(msg);
+
+        msg.set_command(protoTypes::TestMessage::BRAKE_TEMP);
+        msg.set_data(888);
+        client.sendData(msg);
     }
 
     recvThread.join();
