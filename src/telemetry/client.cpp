@@ -27,6 +27,7 @@
 #include <iostream>
 
 #include <google/protobuf/util/delimited_message_util.h>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
 
 // using hyped::client::port;
 // using hyped::client::server_ip;
@@ -64,9 +65,12 @@ Client::Client() {
     }
 
     std::cout << "Connected to server" << std::endl;
+
+    socketStream = new google::protobuf::io::FileInputStream(sockfd);
 }
 
 Client::~Client() {
+    delete socketStream;
     close(sockfd);
 }
 
@@ -83,17 +87,25 @@ bool Client::sendData(protoTypes::TestMessage message) {
 }
 
 bool Client::receiveData() {
-    char buffer[256];
-    int bytes_received;
+    using namespace google::protobuf::util;
 
-    memset(&buffer, 0, sizeof(buffer));
-    if ((bytes_received = recv(sockfd, buffer, sizeof(buffer), 0)) < 0) {
-        std::cerr << "Error: " << strerror(errno) << "\n";
+    protoTypes::TestMessage messageFromServer;
+    if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socketStream, NULL)) {
+        std::cerr << "Error: ParseDelimitedFromZeroCopyStream didn't work\n";
         return false;
     }
 
-    buffer[bytes_received] = '\0';
-    std::cout << "FROM SERVER: " << buffer;
+    switch (messageFromServer.command()) {
+        case protoTypes::TestMessage::FINISH:
+            std::cout << "FROM SERVER: FINISH\n";
+            break;
+        case protoTypes::TestMessage::EM_STOP:
+            std::cout << "FROM SERVER: EM_STOP\n";
+            break;
+        default:
+            std::cout << "UNRECOGNIZED INPUT FROM SERVER\n";
+            break;
+    }
 
     return true;
 }

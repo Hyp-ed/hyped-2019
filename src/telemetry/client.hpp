@@ -3,6 +3,7 @@
 
 #include "types/message.pb.h"
 #include <string>
+#include <google/protobuf/io/zero_copy_stream.h>
 
 namespace hyped {
 namespace client {
@@ -19,6 +20,7 @@ namespace client {
             bool receiveData();
         private:
             int sockfd;
+            google::protobuf::io::ZeroCopyInputStream* socketStream;
     };
 
 }  // namespace client
