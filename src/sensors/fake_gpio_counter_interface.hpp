@@ -59,42 +59,43 @@ class FakeGpioCounterInterface:public GpioInterface {
 
   virtual bool timeout(StripeCounter stripe_data);    // if needs to break out
 
+ protected:
   /**
    * @brief check if 5 seconds have passed to start comparing navigation data with stripe counter
    * 
    */
-  static uint64_t start_time_;
+  uint64_t start_time_;
 
   /**
    * @brief minimum time between stripes ().358588 seconds, max speeed 85 m/s) 
    * make sure not to miss two stripes in a row
    * 
    */
-  static uint64_t check_time_;
+  uint64_t check_time_;
 
   /**
    * @brief current stripe data
    * 
    */
-  static StripeCounter stripe_count_;
+  StripeCounter stripe_count_;
 
     /**
    * @brief if missed single stripe, set true if does not match navigation data
    * 
    */
-  static bool miss_stripe_;
+  bool miss_stripe_;
 
     /**
    * @brief if counted extra stripe, set true if does not match navigation data
    * 
    */
-  static bool double_stripe_;
+  bool double_stripe_;
 
   /**
    * @brief timestamp at beginning of run, used to get start time within getData()
    * 
    */
-  static bool init_;
+  bool init_;
 };
 
 }}  // namespace hyped::sensors
