@@ -32,7 +32,9 @@
 namespace hyped {
 namespace client {
 
-Client::Client() {
+Client::Client(Logger& log)
+    : log_(log)
+{
     struct addrinfo hints;
     struct addrinfo* server_info; // will contain possible addresses to connect to according to hints
 
@@ -44,25 +46,28 @@ Client::Client() {
     // get possible addresses we can connect to
     int return_val;
     if ((return_val = getaddrinfo(server_ip, port, &hints, &server_info)) != 0) {
-        std::cerr << "Error: " << gai_strerror(return_val) << "n";
-        exit(1);
+        log_.ERR("Telemetry", "%s", gai_strerror(return_val));
+        // exit(1);
+        // probably throw exception here or something
     }
 
     // get a socket file descriptor 
     sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
     if (sockfd == -1) {
-        std::cerr << "Error " << strerror(errno) << "\n";
-        exit(2);
+        log_.ERR("Telemetry", "%s", strerror(errno));
+        // exit(2);
+        // probably throw exception here or something
     }
 
     // connect socket to server
     if (connect(sockfd, server_info->ai_addr, server_info->ai_addrlen) == -1) {
         close(sockfd);
-        std::cerr << "Error " << strerror(errno) << "\n";
-        exit(3);
+        log_.ERR("Telemetry", "%s", strerror(errno));
+        // exit(3);
+        // probably throw exception here or something
     }
 
-    std::cout << "Connected to server" << std::endl;
+    log_.INFO("Telemetry", "Connected to server");
 
     socketStream = new google::protobuf::io::FileInputStream(sockfd);
 }
@@ -77,7 +82,7 @@ bool Client::sendData(protoTypes::TestMessage message) {
     using namespace google::protobuf::util;
 
     if (!SerializeDelimitedToFileDescriptor(message, sockfd)) {
-        std::cerr << "Error: SerializeDelimitedToFileDescriptor didn't work\n";
+        log_.ERR("Telemetry", "SerializeDelimitedToFileDescriptor didn't work");
         return false;
     }
 
@@ -89,19 +94,19 @@ bool Client::receiveData() {
 
     protoTypes::TestMessage messageFromServer;
     if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socketStream, NULL)) {
-        std::cerr << "Error: ParseDelimitedFromZeroCopyStream didn't work\n";
+        log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
         return false;
     }
 
     switch (messageFromServer.command()) {
         case protoTypes::TestMessage::FINISH:
-            std::cout << "FROM SERVER: FINISH\n";
+            log_.DBG1("Telemetry", "FROM SERVER: FINISH");
             break;
         case protoTypes::TestMessage::EM_STOP:
-            std::cout << "FROM SERVER: EM_STOP\n";
+            log_.DBG1("Telemetry", "FROM SERVER: EM_STOP");
             break;
         default:
-            std::cout << "UNRECOGNIZED INPUT FROM SERVER\n";
+            log_.ERR("Telemetry", "UNRECOGNIZED INPUT FROM SERVER");
             break;
     }
 

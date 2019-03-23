@@ -30,7 +30,7 @@ namespace telemetry {
 
 Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
-      client{}
+      client{log}
 {
     log_.INFO("Telemetry", "Logger constructor was called");
 }
