@@ -4,7 +4,7 @@
  * Date:
  * Description:
  *
- *    Copyright 2019 HYPED
+ *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -18,40 +18,28 @@
  *    limitations under the License.
  */
 
-#ifndef SENSORS_FAKE_GPIO_COUNTER_HPP_
-#define SENSORS_FAKE_GPIO_COUNTER_HPP_
+#ifndef SENSORS_FAKE_GPIO_COUNTER_INTERFACE_HPP_
+#define SENSORS_FAKE_GPIO_COUNTER_INTERFACE_HPP_
 
 #include <string>
-#include <vector>
-
 #include "data/data.hpp"
-#include "utils/concurrent/thread.hpp"
-#include "sensors/interface.hpp"            // GpioInterface
+#include "sensors/interface.hpp"
 
 namespace hyped {
 
-using utils::Logger;
-using data::Data;
+using data::StripeCounter;
 
 namespace sensors {
 
-class FakeGpioCounter:public GpioInterface {
+class FakeGpioCounterInterface:public GpioInterface {
  public:
-  /**
-  * @brief Construct a new Fake Gpio Counter object
-  * 
-  * @param log 
-  * @param miss_stripe if missed single stripe
-  * @param double_stripe_ if counted one extra stripe
-  */
-  FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stripe_);
 
   /**
    * @brief from data.hpp
    * 
    * @return data::StripeCounter stripe count and timestamp (microseconds)
    */
-  data::StripeCounter getStripeCounter() override;    // data from struct
+  StripeCounter getStripeCounter() override;
 
   /**
    * @brief compares navigation data and sets miss_stripe_, double_stripe_ true 
@@ -59,59 +47,57 @@ class FakeGpioCounter:public GpioInterface {
    * 
    * @return StripeCounter 
    */
-  StripeCounter getData();
+  virtual StripeCounter getData();
 
   /**
    * @brief based on flags from getData(), overrides stripe_count_ if not correct
    * continues after first 5 seconds of run 
    */
-  void checkData();
-private:
-  bool timeCheck();                                       // return if check_time_ exceeded
-  bool timeout(StripeCounter stripe_data);                // if needs to break out
-  void readFromFile(std::vector<StripeCounter>& data);
-  void FakeGpioCounter::readData(std::vector<StripeCounter> data);
-  Logger&     log_;
-  Data&       data_;
+  virtual void checkData(); 
+
+  virtual bool timeCheck();         // return if check_time_ exceeded
+
+  virtual bool timeout(StripeCounter stripe_data);    // if needs to break out
 
   /**
    * @brief check if 5 seconds have passed to start comparing navigation data with stripe counter
    * 
    */
-  uint64_t              start_time_;      // just zero
+  static uint64_t start_time_;
+
   /**
    * @brief minimum time between stripes ().358588 seconds, max speeed 85 m/s) 
    * make sure not to miss two stripes in a row
    * 
    */
-  uint64_t              check_time_;
-  uint64_t              brake_time_;              // not used
+  static uint64_t check_time_;
 
   /**
    * @brief current stripe data
    * 
    */
-  StripeCounter         stripe_count_;
+  static StripeCounter stripe_count_;
 
-  /**
+    /**
    * @brief if missed single stripe, set true if does not match navigation data
    * 
    */
-  bool                  miss_stripe_;
+  static bool miss_stripe_;
 
-  /**
+    /**
    * @brief if counted extra stripe, set true if does not match navigation data
    * 
    */
-  bool                  double_stripe_;
+  static bool double_stripe_;
 
   /**
    * @brief timestamp at beginning of run, used to get start time within getData()
    * 
    */
-  bool                  init_;
+  static bool init_;
 };
 
-}}
+}}  // namespace hyped::sensors
 
-#endif  // SENSORS_FAKE_GPIO_COUNTER_HPP_
+
+#endif  // SENSORS_FAKE_GPIO_COUNTER_INTERFACE_HPP_

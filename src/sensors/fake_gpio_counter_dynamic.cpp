@@ -28,7 +28,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "sensors/fake_gpio_counter.hpp"
+#include "sensors/fake_gpio_counter_dynamic.hpp"
 #include "utils/timer.hpp"
 #include "data/data.hpp"
 #include "utils/concurrent/thread.hpp"
@@ -41,15 +41,15 @@ namespace hyped {
 
 using data::StripeCounter;
 using hyped::utils::concurrent::Thread;
+using sensors::FakeGpioCounterInterface;
 
 namespace sensors {
 
-FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stripe)
+FakeGpioCounterDynamic::FakeGpioCounterDynamic(Logger& log, bool miss_stripe, bool double_stripe)
     : log_(log),
       data_(Data::getInstance()),
-      start_time_(0),
+      start_time_(0),       // TODO(Greg): fix static variable errors from interface
       check_time_(358588),
-      brake_time_(kBrakeTime),        // TODO(Greg): not used
       miss_stripe_(miss_stripe),
       double_stripe_(double_stripe)
 {
@@ -58,7 +58,7 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stri
   init_ = true;
 }
 
-StripeCounter FakeGpioCounter::getData()     // returns incorrect stripe count
+StripeCounter FakeGpioCounterDynamic::getData()     // returns incorrect stripe count
 {
   if(init_) {
     stripe_count_.count.timestamp = utils::Timer::getTimeMicros();      // the start time
@@ -88,7 +88,7 @@ StripeCounter FakeGpioCounter::getData()     // returns incorrect stripe count
   return stripe_count_;
 }
 
-void FakeGpioCounter::checkData()
+void FakeGpioCounterDynamic::checkData()
 {
   // let pod wait at first...then start comparing data
   if (stripe_count_.count.timestamp - start_time_ > 5000000) Thread::sleep(300);
@@ -104,36 +104,12 @@ void FakeGpioCounter::checkData()
   }
 }
 
-bool FakeGpioCounter::timeCheck()             // used to see if it is time to check
+bool FakeGpioCounterDynamic::timeCheck()             // used to see if it is time to check
 {
   if (utils::Timer::getTimeMicros() - stripe_count_.count.timestamp >= check_time_) {
     return true;
   }
   return false;
-}
-
-void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
-{
-  std::ifstream data_file ("fake_gpio_counter.txt");
-  float count;
-  float time;
-  if (data_file.is_open()) {
-    while (data_file >> count) {
-      data_file >> time;
-      StripeCounter this_line;
-      this_line.count.value = count;
-      this_line.count.timestamp = time;
-      data.push_back(this_line);
-    }
-  }
-  data_file.close();
-}
-
-void FakeGpioCounter::readData(std::vector<StripeCounter> data)
-{
-  stripe_count_.count.value = data.front().count.value;
-  stripe_count_.count.value = data.front().count.timestamp;
-  data.erase(data.begin());
 }
 
 }}

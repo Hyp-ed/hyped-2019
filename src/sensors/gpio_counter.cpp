@@ -2,7 +2,7 @@
  * Author: Ragnor Comerford and Jack Horsburgh
  * Organisation: HYPED
  * Date: 186/18
- * Description: Main interface for IMU class.
+ * Description:
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
