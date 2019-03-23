@@ -34,10 +34,10 @@ using utils::concurrent::Thread;
 namespace sensors {
 
 
-class GpioCounter: public GpioInterface, public Thread {            // interface.hpp
+class GpioCounter: public GpioInterface, public Thread {
  public:
   explicit GpioCounter(int pin);
-  data::StripeCounter getStripeCounter() override;      // data.hpp, data.cpp<array> data_point.hpp
+  data::StripeCounter getStripeCounter() override;
   void run() override;
 
  private:
