@@ -17,27 +17,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+#include "main.hpp"
 #include "client.hpp"
 #include "types/message.pb.h"
 #include <thread>
 
 namespace hyped {
-namespace communications {
-
-}  // namespace communications
-}  // namespace hyped
 
 using hyped::client::Client;
 
-void recvLoop(Client& c) {
-    while (true) {
-        c.receiveData();
-    }
+namespace communications {
+
+Main::Main(uint8_t id, Logger& log)
+    : Thread(id, log),
+      client{}
+{
+    log_.INFO("Telemetry", "Logger constructor was called");
 }
 
-int main(void) {
-    Client client {};
-
+void Main::run() {
     std::thread recvThread {recvLoop, std::ref(client)};
 
     while (true) {
@@ -69,5 +67,13 @@ int main(void) {
     }
 
     recvThread.join();
-    return 0;
 }
+
+void recvLoop(Client& c) {
+    while (true) {
+        c.receiveData();
+    }
+}
+
+}  // namespace communications
+}  // namespace hyped

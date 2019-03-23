@@ -21,10 +21,28 @@
 #ifndef TELEMETRY_MAIN_HPP_
 #define TELEMETRY_MAIN_HPP_
 
+#include "client.hpp"
+#include "utils/concurrent/thread.hpp"
+
 namespace hyped {
+
+using hyped::client::Client;
+using utils::concurrent::Thread;
+using utils::Logger;
 
 namespace communications {
 
-}}
+    class Main: public Thread {
+        public:
+            Main(uint8_t id, Logger& log);
+            void run() override;
+        private:
+            Client client;
+    };
+
+    void recvLoop(Client& c);
+
+}  // namespace communications
+}  // namespace hyped
 
 #endif  // TELEMETRY_MAIN_HPP_
