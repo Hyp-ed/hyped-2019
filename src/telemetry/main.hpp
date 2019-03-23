@@ -30,7 +30,7 @@ using hyped::client::Client;
 using utils::concurrent::Thread;
 using utils::Logger;
 
-namespace communications {
+namespace telemetry {
 
     class Main: public Thread {
         public:
@@ -42,7 +42,7 @@ namespace communications {
 
     void recvLoop(Client& c);
 
-}  // namespace communications
+}  // namespace telemetry
 }  // namespace hyped
 
 #endif  // TELEMETRY_MAIN_HPP_

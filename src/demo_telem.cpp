@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     System& sys = System::getSystem();
     Logger log_tlm(sys.verbose_tlm, sys.debug_tlm);
 
-    Thread* telemetry = new hyped::communications::Main(4, log_tlm);
+    Thread* telemetry = new hyped::telemetry::Main(4, log_tlm);
     telemetry->start();
     telemetry->join();
 }

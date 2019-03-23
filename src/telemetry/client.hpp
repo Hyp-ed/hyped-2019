@@ -20,7 +20,7 @@ namespace client {
             bool receiveData();
         private:
             int sockfd;
-            google::protobuf::io::ZeroCopyInputStream* socketStream;
+            google::protobuf::io::ZeroCopyInputStream* socketStream;  // member variable bc we need to keep reading from same stream (buffered)
     };
 
 }  // namespace client

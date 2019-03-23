@@ -26,7 +26,7 @@ namespace hyped {
 
 using hyped::client::Client;
 
-namespace communications {
+namespace telemetry {
 
 Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
@@ -75,5 +75,5 @@ void recvLoop(Client& c) {
     }
 }
 
-}  // namespace communications
+}  // namespace telemetry
 }  // namespace hyped
