@@ -24,14 +24,13 @@
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
 #include "sensors/gpio_counter.hpp"
-#include "data/data.hpp"
 #include "utils/logger.hpp"
 
 
 namespace hyped {
 
 using data::Data;
-using data::StripeCounter;      // data.hpp
+using data::StripeCounter;
 using utils::concurrent::Thread;
 using utils::io::GPIO;
 using hyped::utils::Logger;
@@ -39,8 +38,7 @@ using hyped::utils::Logger;
 namespace sensors {
 
 GpioCounter::GpioCounter(int pin)
-     : pin_(pin),
-       data_(Data::getInstance())
+     : pin_(pin)
 {}
 
 void GpioCounter::run()
