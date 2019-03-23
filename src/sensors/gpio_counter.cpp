@@ -58,7 +58,6 @@ void GpioCounter::run()
       stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
       stripe_counter_.operational = true;
     }
-    // data_.setSensorsKeyenceData(*stripe_counter_);     // need array of two
   }
 }
 

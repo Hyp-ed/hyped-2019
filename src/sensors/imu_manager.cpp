@@ -98,7 +98,7 @@ ImuManager::CalibrationArray ImuManager::getCalibrationData()
   for (int i = 0; i < data::Sensors::kNumImus; i++) {
     imu_calibrations_[i] = stats_[i].getVariance();
   }
-  // data_.setCalibrationData(* (data::SensorCalibration) imu_calibrations_);   // TODO(Greg): cast type
+  // data_.setCalibrationData(* (data::SensorCalibration) imu_calibrations_); TODO(Greg): cast type
   return imu_calibrations_;
 }
 

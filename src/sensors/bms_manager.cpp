@@ -50,13 +50,13 @@ BmsManager::BmsManager(Logger& log,
 
   // initialise batteries data
   if (updated()) {
-    batteries_.high_power_batteries = *hp_batteries_;     // TODO(Greg): fix naming convension? It's pretty shit
+    // TODO(Greg): fix naming convension? It's pretty shit
+    batteries_.high_power_batteries = *hp_batteries_;
     batteries_.low_power_batteries = *lp_batteries_;
     data_.setBatteryData(batteries_);
   }
   // yield();
   log_.INFO("SENSORS", "batteries data has been initialised");
-
 }
 
 void BmsManager::run()
