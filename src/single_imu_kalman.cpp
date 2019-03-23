@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <fstream>
 #include<cmath>
+#include <random>
 
 #include <Eigen/Dense>
 
@@ -45,6 +46,30 @@ using hyped::utils::math::OnlineStatistics;
 using hyped::utils::math::KalmanMvar;
 using hyped::utils::System;
 using hyped::utils::Timer;
+
+const Eigen::MatrixXd createInitialErrorCovarianceMatrix(unsigned int n)
+{
+    Eigen::MatrixXd P = Eigen::MatrixXd::Constant(n, n, 0.0);
+    std::default_random_engine generator;
+    std::normal_distribution<double> pos_var_noise(0.0,0.001);
+    std::normal_distribution<double> vel_var_noise(0.0,0.005);
+    std::normal_distribution<double> acc_var_noise(0.0,0.01);
+
+    for (unsigned int i = 0; i< n; i++)
+    {
+        if (i < n/3)
+        {
+            P(i, i) = pos_var_noise(generator);
+        } else if (i < 2*n/3)
+        {
+            P(i, i) = vel_var_noise(generator);
+        } else
+        {
+            P(i, i) = acc_var_noise(generator);
+        }
+    }
+    return P;
+}
 
 const Eigen::MatrixXd createStateTransitionMatrix(unsigned int n, double dt)
 {
@@ -60,6 +85,49 @@ const Eigen::MatrixXd createStateTransitionMatrix(unsigned int n, double dt)
          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
     return A;
+}
+
+const Eigen::MatrixXd createStateTransitionCovarianceMatrix(unsigned int n)
+{
+    std::default_random_engine generator;
+    std::normal_distribution<double> var_noise(0.01,0.02);
+
+    Eigen::MatrixXd Q = Eigen::MatrixXd::Constant(n, n, 0.0);
+    /*
+    for (unsigned int row = 0; row < n; row++)
+    {
+        for (unsigned int col = 0; col < n; col++)
+        {
+            Q(row, col) = var_noise(generator);
+        }
+    }
+    */
+    return Q;
+}
+
+const Eigen::MatrixXd createStationaryMeasurementCovarianceMatrix(unsigned int m)
+{
+    std::default_random_engine generator;
+    std::normal_distribution<double> var_noise(0.0,0.0005);
+    std::normal_distribution<double> cov_noise(0.0,0.0001);
+
+    Eigen::MatrixXd R(m, m);
+    double covariance = -0.0002;
+    double variance = 0.0017;
+
+    R << (variance + var_noise(generator)), (covariance + cov_noise(generator)), (covariance + cov_noise(generator)),
+         (covariance + cov_noise(generator)), (variance + var_noise(generator)), (covariance + cov_noise(generator)),
+         (covariance + cov_noise(generator)), (covariance + cov_noise(generator)), (variance + var_noise(generator));
+    return R;
+}
+
+const Eigen::MatrixXd createElevatorMeasurementCovarianceMatrix(unsigned int m)
+{
+    Eigen::MatrixXd R(m, m);
+    R << 0.0085, 0.0014, 0.0025,
+         0.0014, 0.007, -0.004,
+         0.0025, -0.004, 0.12;
+    return R;
 }
 
 DataPoint<NavigationVector> queryImuAcceleration(Imu* imu, ImuData* imuData, Timer* timer) 
@@ -111,12 +179,13 @@ int main(int argc, char *argv[])
 	Timer timer;
 
     double current_time = -1.0;
-	bool writeToFile = (sys.imu_id > 0) || (sys.run_id > 0);
+    std::string filterSetup = "stationary";
+    bool writeToFile = (sys.imu_id > 0) || (sys.run_id > 0);
 
-	// Sensor setup
-	int i2c = 66;
-	Imu* imu = new Imu(log, i2c, 0x08, 0x00);
-	ImuData* imuData = new ImuData();
+    // Sensor setup
+    int i2c = 66;
+    Imu* imu = new Imu(log, i2c, 0x08, 0x00);
+    ImuData* imuData = new ImuData();
 
     // Filter setup: dynamics & measurement models + initial estimates
     unsigned int n = 9;
@@ -128,19 +197,48 @@ int main(int argc, char *argv[])
     {
         H(i, n - (m - i)) = 1.0;
     }
-    Eigen::MatrixXd Q = Eigen::MatrixXd::Constant(n, n, 0.01);
+    Eigen::MatrixXd Q = createStateTransitionCovarianceMatrix(n);
 
-    Eigen::MatrixXd R = Eigen::MatrixXd::Zero(m, m);
-    for (unsigned int i = 0; i < m; i++)
+    Eigen::MatrixXd R;
+    if (filterSetup == "elevator")
     {
-        R(i, i) = 0.05;
+        R = createElevatorMeasurementCovarianceMatrix(m);
+    } else if (filterSetup == "stationary")
+    {
+        R = createStationaryMeasurementCovarianceMatrix(m);
+    } else
+    {
+        R = Eigen::MatrixXd::Zero(m, m);
+        for (unsigned int i = 0; i < m; i++)
+        {
+            R(i, i) = 0.05;
+        }
     }
+
+
+    // log print Q matrix
+    /*
+    for (unsigned int row = 0; row < n; row++)
+    {
+        std::string s = "";
+        for (unsigned int col = 0; col < n; col++)
+        {
+            s << ("%+6.5f\t ", Q(row, col));
+        }
+        log.INFO("FILTER_SETUP Q", s);
+    }
+    */
+    //
+    // log print R matrix
+    log.INFO("FILTER_SETUP R", "%+6.5f\t %+6.5f\t %+6.5f\t", R(0,0),  R(0,1), R(0,2));
+    log.INFO("FILTER_SETUP R", "%+6.5f\t %+6.5f\t %+6.5f\t", R(1,0),  R(1,1), R(1,2));
+    log.INFO("FILTER_SETUP R", "%+6.5f\t %+6.5f\t %+6.5f\t", R(2,0),  R(2,1), R(2,2));
 
     kalmanFilter.setModels(A, Q, H, R);
 
     // set initial estimates
     Eigen::VectorXd x0 = Eigen::VectorXd::Zero(n);
-    Eigen::MatrixXd P0 = Eigen::MatrixXd::Zero(n, n);
+    Eigen::MatrixXd P0 = createInitialErrorCovarianceMatrix(n);
     kalmanFilter.setInitial(x0, P0);
     
 
@@ -219,6 +317,13 @@ int main(int argc, char *argv[])
 
 		sleep(queryDelay);
 	}
+
+    Eigen::MatrixXd P = kalmanFilter.getStateCovariance();
+    std::cout << P << std::endl;
+
+    log.INFO("FILTER_SETUP R", "%+6.5f\t %+6.5f\t %+6.5f\t", R(0,0),  R(0,1), R(0,2));
+    log.INFO("FILTER_SETUP R", "%+6.5f\t %+6.5f\t %+6.5f\t", R(1,0),  R(1,1), R(1,2));
+    log.INFO("FILTER_SETUP R", "%+6.5f\t %+6.5f\t %+6.5f\t", R(2,0),  R(2,1), R(2,2));
 
 	if (writeToFile) outfile.close();
 
