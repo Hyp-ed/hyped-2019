@@ -86,9 +86,9 @@ Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale)
     acc_scale_(acc_scale),
     is_online_(false)
 {
+  log_.DBG1("Imu pin: ", "%d", pin);
+  log_.INFO("Imu", "Creating Imu sensor now:");
   init();
-  log_.INFO("Imu pin: ", "%d", pin);
-  log_.DBG("Imu", "Creating Imu sensor");
 }
 
 void Imu::init()
@@ -99,15 +99,18 @@ void Imu::init()
   writeByte(kMpuRegPwrMgmt1, kBitHReset);   // Reset Device
   Thread::sleep(200);
   // Test connection
-  whoAmI();
+  bool check_init = whoAmI();
 
   writeByte(kMpuRegConfig, 0x01);
   writeByte(kAccelConfig2, 0x01);
   setAcclScale(acc_scale_);
   enableFifo();
 
-  log_.INFO("Imu", "FIFO Enabled");
-  log_.INFO("Imu", "Imu sensor created. Initialisation complete");
+  if(check_init) {
+    log_.INFO("Imu", "Imu sensor created. Initialisation complete.");
+  } else {
+    log_.ERR("Imu", "ERROR: Imu sensor not initialised.");
+  }
 }
 
 void Imu::enableFifo()
@@ -116,6 +119,13 @@ void Imu::enableFifo()
   Thread::sleep(500);
   writeByte(kUserCtrl, 0x40);       // FIFO enable
   writeByte(kFifoEnable, kFifoAccel);
+  uint8_t check_enable = 0;
+  readByte(kFifoEnable, &check_enable);
+  if (check_enable == 0x2B) {
+    log_.INFO("Imu", "FIFO Enabled");
+  } else {
+    log_.ERR("Imu", "FIFO not enabled!");
+  }
   kFrameSize = 6;                   // only for acceleration xyz
 }
 
@@ -127,7 +137,7 @@ bool Imu::whoAmI()
   for (send_counter = 1; send_counter < 10; send_counter++) {
     // Who am I checks what address the sensor is at
     readByte(kWhoAmIImu, &data);
-    log_.INFO("Imu", "Imu connected to SPI, data: %d", data);
+    log_.DBG1("Imu", "Imu connected to SPI, data: %d", data);
     if (data == kWhoAmIResetValue1 || data == kWhoAmIResetValue2) {
       is_online_ = true;
       break;
@@ -211,10 +221,10 @@ int Imu::readFifo(std::vector<ImuData>& data)
     size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
 
     if (fifo_size == 0) {
-      log_.INFO("FIFO", "FIFO EMPTY");
+      log_.DBG3("Imu-FIFO", "FIFO EMPTY");
       return 0;
     }
-    log_.DBG("FIFO", "Buffer size = %d", fifo_size);
+    log_.DBG3("Imu-FIFO", "Buffer size = %d", fifo_size);
     int16_t axcounts, aycounts, azcounts;           // include negative int
     float value_x, value_y, value_z;
     for (size_t i = 0; i < (fifo_size/kFrameSize); i++) {
@@ -239,7 +249,7 @@ int Imu::readFifo(std::vector<ImuData>& data)
     return 1;
   } else {
     // Try and turn the sensor on again
-    log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");
+    log_.ERR("Imu-FIFO", "Sensor not operational, trying to turn on sensor");
     init();
     return 0;
   }
