@@ -37,20 +37,21 @@ using utils::Logger;
 using data::NavigationVector;
 using utils::math::OnlineStatistics;
 
+typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;
+typedef data::DataPoint<array<ImuData, 8>>      DataArray;
+
 namespace sensors {
 /**
  * @brief creates class to hold multiple IMUs and respective data.
  *
  */
 class ImuManager: public ImuManagerInterface {
-  typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;
-  typedef data::DataPoint<array<ImuData, 8>>      DataArray;
  public:
   /**
    * @brief Construct a new Imu Manager object
-   * 
-   * @param log 
-   * @param imu 
+   *
+   * @param log
+   * @param imu
    */
   ImuManager(Logger& log, DataArray *imu);
 
@@ -84,7 +85,7 @@ class ImuManager: public ImuManagerInterface {
  private:
   utils::System&    sys_;
   DataArray*        sensors_imu_;
-  data::Data              data_;
+  data::Data        data_;
 
   uint8_t           chip_select_[data::Sensors::kNumImus];
   ImuInterface*     imu_[data::Sensors::kNumImus];

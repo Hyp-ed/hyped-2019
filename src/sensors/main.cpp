@@ -37,14 +37,16 @@ using data::SensorCalibration;
 
 namespace sensors {
 
- Main::Main(uint8_t id, Logger& log)
+Main::Main(uint8_t id, Logger& log)
   : Thread(id, log),
     data_(data::Data::getInstance()),
     sys_(utils::System::getSystem()),
     imu_manager_(new ImuManager(log, &sensors_.imu)),
     battery_manager_(new BmsManager(log,
                                         &batteries_.low_power_batteries,
-                                        &batteries_.high_power_batteries))
+                                        &batteries_.high_power_batteries)),
+    keyence_l_(new GpioCounter(36)),
+    keyence_r_(new GpioCounter(33))
   {}
 
 void Main::run()
@@ -54,30 +56,34 @@ void Main::run()
   battery_manager_->start();
 
   // Pins for keyence GPIO_36 L and GPIO_33 R
-  GpioCounter* temp;
-  temp = new GpioCounter(36);
-  temp->start();
-  keyence_l_ = temp;
+  keyence_l_->start();
+  keyence_r_->start();
 
-  temp = new GpioCounter(33);
-  temp->start();
-  keyence_r_ = temp;
+  // Declare arrays
+  array<StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter;
+  array<StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count;
 
-  // data_.setSensorsData(sensors_);
+  // Initalise the arrays
+  keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;
+  prev_keyence_stripe_count = keyence_stripe_counter;
 
-  // TODO(Greg): Need any of the following??
-  
-  // sensors_.module_status = data::ModuleStatus::kInit;
-  // batteries_.module_status = data::ModuleStatus::kInit;
+  while (sys_.running_) {
+    // We need to read the gpio counters and write to the data structure
+    // If previous is not equal to the new data then update
+    if (prev_keyence_stripe_count != keyence_stripe_counter) {
+      // Update data structure, make prev reading same as this reading
+      data_.setSensorsKeyenceData(keyence_stripe_counter);
+      prev_keyence_stripe_count = keyence_stripe_counter;
+    }
+    keyence_stripe_counter[0] = keyence_l_->getStripeCounter();
+    keyence_stripe_counter[1] = keyence_r_->getStripeCounter();
+    Thread::sleep(10);  // Sleep for 10ms
+  }
 
-  // // work loop
-  // while (sys_.running_) {
-  //   // Write sensor data to data structure only when all the imu values are different
-  //   if (imu_manager_->updated()) {
-  //     // Update manager timestamp with a function
-  //     imu_manager_->resetTimestamp();       // TODO(Greg): Where does this go?
-  //   }
-  // }
+  imu_manager_->join();
+  battery_manager_->join();
+  keyence_l_->join();
+  keyence_r_->join();
 }
 
 

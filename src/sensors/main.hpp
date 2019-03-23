@@ -40,9 +40,9 @@ namespace sensors {
 
 /**
  * @brief Initialise sensors, data instances to be pulled in managers, gpio threads declared in main
- * 
+ *
  */
- class Main: public Thread {
+class Main: public Thread {
   public:
     Main(uint8_t id, Logger& log);
     void run() override;    // from thread
@@ -60,8 +60,8 @@ namespace sensors {
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
 
-    GpioInterface*                         keyence_l_;      // instantiated and put in individual threads
-    GpioInterface*                         keyence_r_;
+    GpioCounter*                           keyence_l_;
+    GpioCounter*                           keyence_r_;
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
 

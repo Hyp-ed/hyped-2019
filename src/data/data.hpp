@@ -225,13 +225,7 @@ class Data {
   /**
    * @brief      Should be called to update sensor keyence data.
    */
-  void setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>&  keyence_stripe_counter);
-
-  // TODO(Greg): setLeft and setRight
-
-  void setSensorsKeyenceDataLeft(const StripeCounter& keyence_stripe_counter_left);
-
-  void setSensorsKeyenceDataRight(const StripeCounter& keyence_stripe_counter_right);
+  void setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>&  keyence_stripe_counter);  //NOLINT
 
   /**
    * @brief      Should be called to update sensor calibration data
