@@ -103,6 +103,18 @@ void Data::setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence
   sensors_.keyence_stripe_counter = keyence_stripe_counter;
 }
 
+void Data::setSensorsKeyenceDataLeft(const StripeCounter& keyence_stripe_counter_left)      // TODO(Greg): test functionality
+{
+  ScopedLock L(&lock_sensors_);
+  sensors_.keyence_stripe_counter[0] = keyence_stripe_counter_left;
+}
+
+void Data::setSensorsKeyenceDataRight(const StripeCounter& keyence_stripe_counter_right)
+{
+  ScopedLock L(&lock_sensors_);
+  sensors_.keyence_stripe_counter[1] = keyence_stripe_counter_right;
+}
+
 void Data::setCalibrationData(const SensorCalibration sensor_calibration_data)
 {
   ScopedLock L(&lock_calibration_data_);

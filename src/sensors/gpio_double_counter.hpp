@@ -18,8 +18,8 @@
  *    limitations under the License.
  */
 
-#ifndef SENSORS_GPIO_COUNTER_HPP_
-#define SENSORS_GPIO_COUNTER_HPP_
+#ifndef SENSORS_GPIO_DOUBLE_COUNTER_HPP_
+#define SENSORS_GPIO_DOUBLE_COUNTER_HPP_
 
 #include <cstdint>
 
@@ -48,4 +48,4 @@ class GpioCounter: public GpioInterface, public Thread {            // interface
 };
 }}  // namespace hyped::sensors
 
-#endif  // SENSORS_GPIO_COUNTER_HPP_
+#endif  // SENSORS_GPIO_DOUBLE_COUNTER_HPP_

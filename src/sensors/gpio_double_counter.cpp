@@ -27,11 +27,13 @@
 #include "data/data.hpp"
 #include "utils/logger.hpp"
 
+constexpr int kKeyenceLeft = 36;
+constexpr int kKeyenceRight = 33;
 
 namespace hyped {
 
 using data::Data;
-using data::StripeCounter;      // data.hpp
+using data::StripeCounter;
 using utils::concurrent::Thread;
 using utils::io::GPIO;
 using hyped::utils::Logger;
@@ -47,7 +49,7 @@ void GpioCounter::run()
 {
   Logger log(true, 0);
   GPIO thepin(pin_, utils::io::gpio::kIn);                // exports pin
-  uint8_t val = thepin.wait();  // Ignore first reading
+  uint8_t val = thepin.wait();                            // Ignore first reading
   stripe_counter_.count.value = 0;
   stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
 
@@ -61,7 +63,14 @@ void GpioCounter::run()
       stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
       stripe_counter_.operational = true;
     }
-    // data_.setSensorsKeyenceData(*stripe_counter_);     // need array of two
+
+    // TODO(Greg): need to call following if imu_manager_ is updated?
+    if(pin_==kKeyenceLeft){
+      data_.setSensorsKeyenceDataLeft(stripe_counter_);
+    }
+    else if(pin_==kKeyenceRight) {
+      data_.setSensorsKeyenceDataRight(stripe_counter_);
+    }
   }
 }
 

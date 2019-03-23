@@ -44,20 +44,8 @@ namespace sensors {
     imu_manager_(new ImuManager(log, &sensors_.imu)),
     battery_manager_(new BmsManager(log,
                                         &batteries_.low_power_batteries,
-                                        &batteries_.high_power_batteries)),
-    sensor_init_(false),
-    battery_init_(false)
-  {
-    // Pins for keyence GPIO_36 L and GPIO_33 R
-    GpioCounter* temp;
-    temp = new GpioCounter(36);
-    temp->start();
-    keyence_l_ = temp;
-
-    temp = new GpioCounter(33);
-    temp->start();
-    keyence_r_ = temp;
-}
+                                        &batteries_.high_power_batteries))
+  {}
 
 void Main::run()
 {
@@ -65,63 +53,32 @@ void Main::run()
   imu_manager_->start();
   battery_manager_->start();
 
-  // init loop
-  while (!sensor_init_) {
-    if (imu_manager_->updated()) {
-      data_.setSensorsData(sensors_);
+  // Pins for keyence GPIO_36 L and GPIO_33 R
+  GpioCounter* temp;
+  temp = new GpioCounter(36);
+  temp->start();
+  keyence_l_ = temp;
 
-      // Get calibration data
-      SensorCalibration sensor_calibration_data;      // TODO(Greg): done in imu_manager.cpp
-      sensor_calibration_data.imu_variance  = imu_manager_->getCalibrationData();
-      data_.setCalibrationData(sensor_calibration_data);
-      sensor_init_ = true;
+  temp = new GpioCounter(33);
+  temp->start();
+  keyence_r_ = temp;
 
-      break;
-    }
-    yield();
-  }
-  log_.INFO("SENSORS", "sensors data has been initialised");
-  while (!battery_init_) {
-    if (battery_manager_->updated()) {
-      data_.setBatteryData(batteries_);     // TODO(Greg): config data type for param
-      battery_init_ = true;
-      break;
-    }
-    yield();
-  }
-  log_.INFO("SENSORS", "batteries data has been initialised");
+  // data_.setSensorsData(sensors_);
 
+  // TODO(Greg): Need any of the following??
+  
+  // sensors_.module_status = data::ModuleStatus::kInit;
+  // batteries_.module_status = data::ModuleStatus::kInit;
 
-  // Need any of the following??
-  if (sensor_init_) sensors_.module_status = data::ModuleStatus::kInit;
-  if (battery_init_) batteries_.module_status = data::ModuleStatus::kInit;
-
-  // work loop
-  while (sys_.running_) {
-    // Write sensor data to data structure only when all the imu or proxi values are different
-    if (imu_manager_->updated()) {
-      sensors_.keyence_stripe_counter[0] = keyence_l_->getStripeCounter();
-      sensors_.keyence_stripe_counter[1] = keyence_r_->getStripeCounter();
-      data_.setSensorsData(sensors_);
-      // Update manager timestamp with a function
-      imu_manager_->resetTimestamp();
-    }
-    // Update battery data only when there is some change
-    if (battery_manager_->updated()) {
-      battery_manager_->resetTimestamp();
-
-      // check health of batteries
-      if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-        if (!batteriesInRange()) {
-          log_.ERR("SENSORS", "battery failure detected");
-          batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-        }
-      }
-      // publish the new data
-      data_.setBatteryData(batteries_);
-    }
-    yield();
-  }
+  // // work loop
+  // while (sys_.running_) {
+  //   // Write sensor data to data structure only when all the imu values are different
+  //   if (imu_manager_->updated()) {
+  //     // Update manager timestamp with a function
+  //     imu_manager_->resetTimestamp();       // TODO(Greg): Where does this go?
+  //   }
+  // }
 }
+
 
 }}

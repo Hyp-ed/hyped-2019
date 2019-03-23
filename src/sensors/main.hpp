@@ -60,7 +60,7 @@ namespace sensors {
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
 
-    GpioInterface*                         keyence_l_;      // instantiate and put in individual threads
+    GpioInterface*                         keyence_l_;      // instantiated and put in individual threads
     GpioInterface*                         keyence_r_;
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;

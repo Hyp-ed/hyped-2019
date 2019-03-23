@@ -49,8 +49,10 @@ class BmsManager: public ManagerInterface  {
   BatteriesLP*    lp_batteries_;
   BatteriesHP*    hp_batteries_;
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
-  utils::System&    sys_;
+  utils::System&  sys_;
   data::Data      data_;
+  data::Batteries batteries_;
+  bool batteriesInRange();
 
   uint64_t timestamp;
 };

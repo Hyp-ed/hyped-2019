@@ -31,6 +31,8 @@ using data::Data;
 using data::Sensors;
 using utils::System;
 using data::NavigationVector;
+using data::SensorCalibration;
+
 
 namespace sensors {
 ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
@@ -49,6 +51,15 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
     imu_[i] = new Imu(log, chip_select_[i], 0x08);
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
+
+  // Get calibration data
+  if(updated()) {
+    SensorCalibration sensor_calibration_data;
+    sensor_calibration_data.imu_variance  = getCalibrationData();
+    data_.setCalibrationData(sensor_calibration_data);
+  }
+  // yield();
+  log_.INFO("SENSORS", "imu data has been initialised");
 }
 
 void ImuManager::run()
@@ -67,8 +78,9 @@ void ImuManager::run()
   }
   log_.INFO("IMU-MANAGER", "Calibration complete!");
 
+  // check if system is running and write sensor data to data structure only when all the imu values are different
   // collect real data
-  while (1) {
+  while (sys_.running_) {       // TODO(Greg): or use infinite loop?
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       imu_[i]->getData(&(sensors_imu_->value[i]));
     }
