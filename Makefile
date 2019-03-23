@@ -8,12 +8,13 @@ SRCS_DIR:=src
 LIBS_DIR:=lib
 OBJS_DIR:=bin
 
-CFLAGS:=-Qunused-arguments -pthread -std=c++11 -O2 -Wall -Wno-unused-result -I/usr/local/include
-LFLAGS:=-L/usr/local/lib -lprotobuf -Qunused-arguments -pthread
+CFLAGS:=-pthread -std=c++11 -O2 -Wall -Wno-unused-result
+LFLAGS:=-lpthread -pthread
 
 # default configuration
 CROSS=0
 NOLINT=0
+PROTO=0
 
 ifeq ($(CROSS), 0)
 	CC:=g++
@@ -32,6 +33,11 @@ else
 	CFLAGS:=$(CFLAGS) -DARCH_32
 	LFLAGS:= -static
 $(info cross-compiling)
+endif
+
+ifeq ($(PROTO), 1)
+	CFLAGS:=$(CFLAGS) $(shell pkg-config --cflags protobuf)
+	LFLAGS:=$(LFLAGS) $(shell pkg-config --libs protobuf)
 endif
 
 # test if compiler is installed
@@ -75,7 +81,7 @@ $(OBJS): $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
 
 lint:
 ifeq ($(NOLINT), 0)
-	$(Verb) python2.7 utils/Lint/presubmit.py --no-lint --no-sanity
+	$(Verb) python2.7 utils/Lint/presubmit.py
 endif
 
 clean: cleanlint
