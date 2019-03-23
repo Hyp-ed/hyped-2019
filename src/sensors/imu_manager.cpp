@@ -40,7 +40,8 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
       sys_(System::getSystem()),
       sensors_imu_(imu),
       data_(Data::getInstance()),
-      chip_select_ {49, 117, 125, 123, 111, 112, 110, 20},
+      // chip_select_ {20, 110},
+      chip_select_ {117, 125, 123, 111, 112, 110, 20},
       is_calibrated_(false),
       calib_counter_(0)
 {
@@ -50,16 +51,16 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
   for (int i = 0; i < data::Sensors::kNumImus; i++) {   // creates new real IMU objects
     imu_[i] = new Imu(log, chip_select_[i], 0x08);
   }
-  utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
+  // utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
 
-  // Get calibration data
-  if(updated()) {
-    SensorCalibration sensor_calibration_data;
-    sensor_calibration_data.imu_variance  = getCalibrationData();
-    data_.setCalibrationData(sensor_calibration_data);
-  }
-  // yield();
-  log_.INFO("SENSORS", "imu data has been initialised");
+  // // Get calibration data
+  // if(updated()) {
+  //   SensorCalibration sensor_calibration_data;
+  //   sensor_calibration_data.imu_variance  = getCalibrationData();
+  //   data_.setCalibrationData(sensor_calibration_data);
+  // }
+  // // yield();
+  // log_.INFO("SENSORS", "imu data has been initialised");
 }
 
 void ImuManager::run()
@@ -80,13 +81,13 @@ void ImuManager::run()
 
   // check if system is running and write sensor data to data structure only when all the imu values are different
   // collect real data
-  while (sys_.running_) {       // TODO(Greg): or use infinite loop?
+  // while (sys_.running_) {       // TODO(Greg): or use infinite loop?
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       imu_[i]->getData(&(sensors_imu_->value[i]));
     }
-    sensors_imu_->timestamp = utils::Timer::getTimeMicros();
-    data_.setSensorsImuData(*sensors_imu_);
-  }
+    // sensors_imu_->timestamp = utils::Timer::getTimeMicros();
+    // data_.setSensorsImuData(*sensors_imu_);
+  // }
 }
 
 ImuManager::CalibrationArray ImuManager::getCalibrationData()

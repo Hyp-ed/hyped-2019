@@ -44,7 +44,7 @@ namespace sensors {
  */
 class ImuManager: public ImuManagerInterface {
   typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;
-  typedef data::DataPoint<array<ImuData, 8>>      DataArray;
+  typedef data::DataPoint<array<ImuData, data::Sensors::kNumImus>>      DataArray;
  public:
   /**
    * @brief Construct a new Imu Manager object

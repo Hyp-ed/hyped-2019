@@ -41,18 +41,23 @@ int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, 0);
-  // Imu imu(log, 66, 0x08);
-  DataPoint<array<ImuData, 8>> imu;
+  // Imu the_imu(log, 20, 0x08);
+  DataPoint<array<ImuData, Sensors::kNumImus>> imu;
   ImuManager imu_manager_(log,&imu);
   imu_manager_.start();
 
+  // ImuData imu;
+
   log.INFO("TEST-Imu", "Imu instance successfully created");
   for (int i = 0; i < 20; i++) {
+    // the_imu.getData(&imu);
     Thread::sleep(100);
-    for(int j = 0; j < 8; j++){
+    for(int j = 0; j < Sensors::kNumImus; j++){
       log.DBG("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, imu.value[j].acc[0], imu.value[j].acc[1], imu.value[j].acc[2]);    
       Thread::sleep(30);
     }
+    // log.DBG("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 7, imu.acc[0], imu.acc[1], imu.acc[2]);    
+
   }
  	return 0;
 }

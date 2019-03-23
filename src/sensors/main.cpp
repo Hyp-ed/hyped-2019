@@ -41,7 +41,7 @@ namespace sensors {
   : Thread(id, log),
     data_(data::Data::getInstance()),
     sys_(utils::System::getSystem()),
-    imu_manager_(new ImuManager(log, &sensors_.imu)),
+    // imu_manager_(new ImuManager(log, &sensors_.imu)),
     battery_manager_(new BmsManager(log,
                                         &batteries_.low_power_batteries,
                                         &batteries_.high_power_batteries))
