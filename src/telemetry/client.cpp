@@ -29,10 +29,8 @@
 #include <google/protobuf/util/delimited_message_util.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
-// using hyped::client::port;
-// using hyped::client::server_ip;
-// using hyped::client::Client;
-using namespace hyped::client;
+namespace hyped {
+namespace client {
 
 Client::Client() {
     struct addrinfo hints;
@@ -109,3 +107,6 @@ bool Client::receiveData() {
 
     return true;
 }
+
+}  // namespace client
+}  // namespace hyped
