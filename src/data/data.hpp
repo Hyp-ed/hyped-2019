@@ -22,9 +22,9 @@
 
 #include <cstdint>
 #include <array>
-#include "../utils/math/vector.hpp"
-#include "data_point.hpp"
-#include "../utils/concurrent/lock.hpp"
+#include "utils/math/vector.hpp"
+#include "data/data_point.hpp"
+#include "utils/concurrent/lock.hpp"
 
 using std::array;
 

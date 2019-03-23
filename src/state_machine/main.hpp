@@ -1,5 +1,5 @@
 /*
- * Author:
+ * Author: Ragnor Comerford, Calum McMeekin, Sneha Sinha and Siu Wang (Ian) Ma
  * Organisation: HYPED
  * Date:
  * Description:
@@ -25,9 +25,9 @@
 #define STATE_MACHINE_MAIN_HPP_
 
 #include <cstdint>
-#include "../utils/concurrent/thread.hpp"
-#include "hyped-machine.hpp"
-#include "../data/data.hpp"
+#include "utils/concurrent/thread.hpp"
+#include "state_machine/hyped-machine.hpp"
+#include "data/data.hpp"
 
 namespace hyped {
 
@@ -47,6 +47,7 @@ class Main: public Thread {
   // return true iff the event has been fired
   bool checkInitialised();
   bool checkSystemsChecked();
+  bool checkReset();
   bool checkOnStart();
   bool checkCommsCriticalFailure();
   bool checkCriticalFailure();

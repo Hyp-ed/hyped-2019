@@ -1,6 +1,6 @@
 
 /*
- * Authors: Yash Mittal and Ragnor Comerford
+ * Authors: Yash Mittal, Ragnor Comerford and Calum McMeekin
  * Organisation: HYPED
  * Date: 11. February 2018
  * Description:
@@ -19,7 +19,7 @@
  *    limitations under the License.
  */
 
-#include "hyped-machine.hpp"
+#include "state_machine/hyped-machine.hpp"
 
 namespace hyped {
 namespace state_machine {
@@ -57,7 +57,7 @@ void HypedMachine::transition(State *state)
 
 void HypedMachine::reset()
 {
-  log_.INFO("STATE", "State Machine resetted");
+  log_.INFO("STATE", "State Machine reset");
   transition(new(current_state_) Idle());
 }
 
