@@ -14,7 +14,7 @@ LFLAGS:=-lpthread -pthread
 # default configuration
 CROSS=0
 NOLINT=0
-PROTO=0
+PROTOBUF=0
 
 ifeq ($(CROSS), 0)
 	CC:=g++
@@ -35,7 +35,7 @@ else
 $(info cross-compiling)
 endif
 
-ifeq ($(PROTO), 1)
+ifeq ($(PROTOBUF), 1)
 	CFLAGS:=$(CFLAGS) $(shell pkg-config --cflags protobuf)
 	LFLAGS:=$(LFLAGS) $(shell pkg-config --libs protobuf)
 endif
