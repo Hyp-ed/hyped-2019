@@ -32,15 +32,15 @@ using utils::Logger;
 
 namespace telemetry {
 
-    class Main: public Thread {
-        public:
-            Main(uint8_t id, Logger& log);
-            void run() override;
-        private:
-            Client client;
-    };
+class Main: public Thread {
+    public:
+        Main(uint8_t id, Logger& log);
+        void run() override;
+    private:
+        Client client;
+};
 
-    void recvLoop(Client& c);
+void recvLoop(Client& c);
 
 }  // namespace telemetry
 }  // namespace hyped
