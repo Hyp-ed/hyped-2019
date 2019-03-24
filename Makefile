@@ -102,6 +102,11 @@ endef
 doc:
 	$(Verb) doxygen Doxyfile
 
+protoc:
+	-$(Verb) mkdir src/telemetry/types
+	$(Verb) protoc -I=src/telemetry --cpp_out=src/telemetry/types message.proto
+	$(Verb) mv src/telemetry/types/message.pb.cc src/telemetry/types/message.pb.cpp
+
 info:
 	$(call echo_var,CC)
 	$(call echo_var,TOP)
