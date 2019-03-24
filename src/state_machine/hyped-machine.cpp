@@ -55,12 +55,6 @@ void HypedMachine::transition(State *state)
   d.setStateMachineData(state_machine_);
 }
 
-void HypedMachine::reset()
-{
-  log_.INFO("STATE", "State Machine reset");
-  transition(new(current_state_) Idle());
-}
-
 void HypedMachine::setupEmbrakes()
 {
   pin_embrake_ = new GPIO(46, utils::io::gpio::Direction::kOut);
