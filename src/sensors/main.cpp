@@ -64,8 +64,8 @@ void Main::run()
   array<StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter;
   array<StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count;
 
-  // Initalise the arrays
-  keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;     // TODO(Jack): can you do this? throws compilation error
+  // Initalise the arrays     // TODO(Jack): can you do this? throws compilation error
+  keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;
   prev_keyence_stripe_count = keyence_stripe_counter;
 
   while (sys_.running_) {
