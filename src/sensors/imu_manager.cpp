@@ -33,7 +33,6 @@ using utils::System;
 using data::NavigationVector;
 using data::SensorCalibration;
 
-
 namespace sensors {
 ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
     : ImuManagerInterface(log),
@@ -51,16 +50,17 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
   for (int i = 0; i < data::Sensors::kNumImus; i++) {   // creates new real IMU objects
     imu_[i] = new Imu(log, chip_select_[i], 0x08);
   }
-  // utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
+  utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
 
+  // TODO(Greg): Do we need this (reference line 69)?
   // // Get calibration data
-  // if(updated()) {
+  // if (updated()) {
   //   SensorCalibration sensor_calibration_data;
   //   sensor_calibration_data.imu_variance  = getCalibrationData();
   //   data_.setCalibrationData(sensor_calibration_data);
   // }
-  // // yield();
-  // log_.INFO("SENSORS", "imu data has been initialised");
+  // Thread::yield();
+  log_.INFO("IMU-MANAGER", "imu data has been initialised");
 }
 
 void ImuManager::run()
@@ -79,15 +79,15 @@ void ImuManager::run()
   }
   log_.INFO("IMU-MANAGER", "Calibration complete!");
 
-  // check if system is running and write sensor data to data structure only when all the imu values are different
-  // collect real data
-  // while (sys_.running_) {       // TODO(Greg): or use infinite loop?
+  // collect real data while system is running
+  while (1) {                                 // TODO(Greg): or use sys_.running_?
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       imu_[i]->getData(&(sensors_imu_->value[i]));
     }
-    // sensors_imu_->timestamp = utils::Timer::getTimeMicros();
-    // data_.setSensorsImuData(*sensors_imu_);
-  // }
+    resetTimestamp();
+    sensors_imu_->timestamp = utils::Timer::getTimeMicros();
+    data_.setSensorsImuData(*sensors_imu_);
+  }
 }
 
 ImuManager::CalibrationArray ImuManager::getCalibrationData()
@@ -98,7 +98,6 @@ ImuManager::CalibrationArray ImuManager::getCalibrationData()
   for (int i = 0; i < data::Sensors::kNumImus; i++) {
     imu_calibrations_[i] = stats_[i].getVariance();
   }
-  // data_.setCalibrationData(* (data::SensorCalibration) imu_calibrations_); TODO(Greg): cast type
   return imu_calibrations_;
 }
 

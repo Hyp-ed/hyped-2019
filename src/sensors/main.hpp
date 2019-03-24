@@ -3,8 +3,7 @@
  * Organisation: HYPED
  * Date:
  * Description:
- * Main manages sensor drivers, collects data from sensors and updates
- * shared Data::Sensors structure. Main is not responsible for initialisation
+ * Main initialises and manages sensor drivers. Main is not responsible for initialisation
  * of supporting io drivers (i2c, spi, can). This should be done by the sensor
  * drivers themselves.
  *

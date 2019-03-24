@@ -75,8 +75,12 @@ void BMS::request()
   message.data[0]   = 0;
   message.data[1]   = 0;
 
-  can_.send(message);
-  log_.DBG1("BMS", "module %u: request message sent", id_);
+  int sent = can_.send(message);
+  if (sent) {
+    log_.DBG1("BMS", "module %u: request message sent", id_);
+  } else {
+    log_.ERR("BMS", "module %u error: request message not sent", id_);
+  }
 }
 
 void BMS::run()
@@ -118,28 +122,27 @@ void BMS::processNewData(utils::io::can::Frame& message)
   }
 
   log_.DBG2("BMS", "message data[0,1] %d %d", message.data[0], message.data[1]);
-  // TODO(anyone): contact battery team and refactor bms data
-  // uint8_t offset = message.id - (bms::kIdBase + (bms::kIdIncrement * id_));
-  // switch (offset) {
-  //   case 0x1:   // cells 1-4
-  //     for (int i = 0; i < 4; i++) {
-  //       data_.voltage[i] = (message.data[2*i] << 8) | message.data[2*i + 1];
-  //     }
-  //     break;
-  //   case 0x2:   // cells 5-7
-  //     for (int i = 0; i < 3; i++) {
-  //       data_.voltage[4 + i] = (message.data[2*i] << 8) | message.data[2*i + 1];
-  //     }
-  //     break;
-  //   case 0x3:   // ignore, no cells connected
-  //     break;
-  //   case 0x4:   // temperature
-  //     data_.temperature = message.data[0] - bms::Data::kTemperatureOffset;
-  //     break;
-  //   default:
-  //     log_.ERR("BMS", "received invalid message, id %d, CANID %d, offset %d",
-  //         id_, message.id, offset);
-  // }
+  uint8_t offset = message.id - (bms::kIdBase + (bms::kIdIncrement * id_));
+  switch (offset) {
+    case 0x1:   // cells 1-4
+      for (int i = 0; i < 4; i++) {
+        data_.voltage[i] = (message.data[2*i] << 8) | message.data[2*i + 1];
+      }
+      break;
+    case 0x2:   // cells 5-7
+      for (int i = 0; i < 3; i++) {
+        data_.voltage[4 + i] = (message.data[2*i] << 8) | message.data[2*i + 1];
+      }
+      break;
+    case 0x3:   // ignore, no cells connected
+      break;
+    case 0x4:   // temperature
+      data_.temperature = message.data[0] - bms::Data::kTemperatureOffset;
+      break;
+    default:
+      log_.ERR("BMS", "received invalid message, id %d, CANID %d, offset %d",
+          id_, message.id, offset);
+  }
 
   last_update_time_ = utils::Timer::getTimeMicros();
 }

@@ -19,6 +19,7 @@
  */
 
 #include "sensors/main.hpp"
+
 #include "data/data.hpp"
 #include "sensors/imu_manager.hpp"
 #include "sensors/bms_manager.hpp"
@@ -64,7 +65,7 @@ void Main::run()
   array<StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count;
 
   // Initalise the arrays
-  keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;
+  keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;     // TODO(Jack): can you do this? throws compilation error
   prev_keyence_stripe_count = keyence_stripe_counter;
 
   while (sys_.running_) {

@@ -106,7 +106,7 @@ void Imu::init()
   setAcclScale(acc_scale_);
   enableFifo();
 
-  if(check_init) {
+  if (check_init) {
     log_.INFO("Imu", "Imu sensor created. Initialisation complete.");
   } else {
     log_.ERR("Imu", "ERROR: Imu sensor not initialised.");
