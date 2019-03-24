@@ -1,11 +1,10 @@
 /*
- * Authors : HYPED
+ * Author: Neil Weidinger
  * Organisation: HYPED
- * Date: 3. February 2018
+ * Date: March 2019
  * Description:
- * This is the main executable for BeagleBone pod node
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -18,16 +17,16 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#include "client.hpp"
+
+#include <google/protobuf/util/delimited_message_util.h>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <cstring>
 #include <iostream>
-
-#include <google/protobuf/util/delimited_message_util.h>
-#include <google/protobuf/io/zero_copy_stream_impl.h>
+#include "client.hpp"
 
 namespace hyped {
 namespace client {
@@ -36,7 +35,7 @@ Client::Client(Logger& log)
     : log_(log)
 {
     struct addrinfo hints;
-    struct addrinfo* server_info; // will contain possible addresses to connect to according to hints
+    struct addrinfo* server_info;  // contains possible addresses to connect to according to hints
 
     // set up criteria for type of address we want to connect to
     memset(&hints, 0, sizeof(hints));
@@ -51,7 +50,7 @@ Client::Client(Logger& log)
         // probably throw exception here or something
     }
 
-    // get a socket file descriptor 
+    // get a socket file descriptor
     sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
     if (sockfd == -1) {
         log_.ERR("Telemetry", "%s", strerror(errno));
@@ -72,13 +71,15 @@ Client::Client(Logger& log)
     socketStream = new google::protobuf::io::FileInputStream(sockfd);
 }
 
-Client::~Client() {
+Client::~Client()
+{
     delete socketStream;
     close(sockfd);
 }
 
 // message has to be terminated by newline bc we read messages on server using in.readLine()
-bool Client::sendData(protoTypes::TestMessage message) {
+bool Client::sendData(protoTypes::TestMessage message)
+{
     using namespace google::protobuf::util;
 
     if (!SerializeDelimitedToFileDescriptor(message, sockfd)) {
@@ -89,7 +90,8 @@ bool Client::sendData(protoTypes::TestMessage message) {
     return true;
 }
 
-bool Client::receiveData() {
+bool Client::receiveData()
+{
     using namespace google::protobuf::util;
 
     protoTypes::TestMessage messageFromServer;

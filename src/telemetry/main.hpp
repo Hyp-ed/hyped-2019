@@ -1,7 +1,7 @@
 /*
- * Authors:
+ * Author: Neil Weidinger
  * Organisation: HYPED
- * Date:
+ * Date: March 2019
  * Description:
  *
  *    Copyright 2019 HYPED

@@ -1,34 +1,55 @@
+/*
+ * Author: Neil Weidinger
+ * Organisation: HYPED
+ * Date: March 2019
+ * Description:
+ *
+ *    Copyright 2019 HYPED
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 #ifndef TELEMETRY_CLIENT_HPP_
 #define TELEMETRY_CLIENT_HPP_
 
+#include <google/protobuf/io/zero_copy_stream.h>
+#include <string>
 #include "types/message.pb.h"
 #include "utils/logger.hpp"
-#include <string>
-#include <google/protobuf/io/zero_copy_stream.h>
 
 namespace hyped {
 
 using utils::Logger;
+using google::protobuf::io::ZeroCopyInputStream;
 
 namespace client {
 
-    constexpr auto port = "9090";
-    // constexpr auto server_ip = "localhost";
-    constexpr auto server_ip = "192.168.1.50";
+constexpr auto port = "9090";
+// constexpr auto server_ip = "localhost";
+constexpr auto server_ip = "192.168.1.50";
 
-    class Client {
-        public:
-            Client(Logger& log);
-            ~Client();
-            bool sendData(protoTypes::TestMessage message);
-            bool receiveData();
-        private:
-            int sockfd;
-            Logger& log_;
-            google::protobuf::io::ZeroCopyInputStream* socketStream;  // member variable bc we need to keep reading from same stream (buffered)
-    };
+class Client {
+    public:
+        explicit Client(Logger& log);
+        ~Client();
+        bool sendData(protoTypes::TestMessage message);
+        bool receiveData();
+    private:
+        int sockfd;
+        Logger& log_;
+        ZeroCopyInputStream* socketStream;  // member var bc need to keep reading from same stream
+};
 
 }  // namespace client
 }  // namespace hyped
 
-#endif
+#endif  // TELEMETRY_CLIENT_HPP_

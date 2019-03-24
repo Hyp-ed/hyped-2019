@@ -1,7 +1,7 @@
 /*
- * Authors:
+ * Author: Neil Weidinger
  * Organisation: HYPED
- * Date:
+ * Date: March 2019
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -17,10 +17,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
+#include <thread>
+#include "types/message.pb.h"
 #include "main.hpp"
 #include "client.hpp"
-#include "types/message.pb.h"
-#include <thread>
 
 namespace hyped {
 
@@ -30,13 +31,14 @@ namespace telemetry {
 
 Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
-      client{log}
+      client {log}
 {
     log_.INFO("Telemetry", "Logger constructor was called");
 }
 
-void Main::run() {
-    std::thread recvThread {recvLoop, std::ref(client)};
+void Main::run()
+{
+    std::thread recvThread {recvLoop, std::ref(client)};  // NOLINT (linter thinks semicolon is syntax error...)
 
     while (true) {
         protoTypes::TestMessage msg;
@@ -69,7 +71,8 @@ void Main::run() {
     recvThread.join();
 }
 
-void recvLoop(Client& c) {
+void recvLoop(Client& c)
+{
     while (true) {
         c.receiveData();
     }
