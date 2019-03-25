@@ -39,9 +39,11 @@ void Main::run()
 
 	Data stateMachineData = Data::getInstance();
 
-	Pins pins[2]={
+	Pins pins[4]={
 		{1,1},
-		{2,2}
+		{2,2},
+		{3,3},
+		{4,4}
 	};
 
 	retractorManager = new RetractorManager(pins,log_);
@@ -49,14 +51,15 @@ void Main::run()
 	while (sys.running_)
 	{
         // Get the current state of the system from the state machine's data
-        currentState = stateMachineData.getStateMachineData().current_state;
+        //currentState = stateMachineData.getStateMachineData().current_state;
+				currentState = State::kCalibrating;
 
 		if (currentState == State::kCalibrating) // Retract screw
 		{
-            if(retractorManager->getStatus() == StatusCodes::IDLE) {
-				log_.INFO("Embrakes","Start Retracting");
-                retractorManager->retract();
-            } else if(retractorManager->getStatus() == StatusCodes::ERROR) {
+			if(retractorManager->getStatus() == StatusCodes::IDLE) {
+					log_.INFO("Embrakes","Start Retracting");
+					retractorManager->retract();
+			} else if(retractorManager->getStatus() == StatusCodes::ERROR) {
 				log_.ERR("Embrakes","An error occured");
 			} else if(retractorManager->getStatus() == StatusCodes::FINISHED) {
 				if(!finishedRetracting_) {

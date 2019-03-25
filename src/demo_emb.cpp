@@ -27,11 +27,9 @@ int main(int argc, char *argv[])
 
 	Main *main = new Main(1,*log_embrakes);
 
-    main->start();
-	
+	main->start();
 
-	while (true)
-		;
+	while (true);
 
 	return 0;
 }

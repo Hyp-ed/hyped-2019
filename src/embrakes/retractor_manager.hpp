@@ -64,6 +64,7 @@ class RetractorManager
         RetractorInterface **retractors_;
         std::atomic<StatusCodes> *status;
         bool retracting;
+        uint retractorAmount;
 }; 
 
 }}

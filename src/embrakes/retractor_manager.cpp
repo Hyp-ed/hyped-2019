@@ -6,12 +6,16 @@ namespace hyped {
         {
             // Use System to check if the fake brakes should be used
             // System &sys = System::getSystem();
-            status = new std::atomic<StatusCodes>[sizeof(pins)/sizeof(pins[0])];  
-            retractors_ = new RetractorInterface*[sizeof(pins)/sizeof(pins[0])]; 
 
-            for(uint i = 0;i <= (sizeof(pins)/sizeof(Pins));i++) {
+
+            retractorAmount = sizeof(pins)/sizeof(uint16_t);
+
+            status = new std::atomic<StatusCodes>[retractorAmount];  
+            retractors_ = new RetractorInterface*[retractorAmount]; 
+
+            for(uint i = 0;i < retractorAmount;i++) {
                 status[i] = StatusCodes::IDLE;                
-                
+                log_.INFO("Embrakes","Make retractor %d", retractorAmount);
                 // TODO{gregor}: Add check if fake retractors should be loaded instead
                 retractors_[i] = new Retractor(pins[i].activate,pins[i].step,&status[i]);
             }
@@ -19,8 +23,11 @@ namespace hyped {
 
         void RetractorManager::retract()
         {
-            for(uint i = 0; i < (sizeof(status)/sizeof(status[0]));i++) {
+            log_.INFO("Embrakes"," %d",retractorAmount);
+            for(uint i = 0; i < retractorAmount;i++) {
+                status[i] = StatusCodes::STARTED;
                 retractors_[i]->start();
+                log_.INFO("Embrakes","Retracting brake");
             }
         }
 
@@ -28,7 +35,7 @@ namespace hyped {
         {
             StatusCodes statusCode = StatusCodes::FINISHED;
 
-            for(uint i = 0; i < (sizeof(status)/sizeof(status[0]));i++) {
+            for(uint i = 0; i < retractorAmount;i++) {
                 if(status[i] < statusCode) {
                     statusCode = status[i];
                 }

@@ -6,6 +6,7 @@ SRCS := \
   navigation/main.cpp \
   embrakes/main.cpp \
   embrakes/retractor_manager.cpp \
+  embrakes/fake_retractor.cpp \
   embrakes/retractor.cpp \
   propulsion/state_processor.cpp \
   propulsion/main.cpp \

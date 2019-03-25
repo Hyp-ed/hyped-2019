@@ -31,8 +31,8 @@ namespace embrakes
 
     void Retractor::run()
     {
-        *status_ = StatusCodes::STARTED;
         sleep(1000);
+        
         *status_ = StatusCodes::FINISHED;
     }
 }
