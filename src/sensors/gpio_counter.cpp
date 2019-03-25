@@ -1,7 +1,7 @@
 /*
  * Author: Ragnor Comerford and Jack Horsburgh
  * Organisation: HYPED
- * Date: 186/18
+ * Date: 18/6/18
  * Description:
  *
  *    Copyright 2018 HYPED
@@ -24,13 +24,13 @@
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
 #include "sensors/gpio_counter.hpp"
-#include "data/data.hpp"
 #include "utils/logger.hpp"
 
 
 namespace hyped {
 
-using data::StripeCounter;      // data.hpp
+using data::Data;
+using data::StripeCounter;
 using utils::concurrent::Thread;
 using utils::io::GPIO;
 using hyped::utils::Logger;
@@ -50,11 +50,8 @@ void GpioCounter::run()
   stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
 
   while (1) {
-    log.DBG("GPIOCOUNTER", "Waiting");
     val = thepin.wait();
-    log.DBG("GPIOCOUNTER", "Wait value: %d", val);
     if (val == 1) {
-      log.DBG("GPIOCOUNTER", "Has hit stripe!");
       stripe_counter_.count.value = stripe_counter_.count.value+1;
       stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
       stripe_counter_.operational = true;

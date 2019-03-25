@@ -203,39 +203,46 @@ void Imu::setAcclScale(int scale)
 
 int Imu::readFifo(std::vector<ImuData>& data)
 {
-  // get fifo size
-  uint8_t buffer[kFrameSize];
-  readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);    // from count H/L registers
-  // convert big->little endian of count (2 bytes)
-  size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
+  if (is_online_) {
+    // get fifo size
+    uint8_t buffer[kFrameSize];
+    readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);    // from count H/L registers
+    // convert big->little endian of count (2 bytes)
+    size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
 
-  if (fifo_size == 0) {
-    log_.INFO("FIFO", "FIFO EMPTY");
+    if (fifo_size == 0) {
+      log_.INFO("FIFO", "FIFO EMPTY");
+      return 0;
+    }
+    log_.DBG("FIFO", "Buffer size = %d", fifo_size);
+    int16_t axcounts, aycounts, azcounts;           // include negative int
+    float value_x, value_y, value_z;
+    for (size_t i = 0; i < (fifo_size/kFrameSize); i++) {
+      readBytes(kFifoRW, buffer, kFrameSize);
+      axcounts = (((int16_t)buffer[0]) << 8) | buffer[1];     // 2 byte acc data for xyz
+      aycounts = (((int16_t)buffer[2]) << 8) | buffer[3];
+      azcounts = (((int16_t)buffer[4]) << 8) | buffer[5];
+
+      // convert to floats for accel_data
+      value_x = static_cast<float>(axcounts);
+      value_y = static_cast<float>(aycounts);
+      value_z = static_cast<float>(azcounts);
+
+      // put data in struct and add to data vector (param)
+      ImuData imu_data;
+      imu_data.operational = is_online_;
+      imu_data.acc[0] = value_x/acc_divider_  * 9.80665;
+      imu_data.acc[1] = value_y/acc_divider_  * 9.80665;
+      imu_data.acc[2] = value_z/acc_divider_  * 9.80665;
+      data.push_back(imu_data);
+    }
+    return 1;
+  } else {
+    // Try and turn the sensor on again
+    log_.ERR("Imu", "Sensor not operational, trying to turn on sensor");
+    init();
     return 0;
   }
-  log_.DBG("FIFO", "Buffer size = %d", fifo_size);
-  int16_t axcounts, aycounts, azcounts;           // include negative int
-  float value_x, value_y, value_z;
-  for (size_t i = 0; i < (fifo_size/kFrameSize); i++) {
-    readBytes(kFifoRW, buffer, kFrameSize);
-    axcounts = (((int16_t)buffer[0]) << 8) | buffer[1];     // 2 byte acc data for xyz
-    aycounts = (((int16_t)buffer[2]) << 8) | buffer[3];
-    azcounts = (((int16_t)buffer[4]) << 8) | buffer[5];
-
-    // convert to floats for accel_data
-    value_x = static_cast<float>(axcounts);
-    value_y = static_cast<float>(aycounts);
-    value_z = static_cast<float>(azcounts);
-
-    // put data in struct and add to data vector (param)
-    ImuData imu_data;
-    imu_data.operational = is_online_;
-    imu_data.acc[0] = value_x/acc_divider_  * 9.80665;
-    imu_data.acc[1] = value_y/acc_divider_  * 9.80665;
-    imu_data.acc[2] = value_z/acc_divider_  * 9.80665;
-    data.push_back(imu_data);
-  }
-  return 1;
 }
 
 void Imu::getData(ImuData* data)
@@ -271,7 +278,6 @@ void Imu::getTemperature(int* data)
   uint8_t response[2];
   readBytes(kTempOutH, response, 2);
 
-  // TODO(anyone): When temperature is read correctly add to the data strucutre
   // TODO(anyone): compare imu temperature values with reliable temperature source
   uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21;
 

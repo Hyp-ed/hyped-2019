@@ -1,8 +1,8 @@
 /*
- * Author: Ragnor Comerford and Jack Horsburgh
+ * Author: Jack Horsburgh
  * Organisation: HYPED
- * Date: 19/06/18
- * Description:
+ * Date: 21/06/18
+ * Description: Main interface for the manager classes.
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,31 +18,39 @@
  *    limitations under the License.
  */
 
-#ifndef SENSORS_GPIO_COUNTER_HPP_
-#define SENSORS_GPIO_COUNTER_HPP_
-
-#include <cstdint>
+#ifndef SENSORS_MANAGER_INTERFACE_HPP_
+#define SENSORS_MANAGER_INTERFACE_HPP_
 
 #include "data/data.hpp"
-#include "sensors/interface.hpp"
 #include "utils/concurrent/thread.hpp"
 
 namespace hyped {
 
-using utils::Logger;
+using data::ImuData;
+using data::Battery;
 using utils::concurrent::Thread;
+using data::NavigationVector;
+
 namespace sensors {
 
-class GpioCounter: public GpioInterface, public Thread {            // interface.hpp
+class ManagerInterface : public Thread {
  public:
-  explicit GpioCounter(int pin);
-  data::StripeCounter getStripeCounter() override;      // data.hpp, data.cpp<array> data_point.hpp
-  void run() override;
+  /**
+   * @brief Checks if the data has been updated
+   *
+   */
+  virtual bool updated() = 0;
+  virtual void resetTimestamp() = 0;
+  explicit ManagerInterface(utils::Logger& log) : Thread(log), old_timestamp_(0) {}
+ protected:
+  uint64_t old_timestamp_;
+};
 
- private:
-  int pin_;
-  data::StripeCounter stripe_counter_;
+class ImuManagerInterface : public ManagerInterface {
+ public:
+  explicit ImuManagerInterface(utils::Logger& log) : ManagerInterface(log) {}
+  virtual array<NavigationVector, data::Sensors::kNumImus> getCalibrationData() = 0;
 };
 }}  // namespace hyped::sensors
 
-#endif  // SENSORS_GPIO_COUNTER_HPP_
+#endif  // SENSORS_MANAGER_INTERFACE_HPP_
