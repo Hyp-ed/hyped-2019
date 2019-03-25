@@ -46,7 +46,7 @@ void producer()
 
 		fr.id = 1;
 
-		can->pushSdoMessageToQueue(fr);
+		can->sendMessage(fr);
 		log_motor->INFO("PRODUCER", "Produced");
 	}
 }
