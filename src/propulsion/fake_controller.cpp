@@ -41,7 +41,7 @@ FakeController::FakeController(Logger& log, uint8_t id, bool isFaulty)
 {
 }
 
-void registerController()
+void FakeController::registerController()
 {/*EMPTY*/}
 
 void FakeController::configure()
