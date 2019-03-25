@@ -24,6 +24,8 @@
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "propulsion/controller_interface.hpp"
+#include "utils/logger.hpp"
+#include "utils/io/can.hpp"
 
 namespace hyped {
 namespace utils { class Logger; }
@@ -31,6 +33,7 @@ namespace motor_control {
 
 using utils::Logger;
 using utils::Timer;
+using utils::concurrent::Thread;
 
 class FakeController : public ControllerInterface {
  public:

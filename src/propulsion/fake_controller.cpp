@@ -17,16 +17,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 #include "propulsion/fake_controller.hpp"
-#include "utils/logger.hpp"
-#include "utils/io/can.hpp"
 
 namespace hyped {
 namespace motor_control {
-
-using utils::concurrent::Thread;
-using utils::Timer;
 
 FakeController::FakeController(Logger& log, uint8_t id, bool isFaulty)
   : log_(log),

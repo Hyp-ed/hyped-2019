@@ -1,5 +1,5 @@
 /*
- * Author: George Karabassis
+ * Author: George Karabassis and Iain Macpherson
  * Organisation: HYPED
  * Date:
  * Description:
