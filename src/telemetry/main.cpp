@@ -33,7 +33,7 @@ Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
       client {log}
 {
-    log_.INFO("Telemetry", "Logger constructor was called");
+    log_.DBG("Telemetry", "Telemetry thread started");
 }
 
 void Main::run()
