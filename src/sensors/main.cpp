@@ -71,7 +71,8 @@ void Main::run()
   while (sys_.running_) {
     // We need to read the gpio counters and write to the data structure
     // If previous is not equal to the new data then update
-    if (prev_keyence_stripe_count != keyence_stripe_counter) {
+    if (prev_keyence_stripe_count[0].count.value != keyence_stripe_counter[0].count.value ||
+        prev_keyence_stripe_count[1].count.value != keyence_stripe_counter[1].count.value ) {
       // Update data structure, make prev reading same as this reading
       data_.setSensorsKeyenceData(keyence_stripe_counter);
       prev_keyence_stripe_count = keyence_stripe_counter;
