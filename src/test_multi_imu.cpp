@@ -39,9 +39,9 @@ using hyped::utils::math::RollingStatistics;
 using hyped::utils::System;
 using hyped::utils::Timer;
 
-void outfileSetup(std::ofstream* outfile, int imu_id, int run_id)  {
+void outfileSetup(std::ofstream* outfile, int kRunImus, int run_id)  {
 	char fname [20];
-	sprintf(fname, "test_data/imu%d_run%d_data.csv", imu_id, run_id);
+	sprintf(fname, "test_data/%dimu_run%d_data.csv", kRunImus, run_id);
 	outfile->open(fname);
 	*outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,t\n";
 }
@@ -49,13 +49,13 @@ void outfileSetup(std::ofstream* outfile, int imu_id, int run_id)  {
 void querySensorArray(Imu** sensorArray, ImuData* sensorDataArray, 
 					  RollingStatistics<NavigationVector>* filter, Timer* timer,
 					  DataPoint<NavigationVector>* sensorReading, 
-					  int kNumImus) 
+					  int kRunImus) 
 {
 	// Take simple average of the IMUs
-	for (int i = 0; i < kNumImus; ++i) 
+	for (int i = 0; i < kRunImus; ++i) 
 	{
 		sensorArray[i]->getData(sensorDataArray + i);
-		filter->update(sensorDataArray[i].acc);		// <-- TODO, don't think this will work as intended
+		filter->update(sensorDataArray[i].acc);		
 	}
 	// Update sensor reading
 	sensorReading->timestamp = timer->getTimeMicros(); 
@@ -65,13 +65,13 @@ void querySensorArray(Imu** sensorArray, ImuData* sensorDataArray,
 NavigationVector calibrateG(Imu** sensorArray, ImuData* sensorDataArray, 
  							RollingStatistics<NavigationVector>* filter, Timer* timer,
 					  		DataPoint<NavigationVector>* sensorReading,
-							int kNumCalQueries, int kNumImus) 
+							int kNumCalQueries, int kRunImus) 
 {
 	OnlineStatistics<NavigationVector> queryAggregator;
 	for (int i = 0; i < kNumCalQueries; ++i) 
 	{
 		querySensorArray(sensorArray, sensorDataArray, filter,
-						 timer, sensorReading, kNumImus);
+						 timer, sensorReading, kRunImus);
 		queryAggregator.update(sensorReading->value);
 	}
 	return queryAggregator.getMean();
@@ -113,33 +113,25 @@ int main(int argc, char *argv[])
 	// File setup
 	std::ofstream outfile;
 	bool saveReadings = (sys.imu_id > 0) || (sys.run_id > 0);
-	if (saveReadings) outfileSetup(&outfile, sys.imu_id, sys.run_id);
+	if (saveReadings) outfileSetup(&outfile, sys.imu_count, sys.run_id);
 
-	// Sensor setup    TODO[NEIL], donde esta la imus?
-	/*
-	int kNumImus = 8;	
-	Imu* sensorArray [kNumImus] = {new Imu(log, 66, 0x08, 0x00), new Imu(log, -1, 0x08, 0x00), 
-								   new Imu(log, -1, 0x08, 0x00), new Imu(log, -1, 0x08, 0x00),
-								   new Imu(log, -1, 0x08, 0x00), new Imu(log, -1, 0x08, 0x00),
-								   new Imu(log, -1, 0x08, 0x00), new Imu(log, -1, 0x08, 0x00)};
-	ImuData sensorDataArray [kNumImus] = {ImuData(), ImuData(), ImuData(), ImuData(),
-										  ImuData(), ImuData(), ImuData(), ImuData()};
-										  */
-	int kNumImus = 7;	
-	Imu* sensorArray [kNumImus] = {new Imu(log,  66, 0x08, 0x00), 
-								   new Imu(log,  67, 0x08, 0x00), 
-								   new Imu(log,  68, 0x08, 0x00),
-								   new Imu(log,  20, 0x08, 0x00),
+	// Sensor setup
+	int kNumImus = 7;
+	int kRunImus = sys.imu_count;	
+	Imu* sensorArray [kNumImus] = {new Imu(log,  49, 0x08, 0x00), 
+								   new Imu(log, 117, 0x08, 0x00), 
 								   new Imu(log, 115, 0x08, 0x00),
-								   new Imu(log, 117, 0x08, 0x00),
-								   new Imu(log,  49, 0x08, 0x00)};
+								   new Imu(log,  66, 0x08, 0x00),
+								   new Imu(log,  67, 0x08, 0x00),
+								   new Imu(log,  68, 0x08, 0x00),
+								   new Imu(log,  69, 0x08, 0x00)};
 	ImuData sensorDataArray [kNumImus] = {ImuData(), ImuData(), ImuData(), ImuData(),
 										  ImuData(), ImuData(), ImuData()};
 
   	DataPoint<NavigationVector> sensorReading;
 
   	// Filter setup
-  	RollingStatistics<NavigationVector> filter(kNumImus);
+  	RollingStatistics<NavigationVector> filter(kRunImus);
 
 	// Test-run setup parameters
 	int kNumCalQueries = 10000;
@@ -154,9 +146,10 @@ int main(int argc, char *argv[])
 	NavigationVector gVector = calibrateG(sensorArray, sensorDataArray, 
 										  &filter, &timer, 
 										  &sensorReading, 
-										  kNumCalQueries, kNumImus);
+										  kNumCalQueries, kRunImus);
 	log.INFO("MAIN", "Measured gravity vector:\n\tgx=%+6.3f\tgy=%+6.3f\tgz=%+6.3f\n\n",
 						gVector[0], gVector[1], gVector[2]);
+	
 	// TODO: kalman filter calibration?
 
 	/******************************************
@@ -179,7 +172,7 @@ int main(int argc, char *argv[])
 		querySensorArray(sensorArray, sensorDataArray, 
 					  	 &filter, &timer,
 					  	 &accRaw, 
-					  	 kNumImus);
+					  	 kRunImus);
 		// Correct values and integrate
 		accCor.timestamp = accRaw.timestamp;	accCor.value = accRaw.value - gVector;
 		velIntegrator.update(accCor);

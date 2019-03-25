@@ -33,6 +33,7 @@
 #define DEFAULT_RUN_ID		-1
 #define DEFAULT_QUERIES   -1
 #define DEFAULT_Q_DELAY   -1
+#define DEFAULT_CALIBRATE -1
 
 namespace hyped {
 namespace utils {
@@ -64,7 +65,7 @@ void printUsage()
     "\n  --run_id\n"
     "    Run ID number to assign to written datafile."
     "\n  --imu_count\n"
-    "    Number of IMUs to simulate."
+    "    Number of IMUs to use (max=7)."
     "");
 }
 }
@@ -255,7 +256,7 @@ System::System(int argc, char* argv[])
         break;
       case 'P':
         if (optarg) imu_count = atoi(optarg);
-        else        imu_count = 8;
+        else        imu_count = 7;
         break;
       case 'q':
         if (optarg) run_id = atoi(optarg);
