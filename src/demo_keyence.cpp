@@ -27,9 +27,9 @@ int main(int argc, char* argv[]) {
     uint64_t start_time = timer.getTimeMicros();
     log.INFO("TEST-KEYENCE", "Start time: %f", start_time);
 
-    // keyence.start();
-    keyence.run();
-    // keyence.sleep(50);
+    keyence.start();
+    // keyence.run();
+    keyence.sleep(50);
     StripeCounter stripe_data = keyence.getStripeCounter();
     uint32_t stripe_count = 0;
     while (stripe_count < kStripeNum) {

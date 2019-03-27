@@ -1,5 +1,5 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
  * Date:
  * Description:
@@ -31,7 +31,7 @@ namespace hyped {
 
 using utils::Logger;
 using data::Data;
-using utils::concurrent::Thread;
+// using utils::concurrent::Thread;     // Throws error
 using data::StripeCounter;
 
 namespace sensors {

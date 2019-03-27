@@ -1,5 +1,5 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
  * Date:
  * Description:
@@ -32,7 +32,7 @@
 
 uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
-uint32_t kStripeDistance = 30.48;     // metres
+double kStripeDistance = 30.48;     // metres
 uint64_t kCheckTime = 358588;
 
 
