@@ -39,7 +39,7 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
       sys_(System::getSystem()),
       sensors_imu_(imu),
       data_(Data::getInstance()),
-      chip_select_ {20, 110},
+      chip_select_ {20,110},
       // chip_select_ {117, 125, 123, 111, 112, 110, 20},
       is_calibrated_(false),
       calib_counter_(0)
@@ -52,11 +52,10 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
 
-  // TODO(Greg): Do we need this (reference line 69)?
-  // // Get calibration data
+  // // Get calibration data        // TODO(Greg): talk to navigation if they need calibration data
   // if (updated()) {
   //   SensorCalibration sensor_calibration_data;
-  //   sensor_calibration_data.imu_variance  = getCalibrationData();
+  //   sensor_calibration_data.imu_variance  = getCalibrationData();     // gets stuck here
   //   data_.setCalibrationData(sensor_calibration_data);
   // }
   // Thread::yield();
@@ -66,21 +65,21 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
 void ImuManager::run()
 {
   // collect calibration data
-  while (!is_calibrated_) {
-    for (int i = 0; i < data::Sensors::kNumImus; i++) {
-      ImuData imu;
-      imu_[i]->getData(&imu);
-      if (imu.operational) {
-        stats_[i].update(imu.acc);
-      }
-    }
-    calib_counter_++;
-    if (calib_counter_ >= 100) is_calibrated_ = true;
-  }
+  // while (!is_calibrated_) {
+  //   for (int i = 0; i < data::Sensors::kNumImus; i++) {
+  //     ImuData imu;
+  //     imu_[i]->getData(&imu);
+  //     if (imu.operational) {
+  //       stats_[i].update(imu.acc);
+  //     }
+  //   }
+  //   calib_counter_++;
+  //   if (calib_counter_ >= 100) is_calibrated_ = true;
+  // }
   log_.INFO("IMU-MANAGER", "Calibration complete!");
 
   // collect real data while system is running
-  while (1) {                                 // TODO(Greg): or use sys_.running_?
+  while (sys_.running_) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       imu_[i]->getData(&(sensors_imu_->value[i]));
     }
@@ -90,7 +89,7 @@ void ImuManager::run()
   }
 }
 
-ImuManager::CalibrationArray ImuManager::getCalibrationData()
+ImuManager::CalibrationArray ImuManager::getCalibrationData()       // TODO(Greg): ask nav if needed
 {
   while (!is_calibrated_) {
     Thread::yield();

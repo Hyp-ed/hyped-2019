@@ -121,12 +121,8 @@ void Imu::enableFifo()
   writeByte(kFifoEnable, kFifoAccel);
   uint8_t check_enable = 0;
   readByte(kFifoEnable, &check_enable);
-  if (check_enable == 0x2B) {
-    log_.INFO("Imu", "FIFO Enabled");
-  } else {
-    log_.ERR("Imu", "FIFO not enabled!");
-  }
-  kFrameSize = 6;                   // only for acceleration xyz
+  log_.INFO("Imu", "FIFO Enabled");
+  kFrameSize_ = 6;                   // only for acceleration xyz
 }
 
 bool Imu::whoAmI()
@@ -215,7 +211,7 @@ int Imu::readFifo(std::vector<ImuData>& data)
 {
   if (is_online_) {
     // get fifo size
-    uint8_t buffer[kFrameSize];
+    uint8_t buffer[kFrameSize_];
     readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);    // from count H/L registers
     // convert big->little endian of count (2 bytes)
     size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
@@ -227,8 +223,8 @@ int Imu::readFifo(std::vector<ImuData>& data)
     log_.DBG3("Imu-FIFO", "Buffer size = %d", fifo_size);
     int16_t axcounts, aycounts, azcounts;           // include negative int
     float value_x, value_y, value_z;
-    for (size_t i = 0; i < (fifo_size/kFrameSize); i++) {
-      readBytes(kFifoRW, buffer, kFrameSize);
+    for (size_t i = 0; i < (fifo_size/kFrameSize_); i++) {
+      readBytes(kFifoRW, buffer, kFrameSize_);
       axcounts = (((int16_t)buffer[0]) << 8) | buffer[1];     // 2 byte acc data for xyz
       aycounts = (((int16_t)buffer[2]) << 8) | buffer[3];
       azcounts = (((int16_t)buffer[4]) << 8) | buffer[5];
@@ -288,7 +284,6 @@ void Imu::getTemperature(int* data)
   uint8_t response[2];
   readBytes(kTempOutH, response, 2);
 
-  // TODO(anyone): compare imu temperature values with reliable temperature source
   uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21;
 
   *data = static_cast<int>(temp);

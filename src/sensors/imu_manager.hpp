@@ -37,9 +37,6 @@ using utils::Logger;
 using data::NavigationVector;
 using utils::math::OnlineStatistics;
 
-typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;
-typedef data::DataPoint<array<ImuData, 8>>      DataArray;
-
 namespace sensors {
 /**
  * @brief creates class to hold multiple IMUs and respective data.

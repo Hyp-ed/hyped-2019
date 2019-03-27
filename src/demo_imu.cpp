@@ -1,8 +1,7 @@
-
 /*
- * Author: Jack Horsburgh
+ * Author:
  * Organisation: HYPED
- * Date: 6/03/19
+ * Date:
  * Description: Demo for MPU9250 sensor
  *
  *    Copyright 2018 HYPED
@@ -20,7 +19,7 @@
  */
 
 
-// #include "sensors/imu.hpp"
+#include "sensors/imu.hpp"
 #include "sensors/imu_manager.hpp"
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -28,35 +27,63 @@
 #include "data/data.hpp"
 // #include <vector>
 
-// using hyped::sensors::Imu;
+#define MANAGER 0
+
+using hyped::sensors::Imu;
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using namespace hyped::data;
 using namespace std;
-// using hyped::data::ImuData;
 using hyped::sensors::ImuManager;
+#if !MANAGER
+using hyped::data::ImuData;
+#endif
+
+/**
+TODO(Greg): Test manager with one sensor: PASSED (extra sensors must be unplugged)
+TODO(Greg): Test manager with two sensors: FAILED (initialises once second sensor is unplugged)
+
+*/
 
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, -1);
-  // Imu the_imu(log, 20, 0x08);
-  DataPoint<array<ImuData, Sensors::kNumImus>> imu;
-  ImuManager imu_manager_(log,&imu);        // use std::unique_ptr<ImuManagerInterface>   imu_manager_; ?
-  imu_manager_.start();
 
-  // ImuData imu;
+  #if MANAGER
+  DataPoint<array<ImuData, Sensors::kNumImus>> imu;
+  ImuManager imu_manager_(log,&imu);
+  imu_manager_.start();
+  #else
+  // {117, 125, 123, 111, 112, 110, 20},
+  Imu* sensorArray [Sensors::kNumImus] = {new Imu(log,  117, 0x08), 
+								   new Imu(log, 125, 0x08), 
+								   new Imu(log, 123, 0x08),
+								   new Imu(log, 111, 0x08),
+								   new Imu(log, 112, 0x08),
+								   new Imu(log, 110, 0x08),
+								   new Imu(log, 20, 0x08)};
+	ImuData sensorDataArray [Sensors::kNumImus] = {ImuData(), ImuData(), ImuData(), ImuData(),
+										  ImuData(), ImuData(), ImuData()};
+
+  #endif
 
   log.INFO("TEST-Imu", "Imu instance successfully created");
   for (int i = 0; i < 20; i++) {
-    // the_imu.getData(&imu);
+    #if !MANAGER
+    for (int a = 0; a< Sensors::kNumImus; a++) {
+      sensorArray[a]->getData(&sensorDataArray[a]);
+    }
+    #endif
     Thread::sleep(100);
     for(int j = 0; j < Sensors::kNumImus; j++){
+      #if MANAGER
       log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, imu.value[j].acc[0], imu.value[j].acc[1], imu.value[j].acc[2]);    
+      #else
+      log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, sensorDataArray[j].acc[0], sensorDataArray[j].acc[1], sensorDataArray[j].acc[2]);
       Thread::sleep(30);
+      #endif
     }
-    // log.DBG("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 7, imu.acc[0], imu.acc[1], imu.acc[2]);    
-
   }
  	return 0;
 }
