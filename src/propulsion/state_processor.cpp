@@ -32,12 +32,13 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
       criticalError(false),
       servicePropulsionSpeed(10)
 {
-    log_.DBG1("Motor", "StateProcessor constructor was called");
     useTestControllers = true;  // sys_.fake_motors;
 
     // controllers = new ControllerInterface[motorAmount];
 
     if (useTestControllers) {  // Use the test controllers implementation
+        controllers = new ControllerInterface*[motorAmount];
+
         for (int i = 0; i < motorAmount; i++) {
             controllers[i] = new FakeController(log_, i, false);
         }
@@ -50,9 +51,11 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
 
 void StateProcessor::initMotors()
 {
+    log_.INFO("Motor", "Inside initMoros");
     // Register controllers on CAN bus
     registerControllers();
 
+    log_.INFO("Motor", "Inside initMoros");
     // Configure controllers parameters
     configureControllers();
 
@@ -65,7 +68,7 @@ void StateProcessor::initMotors()
         }
     }
 
-    if (error) {
+    if (!error) {
         prepareMotors();
         initialized = true;
     } else {
@@ -106,6 +109,7 @@ void StateProcessor::accelerate()
     int speed = 0;
     for (int i = 0;i < motorAmount; i++) {
         controllers[i]->sendTargetVelocity(speed);
+        speed++;
     }
 }
 

@@ -55,7 +55,6 @@ void Main::run()
 
             if (!stateProcessor->isInitialized()) {
                 stateProcessor->initMotors();
-
                 if (stateProcessor->isCriticalFailure()) {
                     // TODO(gregor): Set data error flag to critical
                     isRunning = false;

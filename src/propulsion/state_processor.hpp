@@ -111,7 +111,7 @@ class StateProcessor : public StateProcessorInterface
      bool initialized;
      bool criticalError;
      int32_t servicePropulsionSpeed;
-     ControllerInterface* controllers[];
+     ControllerInterface **controllers;
 };
 
 }  // namespace motor_control
