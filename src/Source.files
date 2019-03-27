@@ -12,7 +12,6 @@ SRCS := \
   sensors/fake_imu.cpp \
   sensors/imu.cpp \
   sensors/gpio_counter.cpp \
-  sensors/fake_gpio_counter.cpp \
   sensors/imu_manager.cpp \
   sensors/main.cpp \
   sensors/bms.cpp \

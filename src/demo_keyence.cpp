@@ -12,11 +12,12 @@ using hyped::utils::Logger;
 using hyped::utils::Timer;
 using hyped::data::StripeCounter;
 
-constexpr uint32_t kStripeNum = 1000;          // depending on configuration of run
+constexpr uint32_t kStripeNum = 500;          // depending on configuration of run
 
 int main(int argc, char* argv[]) {
     hyped::utils::System::parseArgs(argc, argv);
     Logger log(true, 1);
+    GPIO pin(66, hyped::utils::io::gpio::kOut);
     GpioCounter keyence(69);
     
     Timer timer;      // get timer started
@@ -26,8 +27,9 @@ int main(int argc, char* argv[]) {
     uint64_t start_time = timer.getTimeMicros();
     log.INFO("TEST-KEYENCE", "Start time: %f", start_time);
 
-    keyence.start();
-    keyence.sleep(50);
+    // keyence.start();
+    keyence.run();
+    // keyence.sleep(50);
     StripeCounter stripe_data = keyence.getStripeCounter();
     uint32_t stripe_count = 0;
     while (stripe_count < kStripeNum) {
