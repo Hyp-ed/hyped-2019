@@ -31,19 +31,16 @@ using data::Data;
 using data::Sensors;
 using utils::System;
 using data::NavigationVector;
+using data::SensorCalibration;
 
 namespace sensors {
-/**
- * @brief Construct a new Imu Manager object
- *
- * @param log
- * @param imu
- */
 ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       sensors_imu_(imu),
-      chip_select_ {49, 117, 125, 123, 111, 112, 110, 20},
+      data_(Data::getInstance()),
+      chip_select_ {20, 110},
+      // chip_select_ {117, 125, 123, 111, 112, 110, 20},
       is_calibrated_(false),
       calib_counter_(0)
 {
@@ -54,11 +51,18 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
     imu_[i] = new Imu(log, chip_select_[i], 0x08);
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
+
+  // TODO(Greg): Do we need this (reference line 69)?
+  // // Get calibration data
+  // if (updated()) {
+  //   SensorCalibration sensor_calibration_data;
+  //   sensor_calibration_data.imu_variance  = getCalibrationData();
+  //   data_.setCalibrationData(sensor_calibration_data);
+  // }
+  // Thread::yield();
+  log_.INFO("IMU-MANAGER", "imu data has been initialised");
 }
-/**
- * @brief Calibrate IMUs then begin collecting data.
- *
- */
+
 void ImuManager::run()
 {
   // collect calibration data
@@ -75,19 +79,17 @@ void ImuManager::run()
   }
   log_.INFO("IMU-MANAGER", "Calibration complete!");
 
-  // collect real data
-  while (1) {
+  // collect real data while system is running
+  while (1) {                                 // TODO(Greg): or use sys_.running_?
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       imu_[i]->getData(&(sensors_imu_->value[i]));
     }
+    resetTimestamp();
     sensors_imu_->timestamp = utils::Timer::getTimeMicros();
+    data_.setSensorsImuData(*sensors_imu_);
   }
 }
-/**
- * @brief Get statistic information while the IMU calibrates and put it in an array.
- *
- * @return ImuManager::CalibrationArray
- */
+
 ImuManager::CalibrationArray ImuManager::getCalibrationData()
 {
   while (!is_calibrated_) {
@@ -98,12 +100,7 @@ ImuManager::CalibrationArray ImuManager::getCalibrationData()
   }
   return imu_calibrations_;
 }
-/**
- * @brief Check if the timestamp has been updated.
- *
- * @return true
- * @return false
- */
+
 bool ImuManager::updated()
 {
   if (old_timestamp_ != sensors_imu_->timestamp) {
@@ -111,10 +108,7 @@ bool ImuManager::updated()
   }
   return false;
 }
-/**
- * @brief Store the timestamp value as old_timestamp and reset the timestamp value.
- *
- */
+
 void ImuManager::resetTimestamp()
 {
   old_timestamp_ = sensors_imu_->timestamp;

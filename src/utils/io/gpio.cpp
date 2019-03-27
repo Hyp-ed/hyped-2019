@@ -202,9 +202,9 @@ void GPIO::exportGPIO()
   if (len < 3) {
     log_.ERR("GPIO", "could not set direction for %i", pin_);
     return;
+  } else {
+    log_.INFO("GPIO", "pin %d was successfully exported", pin_);
   }
-
-  log_.INFO("GPIO", "pin %d was successfully exported", pin_);
   return;
 }
 
@@ -258,10 +258,10 @@ void GPIO::setupWait()
   if (fd < 0) {
     log_.ERR("GPIO", "could not open /sys/.../value for gpio %d", pin_);
     return;
+  } else {
+    log_.DBG1("GPIO", "gpio %d setup for waiting", pin_);
   }
-
   fd_ = fd;
-  log_.DBG1("GPIO", "gpio %d setup for waiting", pin_);
 }
 
 int8_t GPIO::wait()

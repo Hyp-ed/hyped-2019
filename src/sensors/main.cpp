@@ -18,9 +18,75 @@
  *    limitations under the License.
  */
 
+#include "sensors/main.hpp"
+
+#include "data/data.hpp"
+#include "sensors/imu_manager.hpp"
+#include "sensors/bms_manager.hpp"
+#include "sensors/gpio_counter.hpp"
 
 namespace hyped {
 
+using hyped::utils::concurrent::Thread;
+using utils::System;
+using data::Data;
+using data::Sensors;
+using data::Batteries;
+using data::StripeCounter;
+using data::SensorCalibration;
+
+
 namespace sensors {
+
+Main::Main(uint8_t id, Logger& log)
+  : Thread(id, log),
+    data_(data::Data::getInstance()),
+    sys_(utils::System::getSystem()),
+    // imu_manager_(new ImuManager(log, &sensors_.imu)),
+    battery_manager_(new BmsManager(log,
+                                        &batteries_.low_power_batteries,
+                                        &batteries_.high_power_batteries)),
+    keyence_l_(new GpioCounter(36)),
+    keyence_r_(new GpioCounter(33))
+  {}
+
+void Main::run()
+{
+// start all managers
+  imu_manager_->start();
+  battery_manager_->start();
+
+  // Pins for keyence GPIO_36 L and GPIO_33 R
+  keyence_l_->start();
+  keyence_r_->start();
+
+  // Declare arrays
+  array<StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter;
+  array<StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count;
+
+  // Initalise the arrays     // TODO(Jack): can you do this? throws compilation error
+  keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;
+  prev_keyence_stripe_count = keyence_stripe_counter;
+
+  while (sys_.running_) {
+    // We need to read the gpio counters and write to the data structure
+    // If previous is not equal to the new data then update
+    if (prev_keyence_stripe_count[0].count.value != keyence_stripe_counter[0].count.value ||
+        prev_keyence_stripe_count[1].count.value != keyence_stripe_counter[1].count.value ) {
+      // Update data structure, make prev reading same as this reading
+      data_.setSensorsKeyenceData(keyence_stripe_counter);
+      prev_keyence_stripe_count = keyence_stripe_counter;
+    }
+    keyence_stripe_counter[0] = keyence_l_->getStripeCounter();
+    keyence_stripe_counter[1] = keyence_r_->getStripeCounter();
+    Thread::sleep(10);  // Sleep for 10ms
+  }
+
+  imu_manager_->join();
+  battery_manager_->join();
+  keyence_l_->join();
+  keyence_r_->join();
+}
+
 
 }}

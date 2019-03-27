@@ -20,41 +20,43 @@
  */
 
 
-#include "sensors/imu.hpp"
+// #include "sensors/imu.hpp"
+#include "sensors/imu_manager.hpp"
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
-#include <vector>
+// #include <vector>
 
-using hyped::sensors::Imu;
+// using hyped::sensors::Imu;
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using namespace hyped::data;
 using namespace std;
-using hyped::data::ImuData;
+// using hyped::data::ImuData;
+using hyped::sensors::ImuManager;
 
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
-  Logger log(true, 0);
-  Imu imu(log, 66, 0x08);
+  Logger log(true, -1);
+  // Imu the_imu(log, 20, 0x08);
+  DataPoint<array<ImuData, Sensors::kNumImus>> imu;
+  ImuManager imu_manager_(log,&imu);        // use std::unique_ptr<ImuManagerInterface>   imu_manager_; ?
+  imu_manager_.start();
+
+  // ImuData imu;
 
   log.INFO("TEST-Imu", "Imu instance successfully created");
-  for (int j = 0; j < 20; j++) {
-    std::vector<ImuData> data;
-    int count = imu.readFifo(data);
-    if (count){
-      log.DBG("ReadFifo Count", "%d", data.size());
-      for (int i=0; i < data.size(); i++) {
-        log.DBG("TEST-Imu", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);    
-      }
+  for (int i = 0; i < 20; i++) {
+    // the_imu.getData(&imu);
+    Thread::sleep(100);
+    for(int j = 0; j < Sensors::kNumImus; j++){
+      log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, imu.value[j].acc[0], imu.value[j].acc[1], imu.value[j].acc[2]);    
+      Thread::sleep(30);
     }
-    else{
-      log.DBG("ReadFifo", "Fifo is empty!");
-    }
-    Thread::sleep(30);
-    data.clear();
+    // log.DBG("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 7, imu.acc[0], imu.acc[1], imu.acc[2]);    
+
   }
  	return 0;
 }
