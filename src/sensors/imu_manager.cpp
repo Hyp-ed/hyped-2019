@@ -39,8 +39,8 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
       sys_(System::getSystem()),
       sensors_imu_(imu),
       data_(Data::getInstance()),
-      // chip_select_ {20, 110},
-      chip_select_ {117, 125, 123, 111, 112, 110, 20},
+      chip_select_ {20, 110},
+      // chip_select_ {117, 125, 123, 111, 112, 110, 20},
       is_calibrated_(false),
       calib_counter_(0)
 {
