@@ -18,58 +18,63 @@
  *    limitations under the License.
  */
 
-#ifndef PROPULSION_FAKE_CONTROLLER_HPP_
-#define PROPULSION_FAKE_CONTROLLER_HPP_
+#ifndef PROPULSION_CONTROLLER_HPP_
+#define PROPULSION_CONTROLLER_HPP_
 
+#include "propulsion/controller_interface.hpp"
 #include "data/data.hpp"
 #include "utils/timer.hpp"
-#include "propulsion/controller_interface.hpp"
 #include "utils/logger.hpp"
+#include "propulsion/can/can_sender.hpp"
 #include "utils/io/can.hpp"
+#include "utils/system.hpp"
+#include "utils/concurrent/thread.hpp"
 
 namespace hyped {
-namespace utils { class Logger; }
+
+using utils::concurrent::Thread;
+using utils::io::can::Frame;
+using utils::Logger;
+
 namespace motor_control {
 
-using utils::Logger;
-using utils::Timer;
-using utils::concurrent::Thread;
-
-class FakeController : public ControllerInterface {
+class Controller : public ControllerInterface {
  public:
   /**
-   * @brief  Construct a new Fake Controller object
+   * @brief Construct a new Controller object
+   * @param log
+   * @param id
    */
-  FakeController(Logger& log, uint8_t id, bool isFaulty);
+  Controller(Logger& log, uint8_t id);
   /**
-   * @brief  Registers controller to recieve and transmit CAN messages.
-   *         note: empty implementation.
+   * @brief Registers controller to recieve and transmit CAN messages.
    */
   void registerController() override;
   /**
-   * @brief  Applies configuration settings
+   * @brief Apply configuration settings.
    */
   void configure() override;
   /**
-   * @brief  Check for errors or warnings, then enter operational state.
+   * @brief Check for errors or warnings, then enter operational state.
    */
   void enterOperational() override;
   /**
-   * @brief  Enter preoperational state.
+   * @brief Enter preoperational state.
+   *
    */
   void enterPreOperational() override;
   /**
-   * @brief  check controller state.
+   * @brief Check controller state.
    */
   void checkState() override;
   /**
-   * @brief  Sets actual velocity = target velocity
-   * @param[in]  target_velocity in rpm (Calculated in speed calculator).
+   * @brief Send the target velocity to the motor controller.
+   * @param target_velocity - in rpm (calculated in speed calculator)
    */
   void sendTargetVelocity(int32_t target_velocity) override;
   /**
-   * @brief  Send a request to the motor controller to get the actual velocity.
-   *         note: empty implementation.
+   * @brief Send a request to the motor controller to get the actual velocity.
+   *
    */
   void updateActualVelocity() override;
   /**
@@ -77,44 +82,41 @@ class FakeController : public ControllerInterface {
    */
   int32_t getVelocity() override;
   /**
-   * @brief  Sets the controller to quickstop mode.
+   * @brief Set the controller to quickstop mode.
    */
   void quickStop() override;
   /**
-   * @brief  if isFaulty is set to true then after a random amount of time between 3 and 23 seconds
-   *         critical_failure_ will be set to true.
-   *         if isFaulty is set to false then the controller will operate as normal.
+   * @brief Check the error/warning regesters of the controller.
    */
   void healthCheck() override;
   /**
-   * @return the failure flag, critical_failure_.
+   * @return critical_failure_
    */
   bool getFailure() override;
   /**
-   * @brief Get and return the state of the controller.
    * @return state_
    */
   ControllerState getControllerState() override;
+  /**
+   * @return node_id_
+   */
+  uint8_t getNode_id();
 
  private:
-  /**
-   * @brief Times the duration of the run. Starts when we enter the accelerating state.
-   */
-  void startTimer();
   Logger&           log_;
   data::Data&       data_;
   data::Motors      motor_data_;
   ControllerState   state_;
-  Timer             timer;
-  uint8_t           id_;
-  bool              isFaulty_;
+  uint8_t           node_id_;
   bool              critical_failure_;
   int32_t           actual_velocity_;
-  uint64_t          start_time_;
-  bool              timer_started_;
-  uint64_t          fail_time_;
+  CanSender         sender;
+  Frame             sdo_message_;
+  Frame             nmt_message_;
+  uint8_t           sample_message_data_[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 };
 
-}}  //  namespace hyped::utils
 
-#endif  // PROPULSION_FAKE_CONTROLLER_HPP_
+}}  // namespace hyped::motor_control
+
+#endif  // PROPULSION_CONTROLLER_HPP_

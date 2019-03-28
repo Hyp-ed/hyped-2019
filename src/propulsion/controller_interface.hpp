@@ -38,19 +38,19 @@ enum ControllerState {
 };
 
 class ControllerInterface {
-  public:
-    virtual void registerController() = 0;
-    virtual void configure() = 0;
-    virtual void enterOperational() = 0;
-    virtual void enterPreOperational() = 0;
-    virtual void checkState() = 0;
-    virtual void sendTargetVelocity(int32_t target_velocity) = 0;
-    virtual void updateActualVelocity() = 0;
-    virtual int32_t getVelocity() = 0;
-    virtual void quickStop() = 0;
-    virtual void healthCheck() = 0;
-    virtual bool getFailure() = 0;
-    virtual ControllerState getControllerState() = 0;
+ public:
+  virtual void registerController() = 0;
+  virtual void configure() = 0;
+  virtual void enterOperational() = 0;
+  virtual void enterPreOperational() = 0;
+  virtual void checkState() = 0;
+  virtual void sendTargetVelocity(int32_t target_velocity) = 0;
+  virtual void updateActualVelocity() = 0;
+  virtual int32_t getVelocity() = 0;
+  virtual void quickStop() = 0;
+  virtual void healthCheck() = 0;
+  virtual bool getFailure() = 0;
+  virtual ControllerState getControllerState() = 0;
 };
 }  // namespace motor_control
 }  // namespace hyped

@@ -23,6 +23,7 @@
 #include <iostream>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
+#include "propulsion/controller_interface.hpp"
 #include "sender_interface.hpp"
 
 namespace hyped
@@ -45,7 +46,7 @@ class CanSender : public CanProccesor, public SenderInterface
        * @brief { Initialise the CanSender with the logger, the id and the controller as an attribute,
        * to access it's attributes }
        */
-    // CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
+    // CanSender(ControllerInterface* controller,uint8_t id,Logger& log_);
 
     /**
        * @brief { Sends CAN messages }
