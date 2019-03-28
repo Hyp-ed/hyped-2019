@@ -21,13 +21,19 @@
 
 #include <cstdint> 
 #include <atomic>
+#include <ctime>
 #include "retractor_interface.hpp"
+#include "./utils/io/gpio.hpp"
 
 namespace hyped {
 
 using utils::concurrent::Thread;
+using utils::io::GPIO;
+using utils::io::gpio::Direction;
 
 namespace embrakes {
+
+#define STEPS 400
 
 class Retractor : public RetractorInterface
 {
@@ -36,7 +42,7 @@ class Retractor : public RetractorInterface
          * @brief {Assigns the stepper motor gpio pins to the class and enables 
          *          it to change the status variable of the base class}
         */
-        Retractor(uint32_t activate,uint32_t step,std::atomic<StatusCodes> *status);
+        Retractor(uint32_t activate,uint32_t step, uint32_t pushButton, std::atomic<StatusCodes> *status);
 
         /*
          * @brief Runs the retracting process
@@ -45,8 +51,15 @@ class Retractor : public RetractorInterface
         void run() override;
 
     private:
-        uint32_t activate_;
+        GPIO *activatePin;
+        GPIO *stepPin;
+        GPIO *pushButtonPin;
+        float period;
+        float rpm;
         uint32_t step_;
+        time_t startTime;
+        uint32_t activate_;
+        uint32_t pushButton_;
 }; 
 
 }}

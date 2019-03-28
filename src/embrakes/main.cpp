@@ -40,10 +40,10 @@ void Main::run()
 	Data stateMachineData = Data::getInstance();
 
 	Pins pins[4]={
-		{1,1},
-		{2,2},
-		{3,3},
-		{4,4}
+		{1,1,1},
+		{2,2,2},
+		{3,3,3},
+		{4,4,4}
 	};
 
 	retractorManager = new RetractorManager(pins,log_);

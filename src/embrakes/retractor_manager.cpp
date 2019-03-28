@@ -17,7 +17,7 @@ namespace hyped {
                 status[i] = StatusCodes::IDLE;                
                 log_.INFO("Embrakes","Make retractor %d", retractorAmount);
                 // TODO{gregor}: Add check if fake retractors should be loaded instead
-                retractors_[i] = new Retractor(pins[i].activate,pins[i].step,&status[i]);
+                retractors_[i] = new Retractor(pins[i].activate,pins[i].step,pins[i].push, &status[i]);
             }
         }
 

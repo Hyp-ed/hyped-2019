@@ -37,6 +37,7 @@ namespace embrakes {
 struct Pins {
     uint32_t activate;
     uint32_t step;
+    uint32_t push;
 };
 
 class RetractorManager
