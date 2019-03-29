@@ -39,7 +39,7 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
       sys_(System::getSystem()),
       sensors_imu_(imu),
       data_(Data::getInstance()),
-      chip_select_ {20,110},
+      chip_select_ {20, 110},
       // chip_select_ {117, 125, 123, 111, 112, 110, 20},
       is_calibrated_(false),
       calib_counter_(0)
@@ -52,7 +52,7 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
 
-  // // Get calibration data        // TODO(Greg): talk to navigation if they need calibration data
+  // // Get calibration data        // TODO(Greg): talk to navigation if they need calibration data, move to after calibration in run()
   // if (updated()) {
   //   SensorCalibration sensor_calibration_data;
   //   sensor_calibration_data.imu_variance  = getCalibrationData();     // gets stuck here
