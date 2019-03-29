@@ -34,10 +34,10 @@ using data::NavigationVector;
 using data::SensorCalibration;
 
 namespace sensors {
-ImuManager::ImuManager(Logger& log)
+ImuManager::ImuManager(Logger& log /*, ImuManager::DataArray *imu*/)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
-      sensors_imu_(),
+      // sensors_imu_(imu),
       data_(Data::getInstance()),
       chip_select_ {20},
       // chip_select_ {117, 125, 123, 111, 112, 110, 20},
