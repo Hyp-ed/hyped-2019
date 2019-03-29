@@ -52,11 +52,13 @@ void Controller::configure()
 {
   log_.INFO("MOTOR", "Controller %d: Configuring...", node_id_);
 
-  // TODO(Iain): find correct registers to set motor pole pairs
+  // TODO(Iain): configure motor poles
   for (int i = 0; i < sdo_message_.len; i++) {
     sdo_message_.data[i] = sample_message_data_[i];
   }
+
   log_.DBG1("MOTOR", "Controller %d: Configuring motor poles", node_id_);
+
   sender.sendMessage(sdo_message_);
 
   if (critical_failure_) return;
@@ -64,37 +66,30 @@ void Controller::configure()
 
 void Controller::enterOperational()
 {
-
 }
 
 void Controller::enterPreOperational()
 {
-
 }
 
 void Controller::checkState()
 {
-
 }
 
 void Controller::sendTargetVelocity(int32_t target_velocity)
 {
-
 }
 
 void Controller::updateActualVelocity()
 {
-
 }
 
 void Controller::quickStop()
 {
-
 }
 
 void Controller::healthCheck()
 {
-
 }
 
 int32_t Controller::getVelocity()
@@ -115,6 +110,11 @@ ControllerState Controller::getControllerState()
 uint8_t Controller::getNode_id()
 {
   return node_id_;
+}
+
+void Controller::setFailure(bool failure)
+{
+  critical_failure_ = failure;
 }
 
 }}  // namespace hyped::motor_control

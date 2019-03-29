@@ -101,6 +101,10 @@ class Controller : public ControllerInterface {
    * @return node_id_
    */
   uint8_t getNode_id();
+  /**
+   * @brief set critical_failure_
+   */
+  void setFailure(bool failure);
 
  private:
   Logger&           log_;
@@ -113,7 +117,10 @@ class Controller : public ControllerInterface {
   CanSender         sender;
   Frame             sdo_message_;
   Frame             nmt_message_;
-  uint8_t           sample_message_data_[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+  // TODO(Iain): add predefined configuration messages and function codes
+  const uint8_t           sample_message_data_[8] =
+                          {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 };
 
 
