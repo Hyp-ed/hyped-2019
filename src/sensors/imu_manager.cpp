@@ -22,6 +22,7 @@
 #include "sensors/imu_manager.hpp"
 
 #include "sensors/imu.hpp"
+#include "sensors/fake_imu.hpp"
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 
@@ -34,10 +35,9 @@ using data::NavigationVector;
 using data::SensorCalibration;
 
 namespace sensors {
-ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
+ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
-      sensors_imu_(imu),
       data_(Data::getInstance()),
       chip_select_ {20, 110},
       // chip_select_ {117, 125, 123, 111, 112, 110, 20},
@@ -45,10 +45,19 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
       calib_counter_(0)
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
-
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);
-  for (int i = 0; i < data::Sensors::kNumImus; i++) {   // creates new real IMU objects
-    imu_[i] = new Imu(log, chip_select_[i], 0x08);
+
+  if (!sys_.fake_imu) {
+    for (int i = 0; i < data::Sensors::kNumImus; i++) {   // creates new real IMU objects
+      imu_[i] = new Imu(log, chip_select_[i], 0x08);
+    }
+  } else {
+    for (int i = 0; i < data::Sensors::kNumImus; i++) {
+      imu_[i] = new FakeImuFromFile(log,
+                                    "data/in/acc_state.txt",
+                                    "data/in/decel_state.txt",
+                                    "data/in/decel_state.txt");
+    }
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
 
@@ -66,44 +75,46 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
 void ImuManager::run()
 {
   // collect calibration data
-  while (!is_calibrated_) {
-    for (int i = 0; i < data::Sensors::kNumImus; i++) {
-      ImuData imu;
-      imu_[i]->getData(&imu);
-      if (imu.operational) {
-        stats_[i].update(imu.acc);
-      }
-    }
-    calib_counter_++;
-    if (calib_counter_ >= 100) is_calibrated_ = true;
-  }
-  log_.INFO("IMU-MANAGER", "Calibration complete!");
+  // while (!is_calibrated_) {
+  //   for (int i = 0; i < data::Sensors::kNumImus; i++) {
+  //     ImuData imu;
+  //     imu_[i]->getData(&imu);
+  //     if (imu.operational) {
+  //       stats_[i].update(imu.acc);
+  //     }
+  //   }
+  //   calib_counter_++;
+  //   if (calib_counter_ >= 100) is_calibrated_ = true;
+  // }
+  // TODO(anyone): Ask navigation if they need this
+  // log_.INFO("IMU-MANAGER", "Calibration complete!");
 
   // collect real data while system is running
-  while (1) {                                 // TODO(Greg): or use sys_.running_?
+  while (sys_.running_) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
-      imu_[i]->getData(&(sensors_imu_->value[i]));
+      imu_[i]->getData(&(sensors_imu_.value[i]));
     }
     resetTimestamp();
-    sensors_imu_->timestamp = utils::Timer::getTimeMicros();
-    data_.setSensorsImuData(*sensors_imu_);
+    sensors_imu_.timestamp = utils::Timer::getTimeMicros();
+    data_.setSensorsImuData(sensors_imu_);
   }
 }
 
-ImuManager::CalibrationArray ImuManager::getCalibrationData()
-{
-  while (!is_calibrated_) {
-    Thread::yield();
-  }
-  for (int i = 0; i < data::Sensors::kNumImus; i++) {
-    imu_calibrations_[i] = stats_[i].getVariance();
-  }
-  return imu_calibrations_;
-}
+// TODO(anyone): Ask navigation if they need this
+// ImuManager::CalibrationArray ImuManager::getCalibrationData()
+// {
+//   while (!is_calibrated_) {
+//     Thread::yield();
+//   }
+//   for (int i = 0; i < data::Sensors::kNumImus; i++) {
+//     imu_calibrations_[i] = stats_[i].getVariance();
+//   }
+//   return imu_calibrations_;
+// }
 
 bool ImuManager::updated()
 {
-  if (old_timestamp_ != sensors_imu_->timestamp) {
+  if (old_timestamp_ != sensors_imu_.timestamp) {
     return true;
   }
   return false;
@@ -111,6 +122,6 @@ bool ImuManager::updated()
 
 void ImuManager::resetTimestamp()
 {
-  old_timestamp_ = sensors_imu_->timestamp;
+  old_timestamp_ = sensors_imu_.timestamp;
 }
 }}  // namespace hyped::sensors

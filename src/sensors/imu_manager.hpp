@@ -37,17 +37,14 @@ using utils::Logger;
 using data::NavigationVector;
 using utils::math::OnlineStatistics;
 
-typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;
-typedef data::DataPoint<array<ImuData, 8>>      DataArray;
-
 namespace sensors {
 /**
  * @brief creates class to hold multiple IMUs and respective data.
  *
  */
 class ImuManager: public ImuManagerInterface {
-  typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;
-  typedef data::DataPoint<array<ImuData, data::Sensors::kNumImus>>      DataArray;
+  typedef array<NavigationVector, data::Sensors::kNumImus>          CalibrationArray;
+  typedef data::DataPoint<array<ImuData, data::Sensors::kNumImus>>  DataArray;
 
  public:
   /**
@@ -56,7 +53,7 @@ class ImuManager: public ImuManagerInterface {
    * @param log
    * @param imu
    */
-  ImuManager(Logger& log, DataArray *imu);
+  explicit ImuManager(Logger& log);
 
   /**
    * @brief Calibrate IMUs then begin collecting data.
@@ -78,17 +75,18 @@ class ImuManager: public ImuManagerInterface {
    */
   void resetTimestamp()                 override;
 
+  // TODO(anyone): Ask navigation if they need this
   /**
    * @brief Get statistic information while the IMU calibrates and put it in an array.
    *
    * @return ImuManager::CalibrationArray
    */
-  CalibrationArray getCalibrationData() override;
+  // CalibrationArray getCalibrationData() override;
 
  private:
-  utils::System&    sys_;
-  DataArray*        sensors_imu_;
-  data::Data        data_;
+  utils::System&   sys_;
+  DataArray        sensors_imu_;
+  data::Data&      data_;
 
   uint8_t           chip_select_[data::Sensors::kNumImus];
   ImuInterface*     imu_[data::Sensors::kNumImus];
