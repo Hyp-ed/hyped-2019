@@ -3,7 +3,7 @@
  * Organisation: HYPED
  * Date:
  * Description:
- * Main initialises and manages sensor drivers. Main is not responsible for initialisation
+ * Main initialises sensor drivers. Main is not responsible for initialisation
  * of supporting io drivers (i2c, spi, can). This should be done by the sensor
  * drivers themselves.
  *
@@ -51,7 +51,6 @@ class Main: public Thread {
     utils::System& sys_;
 
     // master data structures
-    data::Sensors   sensors_;
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
 

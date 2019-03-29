@@ -2,7 +2,9 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 20/06/18
- * Description: BMS manager for getting battery data
+ * Description:
+ * BMS manager for getting battery data and pushes to data struct.
+ * Checks whether batteries are in range and enters emergency state if fails.
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");

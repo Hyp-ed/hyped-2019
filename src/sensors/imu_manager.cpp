@@ -2,7 +2,7 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 19/06/18
- * Description: IMU manager for getting IMU data from around the pod
+ * Description: IMU manager for getting IMU data from around the pod and pushes to data struct
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,10 +34,9 @@ using data::NavigationVector;
 using data::SensorCalibration;
 
 namespace sensors {
-ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
+ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
-      sensors_imu_(imu),
       data_(Data::getInstance()),
       chip_select_ {20, 110},
       // chip_select_ {117, 125, 123, 111, 112, 110, 20},
@@ -57,7 +56,8 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
 
 void ImuManager::run()
 {
-  // // collect calibration data     // TODO(Greg): talk to navigation if they need calibration data, move to after calibration in run()
+  // TODO(Greg): talk to navigation if they need calibration data, move to after calibration in run()
+  // // collect calibration data
   // while (!is_calibrated_) {
   //   for (int i = 0; i < data::Sensors::kNumImus; i++) {
   //     ImuData imu;

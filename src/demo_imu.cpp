@@ -51,9 +51,9 @@ int main(int argc, char* argv[])
   Logger log(true, -1);
 
   #if MANAGER
-  DataPoint<array<ImuData, Sensors::kNumImus>> imu;
-  ImuManager imu_manager_(log,&imu);
+  ImuManager imu_manager_(log);
   imu_manager_.start();
+  DataPoint<array<ImuData, Sensors::kNumImus>> data_array_;
   #else
   // {117, 125, 123, 111, 112, 110, 20},
   Imu* sensorArray [Sensors::kNumImus] = {new Imu(log,  117, 0x08), 
@@ -74,11 +74,14 @@ int main(int argc, char* argv[])
     for (int a = 0; a< Sensors::kNumImus; a++) {
       sensorArray[a]->getData(&sensorDataArray[a]);
     }
+    #else
+    Data data_ = Data::getInstance();
+    data_array_ = data_.getSensorsData().imu;
     #endif
     Thread::sleep(100);
     for(int j = 0; j < Sensors::kNumImus; j++){
       #if MANAGER
-      log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, imu.value[j].acc[0], imu.value[j].acc[1], imu.value[j].acc[2]);
+      log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, data_array_.value[j].acc[0], data_array_.value[j].acc[1], data_array_.value[j].acc[2]);
       #else
       log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, sensorDataArray[j].acc[0], sensorDataArray[j].acc[1], sensorDataArray[j].acc[2]);
       Thread::sleep(30);

@@ -2,7 +2,7 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 19/06/18
- * Description: IMU manager for getting IMU data from around the pod
+ * Description: IMU manager for getting IMU data from around the pod and pushes to data struct
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,7 +53,7 @@ class ImuManager: public ImuManagerInterface {
    * @param log
    * @param imu
    */
-  ImuManager(Logger& log, DataArray *imu);
+  ImuManager(Logger& log);
 
   /**
    * @brief Calibrate IMUs then begin collecting data.

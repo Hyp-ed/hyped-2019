@@ -2,7 +2,9 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 20/06/18
- * Description: BMS manager for getting battery data
+ * Description:
+ * BMS manager for getting battery data and pushes to data struct.
+ * Checks whether batteries are in range and enters emergency state if fails.
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,7 +52,6 @@ BmsManager::BmsManager(Logger& log,
 
   // initialise batteries data
   if (updated()) {
-    // TODO(Greg): fix naming convension? It's pretty shit
     batteries_.high_power_batteries = *hp_batteries_;
     batteries_.low_power_batteries = *lp_batteries_;
     data_.setBatteryData(batteries_);
@@ -103,7 +104,7 @@ void BmsManager::resetTimestamp()
   old_timestamp_ = timestamp;
 }
 
-bool BmsManager::batteriesInRange()
+bool BmsManager::batteriesInRange()         // TODO(Greg): verify values with Batteries Team
 {
   // check all LP and HP battery values are in expected range
 
@@ -128,7 +129,7 @@ bool BmsManager::batteriesInRange()
 
   // check HP
   for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-    auto& battery = batteries_.high_power_batteries[i];     // reference battereis individually
+    auto& battery = batteries_.high_power_batteries[i];     // reference batteries individually
     if (battery.voltage < 720 || battery.voltage > 1246) {   // voltage in 72V to 124.6V
       log_.ERR("BMS-MANAGER", "BMS HP %d voltage out of range: %d", i, battery.voltage);
       return false;
