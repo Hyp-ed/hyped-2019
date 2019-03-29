@@ -73,6 +73,12 @@ Sensors Data::getSensorsData()
   return sensors_;
 }
 
+// DataPoint<array<ImuData, Sensors::kNumImus>> Data::getSensorsImuData()
+// {
+//   ScopedLock L(&lock_sensors_);
+//   return imu;
+// }
+
 int Data::getTemperature()
 {
   ScopedLock L(&lock_temp_);

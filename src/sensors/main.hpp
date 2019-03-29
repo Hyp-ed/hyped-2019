@@ -59,7 +59,7 @@ class Main: public Thread {
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
 
-    bool sensor_init_;
+    bool sensor_init_;      // TODO(Greg): check these booleans at init
     bool battery_init_;
 };
 

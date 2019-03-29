@@ -49,9 +49,8 @@ class ImuManager: public ImuManagerInterface {
  public:
   /**
    * @brief Construct a new Imu Manager object
-   *
-   * @param log
-   * @param imu
+   * 
+   * @param log 
    */
   ImuManager(Logger& log);
 

@@ -37,8 +37,9 @@ namespace sensors {
 ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
+      sensors_imu_(),
       data_(Data::getInstance()),
-      chip_select_ {20, 110},
+      chip_select_ {20},
       // chip_select_ {117, 125, 123, 111, 112, 110, 20},
       is_calibrated_(false),
       calib_counter_(0)
@@ -82,11 +83,16 @@ void ImuManager::run()
   // collect real data while system is running
   while (sys_.running_) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
-      imu_[i]->getData(&(sensors_imu_->value[i]));
+      log_.DBG("Debug-manager", "0");
+      // DataPoint<array<ImuData, Sensors::kNumImus>> imu;
+      imu_[i]->getData(&(sensors_imu_->value[i]));    // TODO(Greg): segfault, is sensors_imu_ initialised?
+      log_.DBG("Debug-manager", "1");
     }
     resetTimestamp();
+    log_.DBG("Debug-manager", "2");
     sensors_imu_->timestamp = utils::Timer::getTimeMicros();
     data_.setSensorsImuData(*sensors_imu_);
+    log_.DBG("Debug-manager", "3");
   }
 }
 

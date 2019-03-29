@@ -79,7 +79,7 @@ struct StripeCounter : public Sensor {
 };
 
 struct Sensors : public Module {
-  static constexpr int kNumImus = 2;            // TODO(anyone): change back to final cte for PCB
+  static constexpr int kNumImus = 1;            // TODO(anyone): change back to final cte for PCB
   static constexpr int kNumKeyence = 2;
   static constexpr int kKeyenceLeft = 36;
   static constexpr int kKeyenceRight = 33;
@@ -197,6 +197,7 @@ class Data {
    */
   void setNavigationData(const Navigation& nav_data);
 
+
   /**
    * @brief Get the Temperature from the IMU
    *
@@ -282,6 +283,7 @@ class Data {
   StateMachine state_machine_;
   Navigation navigation_;
   Sensors sensors_;
+  
   Motors motors_;
   Batteries batteries_;
   Communications communications_;
@@ -294,6 +296,9 @@ class Data {
   Lock lock_state_machine_;
   Lock lock_navigation_;
   Lock lock_sensors_;
+  Lock lock_imu_;
+  Lock lock_batteries_;     // TODO(Greg): Check if batteries or battery
+  Lock lock_gpio_counter_;
   Lock lock_motors_;
   Lock lock_temp_;
 

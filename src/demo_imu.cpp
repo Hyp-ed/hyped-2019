@@ -48,11 +48,12 @@ TODO(Greg): Test manager with two sensors: FAILED (initialises once second senso
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
-  Logger log(true, -1);
+  Logger log(true, 0);
 
   #if MANAGER
   ImuManager imu_manager_(log);
   imu_manager_.start();
+  Thread::sleep(500);
   DataPoint<array<ImuData, Sensors::kNumImus>> data_array_;
   #else
   // {117, 125, 123, 111, 112, 110, 20},
@@ -75,13 +76,19 @@ int main(int argc, char* argv[])
       sensorArray[a]->getData(&sensorDataArray[a]);
     }
     #else
-    Data data_ = Data::getInstance();
-    data_array_ = data_.getSensorsData().imu;
+    Data data_;
+    Sensors sensors_data_ = data_.getSensorsData();
+    data_array_ = sensors_data_.imu;
+    log.DBG("Debug", "zero");
     #endif
+    log.DBG("Debug", "0");
     Thread::sleep(100);
+    log.DBG("Debug", "1");
     for(int j = 0; j < Sensors::kNumImus; j++){
       #if MANAGER
+      log.DBG("Debug", "2");
       log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, data_array_.value[j].acc[0], data_array_.value[j].acc[1], data_array_.value[j].acc[2]);
+      log.DBG("Debug", "3");
       #else
       log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, sensorDataArray[j].acc[0], sensorDataArray[j].acc[1], sensorDataArray[j].acc[2]);
       Thread::sleep(30);
