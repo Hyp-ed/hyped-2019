@@ -61,7 +61,7 @@ BmsManager::BmsManager(Logger& log,
 
 void BmsManager::run()
 {
-  while (1) {     // TODO(Greg): 1 or sys_.running_
+  while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
       bms_[i]->getData(&((*lp_batteries_)[i]));

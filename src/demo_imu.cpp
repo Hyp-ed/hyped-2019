@@ -27,7 +27,7 @@
 #include "data/data.hpp"
 // #include <vector>
 
-#define MANAGER 0
+#define MANAGER 1
 
 using hyped::sensors::Imu;
 using hyped::utils::Logger;
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     Thread::sleep(100);
     for(int j = 0; j < Sensors::kNumImus; j++){
       #if MANAGER
-      log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, imu.value[j].acc[0], imu.value[j].acc[1], imu.value[j].acc[2]);    
+      log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, imu.value[j].acc[0], imu.value[j].acc[1], imu.value[j].acc[2]);
       #else
       log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, sensorDataArray[j].acc[0], sensorDataArray[j].acc[1], sensorDataArray[j].acc[2]);
       Thread::sleep(30);

@@ -52,19 +52,12 @@ ImuManager::ImuManager(Logger& log, ImuManager::DataArray *imu)
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
 
-  // // Get calibration data        // TODO(Greg): talk to navigation if they need calibration data, move to after calibration in run()
-  // if (updated()) {
-  //   SensorCalibration sensor_calibration_data;
-  //   sensor_calibration_data.imu_variance  = getCalibrationData();     // gets stuck here
-  //   data_.setCalibrationData(sensor_calibration_data);
-  // }
-  // Thread::yield();
   log_.INFO("IMU-MANAGER", "imu data has been initialised");
 }
 
 void ImuManager::run()
 {
-  // collect calibration data
+  // // collect calibration data     // TODO(Greg): talk to navigation if they need calibration data, move to after calibration in run()
   // while (!is_calibrated_) {
   //   for (int i = 0; i < data::Sensors::kNumImus; i++) {
   //     ImuData imu;
@@ -76,8 +69,16 @@ void ImuManager::run()
   //   calib_counter_++;
   //   if (calib_counter_ >= 100) is_calibrated_ = true;
   // }
-  log_.INFO("IMU-MANAGER", "Calibration complete!");
+  // log_.INFO("IMU-MANAGER", "Calibration complete!");
 
+  // // send calibration data to data struct, is_calibrated_ needs to be true
+  // if (updated()) {
+  //   SensorCalibration sensor_calibration_data;
+  //   sensor_calibration_data.imu_variance  = getCalibrationData();
+  //   data_.setCalibrationData(sensor_calibration_data);
+  // }
+  // Thread::yield();
+  
   // collect real data while system is running
   while (sys_.running_) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {

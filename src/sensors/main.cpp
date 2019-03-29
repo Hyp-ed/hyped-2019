@@ -46,13 +46,13 @@ Main::Main(uint8_t id, Logger& log)
     battery_manager_(new BmsManager(log,
                                         &batteries_.low_power_batteries,
                                         &batteries_.high_power_batteries)),
-    keyence_l_(new GpioCounter(36)),
-    keyence_r_(new GpioCounter(33))
+    keyence_l_(new GpioCounter(data::Sensors::kKeyenceLeft)),
+    keyence_r_(new GpioCounter(data::Sensors::kKeyenceRight))
   {}
 
 void Main::run()
 {
-// start all managers
+  // start all managers
   imu_manager_->start();
   battery_manager_->start();
 
@@ -64,7 +64,7 @@ void Main::run()
   array<StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter;
   array<StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count;
 
-  // Initalise the arrays     // TODO(Jack): can you do this? throws compilation error
+  // Initalise the arrays
   keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;
   prev_keyence_stripe_count = keyence_stripe_counter;
 

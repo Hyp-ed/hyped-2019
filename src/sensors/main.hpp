@@ -47,14 +47,10 @@ class Main: public Thread {
     void run() override;    // from thread
 
   private:
-    // check if all battery values are in expected range
-    // returns true iff all battery values (LP and HP) are in expected ranges
-    bool batteriesInRange();
-
     data::Data&     data_;
     utils::System& sys_;
 
-    // // master data structures
+    // master data structures
     data::Sensors   sensors_;
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
