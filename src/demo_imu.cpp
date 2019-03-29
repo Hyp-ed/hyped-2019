@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
     }
     #else
     Data data_;
-    Sensors sensors_data_ = data_.getSensorsData();
+    Sensors sensors_data_ = data_.getSensorsData();     // TODO(Greg): change to getSensorsImuData();
     data_array_ = sensors_data_.imu;
     log.DBG("Debug", "zero");
     #endif

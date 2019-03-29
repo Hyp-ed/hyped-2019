@@ -218,6 +218,16 @@ class Data {
   Sensors getSensorsData();
 
   /**
+   * @brief retrieves imu data from Sensors
+   */
+  DataPoint<array<ImuData, Sensors::kNumImus>> getSensorsImuData();
+
+  /**
+   * @brief retrieves gpio_counter data from Sensors
+   */
+  array<StripeCounter, Sensors::kNumKeyence> getSensorsGpioCounterData();
+
+  /**
    * @brief      Should be called to update sensor data.
    */
   void setSensorsData(const Sensors& sensors_data);
@@ -238,6 +248,10 @@ class Data {
    * @brief      Retrieves data from the calibrated sensors
    */
   SensorCalibration getCalibrationData();
+
+  Battery getBatteryData();
+
+  void setBatteryData(const Battery& battery_data);
 
   /**
    * @brief      Retrieves data from the batteries.
@@ -283,7 +297,7 @@ class Data {
   StateMachine state_machine_;
   Navigation navigation_;
   Sensors sensors_;
-  
+  Battery battery_;
   Motors motors_;
   Batteries batteries_;
   Communications communications_;
@@ -296,9 +310,7 @@ class Data {
   Lock lock_state_machine_;
   Lock lock_navigation_;
   Lock lock_sensors_;
-  Lock lock_imu_;
-  Lock lock_batteries_;     // TODO(Greg): Check if batteries or battery
-  Lock lock_gpio_counter_;
+  Lock lock_battery_;     // TODO(Jack): do we need this?
   Lock lock_motors_;
   Lock lock_temp_;
 

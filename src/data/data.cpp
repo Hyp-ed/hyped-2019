@@ -73,11 +73,17 @@ Sensors Data::getSensorsData()
   return sensors_;
 }
 
-// DataPoint<array<ImuData, Sensors::kNumImus>> Data::getSensorsImuData()
-// {
-//   ScopedLock L(&lock_sensors_);
-//   return imu;
-// }
+DataPoint<array<ImuData, Sensors::kNumImus>> Data::getSensorsImuData()
+{
+  ScopedLock L(&lock_sensors_);
+  return sensors_.imu;
+}
+
+array<StripeCounter, Sensors::kNumKeyence> Data::getSensorsGpioCounterData()
+{
+  ScopedLock L(&lock_sensors_);
+  return sensors_.keyence_stripe_counter;
+}
 
 int Data::getTemperature()
 {
@@ -120,6 +126,18 @@ SensorCalibration Data::getCalibrationData()
   ScopedLock L(&lock_calibration_data_);
   return calibration_data_;
 }
+
+// Battery Data::getBatteryData()
+// {
+//   ScopedLock L(&lock_battery_);
+//   return battery_;
+// }
+
+// void Data::setBatteryData(const Battery& battery_data)
+// {
+//   ScopedLock L(&lock_battery_);
+//   battery_ = battery_data;
+// }
 
 Batteries Data::getBatteriesData()
 {
