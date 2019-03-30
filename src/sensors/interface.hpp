@@ -28,6 +28,7 @@ namespace hyped {
 
 using data::ImuData;
 using data::NavigationVector;
+using data::Battery;
 
 namespace sensors {
 
@@ -47,6 +48,24 @@ class ImuInterface: public SensorInterface {
    * @param imu - output pointer to be filled by this sensor
    */
   virtual void getData(ImuData* imu) = 0;
+};
+
+class GpioInterface {
+ public:
+  /**
+   * @brief Get GPIO data
+   * @param
+   */
+  virtual data::StripeCounter getStripeCounter() = 0;
+};
+
+class BMSInterface: public SensorInterface {
+ public:
+  /**
+   * @brief Get Battery data
+   * @param battery - output pointer to be filled by this sensor
+   */
+  virtual void getData(Battery* battery) = 0;
 };
 
 }}  // namespace hyped::sensors

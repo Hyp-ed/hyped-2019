@@ -22,12 +22,12 @@
 
 #include <cstdint>
 
-#include "hyped-machine.hpp"
-#include "main.hpp"
+#include "state_machine/hyped-machine.hpp"
+#include "state_machine/main.hpp"
 
-#include "../data/data.hpp"
-#include "../utils/timer.hpp"
-#include "../utils/system.hpp"
+#include "data/data.hpp"
+#include "utils/timer.hpp"
+#include "utils/system.hpp"
 
 namespace hyped {
 namespace state_machine {
@@ -93,7 +93,9 @@ void Main::run()
       case data::State::kInvalid:
         log_.ERR("STATE", "we are in Invalid state");
       case data::State::kFinished:
+        if (checkReset())                break;
       case data::State::kFailureStopped:
+        if (checkReset())                break;
       default:
         break;
     }
@@ -129,6 +131,15 @@ bool Main::checkSystemsChecked()
   return false;
 }
 
+bool Main::checkReset()
+{
+  if (comms_data_.reset_command) {
+    log_.INFO("STATE", "reset command received");
+    hypedMachine.handleEvent(kReset);
+    return true;
+  }
+  return false;
+}
 bool Main::checkOnStart()
 {
   if (comms_data_.launch_command) {

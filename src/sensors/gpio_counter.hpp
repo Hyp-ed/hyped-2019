@@ -1,8 +1,7 @@
-
 /*
- * Authors: Yash Mittal, Ragnor Comerford and Calum McMeekin
+ * Author: Ragnor Comerford and Jack Horsburgh
  * Organisation: HYPED
- * Date: 11. February 2018
+ * Date: 19/06/18
  * Description:
  *
  *    Copyright 2018 HYPED
@@ -18,24 +17,35 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-#ifndef STATE_MACHINE_EVENT_HPP_
-#define STATE_MACHINE_EVENT_HPP_
+
+#ifndef SENSORS_GPIO_COUNTER_HPP_
+#define SENSORS_GPIO_COUNTER_HPP_
+
+#include <cstdint>
+
+#include "data/data.hpp"
+#include "sensors/interface.hpp"
+#include "utils/concurrent/thread.hpp"
 
 namespace hyped {
-namespace state_machine {
 
-enum Event {
-  kInitialised,
-  kSystemsChecked,
-  kOnStart,
-  kCriticalFailure,
-  kMaxDistanceReached,
-  kVelocityZeroReached,
-  kOnExit,
-  kFinish,
-  kReset
+using utils::Logger;
+using utils::concurrent::Thread;
+namespace sensors {
+
+
+class GpioCounter: public GpioInterface, public Thread {
+ public:
+  explicit GpioCounter(int pin);
+  data::StripeCounter getStripeCounter() override;
+  void run() override;
+
+ private:
+  int           pin_;
+  data::Data    data_;
+
+  data::StripeCounter stripe_counter_;
 };
+}}  // namespace hyped::sensors
 
-}}   // namespace hyped::state_machine
-
-#endif  // STATE_MACHINE_EVENT_HPP_
+#endif  // SENSORS_GPIO_COUNTER_HPP_
