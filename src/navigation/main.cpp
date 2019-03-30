@@ -18,7 +18,32 @@
 
 namespace hyped {
 
-namespace navigation {
+    namespace navigation {
 
+        int main(int argc, char *argv[])
+        {
+            // System setup
+            System::parseArgs(argc, argv);
+            System& sys = System::getSystem();
+            Logger log(sys.verbose, sys.debug);
+            Timer timer;
 
-}}
+            // Sensor setup
+            const int i2c = 66;
+            Imu* imu = new Imu(log, i2c, 0x08, 0x00);
+            ImuData* imuData = new ImuData();
+            ImuQuery imuQuery = ImuQuery(imu, imuData, timer);
+
+            unsigned int nCalibrationQueries = 10000;
+            unsigned int nTestQueries = 50000;
+            float queryDelay = 0.01;
+
+            // Gravity calibrator
+            GravityCalibrator gravityCalibrator(nCalibrationQueries);
+
+            // Start single IMU navigation
+            SingleImuNavigation singleImuNavigation(imuQuery, sys.imu_id, gravityCalibrator, timer);
+            return singleImuNavigation.navigate(nTestQueries, queryDelay, sys.run_id, log);
+        }
+    }
+}

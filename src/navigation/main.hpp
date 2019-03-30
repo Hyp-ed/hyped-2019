@@ -18,10 +18,19 @@
 #ifndef NAVIGATION_MAIN_HPP_
 #define NAVIGATION_MAIN_HPP_
 
-namespace hyped {
+#include "data/data.hpp"
+#include "utils/logger.hpp"
+#include "utils/timer.hpp"
+#include "navigation/gravity_calibrator.hpp"
+#include "navigation/imu_data_logger.hpp"
+#include "navigation/imu_query.hpp"
 
-namespace navigation {
-
-}}
+namespace hyped
+{
+    namespace navigation
+    {
+        int main(int argc, char *argv[]);
+    }
+}
 
 #endif  // NAVIGATION_MAIN_HPP_
