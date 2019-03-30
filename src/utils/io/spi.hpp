@@ -23,8 +23,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_IO_SPI_HPP_
-#define BEAGLEBONE_BLACK_UTILS_IO_SPI_HPP_
+#ifndef UTILS_IO_SPI_HPP_
+#define UTILS_IO_SPI_HPP_
 
 
 #include "utils/logger.hpp"
@@ -34,6 +34,9 @@ namespace hyped {
 namespace utils {
 namespace io {
 
+// forward declaration
+struct SPI_HW;
+struct SPI_CH;
 
 class SPI {
  public:
@@ -42,6 +45,7 @@ class SPI {
   enum class Clock {
     k1MHz,
     k4MHz,
+    k16MHz,
     k20MHz
   };
 
@@ -74,7 +78,16 @@ class SPI {
  private:
   explicit SPI(Logger& log);
   ~SPI();
-  int spi_fd_;
+  /**
+   * @brief Fill in base_mapping_ with pointers to mmap-ed /dev/spidev1.0
+   * to 2 SPI banks/ports.
+   */
+  void initialise();
+
+ private:
+  int     spi_fd_;
+  SPI_HW* hw_;
+  SPI_CH* ch_;
   Logger& log_;
 
   NO_COPY_ASSIGN(SPI);
@@ -84,4 +97,4 @@ class SPI {
 }}}   // namespace hyped::utils::io
 
 
-#endif  // BEAGLEBONE_BLACK_UTILS_IO_SPI_HPP_
+#endif  // UTILS_IO_SPI_HPP_

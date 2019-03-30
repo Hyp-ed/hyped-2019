@@ -25,8 +25,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_IO_CAN_HPP_
-#define BEAGLEBONE_BLACK_UTILS_IO_CAN_HPP_
+#ifndef UTILS_IO_CAN_HPP_
+#define UTILS_IO_CAN_HPP_
 
 #include <cstdint>
 #include <vector>
@@ -136,4 +136,4 @@ class Can : public concurrent::Thread {
 
 }}}   // namespace hyped::utils::io
 
-#endif  // BEAGLEBONE_BLACK_UTILS_IO_CAN_HPP_
+#endif  // UTILS_IO_CAN_HPP_

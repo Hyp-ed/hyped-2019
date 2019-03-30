@@ -19,8 +19,8 @@
 
 #include "data/data_point.hpp"
 
-#ifndef BEAGLEBONE_BLACK_UTILS_MATH_INTEGRATOR_HPP_
-#define BEAGLEBONE_BLACK_UTILS_MATH_INTEGRATOR_HPP_
+#ifndef UTILS_MATH_INTEGRATOR_HPP_
+#define UTILS_MATH_INTEGRATOR_HPP_
 
 namespace hyped {
 namespace utils {
@@ -85,4 +85,4 @@ DataPoint<T> Integrator<T>::update(const DataPoint<T>& point)
 
 }}}  // hyped::utils::math
 
-#endif  // BEAGLEBONE_BLACK_UTILS_MATH_INTEGRATOR_HPP_
+#endif  // UTILS_MATH_INTEGRATOR_HPP_
