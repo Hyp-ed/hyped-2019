@@ -32,17 +32,13 @@ using data::Data;
 using data::Sensors;
 using utils::System;
 using data::NavigationVector;
-using data::SensorCalibration;
 
 namespace sensors {
 ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-      chip_select_ {20, 110},
-      // chip_select_ {117, 125, 123, 111, 112, 110, 20},
-      is_calibrated_(false),
-      calib_counter_(0)
+      chip_select_ {49, 117, 125, 123, 111, 112, 110, 20}
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);
@@ -60,35 +56,11 @@ ImuManager::ImuManager(Logger& log)
     }
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
-
-  // TODO(Greg): Do we need this (reference line 69)?
-  // // Get calibration data
-  // if (updated()) {
-  //   SensorCalibration sensor_calibration_data;
-  //   sensor_calibration_data.imu_variance  = getCalibrationData();
-  //   data_.setCalibrationData(sensor_calibration_data);
-  // }
-  // Thread::yield();
   log_.INFO("IMU-MANAGER", "imu data has been initialised");
 }
 
 void ImuManager::run()
 {
-  // collect calibration data
-  // while (!is_calibrated_) {
-  //   for (int i = 0; i < data::Sensors::kNumImus; i++) {
-  //     ImuData imu;
-  //     imu_[i]->getData(&imu);
-  //     if (imu.operational) {
-  //       stats_[i].update(imu.acc);
-  //     }
-  //   }
-  //   calib_counter_++;
-  //   if (calib_counter_ >= 100) is_calibrated_ = true;
-  // }
-  // TODO(anyone): Ask navigation if they need this
-  // log_.INFO("IMU-MANAGER", "Calibration complete!");
-
   // collect real data while system is running
   while (sys_.running_) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
@@ -99,18 +71,6 @@ void ImuManager::run()
     data_.setSensorsImuData(sensors_imu_);
   }
 }
-
-// TODO(anyone): Ask navigation if they need this
-// ImuManager::CalibrationArray ImuManager::getCalibrationData()
-// {
-//   while (!is_calibrated_) {
-//     Thread::yield();
-//   }
-//   for (int i = 0; i < data::Sensors::kNumImus; i++) {
-//     imu_calibrations_[i] = stats_[i].getVariance();
-//   }
-//   return imu_calibrations_;
-// }
 
 bool ImuManager::updated()
 {

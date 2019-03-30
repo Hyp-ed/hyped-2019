@@ -43,7 +43,6 @@ namespace sensors {
  *
  */
 class ImuManager: public ImuManagerInterface {
-  typedef array<NavigationVector, data::Sensors::kNumImus>          CalibrationArray;
   typedef data::DataPoint<array<ImuData, data::Sensors::kNumImus>>  DataArray;
 
  public:
@@ -75,14 +74,6 @@ class ImuManager: public ImuManagerInterface {
    */
   void resetTimestamp()                 override;
 
-  // TODO(anyone): Ask navigation if they need this
-  /**
-   * @brief Get statistic information while the IMU calibrates and put it in an array.
-   *
-   * @return ImuManager::CalibrationArray
-   */
-  // CalibrationArray getCalibrationData() override;
-
  private:
   utils::System&   sys_;
   DataArray        sensors_imu_;
@@ -90,11 +81,6 @@ class ImuManager: public ImuManagerInterface {
 
   uint8_t           chip_select_[data::Sensors::kNumImus];
   ImuInterface*     imu_[data::Sensors::kNumImus];
-  CalibrationArray  imu_calibrations_;
-  bool              is_calibrated_;
-  uint32_t          calib_counter_;
-
-  OnlineStatistics<NavigationVector> stats_[data::Sensors::kNumImus];
 };
 
 }}  // namespace hyped::sensors

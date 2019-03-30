@@ -50,7 +50,6 @@ BmsManager::BmsManager(Logger& log,
 
   // initialise batteries data
   if (updated()) {
-    // TODO(Greg): fix naming convension? It's pretty shit
     batteries_.high_power_batteries = *hp_batteries_;
     batteries_.low_power_batteries = *lp_batteries_;
     data_.setBatteryData(batteries_);
@@ -105,7 +104,7 @@ void BmsManager::resetTimestamp()
 
 bool BmsManager::batteriesInRange()
 {
-  // TODO(Greg): Check these values with power
+  // TODO(Greg): Check these values with power team
   // check all LP and HP battery values are in expected range
 
   // check LP

@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
   for (int i = 0; i < 20; i++) {
     sensors = data.getSensorsData();
     for(int j = 0; j < Sensors::kNumImus; j++){
-      log.INFO("TEST-Imu", "Imu %d readings: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, sensors.imu.value[j].acc[0], sensors.imu.value[j].acc[1], sensors.imu.value[j].acc[2]);
+      log.INFO("TEST-Imu", "Imu %d readings: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, sensors.imu.value[j].acc[0], sensors.imu.value[j].acc[1], sensors.imu.value[j].acc[2]); // NOLINT
     }
     Thread::sleep(100);
   }
