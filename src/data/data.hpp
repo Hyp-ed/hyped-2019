@@ -54,6 +54,8 @@ struct Module {
 // Navigation
 // -------------------------------------------------------------------------------------------------
 typedef float NavigationType;
+typedef Vector<NavigationType, 3> NavigationVector;
+typedef array<NavigationVector, 3> NavigationEstimate;
 struct Navigation : public Module {
   NavigationType  distance;  // m
   NavigationType  velocity;  // m/s
@@ -69,7 +71,6 @@ struct Sensor {
   bool operational;
 };
 
-typedef Vector<NavigationType, 3> NavigationVector;
 struct ImuData : public Sensor {
   NavigationVector acc;
 };
