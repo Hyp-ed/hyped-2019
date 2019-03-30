@@ -3,7 +3,7 @@
 # define VERBOSE to see executed commands
 
 TARGET=hyped
-MAIN=demo_emb.cpp
+MAIN=main.cpp
 SRCS_DIR:=src
 LIBS_DIR:=lib
 OBJS_DIR:=bin
