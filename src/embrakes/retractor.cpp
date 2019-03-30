@@ -21,19 +21,13 @@
 namespace hyped
 {
 namespace embrakes
-{
+{   
     Retractor::Retractor(uint32_t activate,uint32_t step, uint32_t pushButton, std::atomic<StatusCodes> *status)
     {
         step_=step;
         status_=status;
         activate_=activate;
         pushButton_=pushButton;
-
-        activatePin = new GPIO(activate_,Direction::kOut);
-        stepPin = new GPIO(step_,Direction::kOut);
-        pushButtonPin = new GPIO(pushButton_,Direction::kIn);
-
-        activatePin->set();
 
         //Period calculation
         rpm = 10;
@@ -46,8 +40,19 @@ namespace embrakes
     void Retractor::run()
     { 
         bool active=false;
+
+        log_.INFO("Embrake","Activate: %d, Step: %d, PushButton: %d",activate_,step_,pushButton_);
+
+        //Init GPIO Pins
+        GPIO activatePin(activate_,Direction::kOut);
+        GPIO stepPin(step_,Direction::kOut);
+        GPIO pushButtonPin(pushButton_,Direction::kIn);
+
+
         log_.INFO("Embrake", "Retract started with period %f",period);
         
+        activatePin.set();
+
         // Waits for 1 second to start the retracting process
         while(time(NULL)<startTime+1);
         
@@ -55,15 +60,15 @@ namespace embrakes
 
             if(active) {
                 log_.INFO("Embrake", "Retract clear");
-                stepPin->clear();
+                stepPin.clear();
             } else {
                 log_.INFO("Embrake", "Retract set");
-                stepPin->set();
+                stepPin.set();
             }
 
             active = !active;
 
-            if(pushButtonPin->read()==1) {
+            if(pushButtonPin.read()==1) {
                 *status_ = StatusCodes::FINISHED;
                 break;
             }
@@ -73,7 +78,7 @@ namespace embrakes
 
         log_.INFO("Embrake", "Retracted");
 
-        stepPin->clear();
+        stepPin.clear();
     }
 }
 }

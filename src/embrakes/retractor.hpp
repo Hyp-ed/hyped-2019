@@ -51,9 +51,6 @@ class Retractor : public RetractorInterface
         void run() override;
 
     private:
-        GPIO *activatePin;
-        GPIO *stepPin;
-        GPIO *pushButtonPin;
         float period;
         float rpm;
         uint32_t step_;
