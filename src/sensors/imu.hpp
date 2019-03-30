@@ -133,6 +133,7 @@ class Imu : public ImuInterface {
   SPI&    spi_;
   Logger& log_;
   GPIO    gpio_;
+  uint32_t pin_;
   uint8_t acc_scale_;
   double  acc_divider_;
   bool    is_online_;

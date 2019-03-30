@@ -1,7 +1,7 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
- * Date:
+ * Date: 30/3/19
  * Description: Demo for MPU9250 sensor
  *
  *    Copyright 2018 HYPED
@@ -25,7 +25,6 @@
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
-// #include <vector>
 
 #define MANAGER 1
 
@@ -42,21 +41,20 @@ using hyped::data::ImuData;
 /**
 TODO(Greg): Test manager with one sensor: PASSED (extra sensors must be unplugged)
 TODO(Greg): Test manager with two sensors: FAILED (initialises once second sensor is unplugged)
-
 */
 
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
-  Logger log(true, 0);
+  Logger log(true, -1);
 
   #if MANAGER
   DataPoint<array<ImuData, Sensors::kNumImus>> data_array_;
+  Data& data_ = Data::getInstance();
   ImuManager imu_manager_(log);
   imu_manager_.start();
   Thread::sleep(500);
   
-
   #else
   // {117, 125, 123, 111, 112, 110, 20},
   Imu* sensorArray [Sensors::kNumImus] = {new Imu(log,  117, 0x08), 
@@ -78,12 +76,10 @@ int main(int argc, char* argv[])
       sensorArray[a]->getData(&sensorDataArray[a]);
     }
     #else
-    Data data_ = Data::getInstance();
     data_array_ = data_.getSensorsImuData();
-    // log.DBG("Debug", "zero");
     #endif
     Thread::sleep(100);
-    for(int j = 0; j < Sensors::kNumImus; j++){
+    for (int j = 0; j < Sensors::kNumImus; j++) {
       #if MANAGER
       log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, data_array_.value[j].acc[0], data_array_.value[j].acc[1], data_array_.value[j].acc[2]);
       #else

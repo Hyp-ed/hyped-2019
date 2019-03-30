@@ -46,8 +46,8 @@ Main::Main(uint8_t id, Logger& log)
     battery_manager_(new BmsManager(log,
                                         &batteries_.low_power_batteries,
                                         &batteries_.high_power_batteries)),
-    keyence_l_(new GpioCounter(data::Sensors::kKeyenceLeft)),
-    keyence_r_(new GpioCounter(data::Sensors::kKeyenceRight))
+    keyence_l_(new GpioCounter(data::Sensors::kKeyencePinLeft)),
+    keyence_r_(new GpioCounter(data::Sensors::kKeyencePinRight))
   {}
 
 void Main::run()
@@ -72,7 +72,7 @@ void Main::run()
     // We need to read the gpio counters and write to the data structure
     // If previous is not equal to the new data then update
     if (prev_keyence_stripe_count[0].count.value != keyence_stripe_counter[0].count.value ||
-        prev_keyence_stripe_count[1].count.value != keyence_stripe_counter[1].count.value ) {   // maybe uninit warning
+        prev_keyence_stripe_count[1].count.value != keyence_stripe_counter[1].count.value ) {   // NOLINT maybe uninit warning
       // Update data structure, make prev reading same as this reading
       data_.setSensorsKeyenceData(keyence_stripe_counter);
       prev_keyence_stripe_count = keyence_stripe_counter;

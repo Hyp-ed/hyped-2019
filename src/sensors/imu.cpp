@@ -83,6 +83,7 @@ Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale)
     : spi_(SPI::getInstance()),
     log_(log),
     gpio_(pin, kDirection, log),
+    pin_(pin),
     acc_scale_(acc_scale),
     is_online_(false)
 {
@@ -108,9 +109,9 @@ void Imu::init()
 
   if (check_init) {
     log_.INFO("Imu", "FIFO Enabled");
-    log_.INFO("Imu", "Imu sensor created. Initialisation complete.");
+    log_.INFO("Imu", "Imu %d sensor created. Initialisation complete.", pin_);
   } else {
-    log_.ERR("Imu", "ERROR: Imu sensor not initialised.");
+    log_.ERR("Imu", "ERROR: Imu %d sensor not initialised.", pin_);
   }
 }
 
@@ -145,14 +146,14 @@ bool Imu::whoAmI()
   }
 
   if (!is_online_) {
-    log_.ERR("Imu", "Cannot initialise who am I. Sensor offline");
+    log_.ERR("Imu", "Cannot initialise who am I. Sensor %d offline", pin_);
   }
   return is_online_;
 }
 
 Imu::~Imu()
 {
-  log_.INFO("Imu", "Deconstructing sensor object");
+  log_.INFO("Imu", "Deconstructing sensor %d object", pin_);
 }
 
 void Imu::writeByte(uint8_t write_reg, uint8_t write_data)

@@ -79,7 +79,7 @@ DataPoint<array<ImuData, Sensors::kNumImus>> Data::getSensorsImuData()
   return sensors_.imu;
 }
 
-array<StripeCounter, Sensors::kNumKeyence> Data::getSensorsGpioCounterData()
+array<StripeCounter, Sensors::kNumKeyence> Data::getSensorsKeyenceData()
 {
   ScopedLock L(&lock_sensors_);
   return sensors_.keyence_stripe_counter;
@@ -126,18 +126,6 @@ SensorCalibration Data::getCalibrationData()
   ScopedLock L(&lock_calibration_data_);
   return calibration_data_;
 }
-
-// Battery Data::getBatteryData()
-// {
-//   ScopedLock L(&lock_battery_);
-//   return battery_;
-// }
-
-// void Data::setBatteryData(const Battery& battery_data)
-// {
-//   ScopedLock L(&lock_battery_);
-//   battery_ = battery_data;
-// }
 
 Batteries Data::getBatteriesData()
 {

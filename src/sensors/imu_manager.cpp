@@ -38,10 +38,7 @@ ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-      chip_select_ {20},
-      // chip_select_ {117, 125, 123, 111, 112, 110, 20},
-      is_calibrated_(false),
-      calib_counter_(0)
+      chip_select_ {117, 125, 123, 111, 112, 110, 20}        // TODO(Greg): add pin 49
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
 
@@ -56,58 +53,21 @@ ImuManager::ImuManager(Logger& log)
 
 void ImuManager::run()
 {
-  // TODO(Greg): talk to navigation if they need calibration data, move to after calibration in run()
-  // // collect calibration data
-  // while (!is_calibrated_) {
-  //   for (int i = 0; i < data::Sensors::kNumImus; i++) {
-  //     ImuData imu;
-  //     imu_[i]->getData(&imu);
-  //     if (imu.operational) {
-  //       stats_[i].update(imu.acc);
-  //     }
-  //   }
-  //   calib_counter_++;
-  //   if (calib_counter_ >= 100) is_calibrated_ = true;
-  // }
-  // log_.INFO("IMU-MANAGER", "Calibration complete!");
-
-  // // send calibration data to data struct, is_calibrated_ needs to be true
-  // if (updated()) {
-  //   SensorCalibration sensor_calibration_data;
-  //   sensor_calibration_data.imu_variance  = getCalibrationData();
-  //   data_.setCalibrationData(sensor_calibration_data);
-  // }
-  // Thread::yield();
-  
   // collect real data while system is running
   while (sys_.running_) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
-      log_.DBG("Debug-manager", "0");
-      imu_[i]->getData(&(sensors_imu_->value[i]));
-      log_.DBG("Debug-manager", "1");
+      imu_[i]->getData(&(sensors_imu_.value[i]));
+      log_.DBG1("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", i, sensors_imu_.value[i].acc[0], sensors_imu_.value[i].acc[1], sensors_imu_.value[i].acc[2]); // NOLINT
     }
     resetTimestamp();
-    log_.DBG("Debug-manager", "2");
-    sensors_imu_->timestamp = utils::Timer::getTimeMicros();
-    data_.setSensorsImuData(*sensors_imu_);
-    log_.DBG("Debug-manager", "3");
+    sensors_imu_.timestamp = utils::Timer::getTimeMicros();
+    data_.setSensorsImuData(sensors_imu_);
   }
-}
-
-ImuManager::CalibrationArray ImuManager::getCalibrationData()       // TODO(Greg): ask nav if needed
-{
-  while (!is_calibrated_) {
-    Thread::yield();
-  }
-  for (int i = 0; i < data::Sensors::kNumImus; i++) {
-    imu_calibrations_[i] = stats_[i].getVariance();
-  }
-  return imu_calibrations_;
 }
 
 bool ImuManager::updated()
 {
-  if (old_timestamp_ != sensors_imu_->timestamp) {
+  if (old_timestamp_ != sensors_imu_.timestamp) {
     return true;
   }
   return false;
@@ -115,6 +75,6 @@ bool ImuManager::updated()
 
 void ImuManager::resetTimestamp()
 {
-  old_timestamp_ = sensors_imu_->timestamp;
+  old_timestamp_ = sensors_imu_.timestamp;
 }
 }}  // namespace hyped::sensors
