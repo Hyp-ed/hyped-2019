@@ -79,7 +79,7 @@ struct StripeCounter : public Sensor {
 };
 
 struct Sensors : public Module {
-  static constexpr int kNumImus = 8;
+  static constexpr int kNumImus = 8;            // TODO(anyone): change back to final cte for PCB
   static constexpr int kNumKeyence = 2;
 
   DataPoint<array<ImuData, kNumImus>> imu;
@@ -87,7 +87,7 @@ struct Sensors : public Module {
 };
 
 struct SensorCalibration {
-  array<array<NavigationVector, 2>, Sensors::kNumImus> imu_variance;
+  array<NavigationVector, Sensors::kNumImus> imu_variance;
 };
 
 struct Battery {
@@ -222,6 +222,11 @@ class Data {
    * @brief      Should be called to update sensor imu data.
    */
   void setSensorsImuData(const DataPoint<array<ImuData, Sensors::kNumImus>>& imu);
+  /**
+   * @brief      Should be called to update sensor keyence data.
+   */
+  void setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>&  keyence_stripe_counter);  //NOLINT
+
   /**
    * @brief      Should be called to update sensor calibration data
    */
