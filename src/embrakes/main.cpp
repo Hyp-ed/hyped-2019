@@ -48,9 +48,8 @@ void Main::run()
 
 	while (sys.running_)
 	{
-        // Get the current state of the system from the state machine's data
-        //currentState = stateMachineData.getStateMachineData().current_state;
-				currentState = State::kCalibrating;
+    // Get the current state of the system from the state machine's data
+		currentState = stateMachineData.getStateMachineData().current_state;
 
 		if (currentState == State::kCalibrating) // Retract screw
 		{
