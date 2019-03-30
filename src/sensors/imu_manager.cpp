@@ -34,10 +34,9 @@ using data::NavigationVector;
 using data::SensorCalibration;
 
 namespace sensors {
-ImuManager::ImuManager(Logger& log /*, ImuManager::DataArray *imu*/)
+ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
-      // sensors_imu_(imu),
       data_(Data::getInstance()),
       chip_select_ {20},
       // chip_select_ {117, 125, 123, 111, 112, 110, 20},
@@ -85,7 +84,7 @@ void ImuManager::run()
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       log_.DBG("Debug-manager", "0");
       // DataPoint<array<ImuData, Sensors::kNumImus>> imu;
-      imu_[i]->getData(&(sensors_imu_->value[i]));    // TODO(Greg): segfault, is sensors_imu_ initialised?
+      imu_[i]->getData(&(sensors_imu_->value[i]));
       log_.DBG("Debug-manager", "1");
     }
     resetTimestamp();
