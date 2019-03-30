@@ -25,6 +25,8 @@
 #include "data/data.hpp"
 #include "retractor_manager.hpp"
 
+#define BREAKAMOUNT 1
+
 namespace hyped {
 
 using utils::concurrent::Thread;

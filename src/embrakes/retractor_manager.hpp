@@ -46,7 +46,7 @@ class RetractorManager
         /*
          * @brief Assigns an array of gpio pins for the stepper motors to the class
         */
-        RetractorManager(Pins *pins,Logger& log);
+        RetractorManager(uint breakAmount, Pins *pins,Logger& log);
 
         /*
          * @brief Starts the retracting process of the embrakes
@@ -65,7 +65,7 @@ class RetractorManager
         RetractorInterface **retractors_;
         std::atomic<StatusCodes> *status;
         bool retracting;
-        uint retractorAmount;
+        uint breakAmount_;
 }; 
 
 }}

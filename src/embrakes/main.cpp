@@ -39,14 +39,12 @@ void Main::run()
 
 	Data stateMachineData = Data::getInstance();
 
-	Pins pins[4]={
-		{1,1,1},
-		{2,2,2},
-		{3,3,3},
-		{4,4,4}
+	// activate, step, push
+	Pins pins[BREAKAMOUNT]={
+		{8,9,11}
 	};
 
-	retractorManager = new RetractorManager(pins,log_);
+	retractorManager = new RetractorManager(BREAKAMOUNT, pins,log_);
 
 	while (sys.running_)
 	{

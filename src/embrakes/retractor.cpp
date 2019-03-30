@@ -29,7 +29,7 @@ namespace embrakes
         activate_=activate;
         pushButton_=pushButton;
 
-        //Period calculation
+        // Period calculation
         rpm = 10;
         float frequency = rpm * STEPS / 60;
         period = (1/frequency)*1000/2;
@@ -43,7 +43,7 @@ namespace embrakes
 
         log_.INFO("Embrake","Activate: %d, Step: %d, PushButton: %d",activate_,step_,pushButton_);
 
-        //Init GPIO Pins
+        // Init GPIO Pins
         GPIO activatePin(activate_,Direction::kOut);
         GPIO stepPin(step_,Direction::kOut);
         GPIO pushButtonPin(pushButton_,Direction::kIn);
@@ -57,7 +57,6 @@ namespace embrakes
         while(time(NULL)<startTime+1);
         
         while(*status_ == StatusCodes::STARTED) {
-
             if(active) {
                 log_.INFO("Embrake", "Retract clear");
                 stepPin.clear();
