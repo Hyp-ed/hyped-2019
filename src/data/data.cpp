@@ -97,12 +97,6 @@ void Data::setSensorsImuData(const DataPoint<array<ImuData, Sensors::kNumImus>>&
   sensors_.imu = imu;
 }
 
-void Data::setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>& keyence_stripe_counter) //NOLINT
-{
-  ScopedLock L(&lock_sensors_);
-  sensors_.keyence_stripe_counter = keyence_stripe_counter;
-}
-
 void Data::setCalibrationData(const SensorCalibration sensor_calibration_data)
 {
   ScopedLock L(&lock_calibration_data_);

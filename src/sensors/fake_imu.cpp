@@ -42,8 +42,7 @@ namespace sensors {
 FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
                 std::string acc_file_path,
                 std::string dec_file_path,
-                std::string em_file_path,
-                float noise)
+                std::string em_file_path)
     : log_(log),
       acc_noise_(1),
       acc_file_path_(acc_file_path),
@@ -52,7 +51,6 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
       acc_started_(false),
       dec_started_(false),
       em_started_(false),
-      noise_(noise),
       data_(data::Data::getInstance())
 {
   NavigationVector acc;
@@ -144,20 +142,20 @@ void FakeImuFromFile::getData(ImuData* imu)
     }
 
   } else {
-    prev_acc_ = addNoiseToData(acc_val_, noise_);
+    prev_acc_ = addNoiseToData(acc_val_, acc_noise_);
     operational = true;
   }
   imu->acc = prev_acc_;
   imu->operational = operational;
 }
 
-NavigationVector FakeImuFromFile::addNoiseToData(NavigationVector value, float noise)
+NavigationVector FakeImuFromFile::addNoiseToData(NavigationVector value, NavigationVector noise)
 {
   NavigationVector temp;
   static std::default_random_engine generator;
 
   for (int i = 0; i < 3; i++) {
-    std::normal_distribution<NavigationType> distribution(value[i], noise);
+    std::normal_distribution<NavigationType> distribution(value[i], noise[i]);
     temp[i] = distribution(generator);
   }
   return temp;
@@ -195,7 +193,8 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
       log_.ERR("Fake-IMU", "Wrong file path for argument: %d", i);
     }
 
-    NavigationVector value;
+    NavigationVector value, noise;
+    double temp_value[10];
     int counter = 0;
     uint32_t temp_time;
     std::string line;
@@ -209,13 +208,21 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
       }
 
       int value_counter = 0;
-      input >> value[0];
-      value[1] = 0.0;
-      value[2] = 9.8;
+      while (input >> temp_value[value_counter] && value_counter < 10) {
+        value_counter++;
+      }
 
-      val_read->push_back(addNoiseToData(value, noise_));
-      // TODO(jack): Add random point of failure in run for now everything works
-      bool_read->push_back(1);
+      if (value_counter != 7) {
+        log_.ERR("Fake-IMU", "Incomplete values for the argument timestamp: %d", temp_time);
+      }
+
+      for (int i = 0; i < 3; i++)
+        value[i] = temp_value[i];
+      for (int i = 0; i < 3; i++)
+        noise[i] = temp_value[i+3];
+
+      val_read->push_back(addNoiseToData(value, noise));
+      bool_read->push_back(temp_value[6]);
 
       counter++;
     }

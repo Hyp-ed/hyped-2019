@@ -62,8 +62,7 @@ class FakeImuFromFile : public ImuInterface {
   FakeImuFromFile(utils::Logger& log_,
           std::string acc_file_path,
           std::string dec_file_path,
-          std::string em_file_path,
-          float noise = 0.2);
+          std::string em_file_path);
 
   bool isOnline() override { return true; }
 
@@ -83,7 +82,7 @@ class FakeImuFromFile : public ImuInterface {
    *
    * @return    Returns random data point value
    */
-  static NavigationVector addNoiseToData(NavigationVector value, float noise);
+  static NavigationVector addNoiseToData(NavigationVector value, NavigationVector noise);
 
  private:
   utils::Logger&       log_;
@@ -113,6 +112,7 @@ class FakeImuFromFile : public ImuInterface {
 
   NavigationVector acc_val_;
   NavigationVector acc_noise_;
+
   NavigationVector prev_acc_;
 
   std::vector<NavigationVector> acc_val_read_;
@@ -130,7 +130,6 @@ class FakeImuFromFile : public ImuInterface {
   bool acc_started_;
   bool dec_started_;
   bool em_started_;
-  float noise_;
   data::Data&  data_;
 };
 

@@ -145,15 +145,11 @@ SPI::SPI(Logger& log)
     log_.ERR("SPI", "could not set bit order");
   }
 
-  bool check_init = initialise();
-  if (check_init) {
-    log_.INFO("SPI", "spi instance created");
-  } else {
-    log_.ERR("SPI", "spi instansiation failed");
-  }
+  initialise();
+  log_.INFO("SPI", "spi instance created");
 }
 
-bool SPI::initialise()
+void SPI::initialise()
 {
   int   fd;
   void* base;
@@ -161,14 +157,14 @@ bool SPI::initialise()
   fd = open("/dev/mem", O_RDWR);
   if (fd < 0) {
     log_.ERR("SPI", "could not open /dev/mem");
-    return false;
+    return;
   }
 
   base = mmap(0, kMmapSize, PROT_READ | PROT_WRITE, MAP_SHARED,
               fd, kSPIAddrBase);
   if (base == MAP_FAILED) {
     log_.ERR("SPI", "could not map bank 0x%x", kSPIAddrBase);
-    return false;
+    return;
   }
 
   hw_ = reinterpret_cast<SPI_HW*>(base);
@@ -176,7 +172,6 @@ bool SPI::initialise()
 
   log_.INFO("SPI", "Mapping successfully created %d", sizeof(SPI_HW));
   log_.INFO("SPI", "revision 0x%x", hw_->revision);
-  return true;
 }
 
 

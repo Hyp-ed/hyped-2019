@@ -82,7 +82,7 @@ class SPI {
    * @brief Fill in base_mapping_ with pointers to mmap-ed /dev/spidev1.0
    * to 2 SPI banks/ports.
    */
-  bool initialise();
+  void initialise();
 
  private:
   int     spi_fd_;

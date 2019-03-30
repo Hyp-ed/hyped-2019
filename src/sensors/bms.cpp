@@ -75,12 +75,8 @@ void BMS::request()
   message.data[0]   = 0;
   message.data[1]   = 0;
 
-  int sent = can_.send(message);
-  if (sent) {
-    log_.DBG1("BMS", "module %u: request message sent", id_);
-  } else {
-    log_.ERR("BMS", "module %u error: request message not sent", id_);
-  }
+  can_.send(message);
+  log_.DBG1("BMS", "module %u: request message sent", id_);
 }
 
 void BMS::run()

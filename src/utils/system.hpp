@@ -59,9 +59,6 @@ class System {
   int8_t debug_state;
   int8_t debug_tlm;
 
-  // Fake System variables below
-  bool fake_imu;
-
   // barriers
   /**
    * @brief Barrier used by navigation and motor control modules on stm transition to accelerating

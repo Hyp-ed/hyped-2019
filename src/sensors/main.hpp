@@ -3,7 +3,8 @@
  * Organisation: HYPED
  * Date:
  * Description:
- * Main initialises and manages sensor drivers. Main is not responsible for initialisation
+ * Main manages sensor drivers, collects data from sensors and updates
+ * shared Data::Sensors structure. Main is not responsible for initialisation
  * of supporting io drivers (i2c, spi, can). This should be done by the sensor
  * drivers themselves.
  *
@@ -24,49 +25,9 @@
 #ifndef SENSORS_MAIN_HPP_
 #define SENSORS_MAIN_HPP_
 
-#include <cstdint>
-
-#include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
-#include "sensors/gpio_counter.hpp"
-#include "sensors/interface.hpp"
-#include "sensors/manager_interface.hpp"
-#include "utils/system.hpp"
-
 namespace hyped {
 
 namespace sensors {
-
-/**
- * @brief Initialise sensors, data instances to be pulled in managers, gpio threads declared in main
- *
- */
-class Main: public Thread {
-  public:
-    Main(uint8_t id, Logger& log);
-    void run() override;    // from thread
-
-  private:
-    // check if all battery values are in expected range
-    // returns true iff all battery values (LP and HP) are in expected ranges
-    bool batteriesInRange();
-
-    data::Data&     data_;
-    utils::System& sys_;
-
-    // // master data structures
-    data::Sensors   sensors_;
-    data::Batteries batteries_;
-    data::StripeCounter stripe_counter_;
-
-    GpioCounter*                           keyence_l_;
-    GpioCounter*                           keyence_r_;
-    std::unique_ptr<ImuManagerInterface>   imu_manager_;
-    std::unique_ptr<ManagerInterface>      battery_manager_;
-
-    bool sensor_init_;
-    bool battery_init_;
-};
 
 }}
 
