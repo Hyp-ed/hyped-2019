@@ -31,7 +31,8 @@ Controller::Controller(Logger& log, uint8_t id)
       node_id_(id),
       critical_failure_(false),
       actual_velocity_(0),
-      sender(log_, node_id_)
+      sender(log_, node_id_),
+      reader(log_)
 {
   // TODO(Iain): Check if this is still valid:
   sdo_message_.id         = kSdoReceive + node_id_;
@@ -41,6 +42,26 @@ Controller::Controller(Logger& log, uint8_t id)
   nmt_message_.id         = kNmtReceive;
   nmt_message_.extended   = false;
   nmt_message_.len        = 8;
+
+  // TODO(Iain): Find a better way to initialise this data.
+  reader.readFileData(configureMotorPoles_.message, 8);
+  configureMotorPoles_.logger_output = "Controller %d: Configuring...";
+}
+
+bool Controller::sendSdoMessage(MessageTemplate message_template, int32_t len)
+{
+  for (int i = 0; i < len; i++) {
+    sdo_message_.data[i] = message_template.message[i];
+  }
+
+  sender.sendMessage(sdo_message_);
+
+  log_.DBG1("MOTOR", message_template.logger_output, node_id_);
+
+  if (critical_failure_) {
+    return true;
+  }
+  return false;
 }
 
 void Controller::registerController()
@@ -50,18 +71,8 @@ void Controller::registerController()
 
 void Controller::configure()
 {
-  log_.INFO("MOTOR", "Controller %d: Configuring...", node_id_);
-
-  // TODO(Iain): configure motor poles
-  for (int i = 0; i < sdo_message_.len; i++) {
-    sdo_message_.data[i] = sample_message_data_[i];
-  }
-
-  log_.DBG1("MOTOR", "Controller %d: Configuring motor poles", node_id_);
-
-  sender.sendMessage(sdo_message_);
-
-  if (critical_failure_) return;
+  // TODO(Iain): add the rest of the configuration messages.
+  if (sendSdoMessage(configureMotorPoles_, 8)) return;
 }
 
 void Controller::enterOperational()

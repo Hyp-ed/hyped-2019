@@ -22,13 +22,15 @@
 #define PROPULSION_CONTROLLER_HPP_
 
 #include "propulsion/controller_interface.hpp"
+#include "propulsion/file_reader.hpp"
+#include "propulsion/can/can_sender.hpp"
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
-#include "propulsion/can/can_sender.hpp"
 #include "utils/io/can.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
+
 
 namespace hyped {
 
@@ -107,6 +109,17 @@ class Controller : public ControllerInterface {
   void setFailure(bool failure);
 
  private:
+  struct MessageTemplate {
+    uint8_t       message[8];
+    const char*   logger_output;
+  };
+  /**
+   * @brief compact function to call the can sender class with a generic message,
+   *        while checking for critical failure.
+   * @param message_template
+   * @param len
+   */
+  bool sendSdoMessage(MessageTemplate message_template, int32_t len);
   Logger&           log_;
   data::Data&       data_;
   data::Motors      motor_data_;
@@ -115,15 +128,15 @@ class Controller : public ControllerInterface {
   bool              critical_failure_;
   int32_t           actual_velocity_;
   CanSender         sender;
+  FileReader        reader;
   Frame             sdo_message_;
   Frame             nmt_message_;
 
-  // TODO(Iain): add predefined configuration messages and function codes
-  const uint8_t           sample_message_data_[8] =
-                          {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  // TODO(Iain): add predefined configuration messages and function codes.
+  // To be read from file.
+  // Configuration data messages:
+  MessageTemplate configureMotorPoles_;
 };
-
-
 }}  // namespace hyped::motor_control
 
 #endif  // PROPULSION_CONTROLLER_HPP_
