@@ -52,8 +52,7 @@ int main(int argc, char* argv[])
 
   #if MANAGER
   DataPoint<array<ImuData, Sensors::kNumImus>> data_array_;
-  // ImuManager imu_manager_(log);
-  ImuManager imu_manager_(log, &data_array_);
+  ImuManager imu_manager_(log);
   imu_manager_.start();
   Thread::sleep(500);
   

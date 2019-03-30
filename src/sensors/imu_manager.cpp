@@ -83,7 +83,6 @@ void ImuManager::run()
   while (sys_.running_) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       log_.DBG("Debug-manager", "0");
-      // DataPoint<array<ImuData, Sensors::kNumImus>> imu;
       imu_[i]->getData(&(sensors_imu_->value[i]));
       log_.DBG("Debug-manager", "1");
     }
