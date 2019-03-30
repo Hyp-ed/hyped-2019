@@ -75,9 +75,19 @@ class StateProcessorInterface
     virtual void accelerate() = 0;
 
     /**
+     * @brief Exits the tube with low velocity
+     * */
+    virtual void servicePropulsion() = 0;
+
+    /**
        * @brief { Returns if the motors are initialised already }
        */
     virtual bool isInitialized() = 0;
+
+    /**
+     * @brief Returns if a critical error ocurred
+     * */
+    virtual bool isCriticalFailure() = 0;
 
   protected:
     /**

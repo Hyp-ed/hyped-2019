@@ -12,44 +12,9 @@ using hyped::System;
 using hyped::motor_control::FakeCanSender;
 using hyped::utils::Logger;
 using hyped::utils::io::can::Frame;
+using hyped::motor_control::Main;
 
-FakeCanSender *can;
 Logger *log_motor;
-
-void callProcessNewData()
-{
-	while (true)
-	{
-		//log_motor->INFO("CALLPROCESSNEWDATA","Checking");
-		if (can->getIsSending())
-		{
-			sleep(2);
-
-			Frame fr;
-
-			fr.id = 2;
-			log_motor->INFO("CALLPROCESSNEWDATA", "Reseting");
-			can->processNewData(fr);
-			log_motor->INFO("CALLPROCESSNEWDATA", "Reseted");
-		}
-	}
-}
-
-void producer()
-{
-	while (true)
-	{
-		//log_motor->INFO("PRODUCER","Waiting");
-		sleep(1);
-		log_motor->INFO("PRODUCER", "PRODUCING");
-		Frame fr;
-
-		fr.id = 1;
-
-		can->pushSdoMessageToQueue(fr);
-		log_motor->INFO("PRODUCER", "Produced");
-	}
-}
 
 int main(int argc, char *argv[])
 {
@@ -60,10 +25,15 @@ int main(int argc, char *argv[])
 
 	log_motor = new Logger(sys.verbose_motor, sys.debug_motor);
 
-	can = new FakeCanSender(*log_motor, 1);
 
-	std::thread prod(producer);
-	std::thread process(callProcessNewData);
+	Main *main = new Main(1,*log_motor);
+
+	main->start();
+
+	//can = new FakeCanSender(*log_motor, 1);
+
+	//std::thread prod(producer);
+	//std::thread process(callProcessNewData);
 
 	//Test Can_Sender
 
