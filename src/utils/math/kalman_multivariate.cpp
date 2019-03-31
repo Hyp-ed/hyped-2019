@@ -30,7 +30,8 @@ namespace hyped {
                   k(0)
             {}
 
-            KalmanMultivariate::KalmanMultivariate(unsigned int _n, unsigned int _m, unsigned int _k)
+            KalmanMultivariate::KalmanMultivariate(unsigned int _n, unsigned int _m,
+                                                   unsigned int _k)
                 : n(_n),
                   m(_m),
                   k(_k)
