@@ -17,6 +17,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
+/*
+ * TODO(Iain): reimplement to recieve a path to a file and then iterate through all the
+ *             messages to initialise them.
+ */
 #include <string>
 
 #include "propulsion/file_reader.hpp"
@@ -24,23 +29,25 @@
 namespace hyped {
 namespace motor_control {
 FileReader::FileReader(Logger& log)
-  : log_(log)
+  : log_(log),
+    filepath_("src/propulsion/configFiles/test_message.txt")
 {
 }
 void FileReader::readFileData(uint8_t* message, int32_t len)
 {
   std::ifstream datafile;
 
-  datafile.open("src/propulsion/configFiles/test_message.txt");
+  datafile.open(filepath_);
 
   if (!datafile.is_open()) {
-    log_.INFO("FILE_READER", "Unable to open file");
-    for (int i = 0; i < len; i++) message[i] = 0xFF;  // indicates error has occured.
+    log_.INFO("FILE_READER", "Unable to open config file");
+    // indicates error has occured. Ensure this is not a valid message.
+    for (int i = 0; i < len; i++) message[i] = 0xFF;
   } else {
     std::string line;
     while (getline(datafile, line)) {
-      if (line.empty());
-      else if (line.front() == '#');
+      if (line.empty());              // ignore any empty lines.
+      else if (line.front() == '#');  // ignore any line beginning with #.
       else
         splitAndAddData(line, message, len);
     }

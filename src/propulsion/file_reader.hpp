@@ -55,7 +55,8 @@ class FileReader {
    * @param len
    */
   void splitAndAddData(std::string str, uint8_t* message, int32_t len);
-  Logger& log_;
+  Logger&       log_;
+  const char*   filepath_;
 };
 }}  // namespace hyped::motor_control
 #endif  // PROPULSION_FILE_READER_HPP_

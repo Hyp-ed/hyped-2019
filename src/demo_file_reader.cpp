@@ -14,8 +14,8 @@ int main(int argc, char* argv[]) {
   const char* logger_message = "Data in message: %d %d %d %d %d %d %d %d";
   uint8_t test_message_template_[8];
   reader.readFileData(test_message_template_, 8);
-  log.INFO("MOTOR", logger_message,test_message_template_[0],
-              test_message_template_[0],test_message_template_[0],test_message_template_[0],
-              test_message_template_[0],test_message_template_[0],test_message_template_[0],
-              test_message_template_[0]);
+  log.INFO("MOTOR", logger_message, 
+                    test_message_template_[0],test_message_template_[0],test_message_template_[0],
+                    test_message_template_[0],test_message_template_[0],test_message_template_[0],
+                    test_message_template_[0],test_message_template_[0]);
 }
