@@ -32,7 +32,7 @@ namespace hyped
 {
     using data::NavigationVector;
     using data::NavigationEstimate;
-    using utils::math::KalmanMvar;
+    using utils::math::KalmanMultivariate;
 
     namespace navigation
     {
@@ -49,10 +49,10 @@ namespace hyped
                 const NavigationEstimate getEstimate();
 
             private:
-                unsigned int    n;
-                unsigned int    m;
-                unsigned int    k;
-                KalmanMvar      kalmanFilter;
+                unsigned int        n;
+                unsigned int        m;
+                unsigned int        k;
+                KalmanMultivariate  kalmanFilter;
 
                 // set initial estimate x and error covariance P
                 void setInitialEstimate();

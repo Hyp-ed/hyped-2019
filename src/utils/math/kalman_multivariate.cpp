@@ -24,100 +24,100 @@ namespace hyped {
     namespace utils {
         namespace math {
 
-            KalmanMvar::KalmanMvar(unsigned int _n, unsigned int _m)
+            KalmanMultivariate::KalmanMultivariate(unsigned int _n, unsigned int _m)
                 : n(_n),
                   m(_m),
                   k(0)
             {}
 
-            KalmanMvar::KalmanMvar(unsigned int _n, unsigned int _m, unsigned int _k)
+            KalmanMultivariate::KalmanMultivariate(unsigned int _n, unsigned int _m, unsigned int _k)
                 : n(_n),
                   m(_m),
                   k(_k)
             {}
 
-            void KalmanMvar::setDynamicsModel(MatrixXf& _A, MatrixXf& _Q)
+            void KalmanMultivariate::setDynamicsModel(MatrixXf& _A, MatrixXf& _Q)
             {
                 A = _A;
                 Q = _Q;
             }
 
-            void KalmanMvar::setDynamicsModel(MatrixXf& _A, MatrixXf& _B, MatrixXf& _Q)
+            void KalmanMultivariate::setDynamicsModel(MatrixXf& _A, MatrixXf& _B, MatrixXf& _Q)
             {
                 A = _A;
                 B = _B;
                 Q = _Q;
             }
 
-            void KalmanMvar::setMeasurementModel(MatrixXf& _H, MatrixXf& _R)
+            void KalmanMultivariate::setMeasurementModel(MatrixXf& _H, MatrixXf& _R)
             {
                 H = _H;
                 R = _R;
             }
 
-            void KalmanMvar::setModels(MatrixXf& _A, MatrixXf& _Q, MatrixXf& _H,
+            void KalmanMultivariate::setModels(MatrixXf& _A, MatrixXf& _Q, MatrixXf& _H,
                                        MatrixXf& _R)
             {
                 setDynamicsModel(_A, _Q);
                 setMeasurementModel(_H, _R);
             }
 
-            void KalmanMvar::setModels(MatrixXf& _A, MatrixXf& _B, MatrixXf& _Q,
+            void KalmanMultivariate::setModels(MatrixXf& _A, MatrixXf& _B, MatrixXf& _Q,
                                        MatrixXf& _H, MatrixXf& _R)
             {
                 setDynamicsModel(_A, _B, _Q);
                 setMeasurementModel(_H, _R);
             }
 
-            void KalmanMvar::update(MatrixXf& _A)
+            void KalmanMultivariate::update(MatrixXf& _A)
             {
                 A = _A;
             }
 
-            void KalmanMvar::setInitial(VectorXf& x0, MatrixXf& P0)
+            void KalmanMultivariate::setInitial(VectorXf& x0, MatrixXf& P0)
             {
                 x = x0;
                 P = P0;
                 I = MatrixXf::Identity(n, n);
             }
 
-            void KalmanMvar::predict()
+            void KalmanMultivariate::predict()
             {
                 x = A * x;
                 P = A * P * A.transpose() + Q;
             }
 
-            void KalmanMvar::predict(VectorXf& u)
+            void KalmanMultivariate::predict(VectorXf& u)
             {
                 x = A * x + B * u;
                 P = (A * P * A.transpose()) + Q;
             }
 
-            void KalmanMvar::correct(VectorXf& z)
+            void KalmanMultivariate::correct(VectorXf& z)
             {
                 MatrixXf K = (P * H.transpose()) * (H * P * H.transpose() + R).inverse();
                 x = x + K * (z - H * x);
                 P = (I - K * H) * P;
             }
 
-            void KalmanMvar::filter(VectorXf& z)
+            void KalmanMultivariate::filter(VectorXf& z)
             {
                 predict();
                 correct(z);
             }
 
-            void KalmanMvar::filter(VectorXf& u, VectorXf& z)
+            void KalmanMultivariate::filter(VectorXf& u, VectorXf& z)
             {
                 predict(u);
                 correct(z);
             }
 
-            VectorXf& KalmanMvar::getStateEstimate()
+            VectorXf& KalmanMultivariate::getStateEstimate()
             {
                 return x;
             }
 
-            MatrixXf& KalmanMvar::getStateCovariance()
+            MatrixXf& KalmanMultivariate::getStateCovariance()
             {
                 return P;
             }

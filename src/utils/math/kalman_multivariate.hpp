@@ -33,7 +33,7 @@ namespace hyped {
             /**
              * @brief    This class is for filtering the data from sensors to smoothen it.
              */
-            class KalmanMvar {
+            class KalmanMultivariate {
              public:
               /**
                * @brief    Construct a new Kalman object with respective dimensions (without control)
@@ -41,7 +41,7 @@ namespace hyped {
                * @param[in] n                       state dimensionality
                * @param[in] m                       measurement dimensionality
                */
-              KalmanMvar(unsigned int _n, unsigned int _m);
+              KalmanMultivariate(unsigned int _n, unsigned int _m);
 
               /**
                * @brief    Construct a new Kalman object with respective dimensions (with control)
@@ -50,7 +50,7 @@ namespace hyped {
                * @param[in] m                       measurement dimensionality
                * @param[in] k                       control dimensionality
                */
-              KalmanMvar(unsigned int _n, unsigned int _m, unsigned int _k);
+              KalmanMultivariate(unsigned int _n, unsigned int _m, unsigned int _k);
 
               /**
                * @brief    Set dynamics model matrices (without control)

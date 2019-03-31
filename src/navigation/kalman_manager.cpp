@@ -27,7 +27,7 @@ namespace hyped
               m(m_)
         {
             k = 0;
-            kalmanFilter = KalmanMvar(n_, m_);
+            kalmanFilter = KalmanMultivariate(n_, m_);
         }
 
         KalmanManager::KalmanManager(unsigned int n_, unsigned int m_, unsigned int k_)
@@ -35,7 +35,7 @@ namespace hyped
               m(m_),
               k(k_)
         {
-            kalmanFilter = KalmanMvar(n_, m_, k_);
+            kalmanFilter = KalmanMultivariate(n_, m_, k_);
         }
 
         void KalmanManager::setupStationary()
