@@ -61,6 +61,8 @@ class CalculateRPM
 
         bool initialize(std::string filepath);
 
+        int32_t calculateRPM(float velocity);
+
     private:
         /**
      *   @brief  { Reads slip and translational velocity data from acceleration text files, calculates RPM's for appropriate slip at each
@@ -73,8 +75,6 @@ class CalculateRPM
     std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> data);
 
     void RPM_calc(std::string filepath);
-
-    int32_t calculateRPM(float velocity);
 
     data::Data &data_;
     data::StateMachine state_;
