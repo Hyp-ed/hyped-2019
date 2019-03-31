@@ -41,42 +41,42 @@ namespace hyped
         void KalmanManager::setupStationary()
         {
             // setup dynamics & measurement models for stationary test
-            MatrixXd A = createStateTransitionMatrix(0.0);
-            MatrixXd Q = createStateTransitionCovarianceMatrix();
-            MatrixXd H = createMeasurementMatrix();
-            MatrixXd R = createStationaryMeasurementCovarianceMatrix();
+            MatrixXf A = createStateTransitionMatrix(0.0);
+            MatrixXf Q = createStateTransitionCovarianceMatrix();
+            MatrixXf H = createMeasurementMatrix();
+            MatrixXf R = createStationaryMeasurementCovarianceMatrix();
             kalmanFilter.setModels(A, Q, H, R);
 
             // setup initial estimates
-            VectorXd x = VectorXd::Zero(n);
-            MatrixXd P = createInitialErrorCovarianceMatrix();
+            VectorXf x = VectorXf::Zero(n);
+            MatrixXf P = createInitialErrorCovarianceMatrix();
             kalmanFilter.setInitial(x, P);
         }
 
         void KalmanManager::setupElevator()
         {
             // setup dynamics & measurement models for elevator test
-            MatrixXd A = createStateTransitionMatrix(0.0);
-            MatrixXd Q = createStateTransitionCovarianceMatrix();
-            MatrixXd H = createMeasurementMatrix();
-            MatrixXd R = createElevatorMeasurementCovarianceMatrix();
+            MatrixXf A = createStateTransitionMatrix(0.0);
+            MatrixXf Q = createStateTransitionCovarianceMatrix();
+            MatrixXf H = createMeasurementMatrix();
+            MatrixXf R = createElevatorMeasurementCovarianceMatrix();
             kalmanFilter.setModels(A, Q, H, R);
 
             // setup initial estimates
-            VectorXd x = VectorXd::Zero(n);
-            MatrixXd P = createInitialErrorCovarianceMatrix();
+            VectorXf x = VectorXf::Zero(n);
+            MatrixXf P = createInitialErrorCovarianceMatrix();
             kalmanFilter.setInitial(x, P);
         }
 
         void KalmanManager::updateStateTransitionMatrix(double dt)
         {
-            MatrixXd A = createStateTransitionMatrix(dt);
+            MatrixXf A = createStateTransitionMatrix(dt);
             kalmanFilter.update(A);
         }
 
         void KalmanManager::filter(NavigationVector& z_)
         {
-            VectorXd z(m);
+            VectorXf z(m);
             for (unsigned int i = 0; i < m; i++) {
                 z(i) = z_[i];
             }
@@ -85,12 +85,12 @@ namespace hyped
 
         void KalmanManager::filter(NavigationVector& u_, NavigationVector& z_)
         {
-            VectorXd u(k);
+            VectorXf u(k);
             for (unsigned int i = 0; i < k; i++) {
                 u(i) = u_[i];
             }
 
-            VectorXd z(m);
+            VectorXf z(m);
             for (unsigned int i = 0; i < m; i++) {
                 z(i) = z_[i];
             }
@@ -100,17 +100,17 @@ namespace hyped
 
         const NavigationEstimate KalmanManager::getEstimate()
         {
-            VectorXd x = kalmanFilter.getStateEstimate();
-            NavigationVector pos = NavigationVector({x(0), x(1), x(2)})
-            NavigationVector vel = NavigationVector({x(3), x(4), x(5)})
-            NavigationVector acc = NavigationVector({x(6), x(7), x(8)})
+            VectorXf x = kalmanFilter.getStateEstimate();
+            NavigationVector pos = NavigationVector({x(0), x(1), x(2)});
+            NavigationVector vel = NavigationVector({x(3), x(4), x(5)});
+            NavigationVector acc = NavigationVector({x(6), x(7), x(8)});
             NavigationEstimate est = {pos, vel, acc};
             return est;
         }
 
-        const MatrixXd KalmanManager::createInitialErrorCovarianceMatrix()
+        const MatrixXf KalmanManager::createInitialErrorCovarianceMatrix()
         {
-            MatrixXd P = MatrixXd::Constant(n, n, 0.0);
+            MatrixXf P = MatrixXf::Constant(n, n, 0.0);
             std::default_random_engine generator;
             std::normal_distribution<double> pos_var_noise(0.0, 0.001);
             std::normal_distribution<double> vel_var_noise(0.0, 0.005);
@@ -131,7 +131,7 @@ namespace hyped
         void KalmanManager::setInitialEstimate()
         {
             // create initial error covariance matrix P
-            MatrixXd P = MatrixXd::Constant(n, n, 0.0);
+            MatrixXf P = MatrixXf::Constant(n, n, 0.0);
             std::default_random_engine generator;
             std::normal_distribution<double> pos_var_noise(0.0, 0.001);
             std::normal_distribution<double> vel_var_noise(0.0, 0.005);
@@ -148,13 +148,13 @@ namespace hyped
             }
 
             // create initial estimate x
-            VectorXd x = VectorXd::Zero(n);
+            VectorXf x = VectorXf::Zero(n);
             kalmanFilter.setInitial(x, P);
         }
 
-        const MatrixXd KalmanManager::createStateTransitionMatrix(double dt)
+        const MatrixXf KalmanManager::createStateTransitionMatrix(double dt)
         {
-            MatrixXd A(n, n);
+            MatrixXf A(n, n);
             double acc_ddt = 0.5 * dt * dt;
             A << 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt, 0.0, 0.0,
                  0.0, 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt, 0.0,
@@ -168,21 +168,21 @@ namespace hyped
             return A;
         }
 
-        const MatrixXd KalmanManager::createMeasurementMatrix()
+        const MatrixXf KalmanManager::createMeasurementMatrix()
         {
-            MatrixXd H = MatrixXd::Zero(m, n);
+            MatrixXf H = MatrixXf::Zero(m, n);
             for (unsigned int i = 0; i < m; i++) {
                 H(i, n - (m - i)) = 1.0;
             }
             return H;
         }
 
-        const MatrixXd KalmanManager::createStateTransitionCovarianceMatrix()
+        const MatrixXf KalmanManager::createStateTransitionCovarianceMatrix()
         {
             std::default_random_engine generator;
             std::normal_distribution<double> var_noise(0.01, 0.02);
 
-            MatrixXd Q = MatrixXd::Constant(n, n, 0.0);
+            MatrixXf Q = MatrixXf::Constant(n, n, 0.0);
             /*
             for (unsigned int row = 0; row < n; row++)
             {
@@ -195,13 +195,13 @@ namespace hyped
             return Q;
         }
 
-        const MatrixXd KalmanManager::createStationaryMeasurementCovarianceMatrix()
+        const MatrixXf KalmanManager::createStationaryMeasurementCovarianceMatrix()
         {
             std::default_random_engine generator;
             std::normal_distribution<double> var_noise(0.0, 0.0005);
             std::normal_distribution<double> cov_noise(0.0, 0.0001);
 
-            MatrixXd R(m, m);
+            MatrixXf R(m, m);
             double covariance = -0.0002;
             double variance = 0.0017;
 
@@ -214,9 +214,9 @@ namespace hyped
             return R;
         }
 
-        const MatrixXd KalmanManager::createElevatorMeasurementCovarianceMatrix(unsigned int m)
+        const MatrixXf KalmanManager::createElevatorMeasurementCovarianceMatrix()
         {
-            MatrixXd R(m, m);
+            MatrixXf R(m, m);
             R << 0.0085, 0.0014, 0.0025,
                  0.0014, 0.007, -0.004,
                  0.0025, -0.004, 0.12;

@@ -25,8 +25,8 @@
 #include "data/data.hpp"
 #include "utils/math/kalman_multivariate.hpp"
 
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 
 namespace hyped
 {
@@ -54,21 +54,24 @@ namespace hyped
                 unsigned int    k;
                 KalmanMvar      kalmanFilter;
 
+                // set initial estimate x and error covariance P
+                void setInitialEstimate();
+
                 // create initial error covariance matrix P
-                const MatrixXd createInitialErrorCovarianceMatrix();
+                const MatrixXf createInitialErrorCovarianceMatrix();
 
                 // create state transition matrix A
-                const MatrixXd createStateTransitionMatrix(double dt);
+                const MatrixXf createStateTransitionMatrix(double dt);
 
                 // create measurement matrix H
-                const MatrixXd createMeasurementMatrix();
+                const MatrixXf createMeasurementMatrix();
 
                 // create state transition coveriance matrix Q
-                const MatrixXd createStateTransitionCovarianceMatrix();
+                const MatrixXf createStateTransitionCovarianceMatrix();
 
                 // create measurement covariance matrices R
-                const MatrixXd createStationaryMeasurementCovarianceMatrix();
-                const MatrixXd createElevatorMeasurementCovarianceMatrix();
+                const MatrixXf createStationaryMeasurementCovarianceMatrix();
+                const MatrixXf createElevatorMeasurementCovarianceMatrix();
         };
     }
 }
