@@ -106,10 +106,21 @@ void StateProcessor::enterPreOperational()
 
 void StateProcessor::accelerate()
 {
+<<<<<<< Updated upstream
     int speed = 0;
     for (int i = 0;i < motorAmount; i++) {
         controllers[i]->sendTargetVelocity(speed);
         speed++;
+=======
+    if (initialized) {
+        speed += 10;
+        int rpm = rpmCalculator->calculateRPM(speed);
+        for (int i = 0;i < motorAmount; i++) {
+            controllers[i]->sendTargetVelocity(rpm);
+        }
+    } else {
+        log_.INFO("Motor", "State Processor hasn't been initialized yet");
+>>>>>>> Stashed changes
     }
 }
 
