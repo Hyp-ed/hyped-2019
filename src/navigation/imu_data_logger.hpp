@@ -51,7 +51,7 @@ namespace hyped
                                       DataPoint<NavigationVector>* accCor,
                                       DataPoint<NavigationVector>*    vel,
                                       DataPoint<NavigationVector>*    pos,
-                                      NavigationEstimate* x);
+                                      NavigationEstimate& x);
             private:
                 std::ofstream*   outfile;
         };

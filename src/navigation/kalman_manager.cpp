@@ -16,7 +16,7 @@
  *    limitations under the License.
  */
 
-#include "navigation/kalman_manager.hpp"
+#include "kalman_manager.hpp"
 
 namespace hyped
 {
@@ -24,9 +24,9 @@ namespace hyped
     {
         KalmanManager::KalmanManager(unsigned int n_, unsigned int m_)
             : n(n_),
-              m(m_),
-              k(0)
+              m(m_)
         {
+            k = 0;
             kalmanFilter = KalmanMvar(n_, m_);
         }
 

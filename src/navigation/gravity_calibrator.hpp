@@ -19,9 +19,15 @@
 #ifndef NAVIGATION_GRAVITY_CALIBRATOR_HPP_
 #define NAVIGATION_GRAVITY_CALIBRATOR_HPP_
 
+#include <thread>
+#include <chrono>
+
 #include "data/data_point.hpp"
 #include "utils/math/statistics.hpp"
 #include "navigation/imu_query.hpp"
+
+using std::this_thread::sleep_for;
+using std::chrono::seconds;
 
 namespace hyped
 {

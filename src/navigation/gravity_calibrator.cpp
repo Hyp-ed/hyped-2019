@@ -16,7 +16,7 @@
  *    limitations under the License.
  */
 
-#include "gravity_calibration.hpp"
+#include "gravity_calibrator.hpp"
 
 namespace hyped
 {
@@ -29,11 +29,11 @@ namespace hyped
             OnlineStatistics<NavigationVector> online;
         }
 
-        NavigationVector GravityCalibrator::GravityCalibrator(ImuQuery& imuQuery)
+        NavigationVector GravityCalibrator::calibrate(ImuQuery& imuQuery)
         {
             for (unsigned int i = 0; i < numberCalibrationQueries; ++i) {
                 online.update(imuQuery.query().value);
-                sleep(queryDelay);
+                sleep_for(seconds(queryDelay));
             }
             return online.getMean();
         }

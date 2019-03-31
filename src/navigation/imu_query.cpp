@@ -16,7 +16,7 @@
  *    limitations under the License.
  */
 
-#include "ImuQuery.hpp"
+#include "imu_query.hpp"
 
 namespace hyped
 {

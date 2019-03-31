@@ -55,7 +55,7 @@ namespace hyped
                 KalmanMvar      kalmanFilter;
 
                 // create initial error covariance matrix P
-                const MatrixXd createInitialErrorCovarianceMatrix()
+                const MatrixXd createInitialErrorCovarianceMatrix();
 
                 // create state transition matrix A
                 const MatrixXd createStateTransitionMatrix(double dt);

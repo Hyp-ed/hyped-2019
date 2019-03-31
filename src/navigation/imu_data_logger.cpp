@@ -29,7 +29,7 @@ namespace hyped
         void ImuDataLogger::setup(int imu_id, int run_id)
         {
             char fname[20];
-            snprintf(fname, "test_data/imu%d_run%d_data.csv", imu_id, run_id);
+            snprintf(fname, sizeof(fname), "test_data/imu%d_run%d_data.csv", imu_id, run_id);
             outfile->open(fname);
             *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,t\n";
         }
@@ -37,7 +37,7 @@ namespace hyped
         void ImuDataLogger::setupKalman(int imu_id, int run_id)
         {
             char fname[20];
-            snprintf(fname, "test_data/imu%d_run%d_data.csv", imu_id, run_id);
+            snprintf(fname, sizeof(fname), "test_data/imu%d_run%d_data.csv", imu_id, run_id);
             outfile->open(fname);
             *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,sfx,sfy,sfz,vfx,vfy,vfz,"
                         "afx,afy,afz,t\n";
