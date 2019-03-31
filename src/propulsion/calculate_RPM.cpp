@@ -18,28 +18,11 @@
 
 #include "propulsion/calculate_RPM.hpp"
 
-#include <math.h>
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-#include <cstdint>
-#include <fstream>
 #include <string>
-#include <sstream>
 #include <vector>
-#include <algorithm>
-
-// #include "motor_control/communicator.hpp"
-#include "data/data.hpp"
-#include "utils/system.hpp"
 
 namespace hyped
 {
-
-using data::NavigationType;
-using utils::System;
-using utils::Timer;
 
 namespace motor_control
 {
@@ -55,7 +38,11 @@ CalculateRPM::CalculateRPM(Logger &log) : data_(data::Data::getInstance()),
 
 bool CalculateRPM::initialize(std::string filepath)
 {
-    return check_file(filepath);
+    if (check_file(filepath)) {
+        RPM_calc(filepath);
+        return true;
+    }
+    return false;
 }
 
 bool CalculateRPM::check_file(std::string filepath)

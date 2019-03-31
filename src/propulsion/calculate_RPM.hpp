@@ -19,10 +19,18 @@
 #ifndef PROPULSION_CALCULATE_RPM_HPP_
 #define PROPULSION_CALCULATE_RPM_HPP_
 
+#include <math.h>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #include <cstdint>
 #include <vector>
 #include <queue>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
 
 // #include "motor_control/communicator.hpp"
 #include "propulsion/state_processor_interface.hpp"
@@ -31,11 +39,13 @@
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
+#include "utils/system.hpp"
 
 namespace hyped
 {
 
 using data::NavigationType;
+using utils::System;
 using utils::Logger;
 using utils::Timer;
 using utils::concurrent::Barrier;
@@ -49,14 +59,14 @@ class CalculateRPM
     public:
         explicit CalculateRPM(Logger &log);
 
+        bool initialize(std::string filepath);
+
     private:
         /**
      *   @brief  { Reads slip and translational velocity data from acceleration text files, calculates RPM's for appropriate slip at each
      *             translational velocity and stores the values in a 2D array containing
      *             translational velocity and RPM }
      */
-
-    bool initialize(std::string filepath);
 
     bool check_file(std::string filepath);
 
