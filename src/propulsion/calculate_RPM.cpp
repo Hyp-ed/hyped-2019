@@ -102,34 +102,16 @@ void CalculateRPM::RPM_calc(std::string filepath)
 
 float CalculateRPM::calculateRPM(float velocity)
 {
-   do {
-       if (velocity < acceleration_slip_.front()[0]) {
-           return acceleration_slip_.front()[1];
-       }
+    do {
+        if (velocity < acceleration_slip_.front()[0]) {
+            return acceleration_slip_.front()[1];
+        }
 
-       acceleration_slip_.pop();
-   } while (!acceleration_slip_.empty());
+        acceleration_slip_.pop();
+    } while (!acceleration_slip_.empty());
 
-   return 6000;
+    return 6000;
 }
 
 }  // namespace motor_control
 }  // namespace hyped
-
-int main(int argc, char *argv[]) {
-
-    CalculateRPM *calc = new CalculateRPM(*log_motor);
-
-
-    if(!calc->initialize("./testAcceleration.txt")) {
-        log_motor->INFO("Motor","Initialization failed");
-    }
-
-    std::cout << "Speed 123: " << calc->calculateRPM(0) << std::endl;
-
-    log_motor->INFO("Motor","Speed : %f", calc->calculateRPM(0));
-    log_motor->INFO("Motor","Speed : %f", calc->calculateRPM(10));
-    log_motor->INFO("Motor","Speed : %f", calc->calculateRPM(20));
-    log_motor->INFO("Motor","Speed : %f", calc->calculateRPM(1000));
-
-}
