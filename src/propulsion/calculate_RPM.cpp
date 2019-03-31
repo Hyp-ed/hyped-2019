@@ -100,22 +100,17 @@ void CalculateRPM::RPM_calc(std::string filepath)
     // }
 };
 
-int32_t CalculateRPM::calculateRPM(float velocity)
+float CalculateRPM::calculateRPM(float velocity)
 {
-    do {
-        if (velocity < acceleration_slip_.front()[0]) {
-            return acceleration_slip_.front()[1];
-        }
-        if (acceleration_slip_.size() == 1) {
-            return acceleration_slip_.front()[1];
-        }
-        if (acceleration_slip_.empty()) {
-            return 6000;
-        }
-        acceleration_slip_.pop();
-    } while (acceleration_slip_.front()[0] < velocity);
+   do {
+       if (velocity < acceleration_slip_.front()[0]) {
+           return acceleration_slip_.front()[1];
+       }
 
-    return 6000;
+       acceleration_slip_.pop();
+   } while (!acceleration_slip_.empty());
+
+   return 6000;
 }
 
 }  // namespace motor_control
