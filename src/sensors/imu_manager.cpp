@@ -38,7 +38,8 @@ ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-      chip_select_ {117, 125, 123, 111, 112, 110, 20}        // TODO(Greg): add pin 49
+      chip_select_{20}
+      // chip_select_ {117, 125, 123, 111, 112, 110, 20}        // TODO(Greg): add pin 49
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
 
