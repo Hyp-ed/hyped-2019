@@ -43,6 +43,7 @@ void Main::run()
 
     while (isRunning && sys.running_) {
         // Get the current state of the system from the state machine's data
+
         currentState = stateMachineData.getStateMachineData().current_state;
 
         if (currentState == State::kIdle) {  // Initialize motors
