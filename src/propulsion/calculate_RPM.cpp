@@ -51,19 +51,11 @@ CalculateRPM::CalculateRPM(Logger &log) : data_(data::Data::getInstance()),
                                           acceleration_slip_(),
                                           log_(log)
 {
-    state_ = data_.getStateMachineData();
-    motor_velocity_ = {0, 0, 0, 0};
 }
 
-std::vector<std::vector<double>> CalculateRPM::transpose(std::vector<std::vector<double>> data)
+bool CalculateRPM::initialize(std::string filepath)
 {
-    std::vector<std::vector<double>> transpose(2, std::vector<double>(data.size(), 1));
-    for (uint16_t i = 0; i < data.size(); ++i) {
-        for (uint16_t j = 0; j < 2; ++j) {
-            transpose[j][i] = data[i][j];
-        }
-    }
-    return transpose;
+    return check_file(filepath);
 }
 
 bool CalculateRPM::check_file(std::string filepath)
@@ -76,8 +68,6 @@ bool CalculateRPM::check_file(std::string filepath)
         return false;
     } else if (filepath == kAccelerationData) {
         log_.INFO("MOTOR", "Calculating acceleration slip...");
-    } else {
-        log_.INFO("MOTOR", "Calculating deceleration slip...");
     }
 
     return true;
@@ -132,10 +122,13 @@ int32_t CalculateRPM::calculateRPM(float velocity)
         if (acceleration_slip_.size() == 1) {
             return acceleration_slip_.front()[1];
         }
+        if (acceleration_slip_.empty()) {
+            return 6000;
+        }
         acceleration_slip_.pop();
     } while (acceleration_slip_.front()[0] < velocity);
 
-    return 0;
+    return 6000;
 }
 
 }  // namespace motor_control

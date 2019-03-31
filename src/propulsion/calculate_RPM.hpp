@@ -51,11 +51,12 @@ class CalculateRPM
 
     private:
         /**
-     *   @brief  { Reads slip and translational velocity data from acceleration and
-     *             deceleration text files, calculates RPM's for appropriate slip at each
+     *   @brief  { Reads slip and translational velocity data from acceleration text files, calculates RPM's for appropriate slip at each
      *             translational velocity and stores the values in a 2D array containing
      *             translational velocity and RPM }
      */
+
+    bool initialize(std::string filepath);
 
     bool check_file(std::string filepath);
 
