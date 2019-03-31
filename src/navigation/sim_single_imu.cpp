@@ -61,7 +61,7 @@ namespace hyped
             posData->close();
         }
 
-        int main(int argc, char *argv[])
+        int simulation(int argc, char *argv[])
         {
             /*
                 System setup

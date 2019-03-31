@@ -65,7 +65,7 @@ namespace hyped
                          ifstream* accData, ifstream* posData, string accFname, string posFname,
                          float refreshRate, float stddev, float stripeSep);
 
-        int main(int argc, char *argv[]);
+        int simulation(int argc, char *argv[]);
     }
 }
 

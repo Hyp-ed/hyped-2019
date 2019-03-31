@@ -22,12 +22,16 @@ namespace hyped {
 
     namespace navigation {
 
-        int main(int argc, char *argv[])
+        Main::Main(uint8_t id, Logger& log_)
+            : Thread(id, log_),
+              log(log_)
         {
-            // System setup
-            System::parseArgs(argc, argv);
+            log.INFO("NAVIGATION", "Navigation initialising");
+        }
+
+        void Main::run()
+        {
             System& sys = System::getSystem();
-            Logger log(sys.verbose, sys.debug);
             Timer timer;
 
             // Sensor setup
@@ -46,7 +50,7 @@ namespace hyped {
             // Start single IMU navigation
             SingleImuNavigation singleImuNavigation(imuQuery, sys.imu_id,
                                                     gravityCalibrator, &timer);
-            return singleImuNavigation.navigate(nTestQueries, queryDelay, sys.run_id, log);
+            singleImuNavigation.navigate(nTestQueries, queryDelay, sys.run_id, log);
         }
     }
 }

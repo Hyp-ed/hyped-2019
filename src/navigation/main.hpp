@@ -19,8 +19,9 @@
 #define NAVIGATION_MAIN_HPP_
 
 #include "data/data.hpp"
-#include "utils/logger.hpp"
+#include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
+#include "utils/logger.hpp"
 #include "utils/timer.hpp"
 #include "sensors/imu.hpp"
 #include "navigation/gravity_calibrator.hpp"
@@ -31,8 +32,9 @@
 namespace hyped
 {
     using data::ImuData;
-    using utils::Logger;
+    using utils::concurrent::Thread;
     using utils::System;
+    using utils::Logger;
     using utils::Timer;
     using sensors::Imu;
 
@@ -43,7 +45,13 @@ namespace hyped
 
     namespace navigation
     {
-        int main(int argc, char *argv[]);
+        class Main: public Thread {
+            public:
+                explicit Main(uint8_t id, Logger& log);
+                void run() override;
+            private:
+                Logger& log;
+        };
     }
 }
 
