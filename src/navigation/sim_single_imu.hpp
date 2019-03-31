@@ -19,6 +19,16 @@
 #ifndef NAVIGATION_SIM_SINGLE_IMU_HPP_
 #define NAVIGATION_SIM_SINGLE_IMU_HPP_
 
+#include <stdio.h>
+#include <unistd.h>
+#include <random>
+
+#include <iostream>
+#include <cstdio>
+#include <fstream>
+#include <queue>
+#include <string>
+
 #include "data/data.hpp"
 #include "data/data_point.hpp"
 #include "sensors/imu.hpp"
@@ -28,15 +38,6 @@
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
 #include "navigation/imu_data_logger.hpp"
-
-#include <iostream>
-#include <unistd.h>
-#include <cstdio>
-#include <stdio.h>
-#include <fstream>
-#include <queue>
-#include <random>
-#include <string>
 
 using std::default_random_engine;
 using std::normal_distribution;
@@ -61,7 +62,7 @@ namespace hyped
     namespace navigation
     {
         void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, queue<int>* stripeCount,
-                         ifstream* accData, ifstream* posData, string accFname, string posFname, 
+                         ifstream* accData, ifstream* posData, string accFname, string posFname,
                          float refreshRate, float stddev, float stripeSep);
 
         int main(int argc, char *argv[]);

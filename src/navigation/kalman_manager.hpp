@@ -19,13 +19,11 @@
 #ifndef NAVIGATION_KALMAN_MANAGER_HPP_
 #define NAVIGATION_KALMAN_MANAGER_HPP_
 
+#include <random>
+#include <Eigen/Dense>
+
 #include "data/data.hpp"
 #include "utils/math/kalman_multivariate.hpp"
-
-#include <cmath>
-#include <random>
-
-#include <Eigen/Dense>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -49,7 +47,7 @@ namespace hyped
                 void filter(NavigationVector& z_);
                 void filter(NavigationVector& u_, NavigationVector& z_);
                 const NavigationEstimate getEstimate();
-                
+
             private:
                 unsigned int    n;
                 unsigned int    m;

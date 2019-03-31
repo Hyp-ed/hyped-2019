@@ -19,14 +19,15 @@
 #ifndef NAVIGATION_IMU_DATA_LOGGER_HPP_
 #define NAVIGATION_IMU_DATA_LOGGER_HPP_
 
-#include "data/data.hpp"
-#include "data/data_point.hpp"
+#include <stdio.h>
+#include <unistd.h>
 
 #include <iostream>
-#include <unistd.h>
 #include <cstdio>
-#include <stdio.h>
 #include <fstream>
+
+#include "data/data.hpp"
+#include "data/data_point.hpp"
 
 namespace hyped
 {
@@ -39,13 +40,17 @@ namespace hyped
         class ImuDataLogger
         {
             public:
-                ImuDataLogger(std::ofstream* outfile_);
+                explicit ImuDataLogger(std::ofstream* outfile_);
                 void setup(int imu_id, int run_id);
                 void setupKalman(int imu_id, int run_id);
-                void dataToFile(DataPoint<NavigationVector>* accRaw, DataPoint<NavigationVector>* accCor,
-							    DataPoint<NavigationVector>*    vel, DataPoint<NavigationVector>*    pos);
-                void dataToFileKalman(DataPoint<NavigationVector>* accRaw, DataPoint<NavigationVector>* accCor,
-							          DataPoint<NavigationVector>*    vel, DataPoint<NavigationVector>*    pos,
+                void dataToFile(DataPoint<NavigationVector>* accRaw,
+                                DataPoint<NavigationVector>* accCor,
+                                DataPoint<NavigationVector>*    vel,
+                                DataPoint<NavigationVector>*    pos);
+                void dataToFileKalman(DataPoint<NavigationVector>* accRaw,
+                                      DataPoint<NavigationVector>* accCor,
+                                      DataPoint<NavigationVector>*    vel,
+                                      DataPoint<NavigationVector>*    pos,
                                       NavigationEstimate* x);
             private:
                 std::ofstream*   outfile;

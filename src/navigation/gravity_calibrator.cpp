@@ -24,15 +24,14 @@ namespace hyped
     {
         GravityCalibrator::GravityCalibrator(unsigned int numberCalibrationQueries_)
             : numberCalibrationQueries(numberCalibrationQueries_),
-              queryDelay((float)1/numberCalibrationQueries)
+              queryDelay(static_cast<float>(1)/numberCalibrationQueries)
         {
             OnlineStatistics<NavigationVector> online;
         }
 
         NavigationVector GravityCalibrator::GravityCalibrator(ImuQuery& imuQuery)
         {
-            for (unsigned int i = 0; i < numberCalibrationQueries; ++i)
-            {
+            for (unsigned int i = 0; i < numberCalibrationQueries; ++i) {
                 online.update(imuQuery.query().value);
                 sleep(queryDelay);
             }

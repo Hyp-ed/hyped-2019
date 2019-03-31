@@ -20,13 +20,27 @@
 
 #include "data/data.hpp"
 #include "utils/logger.hpp"
+#include "utils/system.hpp"
 #include "utils/timer.hpp"
+#include "sensors/imu.hpp"
 #include "navigation/gravity_calibrator.hpp"
 #include "navigation/imu_data_logger.hpp"
 #include "navigation/imu_query.hpp"
+#include "navigation/single_imu_navigation.hpp"
 
 namespace hyped
 {
+    using data::ImuData;
+    using utils::Logger;
+    using utils::System;
+    using utils::Timer;
+    using sensors::Imu;
+
+    using navigation::GravityCalibrator;
+    using navigation::ImuDataLogger;
+    using navigation::ImuQuery;
+    using navigation::SingleImuNavigation;
+
     namespace navigation
     {
         int main(int argc, char *argv[]);

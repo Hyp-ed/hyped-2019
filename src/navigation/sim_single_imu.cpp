@@ -18,14 +18,20 @@
 
 #include "navigation/sim_single_imu.hpp"
 
+#include <string>
+#include <queue>
+
+using std::string;
+using std::queue;
+
 namespace hyped
 {
     namespace navigation
     {
         void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, queue<int>* stripeCount,
                          ifstream* accData, ifstream* posData,
-                         string accFname, string posFname, 
-                         float refreshRate, float stddev, float stripeSep) 
+                         string accFname, string posFname,
+                         float refreshRate, float stddev, float stripeSep)
         {
             float t = 0.;
             float ax, ay, az;
@@ -47,7 +53,7 @@ namespace hyped
             }
             // Prepare stripe counts
             float dx;
-            while(*posData >> dx) {
+            while (*posData >> dx) {
                 stripeCount->push(static_cast<int>(dx/stripeSep));
             }
             // Close files
@@ -65,13 +71,13 @@ namespace hyped
             Logger log(sys.verbose, sys.debug);
             bool writeToFile = sys.run_id > 0;
 
-            /* 
+            /*
                 Sim data setup
             */
             // sim parameters
-            float refreshRate = 1./3000.;	// query frequency
-            float stddev = 0.5;				// noise = 2*sensorVariance (empirical)
-            float stripeSep = 100./3.281;	// stipe separation (100ft)
+            float refreshRate = 1./3000.;   // query frequency
+            float stddev = 0.5;             // noise = 2*sensorVariance (empirical)
+            float stripeSep = 100./3.281;   // stipe separation (100ft)
 
             // file properties
             ifstream accData, posData;
@@ -84,7 +90,7 @@ namespace hyped
 
             // the main event
             loadSimData(&dataQueue, &stripeCount,
-                        &accData, &posData, 
+                        &accData, &posData,
                         accFname, posFname,
                         refreshRate, stddev, stripeSep);
 
@@ -99,9 +105,9 @@ namespace hyped
                 Simulate run
             */
             // Store measured/estimated values
-            DataPoint<NavigationVector> acc(0., NavigationVector({0.,0.,0.})); 	
-            DataPoint<NavigationVector> vel(0., NavigationVector({0.,0.,0.}));		
-            DataPoint<NavigationVector> pos(0., NavigationVector({0.,0.,0.}));
+            DataPoint<NavigationVector> acc(0., NavigationVector({0., 0., 0.}));
+            DataPoint<NavigationVector> vel(0., NavigationVector({0., 0., 0.}));
+            DataPoint<NavigationVector> pos(0., NavigationVector({0., 0., 0.}));
 
             // Integrate acceleration -> velocity -> position
             Integrator<NavigationVector> velIntegrator(&vel);
@@ -111,8 +117,7 @@ namespace hyped
             int stripesSeen = 0;
 
             // Perform acceleration, speed and distance queries
-            while (!dataQueue.empty())
-            {
+            while (!dataQueue.empty()) {
                 // ``Query'' sensor
                 acc = dataQueue.front();
                 dataQueue.pop();
@@ -131,9 +136,10 @@ namespace hyped
                 stripeCount.pop();
 
                 // Output values
-                log.INFO("MAIN", "a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f  s:%d\n", 
-                                acc.value[0], acc.value[1], acc.value[2], 
-                                vel.value[0], vel.value[1], vel.value[2], 
+                log.INFO("MAIN", "a_x:%+6.3f a_y:%+6.3f a_z:%+6.3f\tv_x:%+6.3f v_y:%+6.3f  "
+                         "v_z:%+6.3f\tp_x:%+6.3f p_y:%+6.3f p_z:%+6.3f s:%d\n",
+                                acc.value[0], acc.value[1], acc.value[2],
+                                vel.value[0], vel.value[1], vel.value[2],
                                 pos.value[0], pos.value[1], pos.value[2],
                                 stripesSeen);
 

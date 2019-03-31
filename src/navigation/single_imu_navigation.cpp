@@ -16,7 +16,7 @@
  *    limitations under the License.
  */
 
-#include "single_imu.hpp"
+#include "single_imu_navigation.hpp"
 
 namespace hyped
 {
@@ -24,7 +24,8 @@ namespace hyped
     {
 
         SingleImuNavigation::SingleImuNavigation(ImuQuery& imuQuery_, int imuId_,
-                                                 GravityCalibration& gravityCalibrator_, Timer* timer_)
+                                                 GravityCalibration& gravityCalibrator_,
+                                                 Timer* timer_)
             : imuQuery(imuQuery_),
               imuId(imuId_),
               gravityCalibrator(gravityCalibrator_),
@@ -47,22 +48,21 @@ namespace hyped
             log.INFO("SINGLE_IMU", "Calibration complete, measuring.");
 
             // Return measured gravity vector
-            log.INFO("SINGLE_IMU", "Measured gravity vector:\n\tgx=%+6.3f\tgy=%+6.3f\tgz=%+6.3f\n\n",
+            log.INFO("SINGLE_IMU", "Measured gravity:\n\tgx=%+6.3f\tgy=%+6.3f\tgz=%+6.3f\n\n",
                                 gVector[0], gVector[1], gVector[2]);
 
             // Store measured/estimated values
-            DataPoint<NavigationVector> accRaw(0., NavigationVector({0.,0.,0.}));
-            DataPoint<NavigationVector> accCor(0., NavigationVector({0.,0.,0.})); 	
-            DataPoint<NavigationVector>    vel(0., NavigationVector({0.,0.,0.}));		
-            DataPoint<NavigationVector>    pos(0., NavigationVector({0.,0.,0.}));
-            //
+            DataPoint<NavigationVector> accRaw(0., NavigationVector({0., 0., 0.}));
+            DataPoint<NavigationVector> accCor(0., NavigationVector({0., 0., 0.}));
+            DataPoint<NavigationVector>    vel(0., NavigationVector({0., 0., 0.}));
+            DataPoint<NavigationVector>    pos(0., NavigationVector({0., 0., 0.}));
+
             // Integrate acceleration -> velocity -> position
             Integrator<NavigationVector> velIntegrator(&vel);
             Integrator<NavigationVector> posIntegrator(&pos);
 
             // Perform acceleration, speed and distance measurements
-            for (unsigned int i = 0; i < nTestQueries; ++i)
-            {
+            for (unsigned int i = 0; i < nTestQueries; ++i) {
                 // Query sensor and correct values
                 accRaw = imuQuery.query();
                 accCor = DataPoint<NavigationVector>(accRaw.timestamp, accRaw.value - gVector);
@@ -72,10 +72,11 @@ namespace hyped
                 posIntegrator.update(vel);
 
                 // Output values
-                log.INFO("SINGLE_IMU", "a_x:%+6.3f  a_y:%+6.3f  a_z:%+6.3f\tv_x:%+6.3f  v_y:%+6.3f  v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n", 
-                        accCor.value[0], accCor.value[1], accCor.value[2], 
-                        vel.value[0], vel.value[1], vel.value[2], 
-                        pos.value[0], pos.value[1], pos.value[2]);		
+                log.INFO("SINGLE_IMU", "a_x:%+6.3f a_y:%+6.3f a_z:%+6.3f\tv_x:%+6.3f v_y:%+6.3f "
+                         "v_z:%+6.3f\tp_x:%+6.3f p_y:%+6.3f p_z:%+6.3f\n",
+                                accCor.value[0], accCor.value[1], accCor.value[2],
+                                vel.value[0], vel.value[1], vel.value[2],
+                                pos.value[0], pos.value[1], pos.value[2]);
 
                 if (writeToFile > 0) imuDataLogger.dataToFile(&accRaw, &accCor, &vel, &pos);
                 sleep(queryDelay);

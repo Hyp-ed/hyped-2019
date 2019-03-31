@@ -29,7 +29,7 @@
 #define DEFAULT_VERBOSE -1
 #define DEFAULT_DEBUG   -1
 #define DEFAULT_IMU     -1
-#define DEFAULT_RUN		-1
+#define DEFAULT_RUN     -1
 #define DEFAULT_QUERIES -1
 #define DEFAULT_Q_DELAY -1
 

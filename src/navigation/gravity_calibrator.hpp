@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef NAVIGATION_GRAVITY_CALIBRATION_HPP_
-#define NAVIGATION_GRAVITY_CALIBRATION_HPP_
+#ifndef NAVIGATION_GRAVITY_CALIBRATOR_HPP_
+#define NAVIGATION_GRAVITY_CALIBRATOR_HPP_
 
 #include "data/data_point.hpp"
 #include "utils/math/statistics.hpp"
@@ -35,7 +35,7 @@ namespace hyped
         class GravityCalibrator
         {
             public:
-                GravityCalibrator(unsigned int numberCalibrationQueries_);
+                explicit GravityCalibrator(unsigned int numberCalibrationQueries_);
                 NavigationVector calibrate(ImuQuery& imuQuery);
             private:
                 unsigned int                        numberCalibrationQueries;
@@ -45,4 +45,4 @@ namespace hyped
     }
 }
 
-#endif  // NAVIGATION_GRAVITY_CALIBRATION_HPP_
+#endif  // NAVIGATION_GRAVITY_CALIBRATOR_HPP_

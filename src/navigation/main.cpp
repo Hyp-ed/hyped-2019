@@ -16,6 +16,8 @@
  *    limitations under the License.
  */
 
+#include "main.hpp"
+
 namespace hyped {
 
     namespace navigation {
@@ -30,9 +32,9 @@ namespace hyped {
 
             // Sensor setup
             const int i2c = 66;
-            Imu* imu = new Imu(log, i2c, 0x08, 0x00);
+            Imu* imu = new Imu(log, i2c, 0x08);
             ImuData* imuData = new ImuData();
-            ImuQuery imuQuery = ImuQuery(imu, imuData, timer);
+            ImuQuery imuQuery = ImuQuery(imu, imuData, &timer);
 
             unsigned int nCalibrationQueries = 10000;
             unsigned int nTestQueries = 50000;
@@ -42,7 +44,8 @@ namespace hyped {
             GravityCalibrator gravityCalibrator(nCalibrationQueries);
 
             // Start single IMU navigation
-            SingleImuNavigation singleImuNavigation(imuQuery, sys.imu_id, gravityCalibrator, timer);
+            SingleImuNavigation singleImuNavigation(imuQuery, sys.imu_id,
+                                                    gravityCalibrator, &timer);
             return singleImuNavigation.navigate(nTestQueries, queryDelay, sys.run_id, log);
         }
     }

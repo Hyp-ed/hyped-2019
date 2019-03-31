@@ -28,45 +28,47 @@ namespace hyped
 
         void ImuDataLogger::setup(int imu_id, int run_id)
         {
-            char fname [20];
-            sprintf(fname, "test_data/imu%d_run%d_data.csv", imu_id, run_id);
+            char fname[20];
+            snprintf(fname, "test_data/imu%d_run%d_data.csv", imu_id, run_id);
             outfile->open(fname);
             *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,t\n";
         }
 
         void ImuDataLogger::setupKalman(int imu_id, int run_id)
         {
-            char fname [20];
-            sprintf(fname, "test_data/imu%d_run%d_data.csv", imu_id, run_id);
+            char fname[20];
+            snprintf(fname, "test_data/imu%d_run%d_data.csv", imu_id, run_id);
             outfile->open(fname);
-            *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,sfx,sfy,sfz,vfx,vfy,vfz,afx,afy,afz,t\n";
+            *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,sfx,sfy,sfz,vfx,vfy,vfz,"
+                        "afx,afy,afz,t\n";
         }
 
-        void ImuDataLogger::dataToFile(DataPoint<NavigationVector>* accRaw, DataPoint<NavigationVector>* accCor,
-                                       DataPoint<NavigationVector>*    vel, DataPoint<NavigationVector>*    pos)
+        void ImuDataLogger::dataToFile(DataPoint<NavigationVector>* accR,
+                                       DataPoint<NavigationVector>* accC,
+                                       DataPoint<NavigationVector>*  vel,
+                                       DataPoint<NavigationVector>*  pos)
         {
-            *outfile << accRaw->value[0] << "," << accRaw->value[1] << "," << accRaw->value[2] << ","
-                     << accCor->value[0] << "," << accCor->value[1] << "," << accCor->value[2] << ","
-                     <<    vel->value[0] << "," <<    vel->value[1] << "," <<    vel->value[2] << ","
-                     <<    pos->value[0] << "," <<    pos->value[1] << "," <<    pos->value[2] << ","
-                     << accRaw->timestamp << "\n";
+            *outfile << accR->value[0] << "," << accR->value[1] << "," << accR->value[2] << ","
+                     << accC->value[0] << "," << accC->value[1] << "," << accC->value[2] << ","
+                     <<  vel->value[0] << "," <<  vel->value[1] << "," <<  vel->value[2] << ","
+                     <<  pos->value[0] << "," <<  pos->value[1] << "," <<  pos->value[2] << ","
+                     << accR->timestamp << "\n";
         }
 
-        void ImuDataLogger::dataToFileKalman(DataPoint<NavigationVector>* accRaw,
-                                             DataPoint<NavigationVector>* accCor,
+        void ImuDataLogger::dataToFileKalman(DataPoint<NavigationVector>* accR,
+                                             DataPoint<NavigationVector>* accC,
                                              DataPoint<NavigationVector>*    vel,
                                              DataPoint<NavigationVector>*    pos,
                                              NavigationEstimate& x)
         {
-            *outfile << accRaw->value[0] << "," << accRaw->value[1] << "," << accRaw->value[2] << ","
-                     << accCor->value[0] << "," << accCor->value[1] << "," << accCor->value[2] << ","
-                     <<    vel->value[0] << "," <<    vel->value[1] << "," <<    vel->value[2] << ","
-                     <<    pos->value[0] << "," <<    pos->value[1] << "," <<    pos->value[2] << ","
-                     <<    x[0][0]       << "," <<    x[0][1]       << "," <<    x[0][2]       << ","
-                     <<    x[1][0]       << "," <<    x[1][1]       << "," <<    x[1][2]       << ","
-                     <<    x[2][0]       << "," <<    x[2][1]       << "," <<    x[2][2]       << ","
-                     << accRaw->timestamp << "\n";
+            *outfile << accR->value[0] << "," << accR->value[1] << "," << accR->value[2] << ","
+                     << accC->value[0] << "," << accC->value[1] << "," << accC->value[2] << ","
+                     <<  vel->value[0] << "," <<  vel->value[1] << "," <<  vel->value[2] << ","
+                     <<  pos->value[0] << "," <<  pos->value[1] << "," <<  pos->value[2] << ","
+                     <<  x[0][0]       << "," <<  x[0][1]       << "," <<  x[0][2]       << ","
+                     <<  x[1][0]       << "," <<  x[1][1]       << "," <<  x[1][2]       << ","
+                     <<  x[2][0]       << "," <<  x[2][1]       << "," <<  x[2][2]       << ","
+                     << accR->timestamp << "\n";
         }
-
     }
 }

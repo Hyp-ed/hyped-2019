@@ -77,8 +77,7 @@ namespace hyped
         void KalmanManager::filter(NavigationVector& z_)
         {
             VectorXd z(m);
-            for (unsigned int i = 0; i < m; i++)
-            {
+            for (unsigned int i = 0; i < m; i++) {
                 z(i) = z_[i];
             }
             kalmanFilter.filter(z);
@@ -87,14 +86,12 @@ namespace hyped
         void KalmanManager::filter(NavigationVector& u_, NavigationVector& z_)
         {
             VectorXd u(k);
-            for (unsigned int i = 0; i < k; i++)
-            {
+            for (unsigned int i = 0; i < k; i++) {
                 u(i) = u_[i];
             }
 
             VectorXd z(m);
-            for (unsigned int i = 0; i < m; i++)
-            {
+            for (unsigned int i = 0; i < m; i++) {
                 z(i) = z_[i];
             }
 
@@ -104,9 +101,9 @@ namespace hyped
         const NavigationEstimate KalmanManager::getEstimate()
         {
             VectorXd x = kalmanFilter.getStateEstimate();
-            NavigationVector pos = NavigationVector({x(0),x(1),x(2)})
-            NavigationVector vel = NavigationVector({x(3),x(4),x(5)})
-            NavigationVector acc = NavigationVector({x(6),x(7),x(8)})
+            NavigationVector pos = NavigationVector({x(0), x(1), x(2)})
+            NavigationVector vel = NavigationVector({x(3), x(4), x(5)})
+            NavigationVector acc = NavigationVector({x(6), x(7), x(8)})
             NavigationEstimate est = {pos, vel, acc};
             return est;
         }
@@ -115,20 +112,16 @@ namespace hyped
         {
             MatrixXd P = MatrixXd::Constant(n, n, 0.0);
             std::default_random_engine generator;
-            std::normal_distribution<double> pos_var_noise(0.0,0.001);
-            std::normal_distribution<double> vel_var_noise(0.0,0.005);
-            std::normal_distribution<double> acc_var_noise(0.0,0.01);
+            std::normal_distribution<double> pos_var_noise(0.0, 0.001);
+            std::normal_distribution<double> vel_var_noise(0.0, 0.005);
+            std::normal_distribution<double> acc_var_noise(0.0, 0.01);
 
-            for (unsigned int i = 0; i< n; i++)
-            {
-                if (i < n/3)
-                {
+            for (unsigned int i = 0; i< n; i++) {
+                if (i < n/3) {
                     P(i, i) = pos_var_noise(generator);
-                } else if (i < 2*n/3)
-                {
+                } else if (i < 2*n/3) {
                     P(i, i) = vel_var_noise(generator);
-                } else
-                {
+                } else {
                     P(i, i) = acc_var_noise(generator);
                 }
             }
@@ -140,20 +133,16 @@ namespace hyped
             // create initial error covariance matrix P
             MatrixXd P = MatrixXd::Constant(n, n, 0.0);
             std::default_random_engine generator;
-            std::normal_distribution<double> pos_var_noise(0.0,0.001);
-            std::normal_distribution<double> vel_var_noise(0.0,0.005);
-            std::normal_distribution<double> acc_var_noise(0.0,0.01);
+            std::normal_distribution<double> pos_var_noise(0.0, 0.001);
+            std::normal_distribution<double> vel_var_noise(0.0, 0.005);
+            std::normal_distribution<double> acc_var_noise(0.0, 0.01);
 
-            for (unsigned int i = 0; i< n; i++)
-            {
-                if (i < n/3)
-                {
+            for (unsigned int i = 0; i< n; i++) {
+                if (i < n/3) {
                     P(i, i) = pos_var_noise(generator);
-                } else if (i < 2*n/3)
-                {
+                } else if (i < 2*n/3) {
                     P(i, i) = vel_var_noise(generator);
-                } else
-                {
+                } else {
                     P(i, i) = acc_var_noise(generator);
                 }
             }
@@ -182,8 +171,7 @@ namespace hyped
         const MatrixXd KalmanManager::createMeasurementMatrix()
         {
             MatrixXd H = MatrixXd::Zero(m, n);
-            for (unsigned int i = 0; i < m; i++)
-            {
+            for (unsigned int i = 0; i < m; i++) {
                 H(i, n - (m - i)) = 1.0;
             }
             return H;
@@ -192,7 +180,7 @@ namespace hyped
         const MatrixXd KalmanManager::createStateTransitionCovarianceMatrix()
         {
             std::default_random_engine generator;
-            std::normal_distribution<double> var_noise(0.01,0.02);
+            std::normal_distribution<double> var_noise(0.01, 0.02);
 
             MatrixXd Q = MatrixXd::Constant(n, n, 0.0);
             /*
@@ -210,16 +198,19 @@ namespace hyped
         const MatrixXd KalmanManager::createStationaryMeasurementCovarianceMatrix()
         {
             std::default_random_engine generator;
-            std::normal_distribution<double> var_noise(0.0,0.0005);
-            std::normal_distribution<double> cov_noise(0.0,0.0001);
+            std::normal_distribution<double> var_noise(0.0, 0.0005);
+            std::normal_distribution<double> cov_noise(0.0, 0.0001);
 
             MatrixXd R(m, m);
             double covariance = -0.0002;
             double variance = 0.0017;
 
-            R << (variance + var_noise(generator)), (covariance + cov_noise(generator)), (covariance + cov_noise(generator)),
-                 (covariance + cov_noise(generator)), (variance + var_noise(generator)), (covariance + cov_noise(generator)),
-                 (covariance + cov_noise(generator)), (covariance + cov_noise(generator)), (variance + var_noise(generator));
+            R << (variance + var_noise(generator)), (covariance + cov_noise(generator)),
+                 (covariance + cov_noise(generator)),
+                 (covariance + cov_noise(generator)), (variance + var_noise(generator)),
+                 (covariance + cov_noise(generator)),
+                 (covariance + cov_noise(generator)), (covariance + cov_noise(generator)),
+                 (variance + var_noise(generator));
             return R;
         }
 
