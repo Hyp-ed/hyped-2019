@@ -130,15 +130,15 @@ CalculateRPM::CalculateRPM(Logger& log):
     int32_t calculateRPM(float velocity){
 
         do{
-            if (velocity < acceleration_slip_.next()[0]){
-                return acceleration_slip_.next()[1];
+            if (velocity < acceleration_slip_.front()[0]){
+                return acceleration_slip_.front()[1];
             }
             else{
                 acceleration_slip_.pop();
             }
             
         }
-        while (acceleration_slip_.next()[0] < velocity);
+        while (acceleration_slip_.front()[0] < velocity);
 
     }
 
