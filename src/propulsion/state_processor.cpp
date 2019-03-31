@@ -115,10 +115,14 @@ void StateProcessor::enterPreOperational()
 
 void StateProcessor::accelerate()
 {
-    speed += 10;
-    int rpm = rpmCalculator->calculateRPM(speed);
-    for (int i = 0;i < motorAmount; i++) {
-        controllers[i]->sendTargetVelocity(rpm);
+    if (initialized) {
+        speed += 10;
+        int rpm = rpmCalculator->calculateRPM(speed);
+        for (int i = 0;i < motorAmount; i++) {
+            controllers[i]->sendTargetVelocity(rpm);
+        }
+    } else {
+        log_.INFO("Motor", "State Processor not initialized");
     }
 }
 
