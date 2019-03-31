@@ -90,14 +90,6 @@ void CalculateRPM::RPM_calc(std::string filepath)
         // Add data to the acceleration_slip_ queue
         acceleration_slip_.push(temp_vec);
     }
-
-    // // If both containers have been populated, set bool to true
-    // if (!acceleration_slip_.empty() && !deceleration_slip_.empty()) {
-    //     acceleration_slip_ = transpose(acceleration_slip_);
-    //     deceleration_slip_ = transpose(deceleration_slip_);
-    //     slip_calculated_ = true;
-    //     log_.INFO("MOTOR", "All slip values calculated");
-    // }
 };
 
 float CalculateRPM::calculateRPM(float velocity)
