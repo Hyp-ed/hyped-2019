@@ -70,7 +70,7 @@ namespace hyped
                 int navigate(unsigned int nTestQueries, float queryDelay, int runId, Logger log);
 
             private:
-                ImuQuery&           imuQUery;
+                ImuQuery&           imuQuery;
                 GravityCalibrator&  gravityCalibrator;
                 int                 imuId;
                 Timer*              timer;

@@ -43,6 +43,16 @@ namespace hyped
                         "afx,afy,afz,t\n";
         }
 
+        void ImuDataLogger::dataToFileSimulation(DataPoint<NavigationVector>* acc,
+                                                 DataPoint<NavigationVector>* vel,
+                                                 DataPoint<NavigationVector>* pos)
+        {
+            *outfile << acc->value[0] << "," << acc->value[1] << "," << acc->value[2] << ","
+                     << vel->value[0] << "," << vel->value[1] << "," << vel->value[2] << ","
+                     << pos->value[0] << "," << pos->value[1] << "," << pos->value[2] << ","
+                     << acc->timestamp << "\n";
+        }
+
         void ImuDataLogger::dataToFile(DataPoint<NavigationVector>* accR,
                                        DataPoint<NavigationVector>* accC,
                                        DataPoint<NavigationVector>*  vel,

@@ -24,11 +24,11 @@ namespace hyped
     {
 
         SingleImuNavigation::SingleImuNavigation(ImuQuery& imuQuery_, int imuId_,
-                                                 GravityCalibration& gravityCalibrator_,
+                                                 GravityCalibrator& gravityCalibrator_,
                                                  Timer* timer_)
             : imuQuery(imuQuery_),
-              imuId(imuId_),
               gravityCalibrator(gravityCalibrator_),
+              imuId(imuId_),
               timer(timer_)
         {}
 
@@ -36,15 +36,15 @@ namespace hyped
                                           float queryDelay, int runId, Logger log)
         {
             // File setup
-            bool writeToFile = (sys.imu_id > 0) || (sys.run_id > 0);
+            bool writeToFile = (imuId > 0) || (runId > 0);
             std::ofstream outfile;
 
             // IMU data logger
-            ImuDataLogger imuDataLogger(outfile);
+            ImuDataLogger imuDataLogger(&outfile);
             imuDataLogger.setup(imuId, runId);
 
             // Calibrate gravitational acceleration
-            NavigationVector gVector = gravityCalibrator.calibrate(imuQuery, timer);
+            NavigationVector gVector = gravityCalibrator.calibrate(imuQuery);
             log.INFO("SINGLE_IMU", "Calibration complete, measuring.");
 
             // Return measured gravity vector

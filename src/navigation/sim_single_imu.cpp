@@ -97,7 +97,7 @@ namespace hyped
             // Output setup
             ofstream outfile;
             // IMU data logger
-            ImuDataLogger imuDataLogger(outfile);
+            ImuDataLogger imuDataLogger(&outfile);
             imuDataLogger.setup(sys.imu_id, sys.run_id);
 
 
@@ -143,7 +143,7 @@ namespace hyped
                                 pos.value[0], pos.value[1], pos.value[2],
                                 stripesSeen);
 
-                if (writeToFile > 0) imuDataLogger.dataToFile(&acc, &vel, &pos);
+                if (writeToFile > 0) imuDataLogger.dataToFileSimulation(&acc, &vel, &pos);
             }
 
             if (writeToFile) outfile.close();

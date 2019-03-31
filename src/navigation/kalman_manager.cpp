@@ -24,19 +24,17 @@ namespace hyped
     {
         KalmanManager::KalmanManager(unsigned int n_, unsigned int m_)
             : n(n_),
-              m(m_)
-        {
-            k = 0;
-            kalmanFilter = KalmanMultivariate(n_, m_);
-        }
+              m(m_),
+              k(0),
+              kalmanFilter(KalmanMultivariate(n_, m_))
+        {}
 
         KalmanManager::KalmanManager(unsigned int n_, unsigned int m_, unsigned int k_)
             : n(n_),
               m(m_),
-              k(k_)
-        {
-            kalmanFilter = KalmanMultivariate(n_, m_, k_);
-        }
+              k(k_),
+              kalmanFilter(KalmanMultivariate(n_, m_, k_))
+        {}
 
         void KalmanManager::setupStationary()
         {

@@ -43,6 +43,9 @@ namespace hyped
                 explicit ImuDataLogger(std::ofstream* outfile_);
                 void setup(int imu_id, int run_id);
                 void setupKalman(int imu_id, int run_id);
+                void dataToFileSimulation(DataPoint<NavigationVector>* acc,
+                                          DataPoint<NavigationVector>* vel,
+                                          DataPoint<NavigationVector>* pos);
                 void dataToFile(DataPoint<NavigationVector>* accRaw,
                                 DataPoint<NavigationVector>* accCor,
                                 DataPoint<NavigationVector>*    vel,

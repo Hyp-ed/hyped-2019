@@ -25,23 +25,23 @@ namespace hyped
     namespace navigation
     {
         SingleImuKalmanNavigation::SingleImuKalmanNavigation(ImuQuery& imuQuery_, int imuId_,
-                                                             GravityCalibration& gravityCalibrator_,
+                                                             GravityCalibrator& gravityCalibrator_,
                                                              Timer* timer_,
                                                              unsigned int n_, unsigned int m_)
             : imuQuery(imuQuery_),
-              imuId(imuId_),
               gravityCalibrator(gravityCalibrator_),
+              imuId(imuId_),
               timer(timer_),
               kalmanManager(KalmanManager(n_, m_))
         {}
 
         SingleImuKalmanNavigation::SingleImuKalmanNavigation(ImuQuery& imuQuery_, int imuId_,
-                                                             GravityCalibration& gravityCalibrator_,
-                                                             Timer* timer_, unsigned int n_
+                                                             GravityCalibrator& gravityCalibrator_,
+                                                             Timer* timer_, unsigned int n_,
                                                              unsigned int m_, unsigned int k_)
             : imuQuery(imuQuery_),
-              imuId(imuId_),
               gravityCalibrator(gravityCalibrator_),
+              imuId(imuId_),
               timer(timer_),
               kalmanManager(KalmanManager(n_, m_, k_))
         {}
@@ -50,11 +50,11 @@ namespace hyped
                                                 int runId, Logger log)
         {
             // File setup
-            bool writeToFile = (sys.imu_id > 0) || (sys.run_id > 0);
+            bool writeToFile = (imuId > 0) || (runId > 0);
             std::ofstream outfile;
 
             // IMU data logger
-            ImuDataLogger imuDataLogger(outfile);
+            ImuDataLogger imuDataLogger(&outfile);
             imuDataLogger.setup(imuId, runId);
 
             // setup IMU manager
@@ -69,7 +69,7 @@ namespace hyped
             }
 
             // Calibrate gravitational acceleration
-            NavigationVector gVector = gravityCalibrator.calibrate(imuQuery, timer);
+            NavigationVector gVector = gravityCalibrator.calibrate(imuQuery);
             log.INFO("SINGLE_IMU_KALMAN", "Calibration complete, measuring.");
 
             // Return measured gravity vector
@@ -97,7 +97,7 @@ namespace hyped
                     kalmanManager.updateStateTransitionMatrix(0.0);
                 } else {
                     // compute passed time dt
-                    double dt = (accRaw.timestamp - current_time)/1000000.0
+                    double dt = (accRaw.timestamp - current_time)/1000000.0;
                     kalmanManager.updateStateTransitionMatrix(dt);
                 }
                 current_time = accRaw.timestamp;
@@ -120,7 +120,7 @@ namespace hyped
                          "v_z:%+6.3f\tp_x:%+6.3f  p_y:%+6.3f  p_z:%+6.3f\n",
                                 x[2][0], x[2][1], x[2][2],
                                 x[1][0], x[1][1], x[1][2],
-                                x[0][0], x[0][1], x[0][2];
+                                x[0][0], x[0][1], x[0][2]);
 
 
                 if (writeToFile > 0) imuDataLogger.dataToFile(&accRaw, &accCor, &vel, &pos);
