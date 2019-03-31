@@ -21,6 +21,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <queue>
 #include <string>
 
 // #include "motor_control/communicator.hpp"
@@ -57,25 +58,25 @@ class CalculateRPM{
 
         bool check_file(std::string filepath);
 
-        void updateMotorFailure();
-
         std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> data);
 
-        // int32_t RPM_calc(int32_t slip_calculated_);
         void RPM_calc(std::string filepath);
+
+        int32_t calculateRPM(float velocity);
 
         data::Data& data_;
         data::StateMachine state_;
         data::Motors motor_data_;
         MotorVelocity motor_velocity_;
 
-        std::vector<std::vector<double>> acceleration_slip_;
-        std::vector<std::vector<double>> deceleration_slip_;
+        std::queue<std::vector<double>> acceleration_slip_;
 
         Logger& log_;
 
         bool motor_failure_;
         bool slip_calculated_;
+
+        float velocity;
         // int32_t slip_velocity;
 };
 

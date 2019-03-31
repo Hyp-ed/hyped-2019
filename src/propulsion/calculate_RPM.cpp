@@ -47,28 +47,14 @@ const std::string kAccelerationData = "../BeagleBone_black/data/configuration/Ac
 
 CalculateRPM::CalculateRPM(Logger& log): 
     data_(data::Data::getInstance()),
+    acceleration_slip_(),
     log_(log),
     motor_failure_(false),
     slip_calculated_(false)
 {
     state_      = data_.getStateMachineData();
-    motor_data_.module_status = data::ModuleStatus::kStart;
-    motor_data_.velocity_1 = 0;
-    motor_data_.velocity_2 = 0;
-    motor_data_.velocity_3 = 0;
-    motor_data_.velocity_4 = 0;
-    data_.setMotorData(motor_data_);
     motor_velocity_ = {0, 0, 0, 0};
-    //communicator_ = new Communicator(log);
 }
-
-    void CalculateRPM::updateMotorFailure(){
-        log_.ERR("MOTOR", "Motor State: MOTOR FAILURE\n");
-        motor_data_ = data_.getMotorData();
-        motor_data_.module_status = data::ModuleStatus::kCriticalFailure;
-        data_.setMotorData(motor_data_);
-        motor_failure_ = true;
-    }
 
     std::vector<std::vector<double>> CalculateRPM::transpose(std::vector<std::vector<double>> data){
         std::vector<std::vector<double>> transpose(2, std::vector<double>(data.size(), 1));
@@ -87,7 +73,6 @@ CalculateRPM::CalculateRPM(Logger& log):
 
         if (!data.is_open()) {
             log_.ERR("MOTOR", "Could not open file: %s", filepath.c_str());
-            updateMotorFailure();
             return false;
         } else if (filepath == kAccelerationData) {
             log_.INFO("MOTOR", "Calculating acceleration slip...");
@@ -127,23 +112,35 @@ CalculateRPM::CalculateRPM(Logger& log):
             temp_vec[0] = translational_velocity;
             temp_vec[1] = rpm;
 
-            // Add data to appropriate container
-            if (filepath == kAccelerationData) {
-                acceleration_slip_.push_back(temp_vec);
-            } 
-            else {
-                deceleration_slip_.push_back(temp_vec);
-            }
+            // Add data to the acceleration_slip_ queue
+            acceleration_slip_.push(temp_vec);
+
         }
 
-        // If both containers have been populated, set bool to true
-        if (!acceleration_slip_.empty() && !deceleration_slip_.empty()) {
-            acceleration_slip_ = transpose(acceleration_slip_);
-            deceleration_slip_ = transpose(deceleration_slip_);
-            slip_calculated_ = true;
-            log_.INFO("MOTOR", "All slip values calculated");
-        }
+        // // If both containers have been populated, set bool to true
+        // if (!acceleration_slip_.empty() && !deceleration_slip_.empty()) {
+        //     acceleration_slip_ = transpose(acceleration_slip_);
+        //     deceleration_slip_ = transpose(deceleration_slip_);
+        //     slip_calculated_ = true;
+        //     log_.INFO("MOTOR", "All slip values calculated");
+        // }
 
     };
+
+    int32_t calculateRPM(float velocity){
+
+        do{
+            if (velocity < acceleration_slip_.next()[0]){
+                return acceleration_slip_.next()[1];
+            }
+            else{
+                acceleration_slip_.pop();
+            }
+            
+        }
+        while (acceleration_slip_.next()[0] < velocity);
+
+    }
+
   }
 }
