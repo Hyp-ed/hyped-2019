@@ -115,3 +115,21 @@ float CalculateRPM::calculateRPM(float velocity)
 
 }  // namespace motor_control
 }  // namespace hyped
+
+int main(int argc, char *argv[]) {
+
+    CalculateRPM *calc = new CalculateRPM(*log_motor);
+
+
+    if(!calc->initialize("./testAcceleration.txt")) {
+        log_motor->INFO("Motor","Initialization failed");
+    }
+
+    std::cout << "Speed 123: " << calc->calculateRPM(0) << std::endl;
+
+    log_motor->INFO("Motor","Speed : %f", calc->calculateRPM(0));
+    log_motor->INFO("Motor","Speed : %f", calc->calculateRPM(10));
+    log_motor->INFO("Motor","Speed : %f", calc->calculateRPM(20));
+    log_motor->INFO("Motor","Speed : %f", calc->calculateRPM(1000));
+
+}

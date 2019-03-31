@@ -61,7 +61,7 @@ class CalculateRPM
 
         bool initialize(std::string filepath);
 
-        int32_t calculateRPM(float velocity);
+        float calculateRPM(float velocity);
 
     private:
         /**
