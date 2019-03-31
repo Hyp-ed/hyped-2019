@@ -40,10 +40,11 @@ void Main::run()
     System &sys = System::getSystem();
 
     Data stateMachineData = Data::getInstance();
-
+    currentState = State::kCalibrating;
     while (isRunning && sys.running_) {
         // Get the current state of the system from the state machine's data
-        currentState = stateMachineData.getStateMachineData().current_state;
+        // currentState = stateMachineData.getStateMachineData().current_state;
+
 
         if (currentState == State::kIdle) {  // Initialize motors
             log_.INFO("Motor", "State idle");
@@ -60,6 +61,8 @@ void Main::run()
                     isRunning = false;
                 }
             }
+
+            currentState = State::kAccelerating;
 
             yield();
         } else if (currentState == State::kReady) {
@@ -100,6 +103,8 @@ void Main::run()
             isRunning = false;
             stateProcessor->quickStopAll();
         }
+
+        sleep(1000);
     }
 
     log_.INFO("Motor", "Thread shutting down");

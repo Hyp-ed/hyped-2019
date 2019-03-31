@@ -30,8 +30,11 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
       motorAmount(motorAmount),
       initialized(false),
       criticalError(false),
-      servicePropulsionSpeed(10)
+      servicePropulsionSpeed(10),
+      speed(0)
 {
+    rpmCalculator = new CalculateRPM(log);
+
     useTestControllers = true;  // sys_.fake_motors;
 
     // controllers = new ControllerInterface[motorAmount];
@@ -51,15 +54,21 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
 
 void StateProcessor::initMotors()
 {
-    log_.INFO("Motor", "Inside initMoros");
     // Register controllers on CAN bus
     registerControllers();
 
-    log_.INFO("Motor", "Inside initMoros");
     // Configure controllers parameters
     configureControllers();
 
+    log_.INFO("Motor", "Initialize Speed Calculator");
+
     bool error = false;
+
+    if (!rpmCalculator->initialize(SLIPPATH)) {
+        error = true;
+        criticalError = true;
+        return;
+    }
 
     for (int i = 0;i < motorAmount;i++) {
         if (controllers[i]->getFailure()) {
@@ -106,10 +115,10 @@ void StateProcessor::enterPreOperational()
 
 void StateProcessor::accelerate()
 {
-    int speed = 0;
+    speed += 10;
+    int rpm = rpmCalculator->calculateRPM(speed);
     for (int i = 0;i < motorAmount; i++) {
-        controllers[i]->sendTargetVelocity(speed);
-        speed++;
+        controllers[i]->sendTargetVelocity(rpm);
     }
 }
 

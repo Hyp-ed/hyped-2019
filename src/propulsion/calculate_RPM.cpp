@@ -94,13 +94,13 @@ void CalculateRPM::RPM_calc(std::string filepath)
 
 float CalculateRPM::calculateRPM(float velocity)
 {
-    do {
+    while (!acceleration_slip_.empty()) {
         if (velocity < acceleration_slip_.front()[0]) {
             return acceleration_slip_.front()[1];
         }
 
         acceleration_slip_.pop();
-    } while (!acceleration_slip_.empty());
+    }
 
     return 6000;
 }
