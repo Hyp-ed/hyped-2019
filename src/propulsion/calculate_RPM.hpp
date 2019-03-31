@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef BEAGLEBONE_BLACK_MOTOR_CONTROL_MAIN_HPP_
-#define BEAGLEBONE_BLACK_MOTOR_CONTROL_MAIN_HPP_
+#ifndef PROPULSION_CALCULATE_RPM_HPP_
+#define PROPULSION_CALCULATE_RPM_HPP_
 
 #include <cstdint>
 #include <vector>
@@ -32,57 +32,50 @@
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
 
-namespace hyped {
+namespace hyped
+{
 
 using data::NavigationType;
-using utils::concurrent::Thread;
-using utils::concurrent::Barrier;
 using utils::Logger;
 using utils::Timer;
+using utils::concurrent::Barrier;
+using utils::concurrent::Thread;
 
-namespace motor_control {
+namespace motor_control
+{
 
-class CalculateRPM{
-
+class CalculateRPM
+{
     public:
-
-        CalculateRPM(Logger& log);
+        explicit CalculateRPM(Logger &log);
 
     private:
-  /**
-   *   @brief  { Reads slip and translational velocity data from acceleration and
-   *             deceleration text files, calculates RPM's for appropriate slip at each
-   *             translational velocity and stores the values in a 2D array containing
-   *             translational velocity and RPM }
-   */
+        /**
+     *   @brief  { Reads slip and translational velocity data from acceleration and
+     *             deceleration text files, calculates RPM's for appropriate slip at each
+     *             translational velocity and stores the values in a 2D array containing
+     *             translational velocity and RPM }
+     */
 
-        bool check_file(std::string filepath);
+    bool check_file(std::string filepath);
 
-        std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> data);
+    std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> data);
 
-        void RPM_calc(std::string filepath);
+    void RPM_calc(std::string filepath);
 
-        int32_t calculateRPM(float velocity);
+    int32_t calculateRPM(float velocity);
 
-        data::Data& data_;
-        data::StateMachine state_;
-        data::Motors motor_data_;
-        MotorVelocity motor_velocity_;
+    data::Data &data_;
+    data::StateMachine state_;
+    data::Motors motor_data_;
+    MotorVelocity motor_velocity_;
 
-        std::queue<std::vector<double>> acceleration_slip_;
+    std::queue<std::vector<double>> acceleration_slip_;
 
-        Logger& log_;
-
-        bool motor_failure_;
-        bool slip_calculated_;
-
-        float velocity;
-        // int32_t slip_velocity;
+    Logger &log_;
 };
 
-}}  // namespace hyped::motor_control
+}  // namespace motor_control
+}  // namespace hyped
 
-#endif  // BEAGLEBONE_BLACK_MOTOR_CONTROL_MAIN_HPP_
-
-
-
+#endif  // PROPULSION_CALCULATE_RPM_HPP_
