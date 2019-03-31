@@ -76,6 +76,11 @@ class ImuManager: public ImuManagerInterface {
  private:
   utils::System&    sys_;
   DataArray         sensors_imu_;
+  
+  /**
+   * @brief needs to be reference because run() writes directly to the data struct
+   * 
+   */
   data::Data&       data_;
 
   uint8_t           chip_select_[data::Sensors::kNumImus];
