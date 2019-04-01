@@ -79,7 +79,7 @@ struct StripeCounter : public Sensor {
 };
 
 struct Sensors : public Module {
-  static constexpr int kNumImus =3;            // TODO(anyone): change back to final cte for PCB
+  static constexpr int kNumImus = 3;            // TODO(anyone): change back to final cte for PCB
   static constexpr int kNumKeyence = 2;
 
   DataPoint<array<ImuData, kNumImus>> imu;
