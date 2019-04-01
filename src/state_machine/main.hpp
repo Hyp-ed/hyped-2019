@@ -67,6 +67,7 @@ class Main: public Thread {
   data::Motors          motor_data_;
   data::Batteries       batteries_data_;
   data::Sensors         sensors_data_;
+  data::EmergencyBrakes emergency_brakes_data_;
 };
 
 }}  // namespace hyped::motor_control

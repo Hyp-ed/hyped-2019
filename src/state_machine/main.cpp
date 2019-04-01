@@ -57,7 +57,7 @@ void Main::run()
 
     switch (sm_data_.current_state) {
       case data::State::kIdle:
-        if (checkTelemetryCriticalFailure()) break;  // TODO(anyone): discuss this transition again
+        if (checkTelemetryCriticalFailure()) break;
         if (checkInitialised())          break;
         break;
       case data::State::kCalibrating:
@@ -75,7 +75,6 @@ void Main::run()
         break;
       case data::State::kNominalBraking:
         if (checkCriticalFailure())      break;
-        if (checkTimer())                break;
         if (checkVelocityZeroReached())  break;
         break;
       case data::State::kRunComplete:
