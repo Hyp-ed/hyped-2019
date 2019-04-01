@@ -39,7 +39,8 @@ ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-      chip_select_ {117, 125, 123, 111, 112, 110, 20}       // 7 for breadboard
+      chip_select_ {112, 110, 20}       // 7 for breadboard
+      // chip_select_ {117, 125, 123, 111, 112, 110, 20}       // 7 for breadboard
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);
