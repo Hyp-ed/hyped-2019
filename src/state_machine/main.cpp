@@ -54,6 +54,7 @@ void Main::run()
     motor_data_     = data_.getMotorData();
     batteries_data_ = data_.getBatteriesData();
     // sensors_data_   = data_.getSensorsData();
+    emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
     switch (sm_data_.current_state) {
       case data::State::kIdle:
@@ -110,7 +111,8 @@ bool Main::checkInitialised()
       nav_data_.module_status       == data::ModuleStatus::kInit &&
       motor_data_.module_status     == data::ModuleStatus::kInit &&
       // sensors_data_.module_status   == data::ModuleStatus::kInit &&
-      batteries_data_.module_status == data::ModuleStatus::kInit) {
+      batteries_data_.module_status == data::ModuleStatus::kInit &&
+      emergency_brakes_data_.module_status == data::ModuleStatus::kInit) {
     log_.INFO("STATE", "all modules are initialised");
     hypedMachine.handleEvent(kInitialised);
     return true;
