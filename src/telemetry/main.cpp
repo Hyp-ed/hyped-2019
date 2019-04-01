@@ -25,20 +25,26 @@
 
 namespace hyped {
 
-using hyped::client::Client;
+using client::Client;
+using data::Data;
 
 namespace telemetry {
 
 Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
-      client_ {log}
+      client_ {log},
+      data_ {Data::getInstance()}
 {
     log_.DBG("Telemetry", "Telemetry thread started");
 }
 
 void Main::run()
 {
-    client_.connect();
+    if (!client_.connect()) {
+        // idk throw exception or something
+        log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
+    }
+
     std::thread recvThread {recvLoop, std::ref(client_)};  // NOLINT (linter thinks semicolon is syntax error...)
 
     while (true) {

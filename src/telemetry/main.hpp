@@ -22,6 +22,7 @@
 #define TELEMETRY_MAIN_HPP_
 
 #include "client.hpp"
+#include "data/data.hpp"
 #include "utils/concurrent/thread.hpp"
 
 namespace hyped {
@@ -29,6 +30,7 @@ namespace hyped {
 using client::Client;
 using utils::concurrent::Thread;
 using utils::Logger;
+using data::Data;
 
 namespace telemetry {
 
@@ -39,6 +41,7 @@ class Main: public Thread {
 
     private:
         Client client_;
+        Data& data_;
 };
 
 void recvLoop(Client& c);
