@@ -208,7 +208,6 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
         log_.ERR("Fake-IMU", "Timestamp format invalid %d", temp_time);
       }
 
-      int value_counter = 0;
       input >> value[0];
       value[1] = 0.0;
       value[2] = 9.8;
