@@ -34,6 +34,8 @@ using data::Data;
 using data::State;
 using utils::Logger;
 using utils::System;
+using data::ModuleStatus;
+using data::EmergencyBrakes;
 
 namespace embrakes {
 

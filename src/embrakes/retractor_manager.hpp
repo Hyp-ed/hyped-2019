@@ -24,6 +24,7 @@
 #include <atomic>
 #include "retractor.hpp"
 #include "retractor_interface.hpp"
+#include "fake_retractor.hpp"
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 

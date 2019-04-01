@@ -39,6 +39,8 @@ void Main::run()
 
 	Data stateMachineData = Data::getInstance();
 
+	EmergencyBrakes emBrakesState = stateMachineData.getEmergencyBrakesData();
+
 	// activate, step, push
 	Pins pins[BREAKAMOUNT]={
 		{8,9,11}
@@ -49,18 +51,26 @@ void Main::run()
 	while (sys.running_)
 	{
     // Get the current state of the system from the state machine's data
+		
 		currentState = stateMachineData.getStateMachineData().current_state;
-
+		
 		if (currentState == State::kCalibrating) // Retract screw
 		{
-			if(retractorManager->getStatus() == StatusCodes::IDLE) {
-					log_.INFO("Embrakes","Start Retracting");
+			if (retractorManager->getStatus() == StatusCodes::IDLE) {
+					log_.INFO("Embrakes", "Start Retracting");
 					retractorManager->retract();
-			} else if(retractorManager->getStatus() == StatusCodes::ERROR) {
-				log_.ERR("Embrakes","An error occured");
-			} else if(retractorManager->getStatus() == StatusCodes::FINISHED) {
-				if(!finishedRetracting_) {
-					log_.INFO("Embrakes","Brakes are retracted");
+			} else if (retractorManager->getStatus() == StatusCodes::ERROR) {
+				log_.ERR("Embrakes", "An error occured");
+				emBrakesState.module_status = ModuleStatus::kCriticalFailure;
+				stateMachineData.setEmergencyBrakesData(emBrakesState);
+
+				finishedRetracting_ = true;
+			} else if (retractorManager->getStatus() == StatusCodes::FINISHED) {
+				if (!finishedRetracting_) {
+					log_.INFO("Embrakes", "Brakes are retracted");
+					emBrakesState.module_status = ModuleStatus::kReady;
+					stateMachineData.setEmergencyBrakesData(emBrakesState);
+					
 					// Set the initialized field in the data structure
 					finishedRetracting_ = true;
 				}

@@ -13,10 +13,16 @@ namespace hyped {
             status = new std::atomic<StatusCodes>[breakAmount_];  
             retractors_ = new RetractorInterface*[breakAmount_]; 
 
+            bool useFakeController = false;
+
             for(uint i = 0;i < breakAmount_;i++) {
                 status[i] = StatusCodes::IDLE;                
-                // TODO{gregor}: Add check if fake retractors should be loaded instead
-                retractors_[i] = new Retractor(pins[i].activate,pins[i].step,pins[i].push, &status[i]);
+                                
+                if (useFakeController) {
+                    retractors_[i] = new FakeRetractor(&status[i]);
+                } else {
+                    retractors_[i] = new Retractor(pins[i].activate,pins[i].step,pins[i].push, &status[i]);
+                }
             }
         }
 
