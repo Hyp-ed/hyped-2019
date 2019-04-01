@@ -26,21 +26,28 @@
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/concurrent/thread.hpp"
+#include "utils/system.hpp"
+#include "utils/logger.hpp"
 
 namespace hyped {
 
 using utils::Logger;
 using utils::concurrent::Thread;
+using utils::System;
+
 namespace sensors {
 
 class GpioCounter: public GpioInterface, public Thread {            // interface.hpp
  public:
-  explicit GpioCounter(int pin);
+  GpioCounter(utils::Logger& log, int pin);
+  ~GpioCounter() {}
   data::StripeCounter getStripeCounter() override;      // data.hpp, data.cpp<array> data_point.hpp
   void run() override;
 
  private:
   int pin_;
+  System&  sys_;
+  utils::Logger& log_;
   data::StripeCounter stripe_counter_;
 };
 }}  // namespace hyped::sensors

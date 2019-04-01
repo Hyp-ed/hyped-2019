@@ -31,12 +31,11 @@ namespace hyped {
 
 using utils::Logger;
 using data::Data;
-// using utils::concurrent::Thread;     // Throws error
 using data::StripeCounter;
 
 namespace sensors {
 
-class FakeGpioCounter:public GpioInterface {
+class FakeGpioCounter : public GpioInterface {
  public:
   /**
    * @brief Construct a new Fake Gpio Counter dynamic object
@@ -58,21 +57,7 @@ class FakeGpioCounter:public GpioInterface {
   FakeGpioCounter(utils::Logger& log, bool miss_stripe, bool double_stripe, std::string file_path);
 
   /**
-   * @brief compares navigation data and sets miss_stripe_, double_stripe_ true
-   * if stripe_count_ does not match the data
-   *
-   * @return StripeCounter
-   */
-  StripeCounter getData();
-
-  /**
-   * @brief based on flags from getData(), overrides stripe_count_ if not correct
-   * continues after first 5 seconds of run, call this after getData()
-   */
-  void checkData();
-
-  /**
-   * @brief from data.hpp
+   * @brief Returns the current count of stripes
    *
    * @return data::StripeCounter stripe count and timestamp (microseconds)
    */
@@ -86,6 +71,13 @@ class FakeGpioCounter:public GpioInterface {
 
  private:
   bool timeCheck();         // return if check_time_ exceeded
+
+   /**
+   * @brief based on flags from getData(), overrides stripe_count_ if not correct
+   * continues after first 5 seconds of run, call this after getData()
+   */
+  void checkData();
+
   bool timeout(StripeCounter stripe_data);    // if needs to break out
   void readFromFile(std::vector<StripeCounter>& data);
   Logger& log_;
@@ -121,12 +113,6 @@ class FakeGpioCounter:public GpioInterface {
    *
    */
   bool double_stripe_;
-
-  /**
-   * @brief timestamp at beginning of run, used to get start time within getData()
-   *
-   */
-  bool init_;
 
   std::string file_path_;
 

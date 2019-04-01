@@ -37,15 +37,8 @@ namespace sensors {
 ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
-<<<<<<< HEAD
-      sensors_imu_(imu),
-      chip_select_ {49, 117, 125, 123, 111, 112, 110},
-      is_calibrated_(false),
-      calib_counter_(0)
-=======
       data_(Data::getInstance()),
       chip_select_ {49, 117, 125, 123, 111, 112, 110, 20}
->>>>>>> develop
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);

@@ -39,7 +39,6 @@ uint64_t kCheckTime = 358588;
 namespace hyped {
 
 using data::StripeCounter;
-using sensors::FakeGpioCounter;
 using utils::concurrent::Thread;
 using utils::Logger;
 
@@ -55,7 +54,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stri
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
-  init_ = true;
 }
 
 FakeGpioCounter::FakeGpioCounter(Logger& log,
@@ -70,36 +68,22 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
-  init_ = true;
+  stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
   readFromFile(stripe_data_);           // read text from file into vector class member
 }
 
-StripeCounter FakeGpioCounter::getData()     // returns incorrect stripe count
+StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect stripe count
 {
-  if (init_) {
-    stripe_count_.count.timestamp = utils::Timer::getTimeMicros();      // the start time
-    start_time_ = stripe_count_.count.timestamp;
-    init_ = false;
-  }
-
-  if (timeCheck()) {    // only do this if it's time to check
     data::Navigation nav   = data_.getNavigationData();
-    uint32_t current = stripe_count_.count.value;
+    uint32_t current_count = stripe_count_.count.value;
 
-    int nav_distance = std::floor(nav.distance/kStripeDistance);      // cast floor int;
+    int nav_count = std::floor(nav.distance/kStripeDistance);      // cast floor int;
 
-    if (nav_distance == current) {             // if correct
-      log_.INFO("fake_gpio_counter", "correct count");
-    } else if (nav.distance < current) {       // counted too many stripes
-      log_.INFO("fake_gpio_counter", "incorrect count, double stripe");
-      double_stripe_ = true;
-    } else if (nav.distance > current) {      // if missed extra_count number of stripes
-      log_.INFO("fake_gpio_counter", "incorrect count, %d stripes missed", nav.distance-current);
-      miss_stripe_ = true;
+    if (current_count != nav_count) {
+      stripe_count_.count.value = nav_count;
+      stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
     }
-      log_.INFO("fake_gpio_counter", "nav.distance=%f, current_count=%d, timestamp=%f",
-                  nav.distance, stripe_count_.count.value, stripe_count_.count.timestamp);
-  }
+
   return stripe_count_;
 }
 
@@ -124,11 +108,6 @@ bool FakeGpioCounter::timeCheck()             // used to see if it is time to ch
     return true;
   }
   return false;
-}
-
-StripeCounter FakeGpioCounter::getStripeCounter()
-{
-  return stripe_count_;
 }
 
 void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
