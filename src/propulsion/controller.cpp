@@ -43,13 +43,13 @@ Controller::Controller(Logger& log, uint8_t id)
   nmt_message_.len        = 8;
 
   // Initialse arrays of message data:
-  FileReader::readFileData(configMessages_, kconfigMessagesFile);
+  // FileReader::readFileData(configMessages_, kconfigMessagesFile);
 }
 
-bool Controller::sendSdoMessage(ControllerMessage message_template, int32_t len)
+bool Controller::sendSdoMessage(ControllerMessage message_template)
 {
-  for (int i = 0; i < len; i++) {
-    sdo_message_.data[i] = message_template.message[i];
+  for (int i = 0; i < message_template.len; i++) {
+    sdo_message_.data[i] = message_template.message_data[i];
   }
 
   sender.sendMessage(sdo_message_);
@@ -69,6 +69,9 @@ void Controller::registerController()
 
 void Controller::configure()
 {
+  for (int i = 0; i < 16; i++) {
+    // if (sendSdoMessage(configMessages_[i])) return;
+  }
 }
 
 void Controller::enterOperational()

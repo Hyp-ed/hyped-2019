@@ -54,6 +54,7 @@ class Controller : public ControllerInterface {
   void registerController() override;
   /**
    * @brief Apply configuration settings.
+   *        (sends 16 can messages to configure the motors correctly)
    */
   void configure() override;
   /**
@@ -115,7 +116,7 @@ class Controller : public ControllerInterface {
    * @param message_template
    * @param len
    */
-  bool sendSdoMessage(ControllerMessage message_template, int32_t len);
+  bool sendSdoMessage(ControllerMessage message_template);
   Logger&           log_;
   data::Data&       data_;
   data::Motors      motor_data_;
@@ -129,7 +130,8 @@ class Controller : public ControllerInterface {
 
   // TODO(Iain): add arrays for predefined configuration messages.
   // Paths to the different files of message data.
-  const char* kconfigMessagesFile = "src/propulsion/configFiles/configMessages.txt";
+  const char* kconfigMessagesFile = "src/propulsion/configFiles/test_message.txt";
+
   // Arrays of messages sent to controller (see config files for details about message contents)
   ControllerMessage configMessages_[16];
 };

@@ -43,17 +43,25 @@ class FileReader {
    * @param message
    * @param len
    */
-  static void readFileData(ControllerMessage* message, const char* filepath);
+  static bool readFileData(std::string* messages, const char* filepath);
 
  private:
   /**
-   * @brief helper function to split the space separated data into individual hex values.
+   * @brief helper function to split the line into strings containing the hex data and
+   *        a string logger message.
+   * 
+   * @param line 
+   * @return const char* 
+   */
+  static void splitData(std::string line, std::string* lineData);
+  /**
+   * @brief helper function to add the split data to the message struct.
    *
    * @param str
    * @param message
    * @param len
    */
-  static void addData(std::string str, uint8_t* message, int32_t len);
+  static void addData(std::string strData[], ControllerMessage message);
 };
 }}  // namespace hyped::motor_control
 #endif  // PROPULSION_FILE_READER_HPP_
