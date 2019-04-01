@@ -55,29 +55,29 @@ void Main::run()
     std::thread recvThread {recvLoop, std::ref(client_)};  // NOLINT (linter thinks semicolon is syntax error...)
 
     while (true) {
-        protoTypes::TestMessage msg;
+        telemetry_data::TestMessage msg;
 
-        msg.set_command(protoTypes::TestMessage::VELOCITY);
+        msg.set_command(telemetry_data::TestMessage::VELOCITY);
         msg.set_data(222);
         client_.sendData(msg);
 
-        msg.set_command(protoTypes::TestMessage::ACCELERATION);
+        msg.set_command(telemetry_data::TestMessage::ACCELERATION);
         msg.set_data(333);
         client_.sendData(msg);
 
-        msg.set_command(protoTypes::TestMessage::BRAKE_TEMP);
+        msg.set_command(telemetry_data::TestMessage::BRAKE_TEMP);
         msg.set_data(777);
         client_.sendData(msg);
 
-        msg.set_command(protoTypes::TestMessage::VELOCITY);
+        msg.set_command(telemetry_data::TestMessage::VELOCITY);
         msg.set_data(333);
         client_.sendData(msg);
 
-        msg.set_command(protoTypes::TestMessage::ACCELERATION);
+        msg.set_command(telemetry_data::TestMessage::ACCELERATION);
         msg.set_data(444);
         client_.sendData(msg);
 
-        msg.set_command(protoTypes::TestMessage::BRAKE_TEMP);
+        msg.set_command(telemetry_data::TestMessage::BRAKE_TEMP);
         msg.set_data(888);
         client_.sendData(msg);
     }

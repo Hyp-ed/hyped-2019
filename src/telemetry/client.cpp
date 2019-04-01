@@ -85,7 +85,7 @@ Client::~Client()
     close(sockfd_);
 }
 
-bool Client::sendData(protoTypes::TestMessage message)
+bool Client::sendData(telemetry_data::TestMessage message)
 {
     using namespace google::protobuf::util;
 
@@ -101,17 +101,17 @@ bool Client::receiveData()
 {
     using namespace google::protobuf::util;
 
-    protoTypes::TestMessage messageFromServer;
+    telemetry_data::TestMessage messageFromServer;
     if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_, NULL)) {
         log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
         return false;
     }
 
     switch (messageFromServer.command()) {
-        case protoTypes::TestMessage::FINISH:
+        case telemetry_data::TestMessage::FINISH:
             log_.DBG1("Telemetry", "FROM SERVER: FINISH");
             break;
-        case protoTypes::TestMessage::EM_STOP:
+        case telemetry_data::TestMessage::EM_STOP:
             log_.DBG1("Telemetry", "FROM SERVER: EM_STOP");
             break;
         default:

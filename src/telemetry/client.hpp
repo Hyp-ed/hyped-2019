@@ -42,7 +42,7 @@ class Client {
         explicit Client(Logger& log);
         ~Client();
         bool connect();
-        bool sendData(protoTypes::TestMessage message);
+        bool sendData(telemetry_data::TestMessage message);
         bool receiveData();
 
     private:
