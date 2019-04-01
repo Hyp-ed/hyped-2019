@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package protoTypes;
+package telemetry_data;
 
-option java_package = "protoTypes";
-option java_outer_classname = "MessageProtos";
+option java_package = "telemetrydata";
+option java_outer_classname = "TelemetryData";
 
 message TestMessage {
     enum Command {
@@ -18,4 +18,19 @@ message TestMessage {
 
     Command command = 1;
     int32 data = 2;
+}
+
+message ServerToClient {
+    enum Command {
+        ACK = 0;
+        STOP = 1;
+        LAUNCH = 2;
+        RESET = 3;
+        TRACKLENGTH = 3;
+        SERV_PROP_GO = 4;
+    }
+
+    Command command = 1;  // idk watch for naming conflicts in methods and stuff
+    float track_length = 2;
+    bool serv_prop_go = 3;
 }

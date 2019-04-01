@@ -27,6 +27,7 @@ namespace hyped {
 
 using client::Client;
 using data::Data;
+using data::Telemetry;
 
 namespace telemetry {
 
@@ -44,6 +45,12 @@ void Main::run()
         // idk throw exception or something
         log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
     }
+
+    Telemetry telem_data = data_.getTelemetryData();
+    log_.INFO("Telemetry", "launch_command: %s", telem_data.launch_command ? "true" : "false");
+    log_.INFO("Telemetry", "reset_command: %s", telem_data.reset_command ? "true" : "false");
+    log_.INFO("Telemetry", "run_length: %f", telem_data.run_length);
+    log_.INFO("Telemetry", "spg: %s", telem_data.service_propulsion_go ? "true" : "false");
 
     std::thread recvThread {recvLoop, std::ref(client_)};  // NOLINT (linter thinks semicolon is syntax error...)
 
