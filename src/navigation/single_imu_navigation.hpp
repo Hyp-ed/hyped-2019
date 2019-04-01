@@ -60,7 +60,7 @@ namespace hyped
                 SingleImuNavigation(ImuQuery& imuQuery_, int imuId_,
                                     GravityCalibrator& gravityCalibrator,
                                     Timer* timer_);
-                int navigate(unsigned int nTestQueries, float queryDelay, int runId, Logger log);
+                int navigate(unsigned int nTestQueries, float queryDelay, int runId, Logger& log);
 
             private:
                 ImuQuery&           imuQuery;

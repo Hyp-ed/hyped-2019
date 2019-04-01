@@ -16,7 +16,7 @@
  *    limitations under the License.
  */
 
-#include "navigation/sim_single_imu.hpp"
+#include "navigation/single_imu_simulation.hpp"
 
 #include <string>
 #include <queue>
@@ -28,10 +28,14 @@ namespace hyped
 {
     namespace navigation
     {
-        void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, queue<int>* stripeCount,
-                         ifstream* accData, ifstream* posData,
-                         string accFname, string posFname,
-                         float refreshRate, float stddev, float stripeSep)
+        SingleImuSimulation::SingleImuSimulation()
+        {}
+
+        void SingleImuSimulation::loadSimData(queue<DataPoint<NavigationVector>>* dataQueue,
+                                              queue<int>* stripeCount,
+                                              ifstream* accData, ifstream* posData,
+                                              string accFname, string posFname,
+                                              float refreshRate, float stddev, float stripeSep)
         {
             float t = 0.;
             float ax, ay, az;
@@ -61,14 +65,9 @@ namespace hyped
             posData->close();
         }
 
-        int simulation(int argc, char *argv[])
+        int SingleImuSimulation::simulate(Logger& log)
         {
-            /*
-                System setup
-            */
-            System::parseArgs(argc, argv);
             System& sys = System::getSystem();
-            Logger log(sys.verbose, sys.debug);
             bool writeToFile = sys.run_id > 0;
 
             /*

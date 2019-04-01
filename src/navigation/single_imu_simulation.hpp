@@ -16,8 +16,8 @@
  *    limitations under the License.
  */
 
-#ifndef NAVIGATION_SIM_SINGLE_IMU_HPP_
-#define NAVIGATION_SIM_SINGLE_IMU_HPP_
+#ifndef NAVIGATION_SINGLE_IMU_SIMULATION_HPP_
+#define NAVIGATION_SINGLE_IMU_SIMULATION_HPP_
 
 #include <stdio.h>
 #include <unistd.h>
@@ -61,12 +61,18 @@ namespace hyped
 
     namespace navigation
     {
-        void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue, queue<int>* stripeCount,
-                         ifstream* accData, ifstream* posData, string accFname, string posFname,
-                         float refreshRate, float stddev, float stripeSep);
-
-        int simulation(int argc, char *argv[]);
+        class SingleImuSimulation
+        {
+            public:
+                SingleImuSimulation();
+                int simulate(Logger& log);
+            private:
+                void loadSimData(queue<DataPoint<NavigationVector>>* dataQueue,
+                                 queue<int>* stripeCount, ifstream* accData,
+                                 ifstream* posData, string accFname, string posFname,
+                                 float refreshRate, float stddev, float stripeSep);
+        };
     }
 }
 
-#endif  // NAVIGATION_SIM_SINGLE_IMU_HPP_
+#endif  // NAVIGATION_SINGLE_IMU_SIMULATION_HPP_

@@ -33,7 +33,7 @@ namespace hyped
         {}
 
         int SingleImuNavigation::navigate(unsigned int nTestQueries,
-                                          float queryDelay, int runId, Logger log)
+                                          float queryDelay, int runId, Logger& log)
         {
             // File setup
             bool writeToFile = (imuId > 0) || (runId > 0);
