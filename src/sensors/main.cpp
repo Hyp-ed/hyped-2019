@@ -25,6 +25,9 @@
 #include "sensors/bms_manager.hpp"
 #include "sensors/gpio_counter.hpp"
 
+constexpr int kKeyencePinLeft = 36;
+constexpr int kKeyencePinRight = 33;
+
 namespace hyped {
 
 using hyped::utils::concurrent::Thread;
@@ -46,8 +49,8 @@ Main::Main(uint8_t id, Logger& log)
     battery_manager_(new BmsManager(log,
                                         &batteries_.low_power_batteries,
                                         &batteries_.high_power_batteries)),
-    keyence_l_(new GpioCounter(36)),
-    keyence_r_(new GpioCounter(33))
+    keyence_l_(new GpioCounter(kKeyencePinLeft)),
+    keyence_r_(new GpioCounter(kKeyencePinRight))
   {}
 
 void Main::run()

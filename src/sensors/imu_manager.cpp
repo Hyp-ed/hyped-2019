@@ -39,11 +39,7 @@ ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-<<<<<<< HEAD
-      chip_select_ {117, 125, 123, 111, 112, 110, 20}        // TODO(Greg): add pin 49 for 8th sensor
-=======
-      chip_select_ {49, 117, 125, 123, 111, 112, 110, 20}
->>>>>>> develop
+      chip_select_ {117, 125, 123, 111, 112, 110, 20}       // 7 for breadboard
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);
@@ -61,10 +57,6 @@ ImuManager::ImuManager(Logger& log)
     }
   }
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
   log_.INFO("IMU-MANAGER", "imu data has been initialised");
 }
 
@@ -74,10 +66,6 @@ void ImuManager::run()
   while (sys_.running_) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       imu_[i]->getData(&(sensors_imu_.value[i]));
-<<<<<<< HEAD
-      log_.DBG1("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", i, sensors_imu_.value[i].acc[0], sensors_imu_.value[i].acc[1], sensors_imu_.value[i].acc[2]); // NOLINT
-=======
->>>>>>> develop
     }
     resetTimestamp();
     sensors_imu_.timestamp = utils::Timer::getTimeMicros();

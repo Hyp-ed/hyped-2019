@@ -52,6 +52,11 @@ class BmsManager: public ManagerInterface  {
   BatteriesHP*    hp_batteries_;
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
+  
+  /**
+   * @brief needs to be references because run() passes directly to data struct
+   * 
+   */
   data::Data&     data_;
   data::Batteries batteries_;
   bool batteriesInRange();
