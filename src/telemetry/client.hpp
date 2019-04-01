@@ -43,7 +43,7 @@ class Client {
         ~Client();
         bool connect();
         bool sendData(telemetry_data::TestMessage message);
-        bool receiveData();
+        telemetry_data::ServerToClient receiveData();
 
     private:
         int sockfd_;

@@ -97,29 +97,17 @@ bool Client::sendData(telemetry_data::TestMessage message)
     return true;
 }
 
-bool Client::receiveData()
+telemetry_data::ServerToClient Client::receiveData()
 {
     using namespace google::protobuf::util;
 
-    telemetry_data::TestMessage messageFromServer;
+    telemetry_data::ServerToClient messageFromServer;
     if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_, NULL)) {
         log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
-        return false;
+        // throw exception or something here
     }
 
-    switch (messageFromServer.command()) {
-        case telemetry_data::TestMessage::FINISH:
-            log_.DBG1("Telemetry", "FROM SERVER: FINISH");
-            break;
-        case telemetry_data::TestMessage::EM_STOP:
-            log_.DBG1("Telemetry", "FROM SERVER: EM_STOP");
-            break;
-        default:
-            log_.ERR("Telemetry", "UNRECOGNIZED INPUT FROM SERVER");
-            break;
-    }
-
-    return true;
+    return messageFromServer;
 }
 
 }  // namespace client

@@ -87,8 +87,11 @@ void Main::run()
 
 void recvLoop(Client& c)
 {
+    telemetry_data::ServerToClient msg;
+
     while (true) {
-        c.receiveData();
+        msg = c.receiveData();
+        std::cout << msg.DebugString();  // rip not working with logger
     }
 }
 
