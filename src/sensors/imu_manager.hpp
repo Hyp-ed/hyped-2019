@@ -43,13 +43,21 @@ namespace sensors {
  *
  */
 class ImuManager: public ImuManagerInterface {
+<<<<<<< HEAD
   typedef data::DataPoint<array<ImuData, data::Sensors::kNumImus>>      DataArray;
+=======
+  typedef data::DataPoint<array<ImuData, data::Sensors::kNumImus>>  DataArray;
+>>>>>>> develop
 
  public:
   /**
    * @brief Construct a new Imu Manager object
    *
    * @param log
+<<<<<<< HEAD
+=======
+   * @param imu
+>>>>>>> develop
    */
   explicit ImuManager(Logger& log);
 
@@ -74,14 +82,9 @@ class ImuManager: public ImuManagerInterface {
   void resetTimestamp()                 override;
 
  private:
-  utils::System&    sys_;
-  DataArray         sensors_imu_;
-  
-  /**
-   * @brief needs to be reference because run() writes directly to the data struct
-   * 
-   */
-  data::Data&       data_;
+  utils::System&   sys_;
+  DataArray        sensors_imu_;
+  data::Data&      data_;
 
   uint8_t           chip_select_[data::Sensors::kNumImus];
   ImuInterface*     imu_[data::Sensors::kNumImus];

@@ -46,13 +46,13 @@ Main::Main(uint8_t id, Logger& log)
     battery_manager_(new BmsManager(log,
                                         &batteries_.low_power_batteries,
                                         &batteries_.high_power_batteries)),
-    keyence_l_(new GpioCounter(data::Sensors::kKeyencePinLeft)),
-    keyence_r_(new GpioCounter(data::Sensors::kKeyencePinRight))
+    keyence_l_(new GpioCounter(36)),
+    keyence_r_(new GpioCounter(33))
   {}
 
 void Main::run()
 {
-  // start all managers
+// start all managers
   imu_manager_->start();
   battery_manager_->start();
 
@@ -64,7 +64,7 @@ void Main::run()
   array<StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter;
   array<StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count;
 
-  // Initalise the arrays
+  // Initalise the arrays     // TODO(Jack): can you do this? throws compilation error
   keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;
   prev_keyence_stripe_count = keyence_stripe_counter;
 
@@ -72,7 +72,7 @@ void Main::run()
     // We need to read the gpio counters and write to the data structure
     // If previous is not equal to the new data then update
     if (prev_keyence_stripe_count[0].count.value != keyence_stripe_counter[0].count.value ||
-        prev_keyence_stripe_count[1].count.value != keyence_stripe_counter[1].count.value ) {   // NOLINT maybe uninit warning
+        prev_keyence_stripe_count[1].count.value != keyence_stripe_counter[1].count.value ) {
       // Update data structure, make prev reading same as this reading
       data_.setSensorsKeyenceData(keyence_stripe_counter);
       prev_keyence_stripe_count = keyence_stripe_counter;

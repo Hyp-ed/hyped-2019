@@ -104,8 +104,9 @@ void BmsManager::resetTimestamp()
   old_timestamp_ = timestamp;
 }
 
-bool BmsManager::batteriesInRange()         // TODO(Greg): verify values with Batteries Team
+bool BmsManager::batteriesInRange()
 {
+  // TODO(Greg): Check these values with power team
   // check all LP and HP battery values are in expected range
 
   // check LP
@@ -129,7 +130,7 @@ bool BmsManager::batteriesInRange()         // TODO(Greg): verify values with Ba
 
   // check HP
   for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-    auto& battery = batteries_.high_power_batteries[i];     // reference batteries individually
+    auto& battery = batteries_.high_power_batteries[i];     // reference battereis individually
     if (battery.voltage < 720 || battery.voltage > 1246) {   // voltage in 72V to 124.6V
       log_.ERR("BMS-MANAGER", "BMS HP %d voltage out of range: %d", i, battery.voltage);
       return false;

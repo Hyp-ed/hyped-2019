@@ -108,10 +108,16 @@ void Imu::init()
   enableFifo();
 
   if (check_init) {
+<<<<<<< HEAD
     log_.INFO("Imu", "FIFO Enabled");
     log_.INFO("Imu", "Imu %d sensor created. Initialisation complete.", pin_);
   } else {
     log_.ERR("Imu", "ERROR: Imu %d sensor not initialised.", pin_);
+=======
+    log_.INFO("Imu", "Imu sensor created. Initialisation complete.");
+  } else {
+    log_.ERR("Imu", "ERROR: Imu sensor not initialised.");
+>>>>>>> develop
   }
 }
 
@@ -123,7 +129,16 @@ void Imu::enableFifo()
   writeByte(kFifoEnable, kFifoAccel);
   uint8_t check_enable = 0;
   readByte(kFifoEnable, &check_enable);
+<<<<<<< HEAD
   kFrameSize_ = 6;                   // only for acceleration xyz
+=======
+  if (check_enable == 0x2B) {
+    log_.INFO("Imu", "FIFO Enabled");
+  } else {
+    log_.ERR("Imu", "FIFO not enabled!");
+  }
+  kFrameSize = 6;                   // only for acceleration xyz
+>>>>>>> develop
 }
 
 bool Imu::whoAmI()

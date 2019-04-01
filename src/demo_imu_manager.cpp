@@ -28,7 +28,6 @@
 
 #define MANAGER 1
 
-using hyped::sensors::Imu;
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using namespace hyped::data;

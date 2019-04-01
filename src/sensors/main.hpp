@@ -3,7 +3,7 @@
  * Organisation: HYPED
  * Date:
  * Description:
- * Main initialises sensor drivers. Main is not responsible for initialisation
+ * Main initialises and manages sensor drivers. Main is not responsible for initialisation
  * of supporting io drivers (i2c, spi, can). This should be done by the sensor
  * drivers themselves.
  *
@@ -47,10 +47,15 @@ class Main: public Thread {
     void run() override;    // from thread
 
   private:
+    // check if all battery values are in expected range
+    // returns true iff all battery values (LP and HP) are in expected ranges
+    bool batteriesInRange();
+
     data::Data&     data_;
     utils::System& sys_;
 
-    // master data structures
+    // // master data structures
+    data::Sensors   sensors_;
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
 
@@ -59,7 +64,7 @@ class Main: public Thread {
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
 
-    bool sensor_init_;      // TODO(Greg): check these booleans at init
+    bool sensor_init_;
     bool battery_init_;
 };
 

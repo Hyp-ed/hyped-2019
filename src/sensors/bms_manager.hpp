@@ -52,10 +52,8 @@ class BmsManager: public ManagerInterface  {
   BatteriesHP*    hp_batteries_;
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
-  data::Data      data_;
+  data::Data&     data_;
   data::Batteries batteries_;
-  // check if all battery values are in expected range
-  // returns true iff all battery values (LP and HP) are in expected ranges
   bool batteriesInRange();
 
   uint64_t timestamp;
