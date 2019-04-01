@@ -51,6 +51,9 @@ namespace hyped {
             SingleImuNavigation singleImuNavigation(imuQuery, sys.imu_id,
                                                     gravityCalibrator, &timer);
             singleImuNavigation.navigate(nTestQueries, queryDelay, sys.run_id, log);
+
+            while (true)
+            {}
         }
     }
 }

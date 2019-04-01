@@ -34,6 +34,8 @@ namespace hyped {
             // Start single IMU simulation
             SingleImuSimulation simulation = SingleImuSimulation();
             simulation.simulate(log);
+            while (true)
+            {}
         }
     }
 }
