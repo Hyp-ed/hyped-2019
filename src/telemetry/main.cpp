@@ -38,6 +38,7 @@ Main::Main(uint8_t id, Logger& log)
 
 void Main::run()
 {
+    client_.connect();
     std::thread recvThread {recvLoop, std::ref(client_)};  // NOLINT (linter thinks semicolon is syntax error...)
 
     while (true) {

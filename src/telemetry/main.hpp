@@ -26,7 +26,7 @@
 
 namespace hyped {
 
-using hyped::client::Client;
+using client::Client;
 using utils::concurrent::Thread;
 using utils::Logger;
 

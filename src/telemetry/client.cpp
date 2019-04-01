@@ -34,6 +34,13 @@ namespace client {
 Client::Client(Logger& log)
     : log_(log)
 {
+    log_.DBG("Telemetry", "Client object created");
+}
+
+bool Client::connect()
+{
+    log_.INFO("Telemetry", "Beginning process to connect to server");
+
     struct addrinfo hints;
     struct addrinfo* server_info;  // contains possible addresses to connect to according to hints
 
@@ -57,7 +64,7 @@ Client::Client(Logger& log)
     }
 
     // connect socket to server
-    if (connect(sockfd_, server_info->ai_addr, server_info->ai_addrlen) == -1) {
+    if (::connect(sockfd_, server_info->ai_addr, server_info->ai_addrlen) == -1) {
         close(sockfd_);
         log_.ERR("Telemetry", "%s", strerror(errno));
         // probably throw exception here or something

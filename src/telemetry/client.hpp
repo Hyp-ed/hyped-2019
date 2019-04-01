@@ -41,6 +41,7 @@ class Client {
     public:
         explicit Client(Logger& log);
         ~Client();
+        bool connect();
         bool sendData(protoTypes::TestMessage message);
         bool receiveData();
 
