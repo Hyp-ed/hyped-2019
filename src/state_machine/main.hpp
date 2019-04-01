@@ -49,7 +49,7 @@ class Main: public Thread {
   bool checkSystemsChecked();
   bool checkReset();
   bool checkOnStart();
-  bool checkCommsCriticalFailure();
+  bool checkTelemetryCriticalFailure();
   bool checkCriticalFailure();
   bool checkMaxDistanceReached();
   bool checkOnExit();
@@ -61,7 +61,7 @@ class Main: public Thread {
   uint64_t timeout_;
 
   data::Data&           data_;
-  data::Communications  comms_data_;
+  data::Telemetry       telemetry_data_;
   data::Navigation      nav_data_;
   data::StateMachine    sm_data_;
   data::Motors          motor_data_;
