@@ -26,8 +26,8 @@ message ServerToClient {
         STOP = 1;
         LAUNCH = 2;
         RESET = 3;
-        TRACKLENGTH = 3;
-        SERV_PROP_GO = 4;
+        TRACKLENGTH = 4;
+        SERV_PROP_GO = 5;
     }
 
     Command command = 1;  // idk watch for naming conflicts in methods and stuff
