@@ -28,34 +28,30 @@
 
 namespace hyped {
 namespace motor_control {
-FileReader::FileReader(Logger& log)
-  : log_(log),
-    filepath_("src/propulsion/configFiles/test_message.txt")
+  Logger& log_ = System::getLogger();
+  void FileReader::readFileData(ControllerMessage* message, const char* filepath)
 {
-}
-void FileReader::readFileData(uint8_t* message, int32_t len)
-{
-  std::ifstream datafile;
+  // std::ifstream datafile;
 
-  datafile.open(filepath_);
+  // datafile.open(filepath);
 
-  if (!datafile.is_open()) {
-    log_.INFO("FILE_READER", "Unable to open config file");
-    // indicates error has occured. Ensure this is not a valid message.
-    for (int i = 0; i < len; i++) message[i] = 0xFF;
-  } else {
-    std::string line;
-    while (getline(datafile, line)) {
-      if (line.empty());              // ignore any empty lines.
-      else if (line.front() == '#');  // ignore any line beginning with #.
-      else
-        splitAndAddData(line, message, len);
-    }
-  }
-  datafile.close();
+  // if (!datafile.is_open()) {
+  //   log_.INFO("FILE_READER", "Unable to open config file");
+  //   // indicates error has occured. Ensure this is not a valid message.
+  //   for (int i = 0; i < len; i++) message[i] = 0xFF;
+  // } else {
+  //   std::string line;
+  //   while (getline(datafile, line)) {
+  //     if (line.empty());              // ignore any empty lines.
+  //     else if (line.front() == '#');  // ignore any line beginning with #.
+  //     else
+  //       addData(line, message, len);
+  //   }
+  // }
+  // datafile.close();
 }
 
-void FileReader::splitAndAddData(std::string str, uint8_t* message, int32_t len)
+void FileReader::addData(std::string str, ControllerMessage* message, int32_t len)
 {
   std::string word;
   std::string remains = str;

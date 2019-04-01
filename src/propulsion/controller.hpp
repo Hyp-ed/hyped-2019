@@ -109,17 +109,13 @@ class Controller : public ControllerInterface {
   void setFailure(bool failure);
 
  private:
-  struct MessageTemplate {
-    uint8_t       message[8];
-    const char*   logger_output;
-  };
   /**
-   * @brief compact function to call the can sender class with a generic message,
+   * @brief compact function to call the can sender class with a message,
    *        while checking for critical failure.
    * @param message_template
    * @param len
    */
-  bool sendSdoMessage(MessageTemplate message_template, int32_t len);
+  bool sendSdoMessage(ControllerMessage message_template, int32_t len);
   Logger&           log_;
   data::Data&       data_;
   data::Motors      motor_data_;
@@ -128,14 +124,14 @@ class Controller : public ControllerInterface {
   bool              critical_failure_;
   int32_t           actual_velocity_;
   CanSender         sender;
-  FileReader        reader;
   Frame             sdo_message_;
   Frame             nmt_message_;
 
-  // TODO(Iain): add predefined configuration messages and function codes.
-  // To be read from file.
-  // Configuration data messages:
-  MessageTemplate configureMotorPoles_;
+  // TODO(Iain): add arrays for predefined configuration messages.
+  // Paths to the different files of message data.
+  const char* kconfigMessagesFile = "src/propulsion/configFiles/configMessages.txt";
+  // Arrays of messages sent to controller (see config files for details about message contents)
+  ControllerMessage configMessages_[16];
 };
 }}  // namespace hyped::motor_control
 

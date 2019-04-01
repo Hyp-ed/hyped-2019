@@ -25,26 +25,25 @@
 #include <string>
 
 #include "utils/logger.hpp"
+#include "utils/system.hpp"
+#include "propulsion/controller_interface.hpp"
+
 
 namespace hyped {
 namespace motor_control {
 
 using hyped::utils::Logger;
+using hyped::utils::System;
 
 class FileReader {
  public:
-  /**
-   * @brief Construct a new File Reader that reads data from a file to be sent as a CAN message.
-   * @param log
-   */
-  explicit FileReader(Logger& log);
   /**
    * @brief read data from file and write into the array message.
    *
    * @param message
    * @param len
    */
-  void readFileData(uint8_t* message, int32_t len);
+  static void readFileData(ControllerMessage* message, const char* filepath);
 
  private:
   /**
@@ -54,9 +53,7 @@ class FileReader {
    * @param message
    * @param len
    */
-  void splitAndAddData(std::string str, uint8_t* message, int32_t len);
-  Logger&       log_;
-  const char*   filepath_;
+  static void addData(std::string str, uint8_t* message, int32_t len);
 };
 }}  // namespace hyped::motor_control
 #endif  // PROPULSION_FILE_READER_HPP_
