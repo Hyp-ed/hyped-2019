@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package protoTypes;
+
+option java_package = "protoTypes";
+option java_outer_classname = "MessageProtos";
+
+message TestMessage {
+    enum Command {
+        ERROR = 0;
+        VELOCITY = 1;
+        ACCELERATION = 2;
+        BRAKE_TEMP = 3;
+        // commands below intended for server to client
+        FINISH = 4;
+        EM_STOP = 5;
+    }
+
+    Command command = 1;
+    int32 data = 2;
+}

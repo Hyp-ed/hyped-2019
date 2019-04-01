@@ -189,11 +189,19 @@ class SourceFileProcessor(object):
   files and invoke a custom check on the files.
   """
 
+  # dict becuase otherwise we run into UnboundLocalError later
+  # https://stackoverflow.com/a/3190783
+  dic = {'IGNORE_DIRS' : []}
+
   def Run(self, path, options):
     all_files = []
     if exists(join(path, "Lint.files")):
       all_files += [join(path, line.rstrip('\n')) for line in open(join(path, "Lint.files"), "r") if line.strip() is not '']
     else:
+
+      if exists(join(path, "Lint_IGNORE_DIRS.files")):
+        SourceFileProcessor.dic['IGNORE_DIRS'] += [line.rstrip('\n') for line in open(join(path, "Lint_IGNORE_DIRS.files"), "r") if line.strip() is not '']
+
       for file in self.GetPathsToSearch():
         all_files += self.FindFilesIn(join(path, file))
     # print all_files
@@ -204,6 +212,10 @@ class SourceFileProcessor(object):
     return True
 
   def IgnoreDir(self, name):
+    if SourceFileProcessor.dic['IGNORE_DIRS']:
+      if name in [dir for dir in SourceFileProcessor.dic['IGNORE_DIRS']]:
+        return True
+
     return name.startswith('.')
 
   def IgnoreFile(self, name):
