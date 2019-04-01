@@ -33,7 +33,10 @@ int main(int argc, char* argv[])
     System &sys = System::getSystem();
     Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
     Main* main = new Main(1, *log_nav);
-    main->start();
+    main->run();
+
+    while (sys.running_)
+		;
 
     return 0;
 }

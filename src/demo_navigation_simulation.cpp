@@ -33,7 +33,9 @@ int main(int argc, char* argv[])
     System &sys = System::getSystem();
     Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
     MainSim* mainSim = new MainSim(1, *log_nav);
-    mainSim->start();
+    mainSim->run();
+    while (sys.running_)
+		;
 
     return 0;
 }
