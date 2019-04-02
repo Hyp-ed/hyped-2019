@@ -37,7 +37,7 @@ class Main: public Thread {
         Main(uint8_t id, Logger& log);
         void run() override;
     private:
-        Client client;
+        Client client_;
 };
 
 void recvLoop(Client& c);

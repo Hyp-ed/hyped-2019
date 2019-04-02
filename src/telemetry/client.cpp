@@ -51,16 +51,16 @@ Client::Client(Logger& log)
     }
 
     // get a socket file descriptor
-    sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
-    if (sockfd == -1) {
+    sockfd_ = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+    if (sockfd_ == -1) {
         log_.ERR("Telemetry", "%s", strerror(errno));
         // exit(2);
         // probably throw exception here or something
     }
 
     // connect socket to server
-    if (connect(sockfd, server_info->ai_addr, server_info->ai_addrlen) == -1) {
-        close(sockfd);
+    if (connect(sockfd_, server_info->ai_addr, server_info->ai_addrlen) == -1) {
+        close(sockfd_);
         log_.ERR("Telemetry", "%s", strerror(errno));
         // exit(3);
         // probably throw exception here or something
@@ -68,13 +68,13 @@ Client::Client(Logger& log)
 
     log_.INFO("Telemetry", "Connected to server");
 
-    socketStream = new google::protobuf::io::FileInputStream(sockfd);
+    socket_stream_ = new google::protobuf::io::FileInputStream(sockfd_);
 }
 
 Client::~Client()
 {
-    delete socketStream;
-    close(sockfd);
+    delete socket_stream_;
+    close(sockfd_);
 }
 
 // message has to be terminated by newline bc we read messages on server using in.readLine()
@@ -82,7 +82,7 @@ bool Client::sendData(protoTypes::TestMessage message)
 {
     using namespace google::protobuf::util;
 
-    if (!SerializeDelimitedToFileDescriptor(message, sockfd)) {
+    if (!SerializeDelimitedToFileDescriptor(message, sockfd_)) {
         log_.ERR("Telemetry", "SerializeDelimitedToFileDescriptor didn't work");
         return false;
     }
@@ -95,7 +95,7 @@ bool Client::receiveData()
     using namespace google::protobuf::util;
 
     protoTypes::TestMessage messageFromServer;
-    if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socketStream, NULL)) {
+    if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_, NULL)) {
         log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
         return false;
     }

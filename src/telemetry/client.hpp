@@ -44,9 +44,9 @@ class Client {
         bool sendData(protoTypes::TestMessage message);
         bool receiveData();
     private:
-        int sockfd;
+        int sockfd_;
         Logger& log_;
-        ZeroCopyInputStream* socketStream;  // member var bc need to keep reading from same stream
+        ZeroCopyInputStream* socket_stream_;  // member var bc need to keep reading from same stream
 };
 
 }  // namespace client
