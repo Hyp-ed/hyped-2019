@@ -79,7 +79,7 @@ struct StripeCounter : public Sensor {
 };
 
 struct Sensors : public Module {
-  static constexpr int kNumImus = 8;
+  static constexpr int kNumImus = 8;            // TODO(anyone): change back to final cte for PCB
   static constexpr int kNumKeyence = 2;
 
   DataPoint<array<ImuData, kNumImus>> imu;
@@ -87,7 +87,7 @@ struct Sensors : public Module {
 };
 
 struct SensorCalibration {
-  array<array<NavigationVector, 2>, Sensors::kNumImus> imu_variance;
+  array<NavigationVector, Sensors::kNumImus> imu_variance;
 };
 
 struct Battery {
@@ -126,10 +126,10 @@ struct Motors : public Module {
 };
 
 // -------------------------------------------------------------------------------------------------
-// Communications data
+// Telemetry data
 // -------------------------------------------------------------------------------------------------
 
-struct Communications : public Module {
+struct Telemetry : public Module {
   bool launch_command;
   bool reset_command;
   float run_length;  // m
@@ -223,6 +223,11 @@ class Data {
    */
   void setSensorsImuData(const DataPoint<array<ImuData, Sensors::kNumImus>>& imu);
   /**
+   * @brief      Should be called to update sensor keyence data.
+   */
+  void setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>&  keyence_stripe_counter);  //NOLINT
+
+  /**
    * @brief      Should be called to update sensor calibration data
    */
   void setCalibrationData(const SensorCalibration sensor_calibration_data);
@@ -264,12 +269,12 @@ class Data {
   /**
    * @brief      Retrieves data on whether stop/kill power commands have been issued.
    */
-  Communications getCommunicationsData();
+  Telemetry getTelemetryData();
 
   /**
    * @brief      Should be called to update communications data.
    */
-  void setCommunicationsData(const Communications& communications_data);
+  void setTelemetryData(const Telemetry& telemetry_data);
 
  private:
   StateMachine state_machine_;
@@ -277,7 +282,7 @@ class Data {
   Sensors sensors_;
   Motors motors_;
   Batteries batteries_;
-  Communications communications_;
+  Telemetry telemetry_;
   SensorCalibration calibration_data_;
   EmergencyBrakes emergency_brakes_;
   int temperature_;  // In degrees C
@@ -290,7 +295,7 @@ class Data {
   Lock lock_motors_;
   Lock lock_temp_;
 
-  Lock lock_communications_;
+  Lock lock_telemetry_;
   Lock lock_batteries_;
   Lock lock_emergency_brakes_;
   Lock lock_calibration_data_;
