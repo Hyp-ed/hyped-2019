@@ -23,14 +23,15 @@
  *             messages to initialise them.
  */
 #include <string>
+#include <vector>
 
 #include "propulsion/file_reader.hpp"
 
 namespace hyped {
 namespace motor_control {
-  Logger log_(true, 0);
+Logger log_(true, 0);
 
-  bool FileReader::readFileData(ControllerMessage messages[], const char* filepath)
+bool FileReader::readFileData(ControllerMessage messages[], const char* filepath)
 {
   std::ifstream datafile;
   datafile.open(filepath);
@@ -44,21 +45,19 @@ namespace motor_control {
     int m = 0;
 
     while (getline(datafile, line)) {
-      if (line.empty());
-      else if (line.front() == '#');
-      else {
+      if (line.empty()) {
+      } else if (line.front() == '#') {
+      } else {
         if (line.front() == '>') {
             messages[m].logger_output = line.substr(1).c_str();
             log_.INFO("FR", line.substr(1).c_str(), 0);
-        }
-        else if (line.front() == '0') {
+        } else if (line.front() == '0') {
           splitData(line, lineData);
           addData(lineData, messages[m].message_data);
           m++;
         }
       }
     }
-
   }
   datafile.close();
   return true;
@@ -69,10 +68,10 @@ void FileReader::splitData(std::string line, std::string lineData[])
   std::vector<std::string> tokens;
   std::stringstream check1(line);
   std::string intermediate;
-  while(getline(check1, intermediate, ' ')) {
+  while (getline(check1, intermediate, ' ')) {
     tokens.push_back(intermediate);
   }
-  for(unsigned int i = 0; i < tokens.size(); i++) {
+  for (unsigned int i = 0; i < tokens.size(); i++) {
     lineData[i] = tokens[i];
   }
 }
