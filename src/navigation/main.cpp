@@ -49,7 +49,7 @@ namespace hyped {
 
             // Start single IMU navigation
             SingleImuNavigation singleImuNavigation(imuQuery, sys.imu_id,
-                                                    gravityCalibrator, &timer);
+                                                    gravityCalibrator);
             singleImuNavigation.navigate(nTestQueries, queryDelay, sys.run_id, log);
         }
     }

@@ -24,12 +24,10 @@ namespace hyped
     {
 
         SingleImuNavigation::SingleImuNavigation(ImuQuery& imuQuery_, int imuId_,
-                                                 GravityCalibrator& gravityCalibrator_,
-                                                 Timer* timer_)
+                                                 GravityCalibrator& gravityCalibrator_)
             : imuQuery(imuQuery_),
               gravityCalibrator(gravityCalibrator_),
-              imuId(imuId_),
-              timer(timer_)
+              imuId(imuId_)
         {}
 
         int SingleImuNavigation::navigate(unsigned int nTestQueries,

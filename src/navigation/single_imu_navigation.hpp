@@ -32,7 +32,6 @@
 #include "utils/logger.hpp"
 #include "utils/math/integrator.hpp"
 #include "utils/system.hpp"
-#include "utils/timer.hpp"
 #include "navigation/gravity_calibrator.hpp"
 #include "navigation/imu_data_logger.hpp"
 #include "navigation/imu_query.hpp"
@@ -47,7 +46,6 @@ namespace hyped
     using utils::math::Integrator;
     using utils::math::OnlineStatistics;
     using utils::System;
-    using utils::Timer;
     using navigation::GravityCalibrator;
     using navigation::ImuDataLogger;
     using navigation::ImuQuery;
@@ -58,15 +56,13 @@ namespace hyped
         {
             public:
                 SingleImuNavigation(ImuQuery& imuQuery_, int imuId_,
-                                    GravityCalibrator& gravityCalibrator,
-                                    Timer* timer_);
+                                    GravityCalibrator& gravityCalibrator_);
                 int navigate(unsigned int nTestQueries, float queryDelay, int runId, Logger& log);
 
             private:
                 ImuQuery&           imuQuery;
                 GravityCalibrator&  gravityCalibrator;
                 int                 imuId;
-                Timer*              timer;
         };
     }
 }
