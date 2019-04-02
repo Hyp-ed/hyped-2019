@@ -43,26 +43,44 @@ namespace sensors {
  *
  */
 class ImuManager: public ImuManagerInterface {
-  typedef array<NavigationVector, data::Sensors::kNumImus>    CalibrationArray;
-  typedef data::DataPoint<array<ImuData, data::Sensors::kNumImus>>      DataArray;
+  typedef data::DataPoint<array<ImuData, data::Sensors::kNumImus>>  DataArray;
+
  public:
-  ImuManager(Logger& log, DataArray *imu);
+  /**
+   * @brief Construct a new Imu Manager object
+   *
+   * @param log
+   * @param imu
+   */
+  explicit ImuManager(Logger& log);
+
+  /**
+   * @brief Calibrate IMUs then begin collecting data.
+   *
+   */
   void run()                            override;
+
+  /**
+   * @brief Check if the timestamp has been updated.
+   *
+   * @return true
+   * @return false
+   */
   bool updated()                        override;
+
+  /**
+   * @brief Store the timestamp value as old_timestamp and reset the timestamp value.
+   *
+   */
   void resetTimestamp()                 override;
-  CalibrationArray getCalibrationData() override;
 
  private:
-  utils::System&    sys_;
-  DataArray*        sensors_imu_;
+  utils::System&   sys_;
+  DataArray        sensors_imu_;
+  data::Data&      data_;
 
   uint8_t           chip_select_[data::Sensors::kNumImus];
   ImuInterface*     imu_[data::Sensors::kNumImus];
-  CalibrationArray  imu_calibrations_;
-  bool              is_calibrated_;
-  uint32_t          calib_counter_;
-
-  OnlineStatistics<NavigationVector> stats_[data::Sensors::kNumImus];
 };
 
 }}  // namespace hyped::sensors

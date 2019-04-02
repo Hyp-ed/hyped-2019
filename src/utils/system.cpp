@@ -32,6 +32,7 @@
 #define DEFAULT_RUN     -1
 #define DEFAULT_QUERIES -1
 #define DEFAULT_Q_DELAY -1
+#define DEFAULT_NAV_ID  -1
 
 namespace hyped {
 namespace utils {
@@ -52,6 +53,10 @@ void printUsage()
     "    Set system-wide debug level. All DBG[n] where n <= level messages are printed.\n"
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
+    "    To use fake system.\n"
+    "    --fake_imu, --fake_keyence\n"
+    "    To set navigation IDs.\n"
+    "    --imu_id, --run_id\n"
     "");
 }
 }   // namespace hyped::utils::System
@@ -74,6 +79,10 @@ System::System(int argc, char* argv[])
       debug_sensor(DEFAULT_DEBUG),
       debug_state(DEFAULT_DEBUG),
       debug_tlm(DEFAULT_DEBUG),
+      fake_imu(false),
+      fake_keyence(false),
+      imu_id(DEFAULT_NAV_ID),
+      run_id(DEFAULT_NAV_ID),
       running_(true)
 {
   int c;
@@ -93,6 +102,10 @@ System::System(int argc, char* argv[])
       {"debug_state", optional_argument, 0, 'F'},
       {"debug_tlm", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
+      {"fake_imu", no_argument, 0, 'i'},
+      {"imu_id", no_argument, 0, 'p'},
+      {"run_id", no_argument, 0, 'P'},
+      {"fake_keyence", no_argument, 0, 'k'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
     // returns option character from argv array following '-' or '--' from command line
@@ -163,6 +176,13 @@ System::System(int argc, char* argv[])
       case 'P':
         if (optarg) run_id = atoi(optarg);
         else        run_id = 1;
+      case 'i':
+        if (optarg) fake_imu = atoi(optarg);
+        else        fake_imu = 1;
+        break;
+      case 'k':
+        if (optarg) fake_keyence = atoi(optarg);
+        else        fake_keyence = 1;
         break;
       default:
         printUsage();

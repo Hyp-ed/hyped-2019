@@ -49,7 +49,6 @@ class ManagerInterface : public Thread {
 class ImuManagerInterface : public ManagerInterface {
  public:
   explicit ImuManagerInterface(utils::Logger& log) : ManagerInterface(log) {}
-  virtual array<NavigationVector, data::Sensors::kNumImus> getCalibrationData() = 0;
 };
 }}  // namespace hyped::sensors
 
