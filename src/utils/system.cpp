@@ -49,7 +49,7 @@ void printUsage()
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
-    "    --fake_imu\n"
+    "    --fake_imu, --fake_keyence\n"
     "");
 }
 }   // namespace hyped::utils::System
@@ -73,6 +73,7 @@ System::System(int argc, char* argv[])
       debug_state(DEFAULT_DEBUG),
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
+      fake_keyence(false),
       running_(true)
 {
   int c;
@@ -93,6 +94,7 @@ System::System(int argc, char* argv[])
       {"debug_tlm", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
+      {"fake_keyence", no_argument, 0, 'k'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
     // returns option character from argv array following '-' or '--' from command line
@@ -159,6 +161,10 @@ System::System(int argc, char* argv[])
       case 'i':
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
+        break;
+      case 'k':
+        if (optarg) fake_keyence = atoi(optarg);
+        else        fake_keyence = 1;
         break;
       default:
         printUsage();
