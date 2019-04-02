@@ -1,13 +1,13 @@
 /*
  * Author: Ragnor Comerford, Calum McMeekin, Sneha Sinha and Siu Wang (Ian) Ma
  * Organisation: HYPED
- * Date: 11. March 2018
+ * Date:
  * Description:
  * Main instantiates HypedMachine. It also monitors other data and generates Events
  * for the HypedMachine. Note, StateMachine structure in Data is not updated here but
  * in HypedMachine.
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -49,7 +49,7 @@ class Main: public Thread {
   bool checkSystemsChecked();
   bool checkReset();
   bool checkOnStart();
-  bool checkCommsCriticalFailure();
+  bool checkTelemetryCriticalFailure();
   bool checkCriticalFailure();
   bool checkMaxDistanceReached();
   bool checkOnExit();
@@ -61,14 +61,15 @@ class Main: public Thread {
   uint64_t timeout_;
 
   data::Data&           data_;
-  data::Communications  comms_data_;
+  data::Telemetry       telemetry_data_;
   data::Navigation      nav_data_;
   data::StateMachine    sm_data_;
   data::Motors          motor_data_;
   data::Batteries       batteries_data_;
   data::Sensors         sensors_data_;
+  data::EmergencyBrakes emergency_brakes_data_;
 };
 
-}}  // namespace hyped::motor_control
+}}      // namespace hyped::motor_control
 
 #endif  // STATE_MACHINE_MAIN_HPP_

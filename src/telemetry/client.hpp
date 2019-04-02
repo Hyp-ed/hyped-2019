@@ -18,32 +18,40 @@
  *    limitations under the License.
  */
 
-#ifndef TELEMETRY_MAIN_HPP_
-#define TELEMETRY_MAIN_HPP_
+#ifndef TELEMETRY_CLIENT_HPP_
+#define TELEMETRY_CLIENT_HPP_
 
-#include "client.hpp"
-#include "utils/concurrent/thread.hpp"
+#include <google/protobuf/io/zero_copy_stream.h>
+#include <string>
+#include "types/message.pb.h"
+#include "utils/logger.hpp"
 
 namespace hyped {
 
-using hyped::client::Client;
-using utils::concurrent::Thread;
 using utils::Logger;
+using google::protobuf::io::ZeroCopyInputStream;
 
-namespace telemetry {
+namespace client {
 
-class Main: public Thread {
+constexpr auto kPort = "9090";
+// constexpr auto kServerIP = "localhost";
+constexpr auto kServerIP = "192.168.1.50";
+
+class Client {
     public:
-        Main(uint8_t id, Logger& log);
-        void run() override;
+        explicit Client(Logger& log);
+        ~Client();
+        bool sendData(protoTypes::TestMessage message);
+        bool receiveData();
 
     private:
-        Client client_;
+        int sockfd_;
+        Logger& log_;
+        // socket_stream_ is member var bc need to keep reading from same stream
+        ZeroCopyInputStream* socket_stream_;
 };
 
-void recvLoop(Client& c);
-
-}  // namespace telemetry
+}  // namespace client
 }  // namespace hyped
 
-#endif  // TELEMETRY_MAIN_HPP_
+#endif  // TELEMETRY_CLIENT_HPP_

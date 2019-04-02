@@ -25,6 +25,9 @@
 #include "propulsion/state_processor_interface.hpp"
 #include "propulsion/controller_interface.hpp"
 #include "propulsion/fake_controller.hpp"
+#include "propulsion/calculate_RPM.hpp"
+
+#define SLIPPATH "./testAcceleration.txt"
 
 namespace hyped
 {
@@ -111,7 +114,9 @@ class StateProcessor : public StateProcessorInterface
      bool initialized;
      bool criticalError;
      int32_t servicePropulsionSpeed;
+     float speed;
      ControllerInterface **controllers;
+     CalculateRPM* rpmCalculator;
 };
 
 }  // namespace motor_control
