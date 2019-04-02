@@ -48,17 +48,24 @@ void Main::run()
         if (currentState == State::kIdle) {  // Initialize motors
             log_.INFO("Motor", "State idle");
 
-            if (!stateProcessor->isInitialized()) {
-                stateProcessor->initMotors();
-            }
-
             yield();
         } else if (currentState == State::kCalibrating) {
             // Calculate slip values
             log_.INFO("Motor", "State Calibrating");
+
+            if (!stateProcessor->isInitialized()) {
+                stateProcessor->initMotors();
+                if (stateProcessor->isCriticalFailure()) {
+                    // TODO(gregor): Set data error flag to critical
+                    isRunning = false;
+                }
+            }
+
+            yield();
         } else if (currentState == State::kReady) {
             // Standby and wait
             log_.INFO("Motor", "State Ready");
+            yield();
         } else if (currentState == State::kAccelerating) {
             // Accelerate the motors
             // TODO(gregor): Controller should handle the communication with the SpeedCalculator
@@ -75,19 +82,23 @@ void Main::run()
         } else if (currentState == State::kExiting) {
             // Move very slowly out of tube
             log_.INFO("Motor", "State Exiting");
+            stateProcessor->servicePropulsion();
         } else if (currentState == State::kFailureStopped) {
             // Enter preoperational
             log_.INFO("Motor", "State FailureStopped");
             stateProcessor->enterPreOperational();
         } else if (currentState == State::kFinished) {
             log_.INFO("Motor", "State Finished");
+            stateProcessor->enterPreOperational();
         } else if (currentState == State::kRunComplete) {
             // Run complete
             log_.INFO("Motor", "State RunComplete");
+            stateProcessor->quickStopAll();
         } else {
             // Unknown State
             log_.INFO("Motor", "State Unknown");
             isRunning = false;
+            stateProcessor->quickStopAll();
         }
     }
 

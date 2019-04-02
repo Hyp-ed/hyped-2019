@@ -23,6 +23,8 @@
 #include "utils/system.hpp"
 
 #include "propulsion/state_processor_interface.hpp"
+#include "propulsion/controller_interface.hpp"
+#include "propulsion/fake_controller.hpp"
 
 namespace hyped
 {
@@ -76,6 +78,16 @@ class StateProcessor : public StateProcessorInterface
            */
      bool isInitialized() override;
 
+     /**
+      * @brief Exits the tube with low velocity
+      * */
+     void servicePropulsion() override;
+
+      /**
+       * @brief Returns if a critical error ocurred
+       * */
+     bool isCriticalFailure() override;
+
   protected:
      /**
            * @brief { Registers the controllers to handle CAN transmissions }
@@ -97,7 +109,9 @@ class StateProcessor : public StateProcessorInterface
      System &sys_;
      int motorAmount;
      bool initialized;
-     // ControllerInterface* controllers[];
+     bool criticalError;
+     int32_t servicePropulsionSpeed;
+     ControllerInterface **controllers;
 };
 
 }  // namespace motor_control
