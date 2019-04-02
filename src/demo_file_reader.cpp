@@ -2,7 +2,6 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "propulsion/controller.hpp"
-#include <array>
 
 using hyped::motor_control::FileReader;
 using hyped::utils::System;
@@ -13,10 +12,13 @@ int main(int argc, char* argv[]) {
   System::parseArgs(argc, argv);
   Logger log(true, 0);
 
-  std::string messages[16];
+  ControllerMessage messages[2];
   if (FileReader::readFileData(messages, "src/propulsion/configFiles/test_message.txt")) {
-    for (int i = 0; i < 16; i++) {
-      log.INFO("DEMO",messages[i].c_str());
+    for (int n = 0; n < 2; n++) {
+      log.INFO("DEMO", messages[n].logger_output, 0);
+      for (int i = 0; i < 8; i++) {
+        log.INFO("DEMO", "%d", messages[n].message_data[i]);
+      }
     }
   }
 }

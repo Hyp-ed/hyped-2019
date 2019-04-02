@@ -23,6 +23,8 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
+#include <bits/stdc++.h>
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -43,17 +45,16 @@ class FileReader {
    * @param message
    * @param len
    */
-  static bool readFileData(std::string* messages, const char* filepath);
+  static bool readFileData(ControllerMessage messages[], const char* filepath);
 
  private:
   /**
    * @brief helper function to split the line into strings containing the hex data and
    *        a string logger message.
-   * 
-   * @param line 
-   * @return const char* 
+   * @param line
+   * @return const char*
    */
-  static void splitData(std::string line, std::string* lineData);
+  static void splitData(std::string line, std::string lineData[]);
   /**
    * @brief helper function to add the split data to the message struct.
    *
@@ -61,7 +62,7 @@ class FileReader {
    * @param message
    * @param len
    */
-  static void addData(std::string strData[], ControllerMessage message);
+  static void addData(std::string strData[], uint8_t* message_data);
 };
 }}  // namespace hyped::motor_control
 #endif  // PROPULSION_FILE_READER_HPP_
