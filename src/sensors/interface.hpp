@@ -28,7 +28,7 @@ namespace hyped {
 
 using data::ImuData;
 using data::NavigationVector;
-using data::Battery;
+using data::BatteryData;
 
 namespace sensors {
 
@@ -65,7 +65,7 @@ class BMSInterface: public SensorInterface {
    * @brief Get Battery data
    * @param battery - output pointer to be filled by this sensor
    */
-  virtual void getData(Battery* battery) = 0;
+  virtual void getData(BatteryData* battery) = 0;
 };
 
 }}  // namespace hyped::sensors

@@ -133,7 +133,7 @@ Batteries Data::getBatteriesData()
   return batteries_;
 }
 
-void Data::setBatteryData(const Batteries& batteries_data)
+void Data::setBatteriesData(const Batteries& batteries_data)
 {
   ScopedLock L(&lock_batteries_);
   batteries_ = batteries_data;

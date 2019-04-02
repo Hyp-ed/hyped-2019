@@ -30,12 +30,8 @@
 namespace hyped {
 namespace sensors {
 
-BmsManager::BmsManager(Logger& log,
-                       BatteriesLP* lp_batteries,
-                       BatteriesHP* hp_batteries)
+BmsManager::BmsManager(Logger& log)   // TODO(Greg): these are initialised in the manager and data written to struct from there
     : ManagerInterface(log),
-      lp_batteries_(lp_batteries),
-      hp_batteries_(hp_batteries),
       sys_(utils::System::getSystem()),
       data_(Data::getInstance())
 {
@@ -52,9 +48,9 @@ BmsManager::BmsManager(Logger& log,
 
   // initialise batteries data
   if (updated()) {
-    batteries_.high_power_batteries = *hp_batteries_;
-    batteries_.low_power_batteries = *lp_batteries_;
-    data_.setBatteryData(batteries_);
+    batteries_.high_power_batteries = hp_batteries_;
+    batteries_.low_power_batteries = lp_batteries_;
+    data_.setBatteriesData(batteries_);
   }
   Thread::yield();
   log_.INFO("BMS-MANAGER", "batteries data has been initialised");
@@ -65,12 +61,12 @@ void BmsManager::run()
   while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
-      bms_[i]->getData(&((*lp_batteries_)[i]));
-      if (!bms_[i]->isOnline()) (*lp_batteries_)[i].voltage = 0;
+      bms_[i]->getData(&((lp_batteries_)[i]));
+      if (!bms_[i]->isOnline()) (lp_batteries_)[i].voltage = 0;
     }
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-      bms_[i + data::Batteries::kNumLPBatteries]->getData(&(*hp_batteries_)[i]);
-      if (!bms_[i + data::Batteries::kNumLPBatteries]->isOnline()) (*hp_batteries_)[i].voltage = 0;
+      bms_[i + data::Batteries::kNumLPBatteries]->getData(&(hp_batteries_)[i]);
+      if (!bms_[i + data::Batteries::kNumLPBatteries]->isOnline()) (hp_batteries_)[i].voltage = 0;
     }
 
     if (updated()) {
@@ -83,7 +79,7 @@ void BmsManager::run()
         }
       }
       // publish the new data
-      data_.setBatteryData(batteries_);
+      data_.setBatteriesData(batteries_);
     }
     Thread::yield();
     timestamp = utils::Timer::getTimeMicros();

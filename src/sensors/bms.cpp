@@ -154,7 +154,7 @@ bool BMS::isOnline()
   return (utils::Timer::getTimeMicros() - last_update_time_) < 1000000;
 }
 
-void BMS::getData(Battery* battery)
+void BMS::getData(BatteryData* battery)
 {
   battery->voltage = 0;
   for (uint16_t v: data_.voltage) battery->voltage += v;
@@ -205,7 +205,7 @@ bool BMSHP::isOnline()
   return (utils::Timer::getTimeMicros() - last_update_time_) < 1000000;
 }
 
-void BMSHP::getData(Battery* battery)
+void BMSHP::getData(BatteryData* battery)
 {
   *battery = local_data_;
 }

@@ -35,21 +35,22 @@ namespace hyped {
 
 using utils::concurrent::Thread;
 using utils::Logger;
+using hyped::data::BatteryData;
 
 namespace sensors {
 
 class BmsManager: public ManagerInterface  {
-  typedef array<Battery, data::Batteries::kNumLPBatteries> BatteriesLP;
-  typedef array<Battery, data::Batteries::kNumHPBatteries> BatteriesHP;
+  typedef array<BatteryData, data::Batteries::kNumLPBatteries> BatteriesLP;
+  typedef array<BatteryData, data::Batteries::kNumHPBatteries> BatteriesHP;
  public:
-  BmsManager(Logger& log, BatteriesLP *lp_batteries, BatteriesHP* hp_batteries);
+  BmsManager(Logger& log);
   void run()                override;
   bool updated()            override;
   void resetTimestamp()     override;
 
  private:
-  BatteriesLP*    lp_batteries_;
-  BatteriesHP*    hp_batteries_;
+  BatteriesLP    lp_batteries_;
+  BatteriesHP    hp_batteries_;
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
   
