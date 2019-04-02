@@ -52,7 +52,9 @@ void Main::run()
     log_.INFO("Telemetry", "run_length: %f", telem_data.run_length);
     log_.INFO("Telemetry", "spg: %s", telem_data.service_propulsion_go ? "true" : "false");
 
-    std::thread recvThread {recvLoop, std::ref(client_)};  // NOLINT (linter thinks semicolon is syntax error...)
+    // syntax explanation so I don't forget: thread constructor expects pointer to member function,
+    //                                       also needs 'this' as object to call member function on
+    std::thread recvThread {&Main::recvLoop, this};  // NOLINT (linter thinks semicolon is syntax error...)
 
     while (true) {
         telemetry_data::TestMessage msg;
@@ -85,13 +87,24 @@ void Main::run()
     recvThread.join();
 }
 
-void recvLoop(Client& c)
+void Main::recvLoop()
 {
     telemetry_data::ServerToClient msg;
+    Telemetry shared_telem_data = data_.getTelemetryData();
 
     while (true) {
-        msg = c.receiveData();
-        std::cout << msg.DebugString();  // rip not working with logger
+        msg = client.receiveData();
+
+        switch (msg.command()) {
+            case telemetry_data::ServerToClient::LAUNCH:
+                log_.DBG1("Telemetry", "FROM SERVER: LAUNCH");
+                break;
+            case telemetry_data::ServerToClient::TRACKLENGTH:
+                log_.DBG1("Telemetry", "FROM SERVER: TRACKLENGTH");
+                break;
+            default:
+                log_.ERR("Telemetry", "Received unrecognized input from server");
+        }
     }
 }
 

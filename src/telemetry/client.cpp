@@ -88,11 +88,14 @@ Client::~Client()
 bool Client::sendData(telemetry_data::TestMessage message)
 {
     using namespace google::protobuf::util;
+    log_.DBG3("Telemetry", "Starting to send message to server");
 
     if (!SerializeDelimitedToFileDescriptor(message, sockfd_)) {
         log_.ERR("Telemetry", "SerializeDelimitedToFileDescriptor didn't work");
         return false;
     }
+
+    log_.DBG3("Telemetry", "Finished sending message to server");
 
     return true;
 }
@@ -102,10 +105,14 @@ telemetry_data::ServerToClient Client::receiveData()
     using namespace google::protobuf::util;
 
     telemetry_data::ServerToClient messageFromServer;
+    log_.DBG1("Telemetry", "Waiting to receive from server");
+
     if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_, NULL)) {
         log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
         // throw exception or something here
     }
+
+    log_.DBG1("Telemetry", "Finished receiving from server");
 
     return messageFromServer;
 }
