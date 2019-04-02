@@ -44,9 +44,8 @@ Client::Client(Logger& log)
 
     // get possible addresses we can connect to
     int return_val;
-    if ((return_val = getaddrinfo(server_ip, port, &hints, &server_info)) != 0) {
+    if ((return_val = getaddrinfo(kServerIP, kPort, &hints, &server_info)) != 0) {
         log_.ERR("Telemetry", "%s", gai_strerror(return_val));
-        // exit(1);
         // probably throw exception here or something
     }
 
@@ -54,7 +53,6 @@ Client::Client(Logger& log)
     sockfd_ = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
     if (sockfd_ == -1) {
         log_.ERR("Telemetry", "%s", strerror(errno));
-        // exit(2);
         // probably throw exception here or something
     }
 
@@ -62,7 +60,6 @@ Client::Client(Logger& log)
     if (connect(sockfd_, server_info->ai_addr, server_info->ai_addrlen) == -1) {
         close(sockfd_);
         log_.ERR("Telemetry", "%s", strerror(errno));
-        // exit(3);
         // probably throw exception here or something
     }
 
@@ -77,7 +74,6 @@ Client::~Client()
     close(sockfd_);
 }
 
-// message has to be terminated by newline bc we read messages on server using in.readLine()
 bool Client::sendData(protoTypes::TestMessage message)
 {
     using namespace google::protobuf::util;

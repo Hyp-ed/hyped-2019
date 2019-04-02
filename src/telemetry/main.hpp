@@ -36,6 +36,7 @@ class Main: public Thread {
     public:
         Main(uint8_t id, Logger& log);
         void run() override;
+
     private:
         Client client_;
 };

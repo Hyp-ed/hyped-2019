@@ -33,9 +33,9 @@ using google::protobuf::io::ZeroCopyInputStream;
 
 namespace client {
 
-constexpr auto port = "9090";
-// constexpr auto server_ip = "localhost";
-constexpr auto server_ip = "192.168.1.50";
+constexpr auto kPort = "9090";
+// constexpr auto kServerIP = "localhost";
+constexpr auto kServerIP = "192.168.1.50";
 
 class Client {
     public:
@@ -43,10 +43,12 @@ class Client {
         ~Client();
         bool sendData(protoTypes::TestMessage message);
         bool receiveData();
+
     private:
         int sockfd_;
         Logger& log_;
-        ZeroCopyInputStream* socket_stream_;  // member var bc need to keep reading from same stream
+        // socket_stream_ is member var bc need to keep reading from same stream
+        ZeroCopyInputStream* socket_stream_;
 };
 
 }  // namespace client
