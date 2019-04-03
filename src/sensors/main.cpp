@@ -57,7 +57,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     }
   } else {
     for (int i =0; i < data::Sensors::kNumKeyence; i++) {
-      keyences_[i] = new FakeGpioCounter(log_, false, false);
+      keyences_[i] = new FakeGpioCounter(log_, false, false, "data/in/gpio_counter_normal_run.txt");
     }
   }
 }
