@@ -19,11 +19,11 @@
  */
 
 #include "sensors/main.hpp"
-
-#include "data/data.hpp"
 #include "sensors/imu_manager.hpp"
 #include "sensors/bms_manager.hpp"
 #include "sensors/gpio_counter.hpp"
+#include "sensors/fake_gpio_counter.hpp"
+
 
 constexpr int kKeyencePinLeft = 36;
 constexpr int kKeyencePinRight = 33;
@@ -34,22 +34,42 @@ using hyped::utils::concurrent::Thread;
 using utils::System;
 using data::Data;
 using data::Sensors;
-using data::Batteries;
 using data::StripeCounter;
 using data::SensorCalibration;
 
 
 namespace sensors {
 
-Main::Main(uint8_t id, Logger& log)
+Main::Main(uint8_t id, utils::Logger& log)
   : Thread(id, log),
     data_(data::Data::getInstance()),
     sys_(utils::System::getSystem()),
+    log_(log),
+    pins_ {36, 33},
     imu_manager_(new ImuManager(log)),
-    battery_manager_(new BmsManager(log)),
-    keyence_l_(new GpioCounter(kKeyencePinLeft)),
-    keyence_r_(new GpioCounter(kKeyencePinRight))
-  {}
+    battery_manager_(new BmsManager(log))
+{
+  if (!sys_.fake_keyence) {
+    for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
+      GpioCounter* keyence = new GpioCounter(log_, pins_[i]);
+      keyence->start();
+      keyences_[i] = keyence;
+    }
+  } else {
+    for (int i =0; i < data::Sensors::kNumKeyence; i++) {
+      keyences_[i] = new FakeGpioCounter(log_, false, false);
+    }
+  }
+}
+
+bool Main::keyencesUpdated()
+{
+  for (int i = 0; i < data::Sensors::kNumKeyence; i ++) {
+    if (prev_keyence_stripe_count_arr_[i].count.value != keyence_stripe_counter_arr_[i].count.value)
+      return true;
+  }
+  return false;
+}
 
 void Main::run()
 {
@@ -57,37 +77,25 @@ void Main::run()
   imu_manager_->start();
   battery_manager_->start();
 
-  // Pins for keyence GPIO_36 L and GPIO_33 R
-  keyence_l_->start();
-  keyence_r_->start();
-
-  // Declare arrays
-  array<StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter;
-  array<StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count;
-
-  // Initalise the arrays     // TODO(Jack): can you do this? throws compilation error
-  keyence_stripe_counter = data_.getSensorsData().keyence_stripe_counter;
-  prev_keyence_stripe_count = keyence_stripe_counter;
+  // Initalise the keyence arrays
+  keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
+  prev_keyence_stripe_count_arr_ = keyence_stripe_counter_arr_;
 
   while (sys_.running_) {
     // We need to read the gpio counters and write to the data structure
     // If previous is not equal to the new data then update
-    if (prev_keyence_stripe_count[0].count.value != keyence_stripe_counter[0].count.value ||
-        prev_keyence_stripe_count[1].count.value != keyence_stripe_counter[1].count.value ) {
+    if (keyencesUpdated()) {
       // Update data structure, make prev reading same as this reading
-      data_.setSensorsKeyenceData(keyence_stripe_counter);
-      prev_keyence_stripe_count = keyence_stripe_counter;
+      data_.setSensorsKeyenceData(keyence_stripe_counter_arr_);
+      prev_keyence_stripe_count_arr_ = keyence_stripe_counter_arr_;
     }
-    keyence_stripe_counter[0] = keyence_l_->getStripeCounter();
-    keyence_stripe_counter[1] = keyence_r_->getStripeCounter();
+    for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
+      prev_keyence_stripe_count_arr_[i] = keyences_[i]->getStripeCounter();
+    }
     Thread::sleep(10);  // Sleep for 10ms
   }
 
   imu_manager_->join();
   battery_manager_->join();
-  keyence_l_->join();
-  keyence_r_->join();
 }
-
-
 }}

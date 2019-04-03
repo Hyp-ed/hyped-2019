@@ -28,7 +28,6 @@
 
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
-#include "sensors/gpio_counter.hpp"
 #include "sensors/interface.hpp"
 #include "sensors/manager_interface.hpp"
 #include "utils/system.hpp"
@@ -43,25 +42,28 @@ namespace sensors {
  */
 class Main: public Thread {
   public:
-    Main(uint8_t id, Logger& log);
+    Main(uint8_t id, utils::Logger& log);
     void run() override;    // from thread
 
   private:
-    data::Data&     data_;
-    utils::System& sys_;
+    bool keyencesUpdated();
 
-    // // master data structures
+    data::Data&     data_;
+    utils::System&  sys_;
+    utils::Logger&  log_;
+
+    // master data structures
     data::Sensors   sensors_;
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
 
-    GpioCounter*                           keyence_l_;
-    GpioCounter*                           keyence_r_;
+    uint8_t                                pins_[data::Sensors::kNumImus];
+    GpioInterface*                         keyences_[data::Sensors::kNumKeyence];  // 0 L and 1 R
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
 
-    bool sensor_init_;
-    bool battery_init_;
+    array<data::StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter_arr_;
+    array<data::StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count_arr_;
 };
 
 }}

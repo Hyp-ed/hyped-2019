@@ -11,16 +11,16 @@ SRCS := \
   propulsion/fake_controller.cpp \
   propulsion/calculate_RPM.cpp \
   sensors/fake_imu.cpp \
+  sensors/fake_gpio_counter.cpp \
   sensors/imu.cpp \
+  sensors/gpio_counter.cpp \
   sensors/imu_manager.cpp \
   sensors/main.cpp \
   sensors/bms.cpp \
   sensors/bms_manager.cpp \
-  sensors/gpio_counter.cpp \
   state_machine/main.cpp \
   state_machine/hyped-machine.cpp \
   state_machine/states.cpp \
-  telemetry/main.cpp \
   utils/concurrent/barrier.cpp \
   utils/concurrent/condition_variable.cpp \
   utils/concurrent/lock.cpp \

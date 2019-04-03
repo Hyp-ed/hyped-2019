@@ -21,40 +21,38 @@
 #include <stdio.h>
 #include "utils/concurrent/thread.hpp"
 #include "utils/io/gpio.hpp"
-#include "utils/system.hpp"
 #include "utils/timer.hpp"
 #include "sensors/gpio_counter.hpp"
-#include "data/data.hpp"
-#include "utils/logger.hpp"
 
 
 namespace hyped {
 
 using data::Data;
-using data::StripeCounter;      // data.hpp
+using data::StripeCounter;
 using utils::concurrent::Thread;
 using utils::io::GPIO;
 using hyped::utils::Logger;
 
 namespace sensors {
 
-GpioCounter::GpioCounter(int pin)
+GpioCounter::GpioCounter(utils::Logger& log, int pin)
      : pin_(pin),
-       data_(Data::getInstance())
+       sys_(utils::System::getSystem()),
+       log_(log)
 {}
 
 void GpioCounter::run()
 {
-  Logger log(true, 0);
   GPIO thepin(pin_, utils::io::gpio::kIn);                // exports pin
   uint8_t val = thepin.wait();  // Ignore first reading
   stripe_counter_.count.value = 0;
   stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
 
-  while (1) {
+  while (sys_.running_) {
     val = thepin.wait();
     if (val == 1) {
       stripe_counter_.count.value = stripe_counter_.count.value+1;
+      log_.DBG1("KEYENCE-TEST", "Stripe Count: %d", stripe_counter_.count.value);
       stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
       stripe_counter_.operational = true;
     }
@@ -65,5 +63,4 @@ StripeCounter GpioCounter::getStripeCounter()
 {
   return stripe_counter_;
 }
-
 }}  // namespace hyped::sensors

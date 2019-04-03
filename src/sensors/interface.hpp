@@ -67,7 +67,6 @@ class BMSInterface: public SensorInterface {
    */
   virtual void getData(BatteryData* battery) = 0;
 };
-
 }}  // namespace hyped::sensors
 
 
