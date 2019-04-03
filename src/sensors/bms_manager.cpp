@@ -36,14 +36,19 @@ BmsManager::BmsManager(Logger& log)   // TODO(Greg): these are initialised in th
       data_(Data::getInstance())
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
-  // create BMS LP
-  for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
-    BMS* bms = new BMS(i, log_);
-    bms->start();
-    bms_[i] = bms;
-  }
-  for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-    bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
+
+  if (!sys_.fake_batteries) {
+    // create BMS LP
+    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+      BMS* bms = new BMS(i, log_);
+      bms->start();
+      bms_[i] = bms;
+    }
+    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+      bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
+    }
+  } else {
+    // fake batteries here
   }
 
   // initialise batteries data

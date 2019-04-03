@@ -50,6 +50,7 @@ void printUsage()
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
     "    --fake_imu\n"
+    "    --fake_batteries\n"
     "");
 }
 }   // namespace hyped::utils::System
@@ -93,6 +94,7 @@ System::System(int argc, char* argv[])
       {"debug_tlm", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
+      {"fake_batteries", no_argument, 0, 'j'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
     // returns option character from argv array following '-' or '--' from command line
@@ -160,6 +162,10 @@ System::System(int argc, char* argv[])
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
         break;
+      case 'j':
+      if (optarg) fake_batteries = atoi(optarg);
+      else        fake_batteries = 1;
+      break;
       default:
         printUsage();
         exit(1);
