@@ -35,7 +35,7 @@ class System;
 class Config {
   friend System;    // ensure System can access our private parts
 
- protected:
+ public:
   struct Navigation {
     // define all navigation configuration fields
   } navigation;
@@ -46,6 +46,14 @@ class Config {
   } telemetry;
 
  private:
+  enum Submodules {
+    kNone,
+    kNavigation,
+    kTelemetry,
+    kPropulsion,
+    kSensors,
+    kStateMachine
+  };
   void ParseNavigation(const char* line);
   void ParseTelemetry(const char* line);
 

@@ -20,12 +20,21 @@
 
 #include "utils/config.hpp"
 
+#include <cstdio>
+
 namespace hyped {
 namespace utils {
 
 Config::Config(char* config_file)
 {
   // load config file, parse it into data structure
+  FILE* file = fopen(config_file, "r");
+
+  // allocate line buffer, read and parse file line by line
+  char line[250];
+  while (fgets(line, sizeof(line), file) != NULL) {
+    printf("%s\n", line);
+  }
 }
 
 }}  // namespace hyped::utils
