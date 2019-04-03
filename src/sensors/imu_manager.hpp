@@ -24,6 +24,7 @@
 #include <cstdint>
 
 #include "sensors/manager_interface.hpp"
+
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
@@ -77,10 +78,10 @@ class ImuManager: public ImuManagerInterface {
  private:
   utils::System&   sys_;
   DataArray        sensors_imu_;
-  
+
   /**
    * @brief needs to be references because run() passes directly to data struct
-   * 
+   *
    */
   data::Data&      data_;
 

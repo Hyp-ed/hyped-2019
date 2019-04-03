@@ -1,7 +1,7 @@
 /*
  * Author: Gregory Dayao
  * Organisation: HYPED
- * Date: 30/3/19
+ * Date: 3/4/19
  * Description: Demo for MPU9250 sensor using imu_manager
  * Troubleshooting:
  * If a single sensor does not initialise, try reconfiguring the chip_select_ pin.
@@ -22,9 +22,8 @@
  *    limitations under the License.
  */
 
-
-#include "sensors/imu.hpp"
 #include "sensors/imu_manager.hpp"
+#include "sensors/imu.hpp"
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
