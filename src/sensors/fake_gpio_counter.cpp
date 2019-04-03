@@ -1,5 +1,5 @@
 /*
- * Author: Gregory Dayao
+ * Author: Gregory Dayao and Jack Horsburgh
  * Organisation: HYPED
  * Date: 1/4/19
  * Description:
@@ -50,7 +50,9 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stri
     start_time_(0),
     check_time_(kCheckTime),
     miss_stripe_(miss_stripe),
-    double_stripe_(double_stripe)
+    double_stripe_(double_stripe),
+    is_from_file_(false),
+    acc_ref_init_(false)
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
@@ -64,50 +66,64 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
     check_time_(kCheckTime),
     miss_stripe_(miss_stripe),
     double_stripe_(double_stripe),
-    file_path_(file_path)
+    file_path_(file_path),
+    is_from_file_(true),
+    acc_ref_init_(false)
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
-  stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+  stripe_count_.count.timestamp = 0;
   readFromFile(stripe_data_);           // read text from file into vector class member
 }
 
 StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect stripe count
 {
+  data::State state = data_.getStateMachineData().current_state;
+  if (!acc_ref_init_ && state == data::State::kAccelerating) {
+    accel_ref_time_ = utils::Timer::getTimeMicros();
+    acc_ref_init_ = true;
+  }
+
+  if (is_from_file_) {
+    // Get time in micro seconds and iterate through the vector until we find what stripe we are at
+    uint64_t time_now_micro = (utils::Timer::getTimeMicros() - accel_ref_time_)/1000;
+    for (StripeCounter stripe : stripe_data_) {
+      if (stripe.count.timestamp < time_now_micro) {
+        stripe_count_.count.value = stripe.count.value;
+        stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+      } else {
+        break;
+      }
+    }
+    checkData();
+  } else {
     data::Navigation nav   = data_.getNavigationData();
     uint32_t current_count = stripe_count_.count.value;
 
-    int nav_count = std::floor(nav.distance/kStripeDistance);      // cast floor int;
+    uint16_t nav_count = std::floor(nav.distance/kStripeDistance);      // cast floor int;
 
     if (current_count != nav_count) {
       stripe_count_.count.value = nav_count;
       stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
     }
+  }
 
   return stripe_count_;
 }
 
+// TODO(Jack): Need to implement stripe missing or counting 2 stripes
 void FakeGpioCounter::checkData()
 {
   // let pod wait at first...then start comparing data
-  if (stripe_count_.count.timestamp - start_time_ > 5000000) Thread::sleep(300);
-  if (miss_stripe_) {
-    log_.INFO("fake_gpio_counter", "missed stripe, changing now");
-    stripe_count_.count.value++;
-    miss_stripe_ = false;
-  } else if (double_stripe_) {
-    log_.INFO("fake_gpio_counter", "missed stripe, changing now");
-    stripe_count_.count.value--;
-    double_stripe_ = false;
+  if (((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) > 8000) {
+    if (miss_stripe_) {
+      log_.INFO("fake_gpio_counter", "missed stripe, changing now");
+      stripe_count_.count.value++;
+    } else if (double_stripe_) {
+      log_.INFO("fake_gpio_counter", "double stripe count, changing now");
+      stripe_count_.count.value--;
+    }
   }
-}
-
-bool FakeGpioCounter::timeCheck()             // used to see if it is time to check
-{
-  if (utils::Timer::getTimeMicros() - stripe_count_.count.timestamp >= kCheckTime) {
-    return true;
-  }
-  return false;
 }
 
 void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
@@ -117,23 +133,15 @@ void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
     float time;
     if (data_file.is_open()) {
       // read in pairs of stripe_count, timestamp
-      while (data_file >> count && data_file >> time) {
+      while (data_file >> time && data_file >> count) {
         StripeCounter this_line;
         this_line.count.value = count;
         this_line.count.timestamp = time;
-        data.push_back(this_line);
+        stripe_data_.push_back(this_line);
       }
     } else {
       log_.ERR("fake_gpio_counter", "cannot open file");
     }
     data_file.close();
   }
-
-  void FakeGpioCounter::readData()
-  {
-    stripe_count_.count.value = stripe_data_.front().count.value;
-    stripe_count_.count.value = stripe_data_.front().count.timestamp;
-    stripe_data_.erase(stripe_data_.begin());
-  }
-
 }}
