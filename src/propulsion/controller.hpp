@@ -49,6 +49,13 @@ class Controller : public ControllerInterface {
    */
   Controller(Logger& log, uint8_t id);
   /**
+   * @brief Checks if the CanProcessor owns the corresponding CAN message
+   * @param id
+   * @param extended
+   * @return true - iff this controller owns the message.
+   */
+  bool hasId(uint32_t id, bool extended);
+  /**
    * @brief Registers controller to recieve and transmit CAN messages.
    */
   void registerController() override;
@@ -141,10 +148,6 @@ class Controller : public ControllerInterface {
   uint8_t getControllerTemp();
 
  private:
-  /*
-   * @brief { Sends a CAN frame but waits for a reply }
-   */
-  void sendSdoMessage(utils::io::can::Frame& message);
   /**
    * @brief compact function to call the can sender class with a message,
    *        while checking for critical failure.
@@ -153,6 +156,14 @@ class Controller : public ControllerInterface {
    */
   bool sendControllerMessage(ControllerMessage message_template);
   /*
+   * @brief Sends a CAN frame but waits for a reply
+   */
+  void sendSdoMessage(utils::io::can::Frame& message);
+  /**
+   * @brief set critical failure flag to true and write failure to data structure.
+   */
+  void throwCriticalFailure();
+  /*
    * @brief { Sends state transition message to controller, leaving sufficient time for
    *          controller to change state. If state does not change, throw critical failure }
    *
@@ -160,12 +171,19 @@ class Controller : public ControllerInterface {
    */
   void requestStateTransition(utils::io::can::Frame& message, ControllerState state);
 
+  void processEmergencyMessage(utils::io::can::Frame& message);
+  void processErrorMessage(uint16_t error_message);
+  void processSdoMessage(utils::io::can::Frame& message);
+  void processNmtMessage(utils::io::can::Frame& message);
+  void processNewData(utils::io::can::Frame& message);
+
   Logger&           log_;
   data::Data&       data_;
   data::Motors      motor_data_;
   ControllerState   state_;
   uint8_t           node_id_;
   bool              critical_failure_;
+  bool              sdo_frame_recieved_;
   int32_t           actual_velocity_;
   int16_t           actual_torque_;
   uint8_t           motor_temperature_;

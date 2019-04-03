@@ -30,6 +30,7 @@ Controller::Controller(Logger& log, uint8_t id)
       state_(kNotReadyToSwitchOn),
       node_id_(id),
       critical_failure_(false),
+      sdo_frame_recieved_(false),
       actual_velocity_(0),
       actual_torque_(0),
       motor_temperature_(0),
@@ -58,6 +59,11 @@ Controller::Controller(Logger& log, uint8_t id)
   FileReader::readFileData(healthCheckMsgs, kHealthCheckMsgFile);
   FileReader::readFileData(updateMotorTempMsg, kUpdateMotorTempFile);
   FileReader::readFileData(updateContrTempMsg, kUpdateContrTempFile);
+}
+
+bool Controller::hasId(uint32_t id, bool extended)
+{
+  return true;
 }
 
 bool Controller::sendControllerMessage(ControllerMessage message_template)
@@ -159,7 +165,7 @@ void Controller::sendTargetVelocity(int32_t target_velocity)
   // TODO(Iain): ^ why is this one can.send instead of sendSdoMessage?
 }
 
-void Controller::sendTargetTorque(int16_t target_torque)  // shouldn't this be int32_t?
+void Controller::sendTargetTorque(int16_t target_torque)  // should this be int32_t?
 {
   // Send 32 bit integer in Little Edian bytes
   for (int i = 0; i < 8; i++) {
@@ -213,9 +219,70 @@ void Controller::updateControllerTemp()
 
 void Controller::sendSdoMessage(utils::io::can::Frame& message)
 {
+  sdo_frame_recieved_ = false;
+  int8_t send_counter = 0;
+
+  for (send_counter = 0; send_counter < 3; send_counter++) {
+    sender.sendMessage(message);
+    Thread::yield();
+    if (sdo_frame_recieved_) {
+      break;
+    } else {
+      log_.DBG1("MOTOR", "Controller %d: No response. Sending SDO frame again", node_id_);
+    }
+  }
+  // No SDO frame recieved - controller is offline/communication error
+  if (!sdo_frame_recieved_) {
+    log_.ERR("MOTOR", "Controller %d: No response from controller", node_id_);
+    throwCriticalFailure();
+  }
+}
+
+void Controller::throwCriticalFailure()
+{
+  critical_failure_ = true;
+  motor_data_ = data_.getMotorData();  // necissary?
+  motor_data_.module_status = data::ModuleStatus::kCriticalFailure;
+  data_.setMotorData(motor_data_);
 }
 
 void Controller::requestStateTransition(utils::io::can::Frame& message, ControllerState state)
+{
+  uint8_t state_count;  // any reason that this is out here?
+  // Wait for max of 3 seconds, checking if the state has changed every second
+  // If it hasn't changed by the end then throw critical failure.
+  for (state_count = 0; state_count < 3; state_count++) {
+    sender.sendMessage(message);
+    Thread::sleep(1000);
+    checkState();
+    if (state_ == state) {
+      return;
+    }
+  }
+  if (state_ != state) {
+    throwCriticalFailure();
+    log_.ERR("MOTOR", "Controller %d, Could not transition to state %d", node_id_, state);
+    return;
+  }
+}
+
+void Controller::processEmergencyMessage(utils::io::can::Frame& message)
+{
+}
+
+void Controller::processErrorMessage(uint16_t error_message)
+{
+}
+
+void Controller::processSdoMessage(utils::io::can::Frame& message)
+{
+}
+
+void Controller::processNmtMessage(utils::io::can::Frame& message)
+{
+}
+
+void Controller::processNewData(utils::io::can::Frame& message)
 {
 }
 
