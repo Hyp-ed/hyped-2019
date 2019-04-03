@@ -37,44 +37,53 @@ namespace sensors {
 
 
 class FakeBatteries : public BMSInterface {
-  typedef array<array<uint16_t, 6>, 2> BatteryCases;
+  typedef array<array<uint16_t, 6>, 4> BatteryCases;
   typedef array<uint16_t, 6> BatteryInformation;
  public:
-  FakeBatteries(Logger& log, bool is_high_voltage, bool is_nominal, int case_index);
+  FakeBatteries(Logger& log, bool is_lp, bool is_high_voltage);
   void getData(BatteryData* battery) override;
   bool isOnline() override;
 
  private:
-  void init();          // these are not used
-  bool checkTime();
-
   Data& data_;
   bool is_started_;
-  bool is_high_voltage_;
-  uint64_t ref_time_;
 
-  /** 
-   * Nominal HP: (3 packs)
-   * Voltage: 118.6 V
-   * Max current discharge: 720 A
-   * Capacity: 13.8 Ah
-   * Operating temperature: -30 to 60 C
-   * 
-   * Nominal LP: (1 packs)
-   * Voltage 25.2 V
-   * Max current discharge: 60 A
-   * Capacity: 9 Ah
-   * Operating temperature: 40 C
-   */
-  BatteryInformation success_ = {1100, 200, 30, 75, 3300, 3600};
-  BatteryInformation failure_ = {170, 200, 30, 75, 0, 0};
-  BatteryCases cases_ = {success_, failure_};       // different success and fail cases
+  /*
+// check LP
+    if (battery.voltage < 140 || battery.voltage > 252)             // voltage in 14V to 25.2V
+    if (battery.current < 0 || battery.current > 300)               // current in 0A to 30A
+    if (battery.temperature < -20 || battery.temperature > 70)      // temperature in -20C to 70C
+
+  // check HP
+    if (battery.voltage < 720 || battery.voltage > 1246)            // voltage in 72V to 124.6V
+    if (battery.current < -4000 || battery.current > 13500)         // current in -400A to 1350A
+    if (battery.temperature < -20 || battery.temperature > 70)      // temperature in -20C to 70C
+
+  struct BatteryData {
+  uint16_t  voltage;  // V
+  int16_t   current;  // mA
+  uint8_t   charge;
+  int8_t    temperature;  // C
+  uint16_t  low_voltage_cell;  // V
+  uint16_t  high_voltage_cell;  // V
+  };
+  */
+
+  BatteryInformation lp_failure_ = {10, 5000, 0, 100, 100, 500};
+  BatteryInformation lp_success_ = {252, 200, 0, 50, 140, 252};    // TODO(Greg): adjust values
+  BatteryInformation hp_failure_ = {170, 20000, 0, 100, 200, 2000};
+  BatteryInformation hp_success_ = {1000, 10000, 0, 50, 720, 1246};    // TODO(Greg): adjust values
+  BatteryCases cases_ = {lp_failure_, lp_success_, hp_failure_, hp_success_};       // different success and fail cases
+
+  bool is_lp_;
+  bool is_fail_;
+  int case_index_;
 
   uint16_t voltage_;
   int16_t current_;
-  int8_t temperature_;
   uint8_t charge_;
-  uint16_t low_voltage_cell_;     // TODO(Greg): number of cells?
+  int8_t temperature_;
+  uint16_t low_voltage_cell_;
   uint16_t high_voltage_cell_;
 };
 }}    // namespace hyped::sensors

@@ -29,26 +29,44 @@ using data::StripeCounter;
 
 namespace sensors {
 
-FakeBatteries::FakeBatteries(Logger& log, bool is_high_voltage, bool is_nominal, int case_index)
+FakeBatteries::FakeBatteries(Logger& log, bool is_lp, bool is_fail)
     : data_(Data::getInstance()),
       is_started_(false),
-      is_high_voltage_(is_high_voltage),
-      voltage_(cases_[case_index][0]),
-      current_(cases_[case_index][1]),
-      temperature_(cases_[case_index][2]),
-      charge_(cases_[case_index][3]),
-      low_voltage_cell_(cases_[case_index][4]),
-      high_voltage_cell_(cases_[case_index][5])
-{}
+      is_lp_(is_lp),
+      is_fail_(is_fail)
+{
+  int fail_index = 0;
+  if (is_fail_) fail_index = 1;
+  if (is_lp_) {
+    case_index_ = 0 + fail_index;
+  } else {
+    case_index_ = 2 + fail_index;
+  }
+  voltage_ = cases_[case_index_][0];
+  current_ = cases_[case_index_][1];
+  charge_ = cases_[case_index_][2];
+  temperature_ = cases_[case_index_][3];
+  low_voltage_cell_ = cases_[case_index_][4];
+  high_voltage_cell_ = cases_[case_index_][5];
+}
 
 void FakeBatteries::getData(BatteryData* battery)
 {
-  battery->voltage           = voltage_;
-  battery->temperature       = temperature_;
-  battery->current           = current_;
-  battery->charge            = charge_;
-  battery->low_voltage_cell  = low_voltage_cell_;
-  battery->high_voltage_cell = high_voltage_cell_;
+  if (is_lp_) {
+    battery->voltage           = voltage_;
+    battery->current           = current_;
+    battery->charge            = charge_;
+    battery->temperature       = temperature_;
+    battery->low_voltage_cell  = low_voltage_cell_;
+    battery->high_voltage_cell = high_voltage_cell_;
+  } else {
+    battery->voltage           = voltage_;
+    battery->current           = current_;
+    battery->charge            = charge_;
+    battery->temperature       = temperature_;
+    battery->low_voltage_cell  = low_voltage_cell_;
+    battery->high_voltage_cell = high_voltage_cell_;
+  }
 }
 
 bool FakeBatteries::isOnline()
