@@ -26,12 +26,9 @@
 #include <fstream>
 #include <string>
 
-
-
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "propulsion/controller_interface.hpp"
-
 
 namespace hyped {
 namespace motor_control {

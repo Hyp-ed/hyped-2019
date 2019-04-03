@@ -31,6 +31,9 @@ Controller::Controller(Logger& log, uint8_t id)
       node_id_(id),
       critical_failure_(false),
       actual_velocity_(0),
+      actual_torque_(0),
+      motor_temperature_(0),
+      controller_temperature_(0),
       sender(log_, node_id_)
 {
   // TODO(Iain): Check if this is still valid:
@@ -43,16 +46,27 @@ Controller::Controller(Logger& log, uint8_t id)
   nmt_message_.len        = 8;
 
   // Initialse arrays of message data:
-  // FileReader::readFileData(configMessages_, kconfigMessagesFile);
+  FileReader::readFileData(configMsgs_, kConfigMsgFile);
+  FileReader::readFileData(enterOpMsgs_, kEnterOpMsgFile);
+  FileReader::readFileData(enterPreOpMsg_, kEnterPreOpMsgFile);
+  FileReader::readFileData(checkStateMsg_, kCheckStateMsgFile);
+  FileReader::readFileData(sendTargetVelMsg, kSendTargetVelMsgFile);
+  FileReader::readFileData(sendTargetTorqMsg, kSendTargetTorqMsgFile);
+  FileReader::readFileData(updateActualVelMsg, kUpdateActualVelMsgFile);
+  FileReader::readFileData(updateActualTorqMsg, kUpdateActualTorqMsgFile);
+  FileReader::readFileData(quickStopMsg, kQuickStopMsgFile);
+  FileReader::readFileData(healthCheckMsgs, kHealthCheckMsgFile);
+  FileReader::readFileData(updateMotorTempMsg, kUpdateMotorTempFile);
+  FileReader::readFileData(updateContrTempMsg, kUpdateContrTempFile);
 }
 
-bool Controller::sendSdoMessage(ControllerMessage message_template)
+bool Controller::sendControllerMessage(ControllerMessage message_template)
 {
   for (int i = 0; i < message_template.len; i++) {
     sdo_message_.data[i] = message_template.message_data[i];
   }
 
-  sender.sendMessage(sdo_message_);
+  sendSdoMessage(sdo_message_);
 
   log_.DBG1("MOTOR", message_template.logger_output, node_id_);
 
@@ -69,42 +83,150 @@ void Controller::registerController()
 
 void Controller::configure()
 {
+  log_.INFO("MOTOR", "Controller %d: Configuring...", node_id_);
   for (int i = 0; i < 16; i++) {
-    // if (sendSdoMessage(configMessages_[i])) return;
+    if (sendControllerMessage(configMsgs_[i])) return;
   }
+  log_.INFO("MOTOR", "Controller %d: Configured.", node_id_);
 }
 
 void Controller::enterOperational()
 {
+  // TODO(Iain): Check that this is still valid:
+
+  // Send NMT Operational message to transition from state 0 (Not ready to switch on)
+  // to state 1 (Switch on disabled)
+  nmt_message_.data[0] = kNmtOperational;
+  nmt_message_.data[1] = node_id_;
+
+  log_.INFO("MOTOR", "Controller %d: Sending NMT Operational command", node_id_);
+  sender.sendMessage(nmt_message_);
+  // leave time for the controller to enter NMT Operational
+  Thread::sleep(100);
+
+  // enables velocity mode
+  if (sendControllerMessage(enterOpMsgs_[0])) return;
+
+  // set the velocity to zero
+  sendTargetVelocity(0);
+
+  // apply break
+  if (sendControllerMessage(enterOpMsgs_[1])) return;
+
+  // send shutdown message to transition to Ready to Switch On state
+  for (int i = 0; i < 8; i++) {
+    sdo_message_.data[i] = enterOpMsgs_[2].message_data[i];
+  }
+  log_.DBG1("MOTOR", enterOpMsgs_[2].logger_output, node_id_);
+  requestStateTransition(sdo_message_, kReadyToSwitchOn);
+
+  // Send enter operational message to transition to the Operation Enabled state
+  for (int i = 0; i < 8; i++) {
+    sdo_message_.data[i] = enterOpMsgs_[3].message_data[i];
+  }
+  log_.DBG1("MOTOR", enterOpMsgs_[3].logger_output, node_id_);
+  requestStateTransition(sdo_message_, kOperationEnabled);
 }
 
 void Controller::enterPreOperational()
 {
+  checkState();
+  if (state_ != kReadyToSwitchOn) {
+    // send shutdown command
+    if (sendControllerMessage(enterPreOpMsg_[0])) return;
+  }
 }
 
 void Controller::checkState()
 {
+  // Check Statusword in object dictionary
+  if (sendControllerMessage(checkStateMsg_[0])) return;
 }
 
 void Controller::sendTargetVelocity(int32_t target_velocity)
 {
+  // Send 32 bit integer in Little Edian bytes
+  for (int i = 0; i < 8; i++) {
+    sdo_message_.data[i] = sendTargetVelMsg[0].message_data[i];
+  }
+  sdo_message_.data[4] = target_velocity & 0xFF;
+  sdo_message_.data[5] = (target_velocity >> 8) & 0xFF;
+  sdo_message_.data[6] = (target_velocity >> 16) & 0xFF;
+  sdo_message_.data[7] = (target_velocity >> 24) & 0xFF;
+
+  log_.DBG2("MOTOR", sendTargetVelMsg[0].logger_output, node_id_, target_velocity);
+  sender.sendMessage(sdo_message_);
+  // TODO(Iain): ^ why is this one can.send instead of sendSdoMessage?
+}
+
+void Controller::sendTargetTorque(int16_t target_torque)  // shouldn't this be int32_t?
+{
+  // Send 32 bit integer in Little Edian bytes
+  for (int i = 0; i < 8; i++) {
+    sdo_message_.data[i] = sendTargetTorqMsg[0].message_data[i];
+  }
+  sdo_message_.data[4] = target_torque & 0xFF;
+  sdo_message_.data[5] = (target_torque >> 8) & 0xFF;
+
+  log_.DBG2("MOTOR", sendTargetTorqMsg[0].logger_output, node_id_, target_torque);
+  sendSdoMessage(sdo_message_);
 }
 
 void Controller::updateActualVelocity()
 {
+  // Check actual velocity in object dictionary
+  if (sendControllerMessage(updateActualVelMsg[0])) return;
 }
+
+void Controller::updateActualTorque()
+{
+  // Check actual torque in object dictionary
+  if (sendControllerMessage(updateActualTorqMsg[0])) return;
+}
+
 
 void Controller::quickStop()
 {
+  // Send quickStop command
+  if (sendControllerMessage(quickStopMsg[0])) return;
 }
 
 void Controller::healthCheck()
+{
+  // Check warning status & Check error status
+  for (int i = 0; i < 2; i++) {
+    if (sendControllerMessage(healthCheckMsgs[i])) return;
+  }
+}
+
+void Controller::updateMotorTemp()
+{
+  // Check motor temp in object dictionary
+  if (sendControllerMessage(updateMotorTempMsg[0])) return;
+}
+
+void Controller::updateControllerTemp()
+{
+  // Check controller temp in object dictionary
+  if (sendControllerMessage(updateContrTempMsg[0])) return;
+}
+
+void Controller::sendSdoMessage(utils::io::can::Frame& message)
+{
+}
+
+void Controller::requestStateTransition(utils::io::can::Frame& message, ControllerState state)
 {
 }
 
 int32_t Controller::getVelocity()
 {
   return actual_velocity_;
+}
+
+int16_t Controller::getTorque()
+{
+  return actual_torque_;
 }
 
 bool Controller::getFailure()
@@ -127,4 +249,13 @@ void Controller::setFailure(bool failure)
   critical_failure_ = failure;
 }
 
+uint8_t Controller::getMotorTemp()
+{
+  return motor_temperature_;
+}
+
+uint8_t Controller::getControllerTemp()
+{
+  return controller_temperature_;
+}
 }}  // namespace hyped::motor_control

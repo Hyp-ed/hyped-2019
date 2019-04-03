@@ -39,7 +39,7 @@ enum ControllerState {
 
 struct ControllerMessage {
   uint8_t       message_data[8];
-  int32_t       len = 8;
+  int           len = 8;
   const char*   logger_output;
 };
 

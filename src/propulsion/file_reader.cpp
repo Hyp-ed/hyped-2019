@@ -37,7 +37,7 @@ bool FileReader::readFileData(ControllerMessage messages[], const char* filepath
   datafile.open(filepath);
 
   if (!datafile.is_open()) {
-    log_.INFO("FILE_READER", "Unable to open file");
+    log_.INFO("FILE_READER", "Unable to open file %s", filepath);
     return false;
   } else {
     std::string line;
@@ -71,7 +71,7 @@ void FileReader::splitData(std::string line, std::string lineData[])
   while (getline(check1, intermediate, ' ')) {
     tokens.push_back(intermediate);
   }
-  for (unsigned int i = 0; i < tokens.size(); i++) {
+  for (int i = 0; i < (signed) tokens.size(); i++) {
     lineData[i] = tokens[i];
   }
 }
