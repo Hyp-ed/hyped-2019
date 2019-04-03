@@ -46,17 +46,15 @@ void Main::run()
         log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
     }
 
-    Telemetry telem_data = data_.getTelemetryData();
-    log_.INFO("Telemetry", "launch_command: %s", telem_data.launch_command ? "true" : "false");
-    log_.INFO("Telemetry", "reset_command: %s", telem_data.reset_command ? "true" : "false");
-    log_.INFO("Telemetry", "run_length: %f", telem_data.run_length);
-    log_.INFO("Telemetry", "spg: %s", telem_data.service_propulsion_go ? "true" : "false");
-
     // syntax explanation so I don't forget: thread constructor expects pointer to member function,
     //                                       also needs 'this' as object to call member function on
     std::thread recvThread {&Main::recvLoop, this};  // NOLINT (linter thinks semicolon is syntax error...)
 
     while (true) {
+        Telemetry telem_data = data_.getTelemetryData();
+        log_.DBG2("Telemetry", "SHARED launch_command: %s", telem_data.launch_command ? "true" : "false"); // NOLINT
+        log_.DBG2("Telemetry", "SHARED run_length: %f", telem_data.run_length);
+
         telemetry_data::TestMessage msg;
 
         msg.set_command(telemetry_data::TestMessage::VELOCITY);
@@ -82,6 +80,8 @@ void Main::run()
         msg.set_command(telemetry_data::TestMessage::BRAKE_TEMP);
         msg.set_data(888);
         client_.sendData(msg);
+
+        // std::this_thread::sleep_for(std::chrono::milliseconds(100));  // breaks GUI, must fix
     }
 
     recvThread.join();
@@ -90,6 +90,7 @@ void Main::run()
 void Main::recvLoop()
 {
     telemetry_data::ServerToClient msg;
+    // not sure whether to put this in or ouside of loop
     Telemetry shared_telem_data = data_.getTelemetryData();
 
     while (true) {
@@ -98,13 +99,17 @@ void Main::recvLoop()
         switch (msg.command()) {
             case telemetry_data::ServerToClient::LAUNCH:
                 log_.DBG1("Telemetry", "FROM SERVER: LAUNCH");
+                shared_telem_data.launch_command = true;
                 break;
             case telemetry_data::ServerToClient::TRACKLENGTH:
-                log_.DBG1("Telemetry", "FROM SERVER: TRACKLENGTH");
+                log_.DBG1("Telemetry", "FROM SERVER: TRACKLENGTH %f", msg.track_length());
+                shared_telem_data.run_length = msg.track_length();
                 break;
             default:
                 log_.ERR("Telemetry", "Received unrecognized input from server");
         }
+
+        data_.setTelemetryData(shared_telem_data);
     }
 }
 
