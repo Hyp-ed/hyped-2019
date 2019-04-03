@@ -82,8 +82,8 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, command_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, track_length_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, serv_prop_go_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, run_length_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, service_propulsion_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::telemetry_data::TestMessage)},
@@ -121,16 +121,16 @@ void AddDescriptorsImpl() {
       "a.TestMessage.Command\022\014\n\004data\030\002 \001(\005\"]\n\007C"
       "ommand\022\t\n\005ERROR\020\000\022\014\n\010VELOCITY\020\001\022\020\n\014ACCEL"
       "ERATION\020\002\022\016\n\nBRAKE_TEMP\020\003\022\n\n\006FINISH\020\004\022\013\n"
-      "\007EM_STOP\020\005\"\315\001\n\016ServerToClient\0227\n\007command"
+      "\007EM_STOP\020\005\"\326\001\n\016ServerToClient\0227\n\007command"
       "\030\001 \001(\0162&.telemetry_data.ServerToClient.C"
-      "ommand\022\024\n\014track_length\030\002 \001(\002\022\024\n\014serv_pro"
-      "p_go\030\003 \001(\010\"V\n\007Command\022\007\n\003ACK\020\000\022\010\n\004STOP\020\001"
-      "\022\n\n\006LAUNCH\020\002\022\t\n\005RESET\020\003\022\017\n\013TRACKLENGTH\020\004"
-      "\022\020\n\014SERV_PROP_GO\020\005B\036\n\rtelemetrydataB\rTel"
-      "emetryDatab\006proto3"
+      "ommand\022\022\n\nrun_length\030\002 \001(\002\022\032\n\022service_pr"
+      "opulsion\030\003 \001(\010\"[\n\007Command\022\007\n\003ACK\020\000\022\010\n\004ST"
+      "OP\020\001\022\n\n\006LAUNCH\020\002\022\t\n\005RESET\020\003\022\016\n\nRUN_LENGT"
+      "H\020\004\022\026\n\022SERVICE_PROPULSION\020\005B\036\n\rtelemetry"
+      "dataB\rTelemetryDatab\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 458);
+      descriptor, 467);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
 }
@@ -199,8 +199,8 @@ const ServerToClient_Command ServerToClient::ACK;
 const ServerToClient_Command ServerToClient::STOP;
 const ServerToClient_Command ServerToClient::LAUNCH;
 const ServerToClient_Command ServerToClient::RESET;
-const ServerToClient_Command ServerToClient::TRACKLENGTH;
-const ServerToClient_Command ServerToClient::SERV_PROP_GO;
+const ServerToClient_Command ServerToClient::RUN_LENGTH;
+const ServerToClient_Command ServerToClient::SERVICE_PROPULSION;
 const ServerToClient_Command ServerToClient::Command_MIN;
 const ServerToClient_Command ServerToClient::Command_MAX;
 const int ServerToClient::Command_ARRAYSIZE;
@@ -479,8 +479,8 @@ void ServerToClient::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ServerToClient::kCommandFieldNumber;
-const int ServerToClient::kTrackLengthFieldNumber;
-const int ServerToClient::kServPropGoFieldNumber;
+const int ServerToClient::kRunLengthFieldNumber;
+const int ServerToClient::kServicePropulsionFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ServerToClient::ServerToClient()
@@ -495,15 +495,15 @@ ServerToClient::ServerToClient(const ServerToClient& from)
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&command_, &from.command_,
-    static_cast<size_t>(reinterpret_cast<char*>(&serv_prop_go_) -
-    reinterpret_cast<char*>(&command_)) + sizeof(serv_prop_go_));
+    static_cast<size_t>(reinterpret_cast<char*>(&service_propulsion_) -
+    reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
   // @@protoc_insertion_point(copy_constructor:telemetry_data.ServerToClient)
 }
 
 void ServerToClient::SharedCtor() {
   ::memset(&command_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&serv_prop_go_) -
-      reinterpret_cast<char*>(&command_)) + sizeof(serv_prop_go_));
+      reinterpret_cast<char*>(&service_propulsion_) -
+      reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
 }
 
 ServerToClient::~ServerToClient() {
@@ -535,8 +535,8 @@ void ServerToClient::Clear() {
   (void) cached_has_bits;
 
   ::memset(&command_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&serv_prop_go_) -
-      reinterpret_cast<char*>(&command_)) + sizeof(serv_prop_go_));
+      reinterpret_cast<char*>(&service_propulsion_) -
+      reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
   _internal_metadata_.Clear();
 }
 
@@ -565,28 +565,28 @@ bool ServerToClient::MergePartialFromCodedStream(
         break;
       }
 
-      // float track_length = 2;
+      // float run_length = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(21u /* 21 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &track_length_)));
+                 input, &run_length_)));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // bool serv_prop_go = 3;
+      // bool service_propulsion = 3;
       case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &serv_prop_go_)));
+                 input, &service_propulsion_)));
         } else {
           goto handle_unusual;
         }
@@ -625,14 +625,14 @@ void ServerToClient::SerializeWithCachedSizes(
       1, this->command(), output);
   }
 
-  // float track_length = 2;
-  if (this->track_length() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->track_length(), output);
+  // float run_length = 2;
+  if (this->run_length() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->run_length(), output);
   }
 
-  // bool serv_prop_go = 3;
-  if (this->serv_prop_go() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->serv_prop_go(), output);
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->service_propulsion(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -655,14 +655,14 @@ void ServerToClient::SerializeWithCachedSizes(
       1, this->command(), target);
   }
 
-  // float track_length = 2;
-  if (this->track_length() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->track_length(), target);
+  // float run_length = 2;
+  if (this->run_length() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->run_length(), target);
   }
 
-  // bool serv_prop_go = 3;
-  if (this->serv_prop_go() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->serv_prop_go(), target);
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->service_propulsion(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -688,13 +688,13 @@ size_t ServerToClient::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->command());
   }
 
-  // float track_length = 2;
-  if (this->track_length() != 0) {
+  // float run_length = 2;
+  if (this->run_length() != 0) {
     total_size += 1 + 4;
   }
 
-  // bool serv_prop_go = 3;
-  if (this->serv_prop_go() != 0) {
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
     total_size += 1 + 1;
   }
 
@@ -728,11 +728,11 @@ void ServerToClient::MergeFrom(const ServerToClient& from) {
   if (from.command() != 0) {
     set_command(from.command());
   }
-  if (from.track_length() != 0) {
-    set_track_length(from.track_length());
+  if (from.run_length() != 0) {
+    set_run_length(from.run_length());
   }
-  if (from.serv_prop_go() != 0) {
-    set_serv_prop_go(from.serv_prop_go());
+  if (from.service_propulsion() != 0) {
+    set_service_propulsion(from.service_propulsion());
   }
 }
 
@@ -761,8 +761,8 @@ void ServerToClient::Swap(ServerToClient* other) {
 void ServerToClient::InternalSwap(ServerToClient* other) {
   using std::swap;
   swap(command_, other->command_);
-  swap(track_length_, other->track_length_);
-  swap(serv_prop_go_, other->serv_prop_go_);
+  swap(run_length_, other->run_length_);
+  swap(service_propulsion_, other->service_propulsion_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 

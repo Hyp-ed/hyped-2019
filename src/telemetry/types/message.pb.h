@@ -92,14 +92,14 @@ enum ServerToClient_Command {
   ServerToClient_Command_STOP = 1,
   ServerToClient_Command_LAUNCH = 2,
   ServerToClient_Command_RESET = 3,
-  ServerToClient_Command_TRACKLENGTH = 4,
-  ServerToClient_Command_SERV_PROP_GO = 5,
+  ServerToClient_Command_RUN_LENGTH = 4,
+  ServerToClient_Command_SERVICE_PROPULSION = 5,
   ServerToClient_Command_ServerToClient_Command_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   ServerToClient_Command_ServerToClient_Command_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool ServerToClient_Command_IsValid(int value);
 const ServerToClient_Command ServerToClient_Command_Command_MIN = ServerToClient_Command_ACK;
-const ServerToClient_Command ServerToClient_Command_Command_MAX = ServerToClient_Command_SERV_PROP_GO;
+const ServerToClient_Command ServerToClient_Command_Command_MAX = ServerToClient_Command_SERVICE_PROPULSION;
 const int ServerToClient_Command_Command_ARRAYSIZE = ServerToClient_Command_Command_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* ServerToClient_Command_descriptor();
@@ -352,10 +352,10 @@ class ServerToClient : public ::google::protobuf::Message /* @@protoc_insertion_
     ServerToClient_Command_LAUNCH;
   static const Command RESET =
     ServerToClient_Command_RESET;
-  static const Command TRACKLENGTH =
-    ServerToClient_Command_TRACKLENGTH;
-  static const Command SERV_PROP_GO =
-    ServerToClient_Command_SERV_PROP_GO;
+  static const Command RUN_LENGTH =
+    ServerToClient_Command_RUN_LENGTH;
+  static const Command SERVICE_PROPULSION =
+    ServerToClient_Command_SERVICE_PROPULSION;
   static inline bool Command_IsValid(int value) {
     return ServerToClient_Command_IsValid(value);
   }
@@ -385,25 +385,25 @@ class ServerToClient : public ::google::protobuf::Message /* @@protoc_insertion_
   ::telemetry_data::ServerToClient_Command command() const;
   void set_command(::telemetry_data::ServerToClient_Command value);
 
-  // float track_length = 2;
-  void clear_track_length();
-  static const int kTrackLengthFieldNumber = 2;
-  float track_length() const;
-  void set_track_length(float value);
+  // float run_length = 2;
+  void clear_run_length();
+  static const int kRunLengthFieldNumber = 2;
+  float run_length() const;
+  void set_run_length(float value);
 
-  // bool serv_prop_go = 3;
-  void clear_serv_prop_go();
-  static const int kServPropGoFieldNumber = 3;
-  bool serv_prop_go() const;
-  void set_serv_prop_go(bool value);
+  // bool service_propulsion = 3;
+  void clear_service_propulsion();
+  static const int kServicePropulsionFieldNumber = 3;
+  bool service_propulsion() const;
+  void set_service_propulsion(bool value);
 
   // @@protoc_insertion_point(class_scope:telemetry_data.ServerToClient)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   int command_;
-  float track_length_;
-  bool serv_prop_go_;
+  float run_length_;
+  bool service_propulsion_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
 };
@@ -464,32 +464,32 @@ inline void ServerToClient::set_command(::telemetry_data::ServerToClient_Command
   // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.command)
 }
 
-// float track_length = 2;
-inline void ServerToClient::clear_track_length() {
-  track_length_ = 0;
+// float run_length = 2;
+inline void ServerToClient::clear_run_length() {
+  run_length_ = 0;
 }
-inline float ServerToClient::track_length() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ServerToClient.track_length)
-  return track_length_;
+inline float ServerToClient::run_length() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ServerToClient.run_length)
+  return run_length_;
 }
-inline void ServerToClient::set_track_length(float value) {
+inline void ServerToClient::set_run_length(float value) {
   
-  track_length_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.track_length)
+  run_length_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.run_length)
 }
 
-// bool serv_prop_go = 3;
-inline void ServerToClient::clear_serv_prop_go() {
-  serv_prop_go_ = false;
+// bool service_propulsion = 3;
+inline void ServerToClient::clear_service_propulsion() {
+  service_propulsion_ = false;
 }
-inline bool ServerToClient::serv_prop_go() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ServerToClient.serv_prop_go)
-  return serv_prop_go_;
+inline bool ServerToClient::service_propulsion() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ServerToClient.service_propulsion)
+  return service_propulsion_;
 }
-inline void ServerToClient::set_serv_prop_go(bool value) {
+inline void ServerToClient::set_service_propulsion(bool value) {
   
-  serv_prop_go_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.serv_prop_go)
+  service_propulsion_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.service_propulsion)
 }
 
 #ifdef __GNUC__

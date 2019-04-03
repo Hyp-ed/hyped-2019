@@ -101,9 +101,9 @@ void Main::recvLoop()
                 log_.DBG1("Telemetry", "FROM SERVER: LAUNCH");
                 shared_telem_data.launch_command = true;
                 break;
-            case telemetry_data::ServerToClient::TRACKLENGTH:
-                log_.DBG1("Telemetry", "FROM SERVER: TRACKLENGTH %f", msg.track_length());
-                shared_telem_data.run_length = msg.track_length();
+            case telemetry_data::ServerToClient::RUN_LENGTH:
+                log_.DBG1("Telemetry", "FROM SERVER: RUN_LENGTH %f", msg.run_length());
+                shared_telem_data.run_length = msg.run_length();
                 break;
             default:
                 log_.ERR("Telemetry", "Received unrecognized input from server");

@@ -26,11 +26,11 @@ message ServerToClient {
         STOP = 1;
         LAUNCH = 2;
         RESET = 3;
-        TRACKLENGTH = 4;
-        SERV_PROP_GO = 5;
+        RUN_LENGTH = 4;
+        SERVICE_PROPULSION = 5;
     }
 
     Command command = 1;
-    float track_length = 2;
-    bool serv_prop_go = 3;
+    float run_length = 2;
+    bool service_propulsion = 3;
 }
