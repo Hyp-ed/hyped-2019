@@ -1,9 +1,15 @@
-# File containing configuration data for the motor controllers.
+# Author: Iain Macpherson
 
-# NOTE: The current data is out of date.
+# File containing data to send to the controllers when the configure function
+# is called in controller.cpp
 
 # Format of 8-byte message:
-# First byte is the Function Code (eg: writeOneByte) the remaining 7 bytes are message data to write.
+# First byte is the Function Code (eg: writeOneByte) the remaining 7 bytes are message
+# data to write.
+
+# NOTE: The current data is out of date:
+
+#-------------------------------------------------------------------------------------#
 
 # Set the motor poles
 >Controller %d: Configuring motor poles
