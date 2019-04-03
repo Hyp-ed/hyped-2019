@@ -26,8 +26,11 @@
 #include <getopt.h>
 #include <csignal>
 
+#include "utils/config.hpp"
+
 #define DEFAULT_VERBOSE -1
 #define DEFAULT_DEBUG   -1
+#define DEFAULT_CONFIG  "config.txt"
 
 namespace hyped {
 namespace utils {
@@ -74,7 +77,9 @@ System::System(int argc, char* argv[])
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
       fake_keyence(false),
-      running_(true)
+      running_(true),
+      config_file(DEFAULT_CONFIG),
+      config(0)
 {
   int c;
   int option_index = 0;
@@ -186,7 +191,9 @@ System::System(int argc, char* argv[])
   if (debug_state   == DEFAULT_DEBUG) debug_state   = debug;
   if (debug_tlm     == DEFAULT_DEBUG) debug_tlm     = debug;
 
-  log_ = new Logger(verbose, debug);
+  if (config == 0) config = new Config(config_file);
+
+  log_    = new Logger(verbose, debug);
   system_ = this;   // own address
 }
 
