@@ -70,7 +70,7 @@ class CanSender : public CanProccesor, public SenderInterface
     /**
        * @brief { Return if the can_sender is sending a CAN message right now }
        */
-    bool getIsSending();
+    bool getIsSending() override;
 
   private:
     Logger log_;
