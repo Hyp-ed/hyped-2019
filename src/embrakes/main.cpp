@@ -64,15 +64,12 @@ void Main::run()
 				stateMachineData.setEmergencyBrakesData(emBrakesState);
 
 				finishedRetracting_ = true;
-			} else if (retractorManager->getStatus() == StatusCodes::FINISHED) {
-				if (!finishedRetracting_) {
-					log_.INFO("Embrakes", "Brakes are retracted");
-					emBrakesState.module_status = ModuleStatus::kReady;
-					stateMachineData.setEmergencyBrakesData(emBrakesState);
-					
-					// Set the initialized field in the data structure
-					finishedRetracting_ = true;
-				}
+			} else if (retractorManager->getStatus() == StatusCodes::FINISHED && !finishedRetracting_) {
+				log_.INFO("Embrakes", "Brakes are retracted");
+				emBrakesState.module_status = ModuleStatus::kReady;
+				stateMachineData.setEmergencyBrakesData(emBrakesState);
+				
+				finishedRetracting_ = true;
 			}
 		}
 	}

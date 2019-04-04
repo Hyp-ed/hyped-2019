@@ -39,6 +39,14 @@ using data::EmergencyBrakes;
 
 namespace embrakes {
 
+/*
+ * @description This module handles the interaction with the embrakes. 
+ * If the current state of the state machine is kCalibrating, it starts the retracting process of the brakes.
+ * This includes the initialization of the GPIO pins and the actual retracting process, which is done in it's own thread
+ * for every embrake (There are 4)
+ * After the brakes are fully retracted it is setting the module_status to kReady. If the brakes could not be fully retracted,
+ * the module_status is set to kCriticalFailure.
+*/
 class Main : public Thread 
 {
   public:
