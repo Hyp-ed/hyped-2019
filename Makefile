@@ -103,9 +103,9 @@ doc:
 	$(Verb) doxygen Doxyfile
 
 protoc:
-	-$(Verb) mkdir src/telemetry/types
-	$(Verb) protoc -I=src/telemetry --cpp_out=src/telemetry/types message.proto
-	$(Verb) mv src/telemetry/types/message.pb.cc src/telemetry/types/message.pb.cpp
+	-$(Verb) mkdir src/telemetry/telemetrydata
+	$(Verb) protoc -I=src/telemetry --cpp_out=src/telemetry/telemetrydata message.proto
+	$(Verb) mv src/telemetry/telemetrydata/message.pb.cc src/telemetry/telemetrydata/message.pb.cpp
 
 info:
 	$(call echo_var,CC)
