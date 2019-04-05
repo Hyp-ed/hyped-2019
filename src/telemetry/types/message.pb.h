@@ -39,24 +39,28 @@ namespace protobuf_message_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[1];
+  static const ::google::protobuf::internal::ParseTable schema[2];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
 };
 void AddDescriptors();
 }  // namespace protobuf_message_2eproto
-namespace protoTypes {
+namespace telemetry_data {
+class ServerToClient;
+class ServerToClientDefaultTypeInternal;
+extern ServerToClientDefaultTypeInternal _ServerToClient_default_instance_;
 class TestMessage;
 class TestMessageDefaultTypeInternal;
 extern TestMessageDefaultTypeInternal _TestMessage_default_instance_;
-}  // namespace protoTypes
+}  // namespace telemetry_data
 namespace google {
 namespace protobuf {
-template<> ::protoTypes::TestMessage* Arena::CreateMaybeMessage<::protoTypes::TestMessage>(Arena*);
+template<> ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage<::telemetry_data::ServerToClient>(Arena*);
+template<> ::telemetry_data::TestMessage* Arena::CreateMaybeMessage<::telemetry_data::TestMessage>(Arena*);
 }  // namespace protobuf
 }  // namespace google
-namespace protoTypes {
+namespace telemetry_data {
 
 enum TestMessage_Command {
   TestMessage_Command_ERROR = 0,
@@ -83,9 +87,34 @@ inline bool TestMessage_Command_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<TestMessage_Command>(
     TestMessage_Command_descriptor(), name, value);
 }
+enum ServerToClient_Command {
+  ServerToClient_Command_ACK = 0,
+  ServerToClient_Command_STOP = 1,
+  ServerToClient_Command_LAUNCH = 2,
+  ServerToClient_Command_RESET = 3,
+  ServerToClient_Command_RUN_LENGTH = 4,
+  ServerToClient_Command_SERVICE_PROPULSION = 5,
+  ServerToClient_Command_ServerToClient_Command_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  ServerToClient_Command_ServerToClient_Command_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool ServerToClient_Command_IsValid(int value);
+const ServerToClient_Command ServerToClient_Command_Command_MIN = ServerToClient_Command_ACK;
+const ServerToClient_Command ServerToClient_Command_Command_MAX = ServerToClient_Command_SERVICE_PROPULSION;
+const int ServerToClient_Command_Command_ARRAYSIZE = ServerToClient_Command_Command_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* ServerToClient_Command_descriptor();
+inline const ::std::string& ServerToClient_Command_Name(ServerToClient_Command value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    ServerToClient_Command_descriptor(), value);
+}
+inline bool ServerToClient_Command_Parse(
+    const ::std::string& name, ServerToClient_Command* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ServerToClient_Command>(
+    ServerToClient_Command_descriptor(), name, value);
+}
 // ===================================================================
 
-class TestMessage : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protoTypes.TestMessage) */ {
+class TestMessage : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.TestMessage) */ {
  public:
   TestMessage();
   virtual ~TestMessage();
@@ -206,11 +235,11 @@ class TestMessage : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   // accessors -------------------------------------------------------
 
-  // .protoTypes.TestMessage.Command command = 1;
+  // .telemetry_data.TestMessage.Command command = 1;
   void clear_command();
   static const int kCommandFieldNumber = 1;
-  ::protoTypes::TestMessage_Command command() const;
-  void set_command(::protoTypes::TestMessage_Command value);
+  ::telemetry_data::TestMessage_Command command() const;
+  void set_command(::telemetry_data::TestMessage_Command value);
 
   // int32 data = 2;
   void clear_data();
@@ -218,12 +247,163 @@ class TestMessage : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::google::protobuf::int32 data() const;
   void set_data(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:protoTypes.TestMessage)
+  // @@protoc_insertion_point(class_scope:telemetry_data.TestMessage)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   int command_;
   ::google::protobuf::int32 data_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ServerToClient : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ServerToClient) */ {
+ public:
+  ServerToClient();
+  virtual ~ServerToClient();
+
+  ServerToClient(const ServerToClient& from);
+
+  inline ServerToClient& operator=(const ServerToClient& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ServerToClient(ServerToClient&& from) noexcept
+    : ServerToClient() {
+    *this = ::std::move(from);
+  }
+
+  inline ServerToClient& operator=(ServerToClient&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ServerToClient& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ServerToClient* internal_default_instance() {
+    return reinterpret_cast<const ServerToClient*>(
+               &_ServerToClient_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  void Swap(ServerToClient* other);
+  friend void swap(ServerToClient& a, ServerToClient& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ServerToClient* New() const final {
+    return CreateMaybeMessage<ServerToClient>(NULL);
+  }
+
+  ServerToClient* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ServerToClient>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ServerToClient& from);
+  void MergeFrom(const ServerToClient& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ServerToClient* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ServerToClient_Command Command;
+  static const Command ACK =
+    ServerToClient_Command_ACK;
+  static const Command STOP =
+    ServerToClient_Command_STOP;
+  static const Command LAUNCH =
+    ServerToClient_Command_LAUNCH;
+  static const Command RESET =
+    ServerToClient_Command_RESET;
+  static const Command RUN_LENGTH =
+    ServerToClient_Command_RUN_LENGTH;
+  static const Command SERVICE_PROPULSION =
+    ServerToClient_Command_SERVICE_PROPULSION;
+  static inline bool Command_IsValid(int value) {
+    return ServerToClient_Command_IsValid(value);
+  }
+  static const Command Command_MIN =
+    ServerToClient_Command_Command_MIN;
+  static const Command Command_MAX =
+    ServerToClient_Command_Command_MAX;
+  static const int Command_ARRAYSIZE =
+    ServerToClient_Command_Command_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Command_descriptor() {
+    return ServerToClient_Command_descriptor();
+  }
+  static inline const ::std::string& Command_Name(Command value) {
+    return ServerToClient_Command_Name(value);
+  }
+  static inline bool Command_Parse(const ::std::string& name,
+      Command* value) {
+    return ServerToClient_Command_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // .telemetry_data.ServerToClient.Command command = 1;
+  void clear_command();
+  static const int kCommandFieldNumber = 1;
+  ::telemetry_data::ServerToClient_Command command() const;
+  void set_command(::telemetry_data::ServerToClient_Command value);
+
+  // float run_length = 2;
+  void clear_run_length();
+  static const int kRunLengthFieldNumber = 2;
+  float run_length() const;
+  void set_run_length(float value);
+
+  // bool service_propulsion = 3;
+  void clear_service_propulsion();
+  static const int kServicePropulsionFieldNumber = 3;
+  bool service_propulsion() const;
+  void set_service_propulsion(bool value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ServerToClient)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  int command_;
+  float run_length_;
+  bool service_propulsion_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
 };
@@ -238,18 +418,18 @@ class TestMessage : public ::google::protobuf::Message /* @@protoc_insertion_poi
 #endif  // __GNUC__
 // TestMessage
 
-// .protoTypes.TestMessage.Command command = 1;
+// .telemetry_data.TestMessage.Command command = 1;
 inline void TestMessage::clear_command() {
   command_ = 0;
 }
-inline ::protoTypes::TestMessage_Command TestMessage::command() const {
-  // @@protoc_insertion_point(field_get:protoTypes.TestMessage.command)
-  return static_cast< ::protoTypes::TestMessage_Command >(command_);
+inline ::telemetry_data::TestMessage_Command TestMessage::command() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.TestMessage.command)
+  return static_cast< ::telemetry_data::TestMessage_Command >(command_);
 }
-inline void TestMessage::set_command(::protoTypes::TestMessage_Command value) {
+inline void TestMessage::set_command(::telemetry_data::TestMessage_Command value) {
   
   command_ = value;
-  // @@protoc_insertion_point(field_set:protoTypes.TestMessage.command)
+  // @@protoc_insertion_point(field_set:telemetry_data.TestMessage.command)
 }
 
 // int32 data = 2;
@@ -257,30 +437,83 @@ inline void TestMessage::clear_data() {
   data_ = 0;
 }
 inline ::google::protobuf::int32 TestMessage::data() const {
-  // @@protoc_insertion_point(field_get:protoTypes.TestMessage.data)
+  // @@protoc_insertion_point(field_get:telemetry_data.TestMessage.data)
   return data_;
 }
 inline void TestMessage::set_data(::google::protobuf::int32 value) {
   
   data_ = value;
-  // @@protoc_insertion_point(field_set:protoTypes.TestMessage.data)
+  // @@protoc_insertion_point(field_set:telemetry_data.TestMessage.data)
+}
+
+// -------------------------------------------------------------------
+
+// ServerToClient
+
+// .telemetry_data.ServerToClient.Command command = 1;
+inline void ServerToClient::clear_command() {
+  command_ = 0;
+}
+inline ::telemetry_data::ServerToClient_Command ServerToClient::command() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ServerToClient.command)
+  return static_cast< ::telemetry_data::ServerToClient_Command >(command_);
+}
+inline void ServerToClient::set_command(::telemetry_data::ServerToClient_Command value) {
+  
+  command_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.command)
+}
+
+// float run_length = 2;
+inline void ServerToClient::clear_run_length() {
+  run_length_ = 0;
+}
+inline float ServerToClient::run_length() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ServerToClient.run_length)
+  return run_length_;
+}
+inline void ServerToClient::set_run_length(float value) {
+  
+  run_length_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.run_length)
+}
+
+// bool service_propulsion = 3;
+inline void ServerToClient::clear_service_propulsion() {
+  service_propulsion_ = false;
+}
+inline bool ServerToClient::service_propulsion() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ServerToClient.service_propulsion)
+  return service_propulsion_;
+}
+inline void ServerToClient::set_service_propulsion(bool value) {
+  
+  service_propulsion_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.service_propulsion)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
-}  // namespace protoTypes
+}  // namespace telemetry_data
 
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::protoTypes::TestMessage_Command> : ::std::true_type {};
+template <> struct is_proto_enum< ::telemetry_data::TestMessage_Command> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protoTypes::TestMessage_Command>() {
-  return ::protoTypes::TestMessage_Command_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::telemetry_data::TestMessage_Command>() {
+  return ::telemetry_data::TestMessage_Command_descriptor();
+}
+template <> struct is_proto_enum< ::telemetry_data::ServerToClient_Command> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::telemetry_data::ServerToClient_Command>() {
+  return ::telemetry_data::ServerToClient_Command_descriptor();
 }
 
 }  // namespace protobuf

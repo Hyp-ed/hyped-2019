@@ -41,10 +41,9 @@ class Main: public Thread {
 
     private:
         Client client_;
+        void recvLoop();
         Data& data_;
 };
-
-void recvLoop(Client& c);
 
 }  // namespace telemetry
 }  // namespace hyped

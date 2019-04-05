@@ -85,41 +85,36 @@ Client::~Client()
     close(sockfd_);
 }
 
-bool Client::sendData(protoTypes::TestMessage message)
+bool Client::sendData(telemetry_data::TestMessage message)
 {
     using namespace google::protobuf::util;
+    log_.DBG3("Telemetry", "Starting to send message to server");
 
     if (!SerializeDelimitedToFileDescriptor(message, sockfd_)) {
         log_.ERR("Telemetry", "SerializeDelimitedToFileDescriptor didn't work");
         return false;
     }
 
+    log_.DBG3("Telemetry", "Finished sending message to server");
+
     return true;
 }
 
-bool Client::receiveData()
+telemetry_data::ServerToClient Client::receiveData()
 {
     using namespace google::protobuf::util;
 
-    protoTypes::TestMessage messageFromServer;
+    telemetry_data::ServerToClient messageFromServer;
+    log_.DBG1("Telemetry", "Waiting to receive from server");
+
     if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_, NULL)) {
         log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
-        return false;
+        // throw exception or something here
     }
 
-    switch (messageFromServer.command()) {
-        case protoTypes::TestMessage::FINISH:
-            log_.DBG1("Telemetry", "FROM SERVER: FINISH");
-            break;
-        case protoTypes::TestMessage::EM_STOP:
-            log_.DBG1("Telemetry", "FROM SERVER: EM_STOP");
-            break;
-        default:
-            log_.ERR("Telemetry", "UNRECOGNIZED INPUT FROM SERVER");
-            break;
-    }
+    log_.DBG1("Telemetry", "Finished receiving from server");
 
-    return true;
+    return messageFromServer;
 }
 
 }  // namespace client

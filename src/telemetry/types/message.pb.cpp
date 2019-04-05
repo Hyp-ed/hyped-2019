@@ -19,50 +19,80 @@
 #endif
 // @@protoc_insertion_point(includes)
 
-namespace protoTypes {
+namespace telemetry_data {
 class TestMessageDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<TestMessage>
       _instance;
 } _TestMessage_default_instance_;
-}  // namespace protoTypes
+class ServerToClientDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ServerToClient>
+      _instance;
+} _ServerToClient_default_instance_;
+}  // namespace telemetry_data
 namespace protobuf_message_2eproto {
 static void InitDefaultsTestMessage() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::protoTypes::_TestMessage_default_instance_;
-    new (ptr) ::protoTypes::TestMessage();
+    void* ptr = &::telemetry_data::_TestMessage_default_instance_;
+    new (ptr) ::telemetry_data::TestMessage();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::protoTypes::TestMessage::InitAsDefaultInstance();
+  ::telemetry_data::TestMessage::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_TestMessage =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsTestMessage}, {}};
 
-void InitDefaults() {
-  ::google::protobuf::internal::InitSCC(&scc_info_TestMessage.base);
+static void InitDefaultsServerToClient() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ServerToClient_default_instance_;
+    new (ptr) ::telemetry_data::ServerToClient();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ServerToClient::InitAsDefaultInstance();
 }
 
-::google::protobuf::Metadata file_level_metadata[1];
-const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[1];
+::google::protobuf::internal::SCCInfo<0> scc_info_ServerToClient =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsServerToClient}, {}};
+
+void InitDefaults() {
+  ::google::protobuf::internal::InitSCC(&scc_info_TestMessage.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_ServerToClient.base);
+}
+
+::google::protobuf::Metadata file_level_metadata[2];
+const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[2];
 
 const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::protoTypes::TestMessage, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::TestMessage, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::protoTypes::TestMessage, command_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::protoTypes::TestMessage, data_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::TestMessage, command_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::TestMessage, data_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, command_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, run_length_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, service_propulsion_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::protoTypes::TestMessage)},
+  { 0, -1, sizeof(::telemetry_data::TestMessage)},
+  { 7, -1, sizeof(::telemetry_data::ServerToClient)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::protoTypes::_TestMessage_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_TestMessage_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ServerToClient_default_instance_),
 };
 
 void protobuf_AssignDescriptors() {
@@ -80,21 +110,27 @@ void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 1);
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 2);
 }
 
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\rmessage.proto\022\nprotoTypes\"\254\001\n\013TestMess"
-      "age\0220\n\007command\030\001 \001(\0162\037.protoTypes.TestMe"
-      "ssage.Command\022\014\n\004data\030\002 \001(\005\"]\n\007Command\022\t"
-      "\n\005ERROR\020\000\022\014\n\010VELOCITY\020\001\022\020\n\014ACCELERATION\020"
-      "\002\022\016\n\nBRAKE_TEMP\020\003\022\n\n\006FINISH\020\004\022\013\n\007EM_STOP"
-      "\020\005B\033\n\nprotoTypesB\rMessageProtosb\006proto3"
+      "\n\rmessage.proto\022\016telemetry_data\"\260\001\n\013Test"
+      "Message\0224\n\007command\030\001 \001(\0162#.telemetry_dat"
+      "a.TestMessage.Command\022\014\n\004data\030\002 \001(\005\"]\n\007C"
+      "ommand\022\t\n\005ERROR\020\000\022\014\n\010VELOCITY\020\001\022\020\n\014ACCEL"
+      "ERATION\020\002\022\016\n\nBRAKE_TEMP\020\003\022\n\n\006FINISH\020\004\022\013\n"
+      "\007EM_STOP\020\005\"\326\001\n\016ServerToClient\0227\n\007command"
+      "\030\001 \001(\0162&.telemetry_data.ServerToClient.C"
+      "ommand\022\022\n\nrun_length\030\002 \001(\002\022\032\n\022service_pr"
+      "opulsion\030\003 \001(\010\"[\n\007Command\022\007\n\003ACK\020\000\022\010\n\004ST"
+      "OP\020\001\022\n\n\006LAUNCH\020\002\022\t\n\005RESET\020\003\022\016\n\nRUN_LENGT"
+      "H\020\004\022\026\n\022SERVICE_PROPULSION\020\005B\036\n\rtelemetry"
+      "dataB\rTelemetryDatab\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 239);
+      descriptor, 467);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
 }
@@ -110,7 +146,7 @@ struct StaticDescriptorInitializer {
   }
 } static_descriptor_initializer;
 }  // namespace protobuf_message_2eproto
-namespace protoTypes {
+namespace telemetry_data {
 const ::google::protobuf::EnumDescriptor* TestMessage_Command_descriptor() {
   protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
   return protobuf_message_2eproto::file_level_enum_descriptors[0];
@@ -140,6 +176,35 @@ const TestMessage_Command TestMessage::Command_MIN;
 const TestMessage_Command TestMessage::Command_MAX;
 const int TestMessage::Command_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+const ::google::protobuf::EnumDescriptor* ServerToClient_Command_descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_enum_descriptors[1];
+}
+bool ServerToClient_Command_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const ServerToClient_Command ServerToClient::ACK;
+const ServerToClient_Command ServerToClient::STOP;
+const ServerToClient_Command ServerToClient::LAUNCH;
+const ServerToClient_Command ServerToClient::RESET;
+const ServerToClient_Command ServerToClient::RUN_LENGTH;
+const ServerToClient_Command ServerToClient::SERVICE_PROPULSION;
+const ServerToClient_Command ServerToClient::Command_MIN;
+const ServerToClient_Command ServerToClient::Command_MAX;
+const int ServerToClient::Command_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 // ===================================================================
 
@@ -155,7 +220,7 @@ TestMessage::TestMessage()
   ::google::protobuf::internal::InitSCC(
       &protobuf_message_2eproto::scc_info_TestMessage.base);
   SharedCtor();
-  // @@protoc_insertion_point(constructor:protoTypes.TestMessage)
+  // @@protoc_insertion_point(constructor:telemetry_data.TestMessage)
 }
 TestMessage::TestMessage(const TestMessage& from)
   : ::google::protobuf::Message(),
@@ -164,7 +229,7 @@ TestMessage::TestMessage(const TestMessage& from)
   ::memcpy(&command_, &from.command_,
     static_cast<size_t>(reinterpret_cast<char*>(&data_) -
     reinterpret_cast<char*>(&command_)) + sizeof(data_));
-  // @@protoc_insertion_point(copy_constructor:protoTypes.TestMessage)
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.TestMessage)
 }
 
 void TestMessage::SharedCtor() {
@@ -174,7 +239,7 @@ void TestMessage::SharedCtor() {
 }
 
 TestMessage::~TestMessage() {
-  // @@protoc_insertion_point(destructor:protoTypes.TestMessage)
+  // @@protoc_insertion_point(destructor:telemetry_data.TestMessage)
   SharedDtor();
 }
 
@@ -196,7 +261,7 @@ const TestMessage& TestMessage::default_instance() {
 
 
 void TestMessage::Clear() {
-// @@protoc_insertion_point(message_clear_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(message_clear_start:telemetry_data.TestMessage)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -211,13 +276,13 @@ bool TestMessage::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:protoTypes.TestMessage)
+  // @@protoc_insertion_point(parse_start:telemetry_data.TestMessage)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .protoTypes.TestMessage.Command command = 1;
+      // .telemetry_data.TestMessage.Command command = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
@@ -225,7 +290,7 @@ bool TestMessage::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_command(static_cast< ::protoTypes::TestMessage_Command >(value));
+          set_command(static_cast< ::telemetry_data::TestMessage_Command >(value));
         } else {
           goto handle_unusual;
         }
@@ -258,21 +323,21 @@ bool TestMessage::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:protoTypes.TestMessage)
+  // @@protoc_insertion_point(parse_success:telemetry_data.TestMessage)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:protoTypes.TestMessage)
+  // @@protoc_insertion_point(parse_failure:telemetry_data.TestMessage)
   return false;
 #undef DO_
 }
 
 void TestMessage::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:protoTypes.TestMessage)
+  // @@protoc_insertion_point(serialize_start:telemetry_data.TestMessage)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .protoTypes.TestMessage.Command command = 1;
+  // .telemetry_data.TestMessage.Command command = 1;
   if (this->command() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->command(), output);
@@ -287,17 +352,17 @@ void TestMessage::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
   }
-  // @@protoc_insertion_point(serialize_end:protoTypes.TestMessage)
+  // @@protoc_insertion_point(serialize_end:telemetry_data.TestMessage)
 }
 
 ::google::protobuf::uint8* TestMessage::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:protoTypes.TestMessage)
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.TestMessage)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .protoTypes.TestMessage.Command command = 1;
+  // .telemetry_data.TestMessage.Command command = 1;
   if (this->command() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->command(), target);
@@ -312,12 +377,12 @@ void TestMessage::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:protoTypes.TestMessage)
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.TestMessage)
   return target;
 }
 
 size_t TestMessage::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.TestMessage)
   size_t total_size = 0;
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -325,7 +390,7 @@ size_t TestMessage::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // .protoTypes.TestMessage.Command command = 1;
+  // .telemetry_data.TestMessage.Command command = 1;
   if (this->command() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->command());
@@ -344,22 +409,22 @@ size_t TestMessage::ByteSizeLong() const {
 }
 
 void TestMessage::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.TestMessage)
   GOOGLE_DCHECK_NE(&from, this);
   const TestMessage* source =
       ::google::protobuf::internal::DynamicCastToGenerated<const TestMessage>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protoTypes.TestMessage)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.TestMessage)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:protoTypes.TestMessage)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.TestMessage)
     MergeFrom(*source);
   }
 }
 
 void TestMessage::MergeFrom(const TestMessage& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.TestMessage)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -374,14 +439,14 @@ void TestMessage::MergeFrom(const TestMessage& from) {
 }
 
 void TestMessage::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.TestMessage)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void TestMessage::CopyFrom(const TestMessage& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.TestMessage)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -408,12 +473,314 @@ void TestMessage::InternalSwap(TestMessage* other) {
 }
 
 
+// ===================================================================
+
+void ServerToClient::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ServerToClient::kCommandFieldNumber;
+const int ServerToClient::kRunLengthFieldNumber;
+const int ServerToClient::kServicePropulsionFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ServerToClient::ServerToClient()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_message_2eproto::scc_info_ServerToClient.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:telemetry_data.ServerToClient)
+}
+ServerToClient::ServerToClient(const ServerToClient& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&command_, &from.command_,
+    static_cast<size_t>(reinterpret_cast<char*>(&service_propulsion_) -
+    reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.ServerToClient)
+}
+
+void ServerToClient::SharedCtor() {
+  ::memset(&command_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&service_propulsion_) -
+      reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
+}
+
+ServerToClient::~ServerToClient() {
+  // @@protoc_insertion_point(destructor:telemetry_data.ServerToClient)
+  SharedDtor();
+}
+
+void ServerToClient::SharedDtor() {
+}
+
+void ServerToClient::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* ServerToClient::descriptor() {
+  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const ServerToClient& ServerToClient::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ServerToClient.base);
+  return *internal_default_instance();
+}
+
+
+void ServerToClient::Clear() {
+// @@protoc_insertion_point(message_clear_start:telemetry_data.ServerToClient)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&command_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&service_propulsion_) -
+      reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
+  _internal_metadata_.Clear();
+}
+
+bool ServerToClient::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:telemetry_data.ServerToClient)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .telemetry_data.ServerToClient.Command command = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_command(static_cast< ::telemetry_data::ServerToClient_Command >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // float run_length = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(21u /* 21 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &run_length_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // bool service_propulsion = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &service_propulsion_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:telemetry_data.ServerToClient)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:telemetry_data.ServerToClient)
+  return false;
+#undef DO_
+}
+
+void ServerToClient::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:telemetry_data.ServerToClient)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .telemetry_data.ServerToClient.Command command = 1;
+  if (this->command() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->command(), output);
+  }
+
+  // float run_length = 2;
+  if (this->run_length() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->run_length(), output);
+  }
+
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->service_propulsion(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:telemetry_data.ServerToClient)
+}
+
+::google::protobuf::uint8* ServerToClient::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ServerToClient)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .telemetry_data.ServerToClient.Command command = 1;
+  if (this->command() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->command(), target);
+  }
+
+  // float run_length = 2;
+  if (this->run_length() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->run_length(), target);
+  }
+
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->service_propulsion(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ServerToClient)
+  return target;
+}
+
+size_t ServerToClient::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.ServerToClient)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // .telemetry_data.ServerToClient.Command command = 1;
+  if (this->command() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->command());
+  }
+
+  // float run_length = 2;
+  if (this->run_length() != 0) {
+    total_size += 1 + 4;
+  }
+
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
+    total_size += 1 + 1;
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ServerToClient::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ServerToClient)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ServerToClient* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ServerToClient>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ServerToClient)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ServerToClient)
+    MergeFrom(*source);
+  }
+}
+
+void ServerToClient::MergeFrom(const ServerToClient& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ServerToClient)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.command() != 0) {
+    set_command(from.command());
+  }
+  if (from.run_length() != 0) {
+    set_run_length(from.run_length());
+  }
+  if (from.service_propulsion() != 0) {
+    set_service_propulsion(from.service_propulsion());
+  }
+}
+
+void ServerToClient::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ServerToClient)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ServerToClient::CopyFrom(const ServerToClient& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.ServerToClient)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ServerToClient::IsInitialized() const {
+  return true;
+}
+
+void ServerToClient::Swap(ServerToClient* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ServerToClient::InternalSwap(ServerToClient* other) {
+  using std::swap;
+  swap(command_, other->command_);
+  swap(run_length_, other->run_length_);
+  swap(service_propulsion_, other->service_propulsion_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata ServerToClient::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
 // @@protoc_insertion_point(namespace_scope)
-}  // namespace protoTypes
+}  // namespace telemetry_data
 namespace google {
 namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::protoTypes::TestMessage* Arena::CreateMaybeMessage< ::protoTypes::TestMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::protoTypes::TestMessage >(arena);
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::TestMessage* Arena::CreateMaybeMessage< ::telemetry_data::TestMessage >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::TestMessage >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage< ::telemetry_data::ServerToClient >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::ServerToClient >(arena);
 }
 }  // namespace protobuf
 }  // namespace google
