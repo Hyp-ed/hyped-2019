@@ -29,14 +29,14 @@ using hyped::navigation::Main;
 
 int main(int argc, char* argv[])
 {
-    System::parseArgs(argc, argv);
-    System &sys = System::getSystem();
-    Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
-    Main* main = new Main(1, *log_nav);
-    main->run();
+  System::parseArgs(argc, argv);
+  System &sys = System::getSystem();
+  Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
+  Main* main = new Main(1, *log_nav);
+  main->run();
 
-    while (sys.running_)
-		;
+  while (sys.running_)
+	;
 
-    return 0;
+  return 0;
 }

@@ -30,50 +30,50 @@ using Eigen::VectorXf;
 
 namespace hyped
 {
-    using data::NavigationVector;
-    using data::NavigationEstimate;
-    using utils::math::KalmanMultivariate;
+  using data::NavigationVector;
+  using data::NavigationEstimate;
+  using utils::math::KalmanMultivariate;
 
-    namespace navigation
+  namespace navigation
+  {
+    class KalmanManager
     {
-        class KalmanManager
-        {
-            public:
-                KalmanManager(unsigned int n_, unsigned int m_);
-                KalmanManager(unsigned int n_, unsigned int m_, unsigned int k_);
-                void setupStationary();
-                void setupElevator();
-                void updateStateTransitionMatrix(double dt);
-                void filter(NavigationVector& z_);
-                void filter(NavigationVector& u_, NavigationVector& z_);
-                const NavigationEstimate getEstimate();
+      public:
+        KalmanManager(unsigned int n_, unsigned int m_);
+        KalmanManager(unsigned int n_, unsigned int m_, unsigned int k_);
+        void setupStationary();
+        void setupElevator();
+        void updateStateTransitionMatrix(double dt);
+        void filter(NavigationVector& z_);
+        void filter(NavigationVector& u_, NavigationVector& z_);
+        const NavigationEstimate getEstimate();
 
-            private:
-                unsigned int        n;
-                unsigned int        m;
-                unsigned int        k;
-                KalmanMultivariate  kalmanFilter;
+      private:
+        unsigned int        n;
+        unsigned int        m;
+        unsigned int        k;
+        KalmanMultivariate  kalmanFilter;
 
-                // set initial estimate x and error covariance P
-                void setInitialEstimate();
+        // set initial estimate x and error covariance P
+        void setInitialEstimate();
 
-                // create initial error covariance matrix P
-                const MatrixXf createInitialErrorCovarianceMatrix();
+        // create initial error covariance matrix P
+        const MatrixXf createInitialErrorCovarianceMatrix();
 
-                // create state transition matrix A
-                const MatrixXf createStateTransitionMatrix(double dt);
+        // create state transition matrix A
+        const MatrixXf createStateTransitionMatrix(double dt);
 
-                // create measurement matrix H
-                const MatrixXf createMeasurementMatrix();
+        // create measurement matrix H
+        const MatrixXf createMeasurementMatrix();
 
-                // create state transition coveriance matrix Q
-                const MatrixXf createStateTransitionCovarianceMatrix();
+        // create state transition coveriance matrix Q
+        const MatrixXf createStateTransitionCovarianceMatrix();
 
-                // create measurement covariance matrices R
-                const MatrixXf createStationaryMeasurementCovarianceMatrix();
-                const MatrixXf createElevatorMeasurementCovarianceMatrix();
-        };
-    }
+        // create measurement covariance matrices R
+        const MatrixXf createStationaryMeasurementCovarianceMatrix();
+        const MatrixXf createElevatorMeasurementCovarianceMatrix();
+    };
+  }
 }
 
 

@@ -20,68 +20,81 @@
 
 namespace hyped
 {
-    namespace navigation
+  namespace navigation
+  {
+
+    SingleImuNavigation::SingleImuNavigation(System& sys_,
+                                             ImuQuery& imuQuery_, int imuId_,
+                                             GravityCalibrator& gravityCalibrator_)
+      : sys(sys_),
+        imuQuery(imuQuery_),
+        gravityCalibrator(gravityCalibrator_),
+        imuId(imuId_),
+        data(Data::getInstance())
+
+    {}
+
+    int SingleImuNavigation::navigate(float queryDelay, int runId, Logger& log)
     {
+      // File setup
+      bool writeToFile = (imuId > 0) || (runId > 0);
+      std::ofstream outfile;
 
-        SingleImuNavigation::SingleImuNavigation(ImuQuery& imuQuery_, int imuId_,
-                                                 GravityCalibrator& gravityCalibrator_)
-            : imuQuery(imuQuery_),
-              gravityCalibrator(gravityCalibrator_),
-              imuId(imuId_)
-        {}
+      // IMU data logger
+      ImuDataLogger imuDataLogger(&outfile);
+      imuDataLogger.setup(imuId, runId);
 
-        int SingleImuNavigation::navigate(unsigned int nTestQueries,
-                                          float queryDelay, int runId, Logger& log)
-        {
-            // File setup
-            bool writeToFile = (imuId > 0) || (runId > 0);
-            std::ofstream outfile;
+      // Calibrate gravitational acceleration
+      NavigationVector gVector = gravityCalibrator.calibrate(imuQuery);
+      log.INFO("SINGLE_IMU", "Calibration complete, measuring.");
 
-            // IMU data logger
-            ImuDataLogger imuDataLogger(&outfile);
-            imuDataLogger.setup(imuId, runId);
+      // Return measured gravity vector
+      log.INFO("SINGLE_IMU", "Measured gravity:\n\tgx=%+6.3f\tgy=%+6.3f\tgz=%+6.3f\n\n",
+                          gVector[0], gVector[1], gVector[2]);
 
-            // Calibrate gravitational acceleration
-            NavigationVector gVector = gravityCalibrator.calibrate(imuQuery);
-            log.INFO("SINGLE_IMU", "Calibration complete, measuring.");
+      // Store measured/estimated values
+      data::Navigation nav_data;
+      DataPoint<NavigationVector> accRaw(0., NavigationVector({0., 0., 0.}));
+      DataPoint<NavigationVector> accCor(0., NavigationVector({0., 0., 0.}));
+      DataPoint<NavigationVector>    vel(0., NavigationVector({0., 0., 0.}));
+      DataPoint<NavigationVector>    pos(0., NavigationVector({0., 0., 0.}));
 
-            // Return measured gravity vector
-            log.INFO("SINGLE_IMU", "Measured gravity:\n\tgx=%+6.3f\tgy=%+6.3f\tgz=%+6.3f\n\n",
-                                gVector[0], gVector[1], gVector[2]);
+      // Integrate acceleration -> velocity -> position
+      Integrator<NavigationVector> velIntegrator(&vel);
+      Integrator<NavigationVector> posIntegrator(&pos);
 
-            // Store measured/estimated values
-            DataPoint<NavigationVector> accRaw(0., NavigationVector({0., 0., 0.}));
-            DataPoint<NavigationVector> accCor(0., NavigationVector({0., 0., 0.}));
-            DataPoint<NavigationVector>    vel(0., NavigationVector({0., 0., 0.}));
-            DataPoint<NavigationVector>    pos(0., NavigationVector({0., 0., 0.}));
+      // Perform acceleration, speed and distance measurements
+      while (sys.running_) {
+        // Query sensor and correct values
+        accRaw = imuQuery.query();
+        accCor = DataPoint<NavigationVector>(accRaw.timestamp, accRaw.value - gVector);
 
-            // Integrate acceleration -> velocity -> position
-            Integrator<NavigationVector> velIntegrator(&vel);
-            Integrator<NavigationVector> posIntegrator(&pos);
+        // Intergrate
+        velIntegrator.update(accCor);
+        posIntegrator.update(vel);
 
-            // Perform acceleration, speed and distance measurements
-            for (unsigned int i = 0; i < nTestQueries; ++i) {
-                // Query sensor and correct values
-                accRaw = imuQuery.query();
-                accCor = DataPoint<NavigationVector>(accRaw.timestamp, accRaw.value - gVector);
+        // Output values
+        log.INFO("SINGLE_IMU", "a_x:%+6.3f a_y:%+6.3f a_z:%+6.3f\tv_x:%+6.3f v_y:%+6.3f "
+                 "v_z:%+6.3f\tp_x:%+6.3f p_y:%+6.3f p_z:%+6.3f\n",
+                  accCor.value[0], accCor.value[1], accCor.value[2],
+                  vel.value[0]   , vel.value[1]   , vel.value[2],
+                  pos.value[0]   , pos.value[1]   , pos.value[2]);
 
-                // Intergrate
-                velIntegrator.update(accCor);
-                posIntegrator.update(vel);
+        if (writeToFile > 0) imuDataLogger.dataToFile(&accRaw, &accCor, &vel, &pos);
+        sleep(queryDelay);
 
-                // Output values
-                log.INFO("SINGLE_IMU", "a_x:%+6.3f a_y:%+6.3f a_z:%+6.3f\tv_x:%+6.3f v_y:%+6.3f "
-                         "v_z:%+6.3f\tp_x:%+6.3f p_y:%+6.3f p_z:%+6.3f\n",
-                                accCor.value[0], accCor.value[1], accCor.value[2],
-                                vel.value[0], vel.value[1], vel.value[2],
-                                pos.value[0], pos.value[1], pos.value[2]);
+        // Update data structure
+        // TODO(Neil) module_status, emergency_braking_distance, braking_distance?
+        // TODO(Neil) more modular code?
+        // TODO(Neil) better method for extracting scalar value
+        nav_data.distance     = pos   .value[0];
+        nav_data.velocity     = vel   .value[0];
+        nav_data.acceleration = accCor.value[0];
+        data.setNavigationData(nav_data);
+      }
 
-                if (writeToFile > 0) imuDataLogger.dataToFile(&accRaw, &accCor, &vel, &pos);
-                sleep(queryDelay);
-            }
-
-            if (writeToFile) outfile.close();
-            return 0;
-        }
+      if (writeToFile) outfile.close();
+      return 0;
     }
+  }
 }

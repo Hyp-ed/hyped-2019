@@ -38,33 +38,37 @@
 
 namespace hyped
 {
-    using data::DataPoint;
-    using data::ImuData;
-    using data::NavigationVector;
-    using sensors::Imu;
-    using utils::Logger;
-    using utils::math::Integrator;
-    using utils::math::OnlineStatistics;
-    using utils::System;
-    using navigation::GravityCalibrator;
-    using navigation::ImuDataLogger;
-    using navigation::ImuQuery;
+  using data::Data;
+  using data::DataPoint;
+  using data::ImuData;
+  using data::NavigationVector;
+  using sensors::Imu;
+  using utils::Logger;
+  using utils::math::Integrator;
+  using utils::math::OnlineStatistics;
+  using utils::System;
+  using navigation::GravityCalibrator;
+  using navigation::ImuDataLogger;
+  using navigation::ImuQuery;
 
-    namespace navigation
+  namespace navigation
+  {
+    class SingleImuNavigation
     {
-        class SingleImuNavigation
-        {
-            public:
-                SingleImuNavigation(ImuQuery& imuQuery_, int imuId_,
-                                    GravityCalibrator& gravityCalibrator_);
-                int navigate(unsigned int nTestQueries, float queryDelay, int runId, Logger& log);
+      public:
+        SingleImuNavigation(System& sys_,
+                            ImuQuery& imuQuery_, int imuId_,
+                            GravityCalibrator& gravityCalibrator_);
+        int navigate(float queryDelay, int runId, Logger& log);
 
-            private:
-                ImuQuery&           imuQuery;
-                GravityCalibrator&  gravityCalibrator;
-                int                 imuId;
-        };
-    }
+        private:
+          System&             sys;
+          ImuQuery&           imuQuery;
+          GravityCalibrator&  gravityCalibrator;
+          int                 imuId;
+          Data&               data;
+    };
+  }
 }
 
 #endif  // NAVIGATION_SINGLE_IMU_NAVIGATION_HPP_
