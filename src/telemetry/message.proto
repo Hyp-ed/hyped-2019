@@ -34,3 +34,58 @@ message ServerToClient {
     float run_length = 2;
     bool service_propulsion = 3;
 }
+
+message ClientToServer {
+    message Navigation {
+        float distance = 1;
+        float velocity = 2;
+        float acceleration = 3;
+    }
+
+    message StateMachine {
+        enum State {
+            IDLE = 0;
+            CALIBRATING = 1;
+            READY = 2;
+            ACCELERATING = 3;
+            NOMINAL_BRAKING = 4;
+            EMERGENCY_BRAKING = 5;
+            RUN_COMPLETE = 6;
+            FAILURE_STOPPED = 7;
+            EXITING = 8;
+            FINISHED = 9;
+            INVALID = 10;
+        }
+
+        State state = 1;
+    }
+
+    message Motors {
+        sint32 velocity_1 = 1;
+        sint32 velocity_2 = 2;
+        sint32 velocity_3 = 3;
+        sint32 velocity_4 = 4;
+        sint32 velocity_5 = 5;
+        sint32 velocity_6 = 6;
+    }
+
+    // message Batteries {
+// 
+    // }
+
+    // message Sensors {
+// 
+    // }
+
+    message EmergencyBrakes {
+        bool front_brakes = 1;
+        bool rear_brakes = 2;
+    }
+
+    Navigation navigation = 1;
+    StateMachine state_machine = 2;
+    Motors motors = 3;
+    // Batteries batteries = 4;
+    // Sensors sensors = 5;
+    EmergencyBrakes emergency_brakes = 6;
+}

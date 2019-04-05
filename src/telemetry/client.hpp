@@ -34,15 +34,15 @@ using google::protobuf::io::ZeroCopyInputStream;
 namespace client {
 
 constexpr auto kPort = "9090";
-// constexpr auto kServerIP = "localhost";
-constexpr auto kServerIP = "192.168.1.50";
+constexpr auto kServerIP = "localhost";
+// constexpr auto kServerIP = "192.168.1.50";
 
 class Client {
     public:
         explicit Client(Logger& log);
         ~Client();
         bool connect();
-        bool sendData(telemetry_data::TestMessage message);
+        bool sendData(telemetry_data::ClientToServer message);
         telemetry_data::ServerToClient receiveData();
 
     private:

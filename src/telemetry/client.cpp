@@ -85,7 +85,7 @@ Client::~Client()
     close(sockfd_);
 }
 
-bool Client::sendData(telemetry_data::TestMessage message)
+bool Client::sendData(telemetry_data::ClientToServer message)
 {
     using namespace google::protobuf::util;
     log_.DBG3("Telemetry", "Starting to send message to server");

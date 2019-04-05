@@ -28,7 +28,6 @@ namespace hyped {
 using client::Client;
 using data::ModuleStatus;
 using data::Data;
-using data::Telemetry;
 
 namespace telemetry {
 
@@ -49,53 +48,42 @@ void Main::run()
 
     // syntax explanation so I don't forget: thread constructor expects pointer to member function,
     //                                       also needs 'this' as object to call member function on
-    std::thread recvThread {&Main::recvLoop, this};  // NOLINT (linter thinks semicolon is syntax error...)
+    std::thread recv_thread {&Main::recvLoop, this};  // NOLINT (linter thinks semicolon is syntax error...)
+    std::thread send_thread {&Main::sendLoop, this};  // NOLINT (linter thinks semicolon is syntax error...)
+
+    recv_thread.join();
+    send_thread.join();
+}
+
+void Main::sendLoop()
+{
+    telemetry_data::ClientToServer msg;
 
     while (true) {
-        Telemetry telem_data = data_.getTelemetryData();
-        log_.DBG2("Telemetry", "SHARED module_status: %d", telem_data.module_status);
-        log_.DBG2("Telemetry", "SHARED launch_command: %s", telem_data.launch_command ? "true" : "false"); // NOLINT
-        log_.DBG2("Telemetry", "SHARED reset_command: %s", telem_data.reset_command ? "true" : "false"); // NOLINT
-        log_.DBG2("Telemetry", "SHARED run_length: %f", telem_data.run_length);
-        log_.DBG2("Telemetry", "SHARED service_propulsion_go: %s", telem_data.service_propulsion_go ? "true" : "false"); // NOLINT
+        nav_data_               = data_.getNavigationData();
+        sm_data_                = data_.getStateMachineData();
+        motor_data_             = data_.getMotorData();
+        batteries_data_         = data_.getBatteriesData();
+        sensors_data_           = data_.getSensorsData();
+        emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
-        telemetry_data::TestMessage msg;
+        telemetry_data::ClientToServer::Navigation* navigation_msg = msg.mutable_navigation();
+        navigation_msg->set_distance(nav_data_.distance);
+        navigation_msg->set_velocity(nav_data_.velocity);
+        navigation_msg->set_acceleration(nav_data_.acceleration);
 
-        msg.set_command(telemetry_data::TestMessage::VELOCITY);
-        msg.set_data(222);
         client_.sendData(msg);
+        msg.Clear();
 
-        msg.set_command(telemetry_data::TestMessage::ACCELERATION);
-        msg.set_data(333);
-        client_.sendData(msg);
-
-        msg.set_command(telemetry_data::TestMessage::BRAKE_TEMP);
-        msg.set_data(777);
-        client_.sendData(msg);
-
-        msg.set_command(telemetry_data::TestMessage::VELOCITY);
-        msg.set_data(333);
-        client_.sendData(msg);
-
-        msg.set_command(telemetry_data::TestMessage::ACCELERATION);
-        msg.set_data(444);
-        client_.sendData(msg);
-
-        msg.set_command(telemetry_data::TestMessage::BRAKE_TEMP);
-        msg.set_data(888);
-        client_.sendData(msg);
-
-        // std::this_thread::sleep_for(std::chrono::milliseconds(100));  // breaks GUI, must fix
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
-
-    recvThread.join();
 }
 
 void Main::recvLoop()
 {
     telemetry_data::ServerToClient msg;
     // not sure whether to put this in or ouside of loop
-    Telemetry telem_data_struct = data_.getTelemetryData();
+    data::Telemetry telem_data_struct = data_.getTelemetryData();
 
     while (true) {
         msg = client_.receiveData();

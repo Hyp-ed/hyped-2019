@@ -39,7 +39,7 @@ namespace protobuf_message_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[2];
+  static const ::google::protobuf::internal::ParseTable schema[7];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -47,6 +47,21 @@ struct TableStruct {
 void AddDescriptors();
 }  // namespace protobuf_message_2eproto
 namespace telemetry_data {
+class ClientToServer;
+class ClientToServerDefaultTypeInternal;
+extern ClientToServerDefaultTypeInternal _ClientToServer_default_instance_;
+class ClientToServer_EmergencyBrakes;
+class ClientToServer_EmergencyBrakesDefaultTypeInternal;
+extern ClientToServer_EmergencyBrakesDefaultTypeInternal _ClientToServer_EmergencyBrakes_default_instance_;
+class ClientToServer_Motors;
+class ClientToServer_MotorsDefaultTypeInternal;
+extern ClientToServer_MotorsDefaultTypeInternal _ClientToServer_Motors_default_instance_;
+class ClientToServer_Navigation;
+class ClientToServer_NavigationDefaultTypeInternal;
+extern ClientToServer_NavigationDefaultTypeInternal _ClientToServer_Navigation_default_instance_;
+class ClientToServer_StateMachine;
+class ClientToServer_StateMachineDefaultTypeInternal;
+extern ClientToServer_StateMachineDefaultTypeInternal _ClientToServer_StateMachine_default_instance_;
 class ServerToClient;
 class ServerToClientDefaultTypeInternal;
 extern ServerToClientDefaultTypeInternal _ServerToClient_default_instance_;
@@ -56,6 +71,11 @@ extern TestMessageDefaultTypeInternal _TestMessage_default_instance_;
 }  // namespace telemetry_data
 namespace google {
 namespace protobuf {
+template<> ::telemetry_data::ClientToServer* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer>(Arena*);
+template<> ::telemetry_data::ClientToServer_EmergencyBrakes* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_EmergencyBrakes>(Arena*);
+template<> ::telemetry_data::ClientToServer_Motors* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Motors>(Arena*);
+template<> ::telemetry_data::ClientToServer_Navigation* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Navigation>(Arena*);
+template<> ::telemetry_data::ClientToServer_StateMachine* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_StateMachine>(Arena*);
 template<> ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage<::telemetry_data::ServerToClient>(Arena*);
 template<> ::telemetry_data::TestMessage* Arena::CreateMaybeMessage<::telemetry_data::TestMessage>(Arena*);
 }  // namespace protobuf
@@ -111,6 +131,36 @@ inline bool ServerToClient_Command_Parse(
     const ::std::string& name, ServerToClient_Command* value) {
   return ::google::protobuf::internal::ParseNamedEnum<ServerToClient_Command>(
     ServerToClient_Command_descriptor(), name, value);
+}
+enum ClientToServer_StateMachine_State {
+  ClientToServer_StateMachine_State_IDLE = 0,
+  ClientToServer_StateMachine_State_CALIBRATING = 1,
+  ClientToServer_StateMachine_State_READY = 2,
+  ClientToServer_StateMachine_State_ACCELERATING = 3,
+  ClientToServer_StateMachine_State_NOMINAL_BRAKING = 4,
+  ClientToServer_StateMachine_State_EMERGENCY_BRAKING = 5,
+  ClientToServer_StateMachine_State_RUN_COMPLETE = 6,
+  ClientToServer_StateMachine_State_FAILURE_STOPPED = 7,
+  ClientToServer_StateMachine_State_EXITING = 8,
+  ClientToServer_StateMachine_State_FINISHED = 9,
+  ClientToServer_StateMachine_State_INVALID = 10,
+  ClientToServer_StateMachine_State_ClientToServer_StateMachine_State_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  ClientToServer_StateMachine_State_ClientToServer_StateMachine_State_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool ClientToServer_StateMachine_State_IsValid(int value);
+const ClientToServer_StateMachine_State ClientToServer_StateMachine_State_State_MIN = ClientToServer_StateMachine_State_IDLE;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine_State_State_MAX = ClientToServer_StateMachine_State_INVALID;
+const int ClientToServer_StateMachine_State_State_ARRAYSIZE = ClientToServer_StateMachine_State_State_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* ClientToServer_StateMachine_State_descriptor();
+inline const ::std::string& ClientToServer_StateMachine_State_Name(ClientToServer_StateMachine_State value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    ClientToServer_StateMachine_State_descriptor(), value);
+}
+inline bool ClientToServer_StateMachine_State_Parse(
+    const ::std::string& name, ClientToServer_StateMachine_State* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ClientToServer_StateMachine_State>(
+    ClientToServer_StateMachine_State_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -407,6 +457,671 @@ class ServerToClient : public ::google::protobuf::Message /* @@protoc_insertion_
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
 };
+// -------------------------------------------------------------------
+
+class ClientToServer_Navigation : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Navigation) */ {
+ public:
+  ClientToServer_Navigation();
+  virtual ~ClientToServer_Navigation();
+
+  ClientToServer_Navigation(const ClientToServer_Navigation& from);
+
+  inline ClientToServer_Navigation& operator=(const ClientToServer_Navigation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Navigation(ClientToServer_Navigation&& from) noexcept
+    : ClientToServer_Navigation() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Navigation& operator=(ClientToServer_Navigation&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Navigation& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Navigation* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Navigation*>(
+               &_ClientToServer_Navigation_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  void Swap(ClientToServer_Navigation* other);
+  friend void swap(ClientToServer_Navigation& a, ClientToServer_Navigation& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Navigation* New() const final {
+    return CreateMaybeMessage<ClientToServer_Navigation>(NULL);
+  }
+
+  ClientToServer_Navigation* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Navigation>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Navigation& from);
+  void MergeFrom(const ClientToServer_Navigation& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Navigation* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // float distance = 1;
+  void clear_distance();
+  static const int kDistanceFieldNumber = 1;
+  float distance() const;
+  void set_distance(float value);
+
+  // float velocity = 2;
+  void clear_velocity();
+  static const int kVelocityFieldNumber = 2;
+  float velocity() const;
+  void set_velocity(float value);
+
+  // float acceleration = 3;
+  void clear_acceleration();
+  static const int kAccelerationFieldNumber = 3;
+  float acceleration() const;
+  void set_acceleration(float value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Navigation)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  float distance_;
+  float velocity_;
+  float acceleration_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_StateMachine : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.StateMachine) */ {
+ public:
+  ClientToServer_StateMachine();
+  virtual ~ClientToServer_StateMachine();
+
+  ClientToServer_StateMachine(const ClientToServer_StateMachine& from);
+
+  inline ClientToServer_StateMachine& operator=(const ClientToServer_StateMachine& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_StateMachine(ClientToServer_StateMachine&& from) noexcept
+    : ClientToServer_StateMachine() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_StateMachine& operator=(ClientToServer_StateMachine&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_StateMachine& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_StateMachine* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_StateMachine*>(
+               &_ClientToServer_StateMachine_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  void Swap(ClientToServer_StateMachine* other);
+  friend void swap(ClientToServer_StateMachine& a, ClientToServer_StateMachine& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_StateMachine* New() const final {
+    return CreateMaybeMessage<ClientToServer_StateMachine>(NULL);
+  }
+
+  ClientToServer_StateMachine* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_StateMachine>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_StateMachine& from);
+  void MergeFrom(const ClientToServer_StateMachine& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_StateMachine* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ClientToServer_StateMachine_State State;
+  static const State IDLE =
+    ClientToServer_StateMachine_State_IDLE;
+  static const State CALIBRATING =
+    ClientToServer_StateMachine_State_CALIBRATING;
+  static const State READY =
+    ClientToServer_StateMachine_State_READY;
+  static const State ACCELERATING =
+    ClientToServer_StateMachine_State_ACCELERATING;
+  static const State NOMINAL_BRAKING =
+    ClientToServer_StateMachine_State_NOMINAL_BRAKING;
+  static const State EMERGENCY_BRAKING =
+    ClientToServer_StateMachine_State_EMERGENCY_BRAKING;
+  static const State RUN_COMPLETE =
+    ClientToServer_StateMachine_State_RUN_COMPLETE;
+  static const State FAILURE_STOPPED =
+    ClientToServer_StateMachine_State_FAILURE_STOPPED;
+  static const State EXITING =
+    ClientToServer_StateMachine_State_EXITING;
+  static const State FINISHED =
+    ClientToServer_StateMachine_State_FINISHED;
+  static const State INVALID =
+    ClientToServer_StateMachine_State_INVALID;
+  static inline bool State_IsValid(int value) {
+    return ClientToServer_StateMachine_State_IsValid(value);
+  }
+  static const State State_MIN =
+    ClientToServer_StateMachine_State_State_MIN;
+  static const State State_MAX =
+    ClientToServer_StateMachine_State_State_MAX;
+  static const int State_ARRAYSIZE =
+    ClientToServer_StateMachine_State_State_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  State_descriptor() {
+    return ClientToServer_StateMachine_State_descriptor();
+  }
+  static inline const ::std::string& State_Name(State value) {
+    return ClientToServer_StateMachine_State_Name(value);
+  }
+  static inline bool State_Parse(const ::std::string& name,
+      State* value) {
+    return ClientToServer_StateMachine_State_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // .telemetry_data.ClientToServer.StateMachine.State state = 1;
+  void clear_state();
+  static const int kStateFieldNumber = 1;
+  ::telemetry_data::ClientToServer_StateMachine_State state() const;
+  void set_state(::telemetry_data::ClientToServer_StateMachine_State value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.StateMachine)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  int state_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_Motors : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Motors) */ {
+ public:
+  ClientToServer_Motors();
+  virtual ~ClientToServer_Motors();
+
+  ClientToServer_Motors(const ClientToServer_Motors& from);
+
+  inline ClientToServer_Motors& operator=(const ClientToServer_Motors& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Motors(ClientToServer_Motors&& from) noexcept
+    : ClientToServer_Motors() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Motors& operator=(ClientToServer_Motors&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Motors& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Motors* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Motors*>(
+               &_ClientToServer_Motors_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  void Swap(ClientToServer_Motors* other);
+  friend void swap(ClientToServer_Motors& a, ClientToServer_Motors& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Motors* New() const final {
+    return CreateMaybeMessage<ClientToServer_Motors>(NULL);
+  }
+
+  ClientToServer_Motors* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Motors>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Motors& from);
+  void MergeFrom(const ClientToServer_Motors& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Motors* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // sint32 velocity_1 = 1;
+  void clear_velocity_1();
+  static const int kVelocity1FieldNumber = 1;
+  ::google::protobuf::int32 velocity_1() const;
+  void set_velocity_1(::google::protobuf::int32 value);
+
+  // sint32 velocity_2 = 2;
+  void clear_velocity_2();
+  static const int kVelocity2FieldNumber = 2;
+  ::google::protobuf::int32 velocity_2() const;
+  void set_velocity_2(::google::protobuf::int32 value);
+
+  // sint32 velocity_3 = 3;
+  void clear_velocity_3();
+  static const int kVelocity3FieldNumber = 3;
+  ::google::protobuf::int32 velocity_3() const;
+  void set_velocity_3(::google::protobuf::int32 value);
+
+  // sint32 velocity_4 = 4;
+  void clear_velocity_4();
+  static const int kVelocity4FieldNumber = 4;
+  ::google::protobuf::int32 velocity_4() const;
+  void set_velocity_4(::google::protobuf::int32 value);
+
+  // sint32 velocity_5 = 5;
+  void clear_velocity_5();
+  static const int kVelocity5FieldNumber = 5;
+  ::google::protobuf::int32 velocity_5() const;
+  void set_velocity_5(::google::protobuf::int32 value);
+
+  // sint32 velocity_6 = 6;
+  void clear_velocity_6();
+  static const int kVelocity6FieldNumber = 6;
+  ::google::protobuf::int32 velocity_6() const;
+  void set_velocity_6(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Motors)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::int32 velocity_1_;
+  ::google::protobuf::int32 velocity_2_;
+  ::google::protobuf::int32 velocity_3_;
+  ::google::protobuf::int32 velocity_4_;
+  ::google::protobuf::int32 velocity_5_;
+  ::google::protobuf::int32 velocity_6_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_EmergencyBrakes : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.EmergencyBrakes) */ {
+ public:
+  ClientToServer_EmergencyBrakes();
+  virtual ~ClientToServer_EmergencyBrakes();
+
+  ClientToServer_EmergencyBrakes(const ClientToServer_EmergencyBrakes& from);
+
+  inline ClientToServer_EmergencyBrakes& operator=(const ClientToServer_EmergencyBrakes& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_EmergencyBrakes(ClientToServer_EmergencyBrakes&& from) noexcept
+    : ClientToServer_EmergencyBrakes() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_EmergencyBrakes& operator=(ClientToServer_EmergencyBrakes&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_EmergencyBrakes& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_EmergencyBrakes* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_EmergencyBrakes*>(
+               &_ClientToServer_EmergencyBrakes_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  void Swap(ClientToServer_EmergencyBrakes* other);
+  friend void swap(ClientToServer_EmergencyBrakes& a, ClientToServer_EmergencyBrakes& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_EmergencyBrakes* New() const final {
+    return CreateMaybeMessage<ClientToServer_EmergencyBrakes>(NULL);
+  }
+
+  ClientToServer_EmergencyBrakes* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_EmergencyBrakes>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_EmergencyBrakes& from);
+  void MergeFrom(const ClientToServer_EmergencyBrakes& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_EmergencyBrakes* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // bool front_brakes = 1;
+  void clear_front_brakes();
+  static const int kFrontBrakesFieldNumber = 1;
+  bool front_brakes() const;
+  void set_front_brakes(bool value);
+
+  // bool rear_brakes = 2;
+  void clear_rear_brakes();
+  static const int kRearBrakesFieldNumber = 2;
+  bool rear_brakes() const;
+  void set_rear_brakes(bool value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.EmergencyBrakes)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool front_brakes_;
+  bool rear_brakes_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer) */ {
+ public:
+  ClientToServer();
+  virtual ~ClientToServer();
+
+  ClientToServer(const ClientToServer& from);
+
+  inline ClientToServer& operator=(const ClientToServer& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer(ClientToServer&& from) noexcept
+    : ClientToServer() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer& operator=(ClientToServer&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer*>(
+               &_ClientToServer_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  void Swap(ClientToServer* other);
+  friend void swap(ClientToServer& a, ClientToServer& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer* New() const final {
+    return CreateMaybeMessage<ClientToServer>(NULL);
+  }
+
+  ClientToServer* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer& from);
+  void MergeFrom(const ClientToServer& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ClientToServer_Navigation Navigation;
+  typedef ClientToServer_StateMachine StateMachine;
+  typedef ClientToServer_Motors Motors;
+  typedef ClientToServer_EmergencyBrakes EmergencyBrakes;
+
+  // accessors -------------------------------------------------------
+
+  // .telemetry_data.ClientToServer.Navigation navigation = 1;
+  bool has_navigation() const;
+  void clear_navigation();
+  static const int kNavigationFieldNumber = 1;
+  private:
+  const ::telemetry_data::ClientToServer_Navigation& _internal_navigation() const;
+  public:
+  const ::telemetry_data::ClientToServer_Navigation& navigation() const;
+  ::telemetry_data::ClientToServer_Navigation* release_navigation();
+  ::telemetry_data::ClientToServer_Navigation* mutable_navigation();
+  void set_allocated_navigation(::telemetry_data::ClientToServer_Navigation* navigation);
+
+  // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
+  bool has_state_machine() const;
+  void clear_state_machine();
+  static const int kStateMachineFieldNumber = 2;
+  private:
+  const ::telemetry_data::ClientToServer_StateMachine& _internal_state_machine() const;
+  public:
+  const ::telemetry_data::ClientToServer_StateMachine& state_machine() const;
+  ::telemetry_data::ClientToServer_StateMachine* release_state_machine();
+  ::telemetry_data::ClientToServer_StateMachine* mutable_state_machine();
+  void set_allocated_state_machine(::telemetry_data::ClientToServer_StateMachine* state_machine);
+
+  // .telemetry_data.ClientToServer.Motors motors = 3;
+  bool has_motors() const;
+  void clear_motors();
+  static const int kMotorsFieldNumber = 3;
+  private:
+  const ::telemetry_data::ClientToServer_Motors& _internal_motors() const;
+  public:
+  const ::telemetry_data::ClientToServer_Motors& motors() const;
+  ::telemetry_data::ClientToServer_Motors* release_motors();
+  ::telemetry_data::ClientToServer_Motors* mutable_motors();
+  void set_allocated_motors(::telemetry_data::ClientToServer_Motors* motors);
+
+  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+  bool has_emergency_brakes() const;
+  void clear_emergency_brakes();
+  static const int kEmergencyBrakesFieldNumber = 6;
+  private:
+  const ::telemetry_data::ClientToServer_EmergencyBrakes& _internal_emergency_brakes() const;
+  public:
+  const ::telemetry_data::ClientToServer_EmergencyBrakes& emergency_brakes() const;
+  ::telemetry_data::ClientToServer_EmergencyBrakes* release_emergency_brakes();
+  ::telemetry_data::ClientToServer_EmergencyBrakes* mutable_emergency_brakes();
+  void set_allocated_emergency_brakes(::telemetry_data::ClientToServer_EmergencyBrakes* emergency_brakes);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::telemetry_data::ClientToServer_Navigation* navigation_;
+  ::telemetry_data::ClientToServer_StateMachine* state_machine_;
+  ::telemetry_data::ClientToServer_Motors* motors_;
+  ::telemetry_data::ClientToServer_EmergencyBrakes* emergency_brakes_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
 // ===================================================================
 
 
@@ -492,9 +1207,423 @@ inline void ServerToClient::set_service_propulsion(bool value) {
   // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.service_propulsion)
 }
 
+// -------------------------------------------------------------------
+
+// ClientToServer_Navigation
+
+// float distance = 1;
+inline void ClientToServer_Navigation::clear_distance() {
+  distance_ = 0;
+}
+inline float ClientToServer_Navigation::distance() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Navigation.distance)
+  return distance_;
+}
+inline void ClientToServer_Navigation::set_distance(float value) {
+  
+  distance_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.distance)
+}
+
+// float velocity = 2;
+inline void ClientToServer_Navigation::clear_velocity() {
+  velocity_ = 0;
+}
+inline float ClientToServer_Navigation::velocity() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Navigation.velocity)
+  return velocity_;
+}
+inline void ClientToServer_Navigation::set_velocity(float value) {
+  
+  velocity_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.velocity)
+}
+
+// float acceleration = 3;
+inline void ClientToServer_Navigation::clear_acceleration() {
+  acceleration_ = 0;
+}
+inline float ClientToServer_Navigation::acceleration() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Navigation.acceleration)
+  return acceleration_;
+}
+inline void ClientToServer_Navigation::set_acceleration(float value) {
+  
+  acceleration_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.acceleration)
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_StateMachine
+
+// .telemetry_data.ClientToServer.StateMachine.State state = 1;
+inline void ClientToServer_StateMachine::clear_state() {
+  state_ = 0;
+}
+inline ::telemetry_data::ClientToServer_StateMachine_State ClientToServer_StateMachine::state() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.StateMachine.state)
+  return static_cast< ::telemetry_data::ClientToServer_StateMachine_State >(state_);
+}
+inline void ClientToServer_StateMachine::set_state(::telemetry_data::ClientToServer_StateMachine_State value) {
+  
+  state_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.StateMachine.state)
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_Motors
+
+// sint32 velocity_1 = 1;
+inline void ClientToServer_Motors::clear_velocity_1() {
+  velocity_1_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Motors::velocity_1() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_1)
+  return velocity_1_;
+}
+inline void ClientToServer_Motors::set_velocity_1(::google::protobuf::int32 value) {
+  
+  velocity_1_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_1)
+}
+
+// sint32 velocity_2 = 2;
+inline void ClientToServer_Motors::clear_velocity_2() {
+  velocity_2_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Motors::velocity_2() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_2)
+  return velocity_2_;
+}
+inline void ClientToServer_Motors::set_velocity_2(::google::protobuf::int32 value) {
+  
+  velocity_2_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_2)
+}
+
+// sint32 velocity_3 = 3;
+inline void ClientToServer_Motors::clear_velocity_3() {
+  velocity_3_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Motors::velocity_3() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_3)
+  return velocity_3_;
+}
+inline void ClientToServer_Motors::set_velocity_3(::google::protobuf::int32 value) {
+  
+  velocity_3_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_3)
+}
+
+// sint32 velocity_4 = 4;
+inline void ClientToServer_Motors::clear_velocity_4() {
+  velocity_4_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Motors::velocity_4() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_4)
+  return velocity_4_;
+}
+inline void ClientToServer_Motors::set_velocity_4(::google::protobuf::int32 value) {
+  
+  velocity_4_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_4)
+}
+
+// sint32 velocity_5 = 5;
+inline void ClientToServer_Motors::clear_velocity_5() {
+  velocity_5_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Motors::velocity_5() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_5)
+  return velocity_5_;
+}
+inline void ClientToServer_Motors::set_velocity_5(::google::protobuf::int32 value) {
+  
+  velocity_5_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_5)
+}
+
+// sint32 velocity_6 = 6;
+inline void ClientToServer_Motors::clear_velocity_6() {
+  velocity_6_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Motors::velocity_6() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_6)
+  return velocity_6_;
+}
+inline void ClientToServer_Motors::set_velocity_6(::google::protobuf::int32 value) {
+  
+  velocity_6_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_6)
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_EmergencyBrakes
+
+// bool front_brakes = 1;
+inline void ClientToServer_EmergencyBrakes::clear_front_brakes() {
+  front_brakes_ = false;
+}
+inline bool ClientToServer_EmergencyBrakes::front_brakes() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.EmergencyBrakes.front_brakes)
+  return front_brakes_;
+}
+inline void ClientToServer_EmergencyBrakes::set_front_brakes(bool value) {
+  
+  front_brakes_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.EmergencyBrakes.front_brakes)
+}
+
+// bool rear_brakes = 2;
+inline void ClientToServer_EmergencyBrakes::clear_rear_brakes() {
+  rear_brakes_ = false;
+}
+inline bool ClientToServer_EmergencyBrakes::rear_brakes() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.EmergencyBrakes.rear_brakes)
+  return rear_brakes_;
+}
+inline void ClientToServer_EmergencyBrakes::set_rear_brakes(bool value) {
+  
+  rear_brakes_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.EmergencyBrakes.rear_brakes)
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer
+
+// .telemetry_data.ClientToServer.Navigation navigation = 1;
+inline bool ClientToServer::has_navigation() const {
+  return this != internal_default_instance() && navigation_ != NULL;
+}
+inline void ClientToServer::clear_navigation() {
+  if (GetArenaNoVirtual() == NULL && navigation_ != NULL) {
+    delete navigation_;
+  }
+  navigation_ = NULL;
+}
+inline const ::telemetry_data::ClientToServer_Navigation& ClientToServer::_internal_navigation() const {
+  return *navigation_;
+}
+inline const ::telemetry_data::ClientToServer_Navigation& ClientToServer::navigation() const {
+  const ::telemetry_data::ClientToServer_Navigation* p = navigation_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.navigation)
+  return p != NULL ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_Navigation*>(
+      &::telemetry_data::_ClientToServer_Navigation_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_Navigation* ClientToServer::release_navigation() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.navigation)
+  
+  ::telemetry_data::ClientToServer_Navigation* temp = navigation_;
+  navigation_ = NULL;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_Navigation* ClientToServer::mutable_navigation() {
+  
+  if (navigation_ == NULL) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_Navigation>(GetArenaNoVirtual());
+    navigation_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.navigation)
+  return navigation_;
+}
+inline void ClientToServer::set_allocated_navigation(::telemetry_data::ClientToServer_Navigation* navigation) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete navigation_;
+  }
+  if (navigation) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      navigation = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, navigation, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  navigation_ = navigation;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.navigation)
+}
+
+// .telemetry_data.ClientToServer.StateMachine state_machine = 2;
+inline bool ClientToServer::has_state_machine() const {
+  return this != internal_default_instance() && state_machine_ != NULL;
+}
+inline void ClientToServer::clear_state_machine() {
+  if (GetArenaNoVirtual() == NULL && state_machine_ != NULL) {
+    delete state_machine_;
+  }
+  state_machine_ = NULL;
+}
+inline const ::telemetry_data::ClientToServer_StateMachine& ClientToServer::_internal_state_machine() const {
+  return *state_machine_;
+}
+inline const ::telemetry_data::ClientToServer_StateMachine& ClientToServer::state_machine() const {
+  const ::telemetry_data::ClientToServer_StateMachine* p = state_machine_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.state_machine)
+  return p != NULL ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_StateMachine*>(
+      &::telemetry_data::_ClientToServer_StateMachine_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_StateMachine* ClientToServer::release_state_machine() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.state_machine)
+  
+  ::telemetry_data::ClientToServer_StateMachine* temp = state_machine_;
+  state_machine_ = NULL;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_StateMachine* ClientToServer::mutable_state_machine() {
+  
+  if (state_machine_ == NULL) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_StateMachine>(GetArenaNoVirtual());
+    state_machine_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.state_machine)
+  return state_machine_;
+}
+inline void ClientToServer::set_allocated_state_machine(::telemetry_data::ClientToServer_StateMachine* state_machine) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete state_machine_;
+  }
+  if (state_machine) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      state_machine = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, state_machine, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  state_machine_ = state_machine;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.state_machine)
+}
+
+// .telemetry_data.ClientToServer.Motors motors = 3;
+inline bool ClientToServer::has_motors() const {
+  return this != internal_default_instance() && motors_ != NULL;
+}
+inline void ClientToServer::clear_motors() {
+  if (GetArenaNoVirtual() == NULL && motors_ != NULL) {
+    delete motors_;
+  }
+  motors_ = NULL;
+}
+inline const ::telemetry_data::ClientToServer_Motors& ClientToServer::_internal_motors() const {
+  return *motors_;
+}
+inline const ::telemetry_data::ClientToServer_Motors& ClientToServer::motors() const {
+  const ::telemetry_data::ClientToServer_Motors* p = motors_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.motors)
+  return p != NULL ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_Motors*>(
+      &::telemetry_data::_ClientToServer_Motors_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_Motors* ClientToServer::release_motors() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.motors)
+  
+  ::telemetry_data::ClientToServer_Motors* temp = motors_;
+  motors_ = NULL;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_Motors* ClientToServer::mutable_motors() {
+  
+  if (motors_ == NULL) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_Motors>(GetArenaNoVirtual());
+    motors_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.motors)
+  return motors_;
+}
+inline void ClientToServer::set_allocated_motors(::telemetry_data::ClientToServer_Motors* motors) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete motors_;
+  }
+  if (motors) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      motors = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, motors, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  motors_ = motors;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.motors)
+}
+
+// .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+inline bool ClientToServer::has_emergency_brakes() const {
+  return this != internal_default_instance() && emergency_brakes_ != NULL;
+}
+inline void ClientToServer::clear_emergency_brakes() {
+  if (GetArenaNoVirtual() == NULL && emergency_brakes_ != NULL) {
+    delete emergency_brakes_;
+  }
+  emergency_brakes_ = NULL;
+}
+inline const ::telemetry_data::ClientToServer_EmergencyBrakes& ClientToServer::_internal_emergency_brakes() const {
+  return *emergency_brakes_;
+}
+inline const ::telemetry_data::ClientToServer_EmergencyBrakes& ClientToServer::emergency_brakes() const {
+  const ::telemetry_data::ClientToServer_EmergencyBrakes* p = emergency_brakes_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.emergency_brakes)
+  return p != NULL ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_EmergencyBrakes*>(
+      &::telemetry_data::_ClientToServer_EmergencyBrakes_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_EmergencyBrakes* ClientToServer::release_emergency_brakes() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.emergency_brakes)
+  
+  ::telemetry_data::ClientToServer_EmergencyBrakes* temp = emergency_brakes_;
+  emergency_brakes_ = NULL;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_EmergencyBrakes* ClientToServer::mutable_emergency_brakes() {
+  
+  if (emergency_brakes_ == NULL) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_EmergencyBrakes>(GetArenaNoVirtual());
+    emergency_brakes_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.emergency_brakes)
+  return emergency_brakes_;
+}
+inline void ClientToServer::set_allocated_emergency_brakes(::telemetry_data::ClientToServer_EmergencyBrakes* emergency_brakes) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete emergency_brakes_;
+  }
+  if (emergency_brakes) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      emergency_brakes = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, emergency_brakes, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  emergency_brakes_ = emergency_brakes;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.emergency_brakes)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 
@@ -514,6 +1643,11 @@ template <> struct is_proto_enum< ::telemetry_data::ServerToClient_Command> : ::
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::telemetry_data::ServerToClient_Command>() {
   return ::telemetry_data::ServerToClient_Command_descriptor();
+}
+template <> struct is_proto_enum< ::telemetry_data::ClientToServer_StateMachine_State> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::telemetry_data::ClientToServer_StateMachine_State>() {
+  return ::telemetry_data::ClientToServer_StateMachine_State_descriptor();
 }
 
 }  // namespace protobuf
