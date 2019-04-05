@@ -21,9 +21,12 @@
 #ifndef PROPULSION_FILE_READER_HPP_
 #define PROPULSION_FILE_READER_HPP_
 
-#include <bits/stdc++.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <fstream>
+#include <sstream>
+#include <vector>
 #include <string>
 
 #include "utils/logger.hpp"
@@ -42,9 +45,9 @@ class FileReader {
    * @brief read data from file and write into the array message.
    *
    * @param message
-   * @param len
+   * @param len - length of messages array
    */
-  static bool readFileData(ControllerMessage messages[], const char* filepath);
+  static bool readFileData(ControllerMessage messages[], int len, const char* filepath);
 
  private:
   /**
@@ -53,15 +56,15 @@ class FileReader {
    * @param line
    * @return const char*
    */
-  static void splitData(std::string line, std::string lineData[]);
-  /**
+  static void splitData(std::basic_string<char> line, std::string lineData[]);
+  /*
    * @brief helper function to add the split data to the message struct.
    *
    * @param str
    * @param message
    * @param len
    */
-  static void addData(std::string strData[], uint8_t* message_data);
+  static void addData(std::string lineData[], uint8_t* message_data);
 };
 }}  // namespace hyped::motor_control
 #endif  // PROPULSION_FILE_READER_HPP_

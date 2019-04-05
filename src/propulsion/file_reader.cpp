@@ -31,40 +31,40 @@ namespace hyped {
 namespace motor_control {
 Logger log_(true, 0);
 
-bool FileReader::readFileData(ControllerMessage messages[], const char* filepath)
+bool FileReader::readFileData(ControllerMessage* messages, int len, const char* filepath)
 {
-  std::ifstream datafile;
-  datafile.open(filepath);
+  FILE* fp;
+  fp = fopen(filepath, "r");
 
-  if (!datafile.is_open()) {
-    log_.INFO("FILE_READER", "Unable to open file %s", filepath);
+  if (fp == NULL) {
+    log_.ERR("MOTOR", "Unable to open: %s", filepath);
+
     return false;
   } else {
-    std::string line;
-    std::string lineData[8];
     int m = 0;
-
-    while (getline(datafile, line)) {
-      if (line.empty()) {
-      } else if (line.front() == '#') {
-      } else {
-        if (line.front() == '>') {
-            messages[m].logger_output = line.substr(1).c_str();
-            log_.INFO("FR", line.substr(1).c_str(), 0);
-        } else if (line.front() == '0') {
-          splitData(line, lineData);
-          addData(lineData, messages[m].message_data);
-          m++;
+    char line[250];
+    while (fgets(line, static_cast<int>(sizeof(line)/sizeof(line[0])), fp) != NULL) {
+      if (line[0] == '\n' || line[0] == '\0') {
+      } else if (line[0] == '#') {
+      } else if (line[0] == '>') {
+        for (int i = 1; i < static_cast<int>(strlen(line)) -1; i++) {
+          messages[m].logger_output[i-1] = line[i];
         }
+      } else {
+        std::string lineData[8];
+        splitData(line, lineData);
+        addData(lineData, messages[m].message_data);
+        m++;
       }
     }
   }
-  datafile.close();
+  fclose(fp);
   return true;
 }
 
-void FileReader::splitData(std::string line, std::string lineData[])
+void FileReader::splitData(std::basic_string<char> line, std::string lineData[])
 {
+  // TODO(Iain): Improve this implementation
   std::vector<std::string> tokens;
   std::stringstream check1(line);
   std::string intermediate;
@@ -76,10 +76,10 @@ void FileReader::splitData(std::string line, std::string lineData[])
   }
 }
 
-void FileReader::addData(std::string* lineData, uint8_t* message_data)
+void FileReader::addData(std::string lineData[], uint8_t* message_data)
 {
   for (int i = 0; i < 8; i++) {
-    message_data[i] = std::stoi(lineData[i], nullptr, 16);
+    message_data[i] = static_cast<uint8_t>(std::stoi(lineData[i], NULL, 16));
   }
 }
 }}  // namespace hyped::motor_control
