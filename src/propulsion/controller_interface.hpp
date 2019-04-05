@@ -21,6 +21,10 @@
 
 #include <stdint.h>
 
+#include "utils/io/can.hpp"
+
+using hyped::utils::io::can::Frame;
+
 namespace hyped
 {
 
@@ -57,6 +61,11 @@ class ControllerInterface {
   virtual void healthCheck() = 0;
   virtual bool getFailure() = 0;
   virtual ControllerState getControllerState() = 0;
+  virtual void processEmergencyMessage(utils::io::can::Frame& message) = 0;
+  virtual void processErrorMessage(uint16_t error_message) = 0;
+  virtual void processSdoMessage(utils::io::can::Frame& message) = 0;
+  virtual void processNmtMessage(utils::io::can::Frame& message) = 0;
+  virtual void requestStateTransition(utils::io::can::Frame& message, ControllerState state) = 0;
 };
 }  // namespace motor_control
 }  // namespace hyped

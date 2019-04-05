@@ -146,6 +146,33 @@ class Controller : public ControllerInterface {
    * @return uint8_t - actual temperature of the controller
    */
   uint8_t getControllerTemp();
+  /**
+   * @brief to be called by processNewData if Emergency message is detected.
+   * @param message CAN message to process
+   */
+  void processEmergencyMessage(utils::io::can::Frame& message);
+  /**
+   * @brief Parses error message to find the problem
+   * @param error_message
+   */
+  void processErrorMessage(uint16_t error_message);
+  /**
+   * @brief Called by processNewData if SDO message is detected
+   * @param message
+   */
+  void processSdoMessage(utils::io::can::Frame& message);
+  /**
+   * @brief Called by processNewData if NMT message is detected
+   * @param message
+   */
+  void processNmtMessage(utils::io::can::Frame& message);
+  /*
+   * @brief { Sends state transition message to controller, leaving sufficient time for
+   *          controller to change state. If state does not change, throw critical failure }
+   *
+   * @param[in] { CAN message to be sent, Controller state requested}
+   */
+  void requestStateTransition(utils::io::can::Frame& message, ControllerState state);
 
  private:
   /**
@@ -163,19 +190,6 @@ class Controller : public ControllerInterface {
    * @brief set critical failure flag to true and write failure to data structure.
    */
   void throwCriticalFailure();
-  /*
-   * @brief { Sends state transition message to controller, leaving sufficient time for
-   *          controller to change state. If state does not change, throw critical failure }
-   *
-   * @param[in] { CAN message to be sent, Controller state requested}
-   */
-  void requestStateTransition(utils::io::can::Frame& message, ControllerState state);
-
-  void processEmergencyMessage(utils::io::can::Frame& message);
-  void processErrorMessage(uint16_t error_message);
-  void processSdoMessage(utils::io::can::Frame& message);
-  void processNmtMessage(utils::io::can::Frame& message);
-
 
   Logger&           log_;
   data::Data&       data_;

@@ -96,6 +96,13 @@ class FakeController : public ControllerInterface {
    */
   ControllerState getControllerState() override;
 
+  // empty functions from interface not used in the fake controller
+  void processEmergencyMessage(utils::io::can::Frame& message) {/*EMPTY*/}
+  void processErrorMessage(uint16_t error_message) {/*EMPTY*/}
+  void processSdoMessage(utils::io::can::Frame& message) {/*EMPTY*/}
+  void processNmtMessage(utils::io::can::Frame& message) {/*EMPTY*/}
+  void requestStateTransition(utils::io::can::Frame& message, ControllerState state) {/*EMPTY*/}
+
  private:
   /**
    * @brief Times the duration of the run. Starts when we enter the accelerating state.
