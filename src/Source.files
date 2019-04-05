@@ -3,17 +3,32 @@
 
 SRCS := \
   data/data.cpp \
+  navigation/gravity_calibrator.cpp \
+  navigation/imu_data_logger.cpp \
+  navigation/imu_query.cpp \
+  navigation/kalman_manager.cpp \
   navigation/main.cpp \
+  navigation/main_sim.cpp \
+  navigation/single_imu_kalman_navigation.cpp \
+  navigation/single_imu_navigation.cpp \
+  navigation/single_imu_simulation.cpp \
   propulsion/state_processor.cpp \
   propulsion/main.cpp \
   propulsion/can/can_sender.cpp \
   propulsion/can/fake_can_sender.cpp \
+  propulsion/fake_controller.cpp \
+  propulsion/calculate_RPM.cpp \
+  sensors/fake_imu.cpp \
+  sensors/fake_gpio_counter.cpp \
   sensors/imu.cpp \
+  sensors/gpio_counter.cpp \
+  sensors/imu_manager.cpp \
   sensors/main.cpp \
+  sensors/bms.cpp \
+  sensors/bms_manager.cpp \
   state_machine/main.cpp \
   state_machine/hyped-machine.cpp \
   state_machine/states.cpp \
-  telemetry/main.cpp \
   utils/concurrent/barrier.cpp \
   utils/concurrent/condition_variable.cpp \
   utils/concurrent/lock.cpp \
@@ -23,4 +38,5 @@ SRCS := \
   utils/io/spi.cpp \
   utils/logger.cpp \
   utils/system.cpp \
-  utils/timer.cpp  \
+  utils/timer.cpp \
+  utils/math/kalman_multivariate.cpp \

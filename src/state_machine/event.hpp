@@ -1,6 +1,6 @@
 
 /*
- * Authors: Yash Mittal and Ragnor Comerford
+ * Authors: Yash Mittal, Ragnor Comerford and Calum McMeekin
  * Organisation: HYPED
  * Date: 11. February 2018
  * Description:
@@ -30,9 +30,10 @@ enum Event {
   kOnStart,
   kCriticalFailure,
   kMaxDistanceReached,
+  kVelocityZeroReached,
   kOnExit,
   kFinish,
-  kVelocityZeroReached
+  kReset
 };
 
 }}   // namespace hyped::state_machine

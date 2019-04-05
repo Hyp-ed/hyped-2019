@@ -15,7 +15,7 @@
  *    limitations under the License.
  */
 
-#include "data.hpp"
+#include "data/data.hpp"
 
 namespace hyped {
 
@@ -97,6 +97,12 @@ void Data::setSensorsImuData(const DataPoint<array<ImuData, Sensors::kNumImus>>&
   sensors_.imu = imu;
 }
 
+void Data::setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>& keyence_stripe_counter) //NOLINT
+{
+  ScopedLock L(&lock_sensors_);
+  sensors_.keyence_stripe_counter = keyence_stripe_counter;
+}
+
 void Data::setCalibrationData(const SensorCalibration sensor_calibration_data)
 {
   ScopedLock L(&lock_calibration_data_);
@@ -145,16 +151,16 @@ void Data::setMotorData(const Motors& motor_data)
   motors_ = motor_data;
 }
 
-Communications Data::getCommunicationsData()
+Telemetry Data::getTelemetryData()
 {
-  ScopedLock L(&lock_communications_);
-  return communications_;
+  ScopedLock L(&lock_telemetry_);
+  return telemetry_;
 }
 
-void Data::setCommunicationsData(const Communications& communications_data)
+void Data::setTelemetryData(const Telemetry& telemetry_data)
 {
-  ScopedLock L(&lock_communications_);
-  communications_ = communications_data;
+  ScopedLock L(&lock_telemetry_);
+  telemetry_ = telemetry_data;
 }
 
 }}  // namespace data::hyped

@@ -2,8 +2,8 @@
 /*
  * Author: Jack Horsburgh
  * Organisation: HYPED
- * Date: 6/03/19
- * Description: Demo for MPU9250 sensor
+ * Date: 27/03/19
+ * Description: Demo for imu manager
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,42 +19,39 @@
  *    limitations under the License.
  */
 
-
-#include "sensors/imu.hpp"
+#include "sensors/imu_manager.hpp"
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
-#include <vector>
 
-using hyped::sensors::Imu;
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using namespace hyped::data;
 using namespace std;
-using hyped::data::ImuData;
+using hyped::sensors::ImuManager;
 
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, 0);
-  Imu imu(log, 66, 0x08);
+  ImuManager imu_manager_(log);
+  imu_manager_.start();
+  Data& data = Data::getInstance();
+
+  Sensors sensors = data.getSensorsData();
+
+  auto state = data.getStateMachineData();
+  state.current_state = State::kAccelerating;
+  data.setStateMachineData(state);
 
   log.INFO("TEST-Imu", "Imu instance successfully created");
-  for (int j = 0; j < 20; j++) {
-    std::vector<ImuData> data;
-    int count = imu.readFifo(data);
-    if (count){
-      log.DBG("ReadFifo Count", "%d", data.size());
-      for (int i=0; i < data.size(); i++) {
-        log.DBG("TEST-Imu", "accelerometer readings x: %f m/s^2, y: %f m/s^2, z: %f m/s^2", data[i].acc[0], data[i].acc[1], data[i].acc[2]);    
-      }
+  for (int i = 0; i < 20; i++) {
+    sensors = data.getSensorsData();
+    for(int j = 0; j < Sensors::kNumImus; j++){
+      log.INFO("TEST-Imu", "Imu %d readings: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, sensors.imu.value[j].acc[0], sensors.imu.value[j].acc[1], sensors.imu.value[j].acc[2]); // NOLINT
     }
-    else{
-      log.DBG("ReadFifo", "Fifo is empty!");
-    }
-    Thread::sleep(30);
-    data.clear();
+    Thread::sleep(100);
   }
  	return 0;
 }

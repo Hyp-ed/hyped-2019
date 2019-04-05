@@ -26,14 +26,13 @@
 #include <getopt.h>
 #include <csignal>
 
-#define DEFAULT_VERBOSE   -1
-#define DEFAULT_DEBUG     -1
-#define DEFAULT_IMU_ID    -1
-#define DEFAULT_IMU_COUNT -1
-#define DEFAULT_RUN_ID		-1
-#define DEFAULT_QUERIES   -1
-#define DEFAULT_Q_DELAY   -1
-#define DEFAULT_CALIBRATE -1
+#define DEFAULT_VERBOSE -1
+#define DEFAULT_DEBUG   -1
+#define DEFAULT_IMU     -1
+#define DEFAULT_RUN     -1
+#define DEFAULT_QUERIES -1
+#define DEFAULT_Q_DELAY -1
+#define DEFAULT_NAV_ID  -1
 
 namespace hyped {
 namespace utils {
@@ -54,18 +53,10 @@ void printUsage()
     "    Set system-wide debug level. All DBG[n] where n <= level messages are printed.\n"
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
-    "\n  --fake_imu --fake_proxi --fake_motors --fake_sensors --fake_keyence --fake_batteries\n"
-    "    Make the system use the fake data drivers.\n"
-    "\n  --fail_dec_imu --fail_acc_imu --fail_motors --miss_keyence --double_keyence\n"
-    "    Make the system use the fake data drivers and fail them for testing.\n"
-    "\n  --accurate\n"
-    "    Make the system use the accurate fake system\n"
-    "\n  --imu_id\n"
-    "    IMU ID number to assign to written datafile."
-    "\n  --run_id\n"
-    "    Run ID number to assign to written datafile."
-    "\n  --imu_count\n"
-    "    Number of IMUs to use (max=7)."
+    "    To use fake system.\n"
+    "    --fake_imu, --fake_keyence\n"
+    "    To set navigation IDs.\n"
+    "    --imu_id, --run_id\n"
     "");
 }
 }   // namespace hyped::utils::System
@@ -87,23 +78,11 @@ System::System(int argc, char* argv[])
       debug_nav(DEFAULT_DEBUG),
       debug_sensor(DEFAULT_DEBUG),
       debug_state(DEFAULT_DEBUG),
-      debug_cmn(DEFAULT_DEBUG),
-      fake_imu(false),
-      fake_proxi(false),
-      fake_sensors(false),
-      fake_motors(false),
-      fake_embrakes(false),
-      fail_dec_imu(false),
-      fail_acc_imu(false),
-      fail_motors(false),
-      miss_keyence(false),
-      double_keyence(false),
-      accurate(false),
-      running_(true),
-      imu_id(DEFAULT_IMU_ID),
-      imu_count(DEFAULT_IMU_COUNT),
-      run_id(DEFAULT_RUN_ID),
       debug_tlm(DEFAULT_DEBUG),
+      fake_imu(false),
+      fake_keyence(false),
+      imu_id(DEFAULT_NAV_ID),
+      run_id(DEFAULT_NAV_ID),
       running_(true)
 
 {
@@ -124,22 +103,10 @@ System::System(int argc, char* argv[])
       {"debug_state", optional_argument, 0, 'F'},
       {"debug_tlm", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
-      {"fake_imu", optional_argument, 0, 'i'},
-      {"fail_dec_imu", optional_argument, 0, 'I'},
-      {"fake_proxi", optional_argument, 0, 'j'},
-      {"fail_acc_imu", optional_argument, 0, 'J'},
-      {"fake_sensors", optional_argument, 0, 'k'},
-      {"fail_motors", optional_argument, 0, 'K'},
-      {"fake_keyence", optional_argument, 0, 'l'},
-      {"miss_keyence", optional_argument, 0, 'L'},
-      {"fake_motors", optional_argument, 0, 'm'},
-      {"double_keyence", optional_argument, 0, 'M'},
-      {"fake_embrakes", optional_argument, 0, 'n'},
-      {"accurate", optional_argument, 0, 'N'},
-      {"fake_batteries", optional_argument, 0, 'o'},
-      {"imu_id", optional_argument, 0, 'p'},
-      {"imu_count", optional_argument, 0, 'P'},
-      {"run_id", optional_argument, 0, 'q'},
+      {"fake_imu", no_argument, 0, 'i'},
+      {"imu_id", no_argument, 0, 'p'},
+      {"run_id", no_argument, 0, 'P'},
+      {"fake_keyence", no_argument, 0, 'k'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
     // returns option character from argv array following '-' or '--' from command line
@@ -214,6 +181,13 @@ System::System(int argc, char* argv[])
       case 'q':
         if (optarg) run_id = atoi(optarg);
         else        run_id = 1;
+      case 'i':
+        if (optarg) fake_imu = atoi(optarg);
+        else        fake_imu = 1;
+        break;
+      case 'k':
+        if (optarg) fake_keyence = atoi(optarg);
+        else        fake_keyence = 1;
         break;
       default:
         printUsage();

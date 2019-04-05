@@ -59,6 +59,14 @@ class System {
   int8_t debug_state;
   int8_t debug_tlm;
 
+  // Fake System variables below
+  bool fake_imu;
+  bool fake_keyence;
+
+  // Navigation System IDs
+  int8_t imu_id;
+  int8_t run_id;
+
   // barriers
   /**
    * @brief Barrier used by navigation and motor control modules on stm transition to accelerating
@@ -66,10 +74,6 @@ class System {
    */
   Barrier navigation_motors_sync_ = Barrier(2);
   bool running_;
-
-  int8_t imu_id;
-  int8_t imu_count;
-  int8_t run_id;
 
  private:
   Logger* log_;

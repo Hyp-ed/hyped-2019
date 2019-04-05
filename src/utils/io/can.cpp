@@ -86,7 +86,7 @@ Can::Can()
     return;
   }
 
-  log_.INFO("CAN", "socket successfully created");
+  log_.INFO("CAN", "socket successfully created");     // TODO(Gregor): log this only if successful
 }
 
 Can::~Can()

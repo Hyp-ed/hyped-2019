@@ -1,7 +1,7 @@
 /*
- * Authors:
+ * Author: Neil Weidinger
  * Organisation: HYPED
- * Date:
+ * Date: March 2019
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -21,10 +21,29 @@
 #ifndef TELEMETRY_MAIN_HPP_
 #define TELEMETRY_MAIN_HPP_
 
+#include "client.hpp"
+#include "utils/concurrent/thread.hpp"
+
 namespace hyped {
 
-namespace communications {
+using hyped::client::Client;
+using utils::concurrent::Thread;
+using utils::Logger;
 
-}}
+namespace telemetry {
+
+class Main: public Thread {
+    public:
+        Main(uint8_t id, Logger& log);
+        void run() override;
+
+    private:
+        Client client_;
+};
+
+void recvLoop(Client& c);
+
+}  // namespace telemetry
+}  // namespace hyped
 
 #endif  // TELEMETRY_MAIN_HPP_
