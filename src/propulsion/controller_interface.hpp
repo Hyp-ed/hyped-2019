@@ -40,7 +40,7 @@ enum ControllerState {
 struct ControllerMessage {
   uint8_t       message_data[8];
   int           len = 8;
-  const char*   logger_output;
+  char   logger_output[250];
 };
 
 class ControllerInterface {

@@ -175,7 +175,7 @@ class Controller : public ControllerInterface {
   void processErrorMessage(uint16_t error_message);
   void processSdoMessage(utils::io::can::Frame& message);
   void processNmtMessage(utils::io::can::Frame& message);
-  void processNewData(utils::io::can::Frame& message);
+
 
   Logger&           log_;
   data::Data&       data_;
