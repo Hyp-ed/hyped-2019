@@ -83,6 +83,7 @@ Imu::Imu(Logger& log, uint32_t pin, uint8_t acc_scale)
     : spi_(SPI::getInstance()),
     log_(log),
     gpio_(pin, kDirection, log),
+    pin_(pin),
     acc_scale_(acc_scale),
     is_online_(false)
 {
@@ -107,9 +108,10 @@ void Imu::init()
   enableFifo();
 
   if (check_init) {
-    log_.INFO("Imu", "Imu sensor created. Initialisation complete.");
+    log_.INFO("Imu", "FIFO Enabled");
+    log_.INFO("Imu", "Imu sensor %d created. Initialisation complete.", pin_);
   } else {
-    log_.ERR("Imu", "ERROR: Imu sensor not initialised.");
+    log_.ERR("Imu", "ERROR: Imu sensor %d not initialised.", pin_);
   }
 }
 
@@ -121,12 +123,7 @@ void Imu::enableFifo()
   writeByte(kFifoEnable, kFifoAccel);
   uint8_t check_enable = 0;
   readByte(kFifoEnable, &check_enable);
-  if (check_enable == 0x2B) {
-    log_.INFO("Imu", "FIFO Enabled");
-  } else {
-    log_.ERR("Imu", "FIFO not enabled!");
-  }
-  kFrameSize = 6;                   // only for acceleration xyz
+  kFrameSize_ = 6;                   // only for acceleration xyz
 }
 
 bool Imu::whoAmI()
@@ -149,14 +146,14 @@ bool Imu::whoAmI()
   }
 
   if (!is_online_) {
-    log_.ERR("Imu", "Cannot initialise who am I. Sensor offline");
+    log_.ERR("Imu", "Cannot initialise who am I. Sensor %d offline", pin_);
   }
   return is_online_;
 }
 
 Imu::~Imu()
 {
-  log_.INFO("Imu", "Deconstructing sensor object");
+  log_.INFO("Imu", "Deconstructing sensor %d object", pin_);
 }
 
 void Imu::writeByte(uint8_t write_reg, uint8_t write_data)
@@ -215,7 +212,7 @@ int Imu::readFifo(std::vector<ImuData>& data)
 {
   if (is_online_) {
     // get fifo size
-    uint8_t buffer[kFrameSize];
+    uint8_t buffer[kFrameSize_];
     readBytes(kFifoCountH, reinterpret_cast<uint8_t*>(buffer), 2);    // from count H/L registers
     // convert big->little endian of count (2 bytes)
     size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
@@ -227,8 +224,8 @@ int Imu::readFifo(std::vector<ImuData>& data)
     log_.DBG3("Imu-FIFO", "Buffer size = %d", fifo_size);
     int16_t axcounts, aycounts, azcounts;           // include negative int
     float value_x, value_y, value_z;
-    for (size_t i = 0; i < (fifo_size/kFrameSize); i++) {
-      readBytes(kFifoRW, buffer, kFrameSize);
+    for (size_t i = 0; i < (fifo_size/kFrameSize_); i++) {
+      readBytes(kFifoRW, buffer, kFrameSize_);
       axcounts = (((int16_t)buffer[0]) << 8) | buffer[1];     // 2 byte acc data for xyz
       aycounts = (((int16_t)buffer[2]) << 8) | buffer[3];
       azcounts = (((int16_t)buffer[4]) << 8) | buffer[5];
@@ -288,7 +285,6 @@ void Imu::getTemperature(int* data)
   uint8_t response[2];
   readBytes(kTempOutH, response, 2);
 
-  // TODO(anyone): compare imu temperature values with reliable temperature source
   uint16_t temp = ((response[0] << 8) | response[1])/333.87 + 21;
 
   *data = static_cast<int>(temp);

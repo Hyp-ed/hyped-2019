@@ -79,7 +79,7 @@ struct StripeCounter : public Sensor {
 };
 
 struct Sensors : public Module {
-  static constexpr int kNumImus = 8;            // TODO(anyone): change back to final cte for PCB
+  static constexpr int kNumImus = 6;            // TODO(Greg): change back to final cte for PCB
   static constexpr int kNumKeyence = 2;
 
   DataPoint<array<ImuData, kNumImus>> imu;
@@ -90,7 +90,7 @@ struct SensorCalibration {
   array<NavigationVector, Sensors::kNumImus> imu_variance;
 };
 
-struct Battery {
+struct BatteryData {
   uint16_t  voltage;  // V
   int16_t   current;  // mA
   uint8_t   charge;
@@ -103,8 +103,8 @@ struct Batteries : public Module {
   static constexpr int kNumLPBatteries = 2;
   static constexpr int kNumHPBatteries = 3;
 
-  array<Battery, kNumLPBatteries> low_power_batteries;
-  array<Battery, kNumHPBatteries> high_power_batteries;
+  array<BatteryData, kNumLPBatteries> low_power_batteries;
+  array<BatteryData, kNumHPBatteries> high_power_batteries;
 };
 
 struct EmergencyBrakes : public Module {
@@ -195,6 +195,7 @@ class Data {
    */
   void setNavigationData(const Navigation& nav_data);
 
+
   /**
    * @brief Get the Temperature from the IMU
    *
@@ -213,6 +214,16 @@ class Data {
    * @brief      Retrieves data from all sensors
    */
   Sensors getSensorsData();
+
+  /**
+   * @brief retrieves imu data from Sensors
+   */
+  DataPoint<array<ImuData, Sensors::kNumImus>> getSensorsImuData();
+
+  /**
+   * @brief retrieves gpio_counter data from Sensors
+   */
+  array<StripeCounter, Sensors::kNumKeyence> getSensorsKeyenceData();
 
   /**
    * @brief      Should be called to update sensor data.
@@ -244,7 +255,7 @@ class Data {
   /**
    * @brief      Should be called to update battery data
    */
-  void setBatteryData(const Batteries& batteries_data);
+  void setBatteriesData(const Batteries& batteries_data);
 
   /**
    * @brief      Retrieves data from the emergency brakes.

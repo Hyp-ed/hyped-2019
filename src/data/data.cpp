@@ -73,6 +73,18 @@ Sensors Data::getSensorsData()
   return sensors_;
 }
 
+DataPoint<array<ImuData, Sensors::kNumImus>> Data::getSensorsImuData()
+{
+  ScopedLock L(&lock_sensors_);
+  return sensors_.imu;
+}
+
+array<StripeCounter, Sensors::kNumKeyence> Data::getSensorsKeyenceData()
+{
+  ScopedLock L(&lock_sensors_);
+  return sensors_.keyence_stripe_counter;
+}
+
 int Data::getTemperature()
 {
   ScopedLock L(&lock_temp_);
@@ -121,7 +133,7 @@ Batteries Data::getBatteriesData()
   return batteries_;
 }
 
-void Data::setBatteryData(const Batteries& batteries_data)
+void Data::setBatteriesData(const Batteries& batteries_data)
 {
   ScopedLock L(&lock_batteries_);
   batteries_ = batteries_data;
