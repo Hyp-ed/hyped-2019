@@ -19,7 +19,7 @@
  */
 
 #include <thread>
-#include "telemetrydata/message.pb.h"
+#include "telemetry/telemetrydata/message.pb.h"
 #include "main.hpp"
 
 namespace hyped {

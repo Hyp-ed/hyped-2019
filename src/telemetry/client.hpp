@@ -23,7 +23,7 @@
 
 #include <google/protobuf/io/zero_copy_stream.h>
 #include <string>
-#include "telemetrydata/message.pb.h"
+#include "telemetry/telemetrydata/message.pb.h"
 #include "utils/logger.hpp"
 
 namespace hyped {
