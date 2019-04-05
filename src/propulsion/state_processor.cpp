@@ -37,11 +37,11 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
 
     useTestControllers = true;  // sys_.fake_motors;
 
-    // controllers = new ControllerInterface[motorAmount];
+    navigationData = Data::getInstance().getNavigationData();
+
+    controllers = new ControllerInterface*[motorAmount];
 
     if (useTestControllers) {  // Use the test controllers implementation
-        controllers = new ControllerInterface*[motorAmount];
-
         for (int i = 0; i < motorAmount; i++) {
             controllers[i] = new FakeController(log_, i, false);
         }
@@ -104,6 +104,10 @@ void StateProcessor::prepareMotors()
     for (int i = 0;i < motorAmount; i++) {
         controllers[i]->enterOperational();
     }
+
+    // Setup acceleration timer
+    accelerationTimer.start();
+    accelerationTimestamp = 0;
 }
 
 void StateProcessor::enterPreOperational()
@@ -116,10 +120,14 @@ void StateProcessor::enterPreOperational()
 void StateProcessor::accelerate()
 {
     if (initialized) {
-        speed += 10;
-        int rpm = rpmCalculator->calculateRPM(speed);
-        for (int i = 0;i < motorAmount; i++) {
-            controllers[i]->sendTargetVelocity(rpm);
+        if (accelerationTimer.getTimeMicros() - accelerationTimestamp > 5000) {
+            log_.INFO("Motor", "Accelerate");
+            accelerationTimestamp = accelerationTimer.getTimeMicros();
+            velocity = navigationData.velocity;
+            int rpm = rpmCalculator->calculateRPM(velocity);
+            for (int i = 0;i < motorAmount; i++) {
+                controllers[i]->sendTargetVelocity(rpm);
+            }
         }
     } else {
         log_.INFO("Motor", "State Processor not initialized");

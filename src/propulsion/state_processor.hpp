@@ -21,11 +21,13 @@
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
+#include "utils/timer.hpp"
 
 #include "propulsion/state_processor_interface.hpp"
 #include "propulsion/controller_interface.hpp"
 #include "propulsion/fake_controller.hpp"
 #include "propulsion/calculate_RPM.hpp"
+#include "data/data.hpp"
 
 #define SLIPPATH "./testAcceleration.txt"
 
@@ -37,6 +39,9 @@ namespace motor_control
 
 using utils::Logger;
 using utils::System;
+using utils::Timer;
+using data::Navigation;
+using data::Data;
 
 class StateProcessor : public StateProcessorInterface
 {
@@ -117,6 +122,10 @@ class StateProcessor : public StateProcessorInterface
      float speed;
      ControllerInterface **controllers;
      CalculateRPM* rpmCalculator;
+     float velocity;
+     Navigation navigationData;
+     uint64_t accelerationTimestamp;
+     Timer accelerationTimer;
 };
 
 }  // namespace motor_control
