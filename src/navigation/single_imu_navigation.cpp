@@ -63,32 +63,32 @@ int SingleImuNavigation::navigate(float queryDelay, int runId, Logger& log)
 
   // Perform acceleration, speed and distance measurements
   while (sys.running_) {
-  // Query sensor and correct values
-  accRaw = imuQuery.query();
-  accCor = DataPoint<NavigationVector>(accRaw.timestamp, accRaw.value - gVector);
-
-  // Intergrate
-  velIntegrator.update(accCor);
-  posIntegrator.update(vel);
-
-  // Output values
-  log.INFO("SINGLE_IMU", "a_x:%+6.3f a_y:%+6.3f a_z:%+6.3f\tv_x:%+6.3f v_y:%+6.3f "
-       "v_z:%+6.3f\tp_x:%+6.3f p_y:%+6.3f p_z:%+6.3f\n",
-        accCor.value[0], accCor.value[1], accCor.value[2],
-        vel.value[0]   , vel.value[1]   , vel.value[2],
-        pos.value[0]   , pos.value[1]   , pos.value[2]);
-
-  if (writeToFile > 0) imuDataLogger.dataToFile(&accRaw, &accCor, &vel, &pos);
-  sleep(queryDelay);
-
-  // Update data structure
-  // TODO(Neil) module_status, emergency_braking_distance, braking_distance?
-  // TODO(Neil) more modular code?
-  // TODO(Neil) better method for extracting scalar value
-  nav_data.distance   = pos   .value[0];
-  nav_data.velocity   = vel   .value[0];
-  nav_data.acceleration = accCor.value[0];
-  data.setNavigationData(nav_data);
+    // Query sensor and correct values
+    accRaw = imuQuery.query();
+    accCor = DataPoint<NavigationVector>(accRaw.timestamp, accRaw.value - gVector);
+  
+    // Intergrate
+    velIntegrator.update(accCor);
+    posIntegrator.update(vel);
+  
+    // Output values
+    log.INFO("SINGLE_IMU", "a_x:%+6.3f a_y:%+6.3f a_z:%+6.3f\tv_x:%+6.3f v_y:%+6.3f "
+         "v_z:%+6.3f\tp_x:%+6.3f p_y:%+6.3f p_z:%+6.3f\n",
+          accCor.value[0], accCor.value[1], accCor.value[2],
+          vel.value[0]   , vel.value[1]   , vel.value[2],
+          pos.value[0]   , pos.value[1]   , pos.value[2]);
+  
+    if (writeToFile > 0) imuDataLogger.dataToFile(&accRaw, &accCor, &vel, &pos);
+    sleep(queryDelay);
+  
+    // Update data structure
+    // TODO(Neil) module_status, emergency_braking_distance, braking_distance?
+    // TODO(Neil) more modular code?
+    // TODO(Neil) better method for extracting scalar value
+    nav_data.distance   = pos   .value[0];
+    nav_data.velocity   = vel   .value[0];
+    nav_data.acceleration = accCor.value[0];
+    data.setNavigationData(nav_data);
   }
 
   if (writeToFile) outfile.close();

@@ -74,7 +74,7 @@ void KalmanManager::filter(NavigationVector& z_)
 {
   VectorXf z(m);
   for (unsigned int i = 0; i < m; i++) {
-  z(i) = z_[i];
+    z(i) = z_[i];
   }
   kalmanFilter.filter(z);
 }
@@ -83,12 +83,12 @@ void KalmanManager::filter(NavigationVector& u_, NavigationVector& z_)
 {
   VectorXf u(k);
   for (unsigned int i = 0; i < k; i++) {
-  u(i) = u_[i];
+    u(i) = u_[i];
   }
 
   VectorXf z(m);
   for (unsigned int i = 0; i < m; i++) {
-  z(i) = z_[i];
+    z(i) = z_[i];
   }
 
   kalmanFilter.filter(u, z);
@@ -113,13 +113,13 @@ const MatrixXf KalmanManager::createInitialErrorCovarianceMatrix()
   std::normal_distribution<double> acc_var_noise(0.0, 0.01);
 
   for (unsigned int i = 0; i< n; i++) {
-  if (i < n/3) {
-    P(i, i) = pos_var_noise(generator);
-  } else if (i < 2*n/3) {
-    P(i, i) = vel_var_noise(generator);
-  } else {
-    P(i, i) = acc_var_noise(generator);
-  }
+    if (i < n/3) {
+      P(i, i) = pos_var_noise(generator);
+    } else if (i < 2*n/3) {
+      P(i, i) = vel_var_noise(generator);
+    } else {
+      P(i, i) = acc_var_noise(generator);
+    }
   }
   return P;
 }
@@ -134,13 +134,13 @@ void KalmanManager::setInitialEstimate()
   std::normal_distribution<double> acc_var_noise(0.0, 0.01);
 
   for (unsigned int i = 0; i< n; i++) {
-  if (i < n/3) {
-    P(i, i) = pos_var_noise(generator);
-  } else if (i < 2*n/3) {
-    P(i, i) = vel_var_noise(generator);
-  } else {
-    P(i, i) = acc_var_noise(generator);
-  }
+    if (i < n/3) {
+      P(i, i) = pos_var_noise(generator);
+    } else if (i < 2*n/3) {
+      P(i, i) = vel_var_noise(generator);
+    } else {
+      P(i, i) = acc_var_noise(generator);
+    }
   }
 
   // create initial estimate x
@@ -168,7 +168,7 @@ const MatrixXf KalmanManager::createMeasurementMatrix()
 {
   MatrixXf H = MatrixXf::Zero(m, n);
   for (unsigned int i = 0; i < m; i++) {
-  H(i, n - (m - i)) = 1.0;
+    H(i, n - (m - i)) = 1.0;
   }
   return H;
 }
