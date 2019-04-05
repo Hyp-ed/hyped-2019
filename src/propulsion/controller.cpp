@@ -2,7 +2,7 @@
  * Author: Iain Macpherson
  * Organisation: HYPED
  * Date: 11/03/2019
- * Description: Main class for fake IMUs
+ * Description: Main class for the Motor Controller
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");

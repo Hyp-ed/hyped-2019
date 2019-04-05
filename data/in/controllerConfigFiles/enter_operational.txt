@@ -26,6 +26,6 @@
 
 # Send enter operational message to transition from state 2 (Ready to switch on)
 # to state 4 (Operation enabled)
->Controller %d: Enabling drive function
+>Controller %d: Enabling drive function 
 0x2B 0x00 0x00 0x00 0x00 0x00 0x00 0x00
 

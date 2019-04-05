@@ -2,7 +2,7 @@
  * Author: Iain Macpherson
  * Organisation: HYPED
  * Date: 11/03/2019
- * Description: Main class for fake IMUs
+ * Description: Main class for the Motor Controller
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -209,6 +209,7 @@ class Controller : public ControllerInterface {
   const char* kUpdateMotorTempFile = "data/in/controllerConfigFiles/update_motor_temp.txt";
   const char* kUpdateContrTempFile = "data/in/controllerConfigFiles/update_contr_temp.txt";
 
+ public:
   // Arrays of messages sent to controller (see config files for details about message contents)
   ControllerMessage configMsgs_[16];
   ControllerMessage enterOpMsgs_[4];
