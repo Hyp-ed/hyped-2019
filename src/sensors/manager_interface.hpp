@@ -27,7 +27,7 @@
 namespace hyped {
 
 using data::ImuData;
-using data::Battery;
+using data::BatteryData;
 using utils::concurrent::Thread;
 using data::NavigationVector;
 

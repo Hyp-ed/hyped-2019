@@ -2,7 +2,9 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 20/06/18
- * Description: BMS manager for getting battery data
+ * Description:
+ * BMS manager for getting battery data and pushes to data struct.
+ * Checks whether batteries are in range and enters emergency state if fails.
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +26,7 @@
 #include <cstdint>
 
 #include "sensors/manager_interface.hpp"
+
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
@@ -33,23 +36,29 @@ namespace hyped {
 
 using utils::concurrent::Thread;
 using utils::Logger;
+using hyped::data::BatteryData;
 
 namespace sensors {
 
 class BmsManager: public ManagerInterface  {
-  typedef array<Battery, data::Batteries::kNumLPBatteries> BatteriesLP;
-  typedef array<Battery, data::Batteries::kNumHPBatteries> BatteriesHP;
+  typedef array<BatteryData, data::Batteries::kNumLPBatteries> BatteriesLP;
+  typedef array<BatteryData, data::Batteries::kNumHPBatteries> BatteriesHP;
  public:
-  BmsManager(Logger& log, BatteriesLP *lp_batteries, BatteriesHP* hp_batteries);
+  explicit BmsManager(Logger& log);
   void run()                override;
   bool updated()            override;
   void resetTimestamp()     override;
 
  private:
-  BatteriesLP*    lp_batteries_;
-  BatteriesHP*    hp_batteries_;
+  BatteriesLP    lp_batteries_;
+  BatteriesHP    hp_batteries_;
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
+
+  /**
+   * @brief needs to be references because run() passes directly to data struct
+   *
+   */
   data::Data&     data_;
   data::Batteries batteries_;
   bool batteriesInRange();

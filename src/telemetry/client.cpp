@@ -34,6 +34,13 @@ namespace client {
 Client::Client(Logger& log)
     : log_(log)
 {
+    log_.DBG("Telemetry", "Client object created");
+}
+
+bool Client::connect()
+{
+    log_.INFO("Telemetry", "Beginning process to connect to server");
+
     struct addrinfo hints;
     struct addrinfo* server_info;  // contains possible addresses to connect to according to hints
 
@@ -46,6 +53,7 @@ Client::Client(Logger& log)
     int return_val;
     if ((return_val = getaddrinfo(kServerIP, kPort, &hints, &server_info)) != 0) {
         log_.ERR("Telemetry", "%s", gai_strerror(return_val));
+        return false;
         // probably throw exception here or something
     }
 
@@ -53,19 +61,22 @@ Client::Client(Logger& log)
     sockfd_ = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
     if (sockfd_ == -1) {
         log_.ERR("Telemetry", "%s", strerror(errno));
+        return false;
         // probably throw exception here or something
     }
 
     // connect socket to server
-    if (connect(sockfd_, server_info->ai_addr, server_info->ai_addrlen) == -1) {
+    if (::connect(sockfd_, server_info->ai_addr, server_info->ai_addrlen) == -1) {
         close(sockfd_);
         log_.ERR("Telemetry", "%s", strerror(errno));
+        return false;
         // probably throw exception here or something
     }
 
     log_.INFO("Telemetry", "Connected to server");
 
     socket_stream_ = new google::protobuf::io::FileInputStream(sockfd_);
+    return true;
 }
 
 Client::~Client()
@@ -74,41 +85,36 @@ Client::~Client()
     close(sockfd_);
 }
 
-bool Client::sendData(protoTypes::TestMessage message)
+bool Client::sendData(telemetry_data::ClientToServer message)
 {
     using namespace google::protobuf::util;
+    log_.DBG3("Telemetry", "Starting to send message to server");
 
     if (!SerializeDelimitedToFileDescriptor(message, sockfd_)) {
         log_.ERR("Telemetry", "SerializeDelimitedToFileDescriptor didn't work");
         return false;
     }
 
+    log_.DBG3("Telemetry", "Finished sending message to server");
+
     return true;
 }
 
-bool Client::receiveData()
+telemetry_data::ServerToClient Client::receiveData()
 {
     using namespace google::protobuf::util;
 
-    protoTypes::TestMessage messageFromServer;
+    telemetry_data::ServerToClient messageFromServer;
+    log_.DBG1("Telemetry", "Waiting to receive from server");
+
     if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_, NULL)) {
         log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
-        return false;
+        // throw exception or something here
     }
 
-    switch (messageFromServer.command()) {
-        case protoTypes::TestMessage::FINISH:
-            log_.DBG1("Telemetry", "FROM SERVER: FINISH");
-            break;
-        case protoTypes::TestMessage::EM_STOP:
-            log_.DBG1("Telemetry", "FROM SERVER: EM_STOP");
-            break;
-        default:
-            log_.ERR("Telemetry", "UNRECOGNIZED INPUT FROM SERVER");
-            break;
-    }
+    log_.DBG1("Telemetry", "Finished receiving from server");
 
-    return true;
+    return messageFromServer;
 }
 
 }  // namespace client

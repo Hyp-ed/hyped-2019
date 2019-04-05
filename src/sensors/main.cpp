@@ -25,6 +25,9 @@
 #include "sensors/fake_gpio_counter.hpp"
 
 
+constexpr int kKeyencePinLeft = 36;
+constexpr int kKeyencePinRight = 33;
+
 namespace hyped {
 
 using hyped::utils::concurrent::Thread;
@@ -44,9 +47,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     log_(log),
     pins_ {36, 33},
     imu_manager_(new ImuManager(log)),
-    battery_manager_(new BmsManager(log,
-                                        &batteries_.low_power_batteries,
-                                        &batteries_.high_power_batteries))
+    battery_manager_(new BmsManager(log))
 {
   if (!sys_.fake_keyence) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
@@ -56,7 +57,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     }
   } else {
     for (int i =0; i < data::Sensors::kNumKeyence; i++) {
-      keyences_[i] = new FakeGpioCounter(log_, false, false);
+      keyences_[i] = new FakeGpioCounter(log_, false, false, "data/in/gpio_counter_normal_run.txt");
     }
   }
 }
