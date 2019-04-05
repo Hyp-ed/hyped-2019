@@ -98,7 +98,7 @@ void Main::recvLoop()
     Telemetry telem_data_struct = data_.getTelemetryData();
 
     while (true) {
-        msg = client.receiveData();
+        msg = client_.receiveData();
 
         switch (msg.command()) {
             case telemetry_data::ServerToClient::ACK:
