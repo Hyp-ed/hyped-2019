@@ -4,16 +4,16 @@
  * Date: 30/03/2019
  * Description: Header for single IMU measurement filtered with Kalman Filter and written to file
  *
- *    Copyright 2019 HYPED
- *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- *    except in compliance with the License. You may obtain a copy of the License at
+ *  Copyright 2019 HYPED
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ *  except in compliance with the License. You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software distributed under
- *    the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- *    either express or implied. See the License for the specific language governing permissions and
- *    limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under
+ *  the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ *  either express or implied. See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 #ifndef NAVIGATION_SINGLE_IMU_KALMAN_NAVIGATION_HPP_
@@ -38,45 +38,42 @@
 #include "navigation/imu_query.hpp"
 #include "navigation/kalman_manager.hpp"
 
-namespace hyped
-{
-    using data::DataPoint;
-    using data::ImuData;
-    using data::NavigationVector;
-    using data::NavigationEstimate;
-    using sensors::Imu;
-    using utils::Logger;
-    using utils::math::Integrator;
-    using utils::System;
-    using utils::Timer;
-    using navigation::GravityCalibrator;
-    using navigation::ImuDataLogger;
-    using navigation::ImuQuery;
-    using navigation::KalmanManager;
+namespace hyped {
+using data::DataPoint;
+using data::ImuData;
+using data::NavigationVector;
+using data::NavigationEstimate;
+using sensors::Imu;
+using utils::Logger;
+using utils::math::Integrator;
+using utils::System;
+using utils::Timer;
+using navigation::GravityCalibrator;
+using navigation::ImuDataLogger;
+using navigation::ImuQuery;
+using navigation::KalmanManager;
 
-    namespace navigation
-    {
-        class SingleImuKalmanNavigation
-        {
-            public:
-                SingleImuKalmanNavigation();
-                SingleImuKalmanNavigation(ImuQuery& imuQuery_, int imuId_,
-                                          GravityCalibrator& gravityCalibrator,
-                                          Timer* timer_, unsigned int n_, unsigned int m_);
-                SingleImuKalmanNavigation(ImuQuery& imuQuery_, int imuId_,
-                                          GravityCalibrator& gravityCalibrator,
-                                          Timer* timer_, unsigned int n_, unsigned int m_,
-                                          unsigned int k_);
-                int navigate(unsigned int nTestQueries, float queryDelay, int runId, Logger log);
+namespace navigation {
+class SingleImuKalmanNavigation
+  {
+    public:
+      SingleImuKalmanNavigation();
+      SingleImuKalmanNavigation(ImuQuery& imuQuery_, int imuId_,
+                    GravityCalibrator& gravityCalibrator,
+                    Timer* timer_, unsigned int n_, unsigned int m_);
+      SingleImuKalmanNavigation(ImuQuery& imuQuery_, int imuId_,
+                    GravityCalibrator& gravityCalibrator,
+                    Timer* timer_, unsigned int n_, unsigned int m_,
+                    unsigned int k_);
+      int navigate(unsigned int nTestQueries, float queryDelay, int runId, Logger log);
 
-            private:
-                ImuQuery&           imuQuery;
-                GravityCalibrator&  gravityCalibrator;
-                int                 imuId;
-                Timer*              timer;
-                KalmanManager       kalmanManager;
-        };
-    }
-}
+    private:
+      ImuQuery&       imuQuery;
+      GravityCalibrator&  gravityCalibrator;
+      int         imuId;
+      Timer*        timer;
+      KalmanManager     kalmanManager;
+};
+}}  // namespace hyped navigation
 
 #endif  // NAVIGATION_SINGLE_IMU_KALMAN_NAVIGATION_HPP_

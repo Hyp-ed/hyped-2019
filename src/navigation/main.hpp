@@ -29,30 +29,28 @@
 #include "navigation/imu_query.hpp"
 #include "navigation/single_imu_navigation.hpp"
 
-namespace hyped
-{
-  using data::ImuData;
-  using utils::concurrent::Thread;
-  using utils::System;
-  using utils::Logger;
-  using utils::Timer;
-  using sensors::Imu;
+namespace hyped {
+using data::ImuData;
+using utils::concurrent::Thread;
+using utils::System;
+using utils::Logger;
+using utils::Timer;
+using sensors::Imu;
 
-  using navigation::GravityCalibrator;
-  using navigation::ImuDataLogger;
-  using navigation::ImuQuery;
-  using navigation::SingleImuNavigation;
+using navigation::GravityCalibrator;
+using navigation::ImuDataLogger;
+using navigation::ImuQuery;
+using navigation::SingleImuNavigation;
 
-  namespace navigation
-  {
-    class Main: public Thread {
-      public:
-        explicit Main(uint8_t id, Logger& log);
-        void run() override;
-      private:
-        Logger& log;
-    };
-  }
-}
+namespace navigation {
+
+class Main: public Thread {
+  public:
+    explicit Main(uint8_t id, Logger& log);
+    void run() override;
+  private:
+    Logger& log;
+};
+}}  // namespace hyped navigation
 
 #endif  // NAVIGATION_MAIN_HPP_

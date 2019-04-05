@@ -29,13 +29,12 @@ using hyped::navigation::MainSim;
 
 int main(int argc, char* argv[])
 {
-    System::parseArgs(argc, argv);
-    System &sys = System::getSystem();
-    Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
-    MainSim* mainSim = new MainSim(1, *log_nav);
-    mainSim->run();
-    while (sys.running_)
-		;
-
-    return 0;
+  System::parseArgs(argc, argv);
+  System &sys = System::getSystem();
+  Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
+  MainSim* mainSim = new MainSim(1, *log_nav);
+  mainSim->run();
+  while (sys.running_)
+    ;
+  return 0;
 }
