@@ -21,6 +21,8 @@
 #ifndef PROPULSION_CONTROLLER_HPP_
 #define PROPULSION_CONTROLLER_HPP_
 
+#include <atomic>
+
 #include "propulsion/controller_interface.hpp"
 #include "propulsion/file_reader.hpp"
 #include "propulsion/can/can_sender.hpp"
@@ -33,6 +35,8 @@
 
 
 namespace hyped {
+
+using std::atomic;
 
 using utils::concurrent::Thread;
 using utils::io::can::Frame;
@@ -48,13 +52,6 @@ class Controller : public ControllerInterface {
    * @param id
    */
   Controller(Logger& log, uint8_t id);
-  /**
-   * @brief Checks if the CanProcessor owns the corresponding CAN message
-   * @param id
-   * @param extended
-   * @return true - iff this controller owns the message.
-   */
-  bool hasId(uint32_t id, bool extended);
   /**
    * @brief Registers controller to recieve and transmit CAN messages.
    */
@@ -191,20 +188,20 @@ class Controller : public ControllerInterface {
    */
   void throwCriticalFailure();
 
-  Logger&           log_;
-  data::Data&       data_;
-  data::Motors      motor_data_;
-  ControllerState   state_;
-  uint8_t           node_id_;
-  bool              critical_failure_;
-  bool              sdo_frame_recieved_;
-  int32_t           actual_velocity_;
-  int16_t           actual_torque_;
-  uint8_t           motor_temperature_;
-  uint8_t           controller_temperature_;
-  CanSender         sender;
-  Frame             sdo_message_;
-  Frame             nmt_message_;
+  Logger&                   log_;
+  data::Data&               data_;
+  data::Motors              motor_data_;
+  atomic<ControllerState>   state_;
+  uint8_t                   node_id_;
+  atomic<bool>              critical_failure_;
+  atomic<bool>              sdo_frame_recieved_;
+  atomic<int32_t>           actual_velocity_;
+  atomic<int16_t>           actual_torque_;
+  atomic<uint8_t>           motor_temperature_;
+  atomic<uint8_t>           controller_temperature_;
+  CanSender                 sender;
+  Frame                     sdo_message_;
+  Frame                     nmt_message_;
 
   // Network management CAN commands:
   const uint8_t     kNmtOperational        = 0x01;

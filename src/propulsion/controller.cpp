@@ -37,7 +37,6 @@ Controller::Controller(Logger& log, uint8_t id)
       controller_temperature_(0),
       sender(log_, node_id_)
 {
-  // TODO(Iain): Check if this is still valid:
   sdo_message_.id         = kSdoReceive + node_id_;
   sdo_message_.extended   = false;
   sdo_message_.len        = 8;
@@ -59,11 +58,6 @@ Controller::Controller(Logger& log, uint8_t id)
   FileReader::readFileData(healthCheckMsgs, 2, kHealthCheckMsgFile);
   FileReader::readFileData(updateMotorTempMsg, 1, kUpdateMotorTempFile);
   FileReader::readFileData(updateContrTempMsg, 1, kUpdateContrTempFile);
-}
-
-bool Controller::hasId(uint32_t id, bool extended)
-{
-  return true;
 }
 
 bool Controller::sendControllerMessage(ControllerMessage message_template)
@@ -162,7 +156,6 @@ void Controller::sendTargetVelocity(int32_t target_velocity)
 
   log_.DBG2("MOTOR", sendTargetVelMsg[0].logger_output, node_id_, target_velocity);
   sender.sendMessage(sdo_message_);
-  // TODO(Iain): ^ why is this one can.send instead of sendSdoMessage?
 }
 
 void Controller::sendTargetTorque(int16_t target_torque)
@@ -222,15 +215,9 @@ void Controller::sendSdoMessage(utils::io::can::Frame& message)
   sdo_frame_recieved_ = false;
   int8_t send_counter = 0;
 
-  for (send_counter = 0; send_counter < 3; send_counter++) {
-    sender.sendMessage(message);
-    Thread::yield();
-    if (sdo_frame_recieved_) {
-      break;
-    } else {
-      log_.DBG1("MOTOR", "Controller %d: No response. Sending SDO frame again", node_id_);
-    }
-  }
+  sender.sendMessage(message);
+  while(sender.getIsSending());
+
   // No SDO frame recieved - controller is offline/communication error
   if (!sdo_frame_recieved_) {
     log_.ERR("MOTOR", "Controller %d: No response from controller", node_id_);
