@@ -40,7 +40,6 @@ using utils::math::Integrator;
 namespace navigation {
 
   class Navigation {
-
     public:
       typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
       typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
