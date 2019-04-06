@@ -61,6 +61,7 @@ class System {
 
   // Fake System variables below
   bool fake_imu;
+  bool fake_batteries;
   bool fake_keyence;
   bool fake_embrakes;
   bool fake_motors;

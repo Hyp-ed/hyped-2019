@@ -27,6 +27,7 @@ SRCS := \
   propulsion/calculate_RPM.cpp \
   sensors/fake_imu.cpp \
   sensors/fake_gpio_counter.cpp \
+  sensors/fake_batteries.cpp \
   sensors/imu.cpp \
   sensors/gpio_counter.cpp \
   sensors/imu_manager.cpp \
