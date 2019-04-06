@@ -147,29 +147,29 @@ class Controller : public ControllerInterface {
    * @brief to be called by processNewData if Emergency message is detected.
    * @param message CAN message to process
    */
-  void processEmergencyMessage(utils::io::can::Frame& message);
+  void processEmergencyMessage(utils::io::can::Frame& message) override;
   /**
    * @brief Parses error message to find the problem
    * @param error_message
    */
-  void processErrorMessage(uint16_t error_message);
+  void processErrorMessage(uint16_t error_message) override;
   /**
    * @brief Called by processNewData if SDO message is detected
    * @param message
    */
-  void processSdoMessage(utils::io::can::Frame& message);
+  void processSdoMessage(utils::io::can::Frame& message) override;
   /**
    * @brief Called by processNewData if NMT message is detected
    * @param message
    */
-  void processNmtMessage(utils::io::can::Frame& message);
+  void processNmtMessage(utils::io::can::Frame& message) override;
   /*
    * @brief { Sends state transition message to controller, leaving sufficient time for
    *          controller to change state. If state does not change, throw critical failure }
    *
    * @param[in] { CAN message to be sent, Controller state requested}
    */
-  void requestStateTransition(utils::io::can::Frame& message, ControllerState state);
+  void requestStateTransition(utils::io::can::Frame& message, ControllerState state) override;
 
  private:
   /**
@@ -194,14 +194,13 @@ class Controller : public ControllerInterface {
   atomic<ControllerState>   state_;
   uint8_t                   node_id_;
   atomic<bool>              critical_failure_;
-  atomic<bool>              sdo_frame_recieved_;
   atomic<int32_t>           actual_velocity_;
   atomic<int16_t>           actual_torque_;
   atomic<uint8_t>           motor_temperature_;
   atomic<uint8_t>           controller_temperature_;
   CanSender                 sender;
-  Frame                     sdo_message_;
-  Frame                     nmt_message_;
+  Frame             sdo_message_;
+  Frame             nmt_message_;
 
   // Network management CAN commands:
   const uint8_t     kNmtOperational        = 0x01;

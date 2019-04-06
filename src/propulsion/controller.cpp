@@ -30,7 +30,6 @@ Controller::Controller(Logger& log, uint8_t id)
       state_(kNotReadyToSwitchOn),
       node_id_(id),
       critical_failure_(false),
-      sdo_frame_recieved_(false),
       actual_velocity_(0),
       actual_torque_(0),
       motor_temperature_(0),
@@ -212,14 +211,7 @@ void Controller::updateControllerTemp()
 
 void Controller::sendSdoMessage(utils::io::can::Frame& message)
 {
-  sdo_frame_recieved_ = false;
-  int8_t send_counter = 0;
-
-  sender.sendMessage(message);
-  while(sender.getIsSending());
-
-  // No SDO frame recieved - controller is offline/communication error
-  if (!sdo_frame_recieved_) {
+  if (!sender.sendMessage(message)) {
     log_.ERR("MOTOR", "Controller %d: No response from controller", node_id_);
     throwCriticalFailure();
   }
@@ -510,7 +502,6 @@ void Controller::processErrorMessage(uint16_t error_message)
 void Controller::processSdoMessage(utils::io::can::Frame& message)
 {
   // note currently this data is all out of date
-  sdo_frame_recieved_ = true;
   uint8_t index_1   = message.data[1];
   uint8_t index_2   = message.data[2];
   uint8_t sub_index = message.data[3];
