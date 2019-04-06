@@ -63,6 +63,8 @@ class System {
   bool fake_imu;
   bool fake_batteries;
   bool fake_keyence;
+  bool fake_embrakes;
+  bool fake_motors;
 
   // Navigation System IDs
   int8_t imu_id;

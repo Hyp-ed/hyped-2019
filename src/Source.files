@@ -21,6 +21,8 @@ SRCS := \
   propulsion/can/can_sender.cpp \
   propulsion/can/fake_can_sender.cpp \
   propulsion/fake_controller.cpp \
+  propulsion/controller.cpp \
+  propulsion/file_reader.cpp \
   propulsion/calculate_RPM.cpp \
   sensors/fake_imu.cpp \
   sensors/fake_gpio_counter.cpp \

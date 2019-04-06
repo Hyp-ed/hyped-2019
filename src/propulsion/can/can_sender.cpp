@@ -24,18 +24,39 @@ namespace motor_control
 {
 CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
                                                       node_id_(node_id),
-                                                      can_(Can::getInstance())
+                                                      can_(Can::getInstance()),
+                                                      messageTimestamp(0)
 {
     isSending = false;
     can_.start();
 }
 
-void CanSender::sendMessage(utils::io::can::Frame &message)
+CanSender::CanSender(ControllerInterface* controller, uint8_t node_id, Logger& log_)
+    :   node_id_(node_id),
+        can_(Can::getInstance()),
+        controller_(controller),
+        messageTimestamp(0)
 {
-    while (isSending);
-    std::cout << "sending" << std::endl;
+    isSending = false;
+    can_.start();
+}
+
+bool CanSender::sendMessage(utils::io::can::Frame &message)
+{
+    log_.INFO("Motor", "Sending Message");
     can_.send(message);
     isSending = true;
+
+    timer.start();
+    messageTimestamp = timer.getTimeMicros();
+
+    while (isSending) {
+        if (timer.getTimeMicros() - messageTimestamp > TIMEOUT) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void CanSender::registerController()
@@ -45,8 +66,18 @@ void CanSender::registerController()
 
 void CanSender::processNewData(utils::io::can::Frame &message)
 {
-    std::cout << "processNewData" << std::endl;
     isSending = false;
+
+    uint32_t id = message.id;
+    if (id == kEmgyTransmit + node_id_) {
+        controller_->processEmergencyMessage(message);
+    } else if (id == kSdoTransmit + node_id_) {
+        controller_->processSdoMessage(message);
+    } else if (id == kNmtTransmit + node_id_) {
+        controller_->processNmtMessage(message);
+    } else {
+        log_.ERR("Motor", "Controller %d: CAN message not recognised", node_id_);
+    }
 }
 
 bool CanSender::hasId(uint32_t id, bool extended)

@@ -52,7 +52,7 @@ class SenderInterface
     /**
        * @brief { Sends CAN messages }
        */
-    virtual void sendMessage(utils::io::can::Frame &message) = 0;
+    virtual bool sendMessage(utils::io::can::Frame &message) = 0;
 
     /**
      * @brief { Registers the controller to process incoming CAN messages}
