@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
   System& sys = System::getSystem();
   Logger log_system(sys.verbose, sys.debug);
   Logger log_motor(sys.verbose_motor, sys.debug_motor);
+  Logger log_embrakes(sys.verbose_embrakes, sys.debug_embrakes);
   Logger log_nav(sys.verbose_nav, sys.debug_nav);
   Logger log_sensor(sys.verbose_sensor, sys.debug_sensor);
   Logger log_state(sys.verbose_state, sys.debug_state);
@@ -52,7 +53,7 @@ int main(int argc, char* argv[])
 
   // Initalise the threads here
   Thread* sensors = new hyped::sensors::Main(0, log_sensor);
-  Thread* embrakes = new hyped::embrakes::Main(1, log_motor);
+  Thread* embrakes = new hyped::embrakes::Main(1, log_embrakes);
   Thread* motors = new hyped::motor_control::Main(2, log_motor);
   Thread* state_machine = new hyped::state_machine::Main(4, log_state);
 
