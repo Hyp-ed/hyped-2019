@@ -1,8 +1,8 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date:
- * Description:
+ * Date: 1.4.2019
+ * Description: Main entrypoint to motor control module
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
