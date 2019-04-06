@@ -63,6 +63,10 @@ class System {
   bool fake_imu;
   bool fake_keyence;
 
+  // Navigation System IDs
+  int8_t imu_id;
+  int8_t run_id;
+
   // barriers
   /**
    * @brief Barrier used by navigation and motor control modules on stm transition to accelerating
