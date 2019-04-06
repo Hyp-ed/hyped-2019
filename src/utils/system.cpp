@@ -196,7 +196,7 @@ System::System(int argc, char* argv[])
         if (optarg) debug_tlm = atoi(optarg);
         else        debug_tlm = 0;
         break;
-      case 'N':   // debug_tlm
+      case 'N':   // debug_embrakes
         if (optarg) debug_embrakes = atoi(optarg);
         else        debug_embrakes = 0;
         break;
