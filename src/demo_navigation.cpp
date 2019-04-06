@@ -21,13 +21,15 @@
 
 #include "navigation/main.hpp"
 #include "sensors/imu_manager.hpp"
+#include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 
-using sensors::ImuManager;
+using hyped::navigation::Main;
+using hyped::sensors::ImuManager;
+using hyped::utils::concurrent::Thread;
 using hyped::utils::System;
 using hyped::utils::Logger;
-using hyped::navigation::Main;
 
 int main(int argc, char* argv[])
 {
@@ -36,14 +38,18 @@ int main(int argc, char* argv[])
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
   
   // Initialise sensors
-  ImuManager imu_manager(log_nav);
+  ImuManager imu_manager(*log_nav);
   imu_manager.start();
 
   Main* main = new Main(1, *log_nav);
-  main->run();
+  main->start();
 
-  while (sys.running_)
-	;
+  // Run for 20s
+  Thread::sleep(20000);
+
+  // Exit gracefully
+  sys.running_ = false;
+  main->join();
 
   return 0;
 }
