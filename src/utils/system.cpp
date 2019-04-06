@@ -208,10 +208,6 @@ System::System(int argc, char* argv[])
         if (optarg) debug_embrakes = atoi(optarg);
         else        debug_embrakes = 0;
         break;
-      case 'p':
-        if (optarg) imu_id = atoi(optarg);
-        else        imu_id = 1;
-        break;
       case 'P':
         if (optarg) run_id = atoi(optarg);
         else        run_id = 1;
