@@ -21,6 +21,7 @@
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
+#include "navigation/main.hpp"
 #include "sensors/main.hpp"
 #include "utils/concurrent/thread.hpp"
 
