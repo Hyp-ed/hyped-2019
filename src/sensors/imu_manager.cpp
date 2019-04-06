@@ -2,7 +2,7 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 19/06/18
- * Description: IMU manager for getting IMU data from around the pod
+ * Description: IMU manager for getting IMU data from around the pod and pushes to data struct
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,13 +32,14 @@ using data::Data;
 using data::Sensors;
 using utils::System;
 using data::NavigationVector;
+using data::SensorCalibration;
 
 namespace sensors {
 ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-      chip_select_ {49, 117, 125, 123, 111, 112, 110, 20}
+      chip_select_ {7, 117, 45, 44, 23, 26}       // pin_20 and pin_49 added for total 8 IMUs
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);

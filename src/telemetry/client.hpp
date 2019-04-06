@@ -41,8 +41,9 @@ class Client {
     public:
         explicit Client(Logger& log);
         ~Client();
-        bool sendData(protoTypes::TestMessage message);
-        bool receiveData();
+        bool connect();
+        bool sendData(telemetry_data::ClientToServer message);
+        telemetry_data::ServerToClient receiveData();
 
     private:
         int sockfd_;

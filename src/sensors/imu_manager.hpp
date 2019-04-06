@@ -2,7 +2,7 @@
  * Author: Jack Horsburgh
  * Organisation: HYPED
  * Date: 19/06/18
- * Description: IMU manager for getting IMU data from around the pod
+ * Description: IMU manager for getting IMU data from around the pod and pushes to data struct
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@
 #include <cstdint>
 
 #include "sensors/manager_interface.hpp"
+
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
@@ -77,6 +78,11 @@ class ImuManager: public ImuManagerInterface {
  private:
   utils::System&   sys_;
   DataArray        sensors_imu_;
+
+  /**
+   * @brief needs to be references because run() passes directly to data struct
+   *
+   */
   data::Data&      data_;
 
   uint8_t           chip_select_[data::Sensors::kNumImus];

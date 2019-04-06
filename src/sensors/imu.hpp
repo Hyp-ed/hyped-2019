@@ -133,11 +133,12 @@ class Imu : public ImuInterface {
   SPI&    spi_;
   Logger& log_;
   GPIO    gpio_;
+  uint32_t pin_;
   uint8_t acc_scale_;
   double  acc_divider_;
   bool    is_online_;
   static const uint64_t time_start;
-  size_t kFrameSize;               // initialised as 6 in enableFifo()
+  size_t kFrameSize_;               // initialised as 6 in enableFifo()
 };
 
 }}  // namespace hyped::sensors

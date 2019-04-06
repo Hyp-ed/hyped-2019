@@ -97,7 +97,7 @@ class BMS : public Thread, public CanProccesor, public BMSInterface {
 
   // From BMSInterface
   bool isOnline() override;
-  void getData(Battery* battery) override;
+  void getData(BatteryData* battery) override;
 
   // From CanProcessor interface
   bool hasId(uint32_t id, bool extended) override;
@@ -145,7 +145,7 @@ class BMSHP : public CanProccesor, public BMSInterface {
 
   // from BMSInterface
   bool isOnline() override;
-  void getData(Battery* battery) override;
+  void getData(BatteryData* battery) override;
 
   // from CanProcessor
   bool hasId(uint32_t id, bool extended) override;
@@ -156,7 +156,7 @@ class BMSHP : public CanProccesor, public BMSInterface {
  private:
   Logger&         log_;
   uint16_t        can_id_;            // CAN id to be used
-  Battery         local_data_;        // stores values from CAN
+  BatteryData     local_data_;        // stores values from CAN
   uint64_t        last_update_time_;  // stores arrival time of CAN message
   // for making sure only one object per BMS unit exist
   static std::vector<uint16_t> existing_ids_;
