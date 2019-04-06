@@ -174,10 +174,6 @@ System::System(int argc, char* argv[])
         if (optarg) imu_id = atoi(optarg);
         else        imu_id = 1;
         break;
-      case 'P':
-        if (optarg) imu_count = atoi(optarg);
-        else        imu_count = 7;
-        break;
       case 'q':
         if (optarg) run_id = atoi(optarg);
         else        run_id = 1;

@@ -1,7 +1,7 @@
 /*
- * Author:
+ * Author: Lukas Schaefer, Neil McBlane
  * Organisation: HYPED
- * Date:
+ * Date: 05/04/2019
  * Description: Main file for navigation class.
  *
  *    Copyright 2019 HYPED
@@ -16,40 +16,27 @@
  *    limitations under the License.
  */
 
-#include "main.hpp"
+#include <iostream>
+
+#include "navigation/main.hpp"
 
 namespace hyped {
+namespace navigation {
 
-  namespace navigation {
-
-    Main::Main(uint8_t id, Logger& log_)
-      : Thread(id, log_),
-        log(log_)
-    {
-      log.INFO("NAVIGATION", "Navigation initialising");
-    }
-
-    void Main::run()
-    {
-      System& sys = System::getSystem();
-      Timer timer;
-
-      // Sensor setup
-      // TODO(Neil) - change to IMU manager in multi-imu setup
-      const int i2c = 45;
-      Imu* imu = new Imu(log, i2c, 0x08);
-      ImuData* imuData = new ImuData();
-      ImuQuery imuQuery = ImuQuery(imu, imuData, &timer);
-
-      // Calibrate sensors wrt gravity vector
-      unsigned int nCalibrationQueries = 10000;
-      GravityCalibrator gravityCalibrator(nCalibrationQueries);
-
-      // Start single IMU navigation
-      float queryDelay = 0.01;
-      SingleImuNavigation singleImuNavigation(sys, imuQuery, sys.imu_id,
-                                              gravityCalibrator);
-      singleImuNavigation.navigate(queryDelay, sys.run_id, log);
-    }
+  Main::Main(uint8_t id, Logger& log)
+    : Thread(id, log),
+      log_(log),
+      sys_(System::getSystem()),
+      nav_(log)
+  {
+    log_.INFO("NAV", "Navigation initialising");
   }
-}
+
+  void Main::run()
+  {
+    log_.INFO("NAV", "Navigation starting");
+
+    std::cout << "All done!" << std::endl;
+  }
+
+}}  // namespace hyped::navigation
