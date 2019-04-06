@@ -54,6 +54,7 @@ class System {
   int8_t verbose_sensor;
   int8_t verbose_state;
   int8_t verbose_tlm;
+  int8_t verbose_embrakes;
 
   int8_t debug;
   int8_t debug_motor;
@@ -61,6 +62,7 @@ class System {
   int8_t debug_sensor;
   int8_t debug_state;
   int8_t debug_tlm;
+  int8_t debug_embrakes;
 
   // Fake System variables below
   bool fake_imu;

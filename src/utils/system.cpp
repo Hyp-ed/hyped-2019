@@ -52,11 +52,12 @@ void printUsage()
     "Default value of debug   flags is 0\n"
     "\n  -v, --verbose[=<bool>]\n"
     "    Set system-wide setting of verbosity. If enabled, prints all INFO messages\n"
-    "\n  --verbose_motor, --verbose_nav, --verbose_sensor, --verbose_state, --verbose_tlm\n"
+    "\n  --verbose_motor, --verbose_nav, --verbose_sensor, --verbose_state, --verbose_tlm, "
+    "--verbose_embrakes\n"
     "    Set module-specific setting of verbosity. If enabled, prints all INFO messages\n"
     "\n  -d, --debug[=<level>]\n"
     "    Set system-wide debug level. All DBG[n] where n <= level messages are printed.\n"
-    "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
+    "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm, --debug_embrakes\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
     "    --fake_imu\n"
@@ -112,6 +113,7 @@ System::System(int argc, char* argv[])
       {"verbose_nav", optional_argument, 0, 'A'},
       {"verbose_sensor", optional_argument, 0, 'b'},
       {"verbose_state", optional_argument, 0, 'B'},
+      {"verbose_embrakes", optional_argument, 0, 'n'},
       {"verbose_tlm", optional_argument, 0, 'c'},
       {"config", required_argument, 0, 'C'},
       {"debug", optional_argument, 0, 'd'},
@@ -120,6 +122,7 @@ System::System(int argc, char* argv[])
       {"debug_sensor", optional_argument, 0, 'f'},
       {"debug_state", optional_argument, 0, 'F'},
       {"debug_tlm", optional_argument, 0, 'g'},
+      {"debug_embrakes", optional_argument, 0, 'N'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
       {"fake_keyence", no_argument, 0, 'k'},
@@ -174,6 +177,10 @@ System::System(int argc, char* argv[])
         if (optarg) verbose_tlm = atoi(optarg);
         else        verbose_tlm = true;
         break;
+      case 'n':   // verbose_embrakes
+        if (optarg) verbose_embrakes = atoi(optarg);
+        else        verbose_embrakes = true;
+        break;
       case 'C':
         strncpy(config_file, optarg, 250);
         break;
@@ -197,6 +204,13 @@ System::System(int argc, char* argv[])
         if (optarg) debug_tlm = atoi(optarg);
         else        debug_tlm = 0;
         break;
+      case 'N':   // debug_embrakes
+        if (optarg) debug_embrakes = atoi(optarg);
+        else        debug_embrakes = 0;
+        break;
+      case 'P':
+        if (optarg) run_id = atoi(optarg);
+        else        run_id = 1;
       case 'i':   // fake_imu
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
@@ -254,17 +268,19 @@ System::System(int argc, char* argv[])
   }
 
   // propagate verbose and debug to modules if not set module-specific
-  if (verbose_motor   == DEFAULT_VERBOSE) verbose_motor   = verbose;
-  if (verbose_nav     == DEFAULT_VERBOSE) verbose_nav     = verbose;
-  if (verbose_sensor  == DEFAULT_VERBOSE) verbose_sensor  = verbose;
-  if (verbose_state   == DEFAULT_VERBOSE) verbose_state   = verbose;
-  if (verbose_tlm     == DEFAULT_VERBOSE) verbose_tlm     = verbose;
+  if (verbose_motor     == DEFAULT_VERBOSE) verbose_motor     = verbose;
+  if (verbose_nav       == DEFAULT_VERBOSE) verbose_nav       = verbose;
+  if (verbose_sensor    == DEFAULT_VERBOSE) verbose_sensor    = verbose;
+  if (verbose_state     == DEFAULT_VERBOSE) verbose_state     = verbose;
+  if (verbose_tlm       == DEFAULT_VERBOSE) verbose_tlm       = verbose;
+  if (verbose_embrakes  == DEFAULT_VERBOSE) verbose_embrakes  = verbose;
 
-  if (debug_motor   == DEFAULT_DEBUG) debug_motor   = debug;
-  if (debug_nav     == DEFAULT_DEBUG) debug_nav     = debug;
-  if (debug_sensor  == DEFAULT_DEBUG) debug_sensor  = debug;
-  if (debug_state   == DEFAULT_DEBUG) debug_state   = debug;
-  if (debug_tlm     == DEFAULT_DEBUG) debug_tlm     = debug;
+  if (debug_motor    == DEFAULT_DEBUG) debug_motor     = debug;
+  if (debug_nav      == DEFAULT_DEBUG) debug_nav       = debug;
+  if (debug_sensor   == DEFAULT_DEBUG) debug_sensor    = debug;
+  if (debug_state    == DEFAULT_DEBUG) debug_state     = debug;
+  if (debug_tlm      == DEFAULT_DEBUG) debug_tlm       = debug;
+  if (debug_embrakes == DEFAULT_DEBUG) debug_embrakes  = debug;
 
   log_    = new Logger(verbose, debug);
   system_ = this;   // own address
