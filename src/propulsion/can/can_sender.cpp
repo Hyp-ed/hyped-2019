@@ -27,73 +27,73 @@ CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
                                                       can_(Can::getInstance()),
                                                       messageTimestamp(0)
 {
-    isSending = false;
-    can_.start();
+  isSending = false;
+  can_.start();
 }
 
 CanSender::CanSender(ControllerInterface* controller, uint8_t node_id, Logger& log_)
-    :   node_id_(node_id),
-        can_(Can::getInstance()),
-        controller_(controller),
-        messageTimestamp(0)
+  : node_id_(node_id),
+    can_(Can::getInstance()),
+    controller_(controller),
+    messageTimestamp(0)
 {
-    isSending = false;
-    can_.start();
+  isSending = false;
+  can_.start();
 }
 
 bool CanSender::sendMessage(utils::io::can::Frame &message)
 {
-    log_.INFO("Motor", "Sending Message");
-    can_.send(message);
-    isSending = true;
+  log_.INFO("Motor", "Sending Message");
+  can_.send(message);
+  isSending = true;
 
-    timer.start();
-    messageTimestamp = timer.getTimeMicros();
+  timer.start();
+  messageTimestamp = timer.getTimeMicros();
 
-    while (isSending) {
-        if (timer.getTimeMicros() - messageTimestamp > TIMEOUT) {
-            return false;
-        }
+  while (isSending) {
+    if (timer.getTimeMicros() - messageTimestamp > TIMEOUT) {
+      return false;
     }
+  }
 
-    return true;
+  return true;
 }
 
 void CanSender::registerController()
 {
-    can_.registerProcessor(this);
+  can_.registerProcessor(this);
 }
 
 void CanSender::processNewData(utils::io::can::Frame &message)
 {
-    isSending = false;
+  isSending = false;
 
-    uint32_t id = message.id;
-    if (id == kEmgyTransmit + node_id_) {
-        controller_->processEmergencyMessage(message);
-    } else if (id == kSdoTransmit + node_id_) {
-        controller_->processSdoMessage(message);
-    } else if (id == kNmtTransmit + node_id_) {
-        controller_->processNmtMessage(message);
-    } else {
-        log_.ERR("Motor", "Controller %d: CAN message not recognised", node_id_);
-    }
+  uint32_t id = message.id;
+  if (id == kEmgyTransmit + node_id_) {
+    controller_->processEmergencyMessage(message);
+  } else if (id == kSdoTransmit + node_id_) {
+    controller_->processSdoMessage(message);
+  } else if (id == kNmtTransmit + node_id_) {
+    controller_->processNmtMessage(message);
+  } else {
+    log_.ERR("Motor", "Controller %d: CAN message not recognised", node_id_);
+  }
 }
 
 bool CanSender::hasId(uint32_t id, bool extended)
 {
-    for (uint32_t cobId : canIds) {
-        if (cobId + node_id_ == id) {
-            return true;
-        }
+  for (uint32_t cobId : canIds) {
+    if (cobId + node_id_ == id) {
+      return true;
     }
+  }
 
-    return false;
+  return false;
 }
 
 bool CanSender::getIsSending()
 {
-    return isSending;
+  return isSending;
 }
 }  // namespace motor_control
 }  // namespace hyped
