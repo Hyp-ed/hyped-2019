@@ -31,9 +31,20 @@ namespace utils {
 
 // forward declaration
 class System;
+class ModuleEntry;
+
+enum Submodule {
+  kNone,
+  kNavigation,
+  kTelemetry,
+  kPropulsion,
+  kSensors,
+  kStateMachine
+};
 
 class Config {
   friend System;    // ensure System can access our private parts
+  friend ModuleEntry;
 
  public:
   struct Navigation {
@@ -45,17 +56,11 @@ class Config {
     char Port[5];
   } telemetry;
 
- private:
-  enum Submodules {
-    kNone,
-    kNavigation,
-    kTelemetry,
-    kPropulsion,
-    kSensors,
-    kStateMachine
-  };
-  void ParseNavigation(const char* line);
-  void ParseTelemetry(const char* line);
+//  private:
+  void ParseNavigation(char* line);
+  void ParseTelemetry(char* line);
+  void ParseNone(char* line);
+
 
  private:
   explicit Config(char* config_file);

@@ -85,11 +85,11 @@ System::System(int argc, char* argv[])
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
       fake_keyence(false),
-      config_file(DEFAULT_CONFIG),
-      config(0),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
-      running_(true)
+      running_(true),
+      config_file(DEFAULT_CONFIG),
+      config(0)
 {
   int c;
   int option_index = 0;
