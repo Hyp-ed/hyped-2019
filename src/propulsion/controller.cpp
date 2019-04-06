@@ -35,7 +35,7 @@ Controller::Controller(Logger& log, uint8_t id)
       actual_torque_(0),
       motor_temperature_(0),
       controller_temperature_(0),
-      sender(log_, node_id_)
+      sender(this, node_id_, log_)
 {
   sdo_message_.id         = kSdoReceive + node_id_;
   sdo_message_.extended   = false;

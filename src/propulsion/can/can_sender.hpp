@@ -40,13 +40,13 @@ class CanSender : public CanProccesor, public SenderInterface
     /**
        * @brief { Initialise the CanSender with the logger and the id }
        */
-    CanSender(Logger &log_, uint8_t id);
+    CanSender(Logger &log_, uint8_t node_id);
 
     /**
        * @brief { Initialise the CanSender with the logger, the id and the controller as an attribute,
        * to access it's attributes }
        */
-    // CanSender(ControllerInterface* controller,uint8_t id,Logger& log_);
+    CanSender(ControllerInterface* controller, uint8_t node_id, Logger& log_);
 
     /**
        * @brief { Sends CAN messages }
@@ -78,6 +78,11 @@ class CanSender : public CanProccesor, public SenderInterface
     uint8_t node_id_;
     Can &can_;
     std::atomic<bool> isSending;
+    ControllerInterface *controller_;
+
+    const uint32_t kEmgyTransmit          = 0x80;
+    const uint32_t kSdoTransmit           = 0x580;
+    const uint32_t kNmtTransmit           = 0x700;
 };
 }  // namespace motor_control
 }  // namespace hyped

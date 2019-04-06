@@ -37,17 +37,16 @@ class FakeCanSender : public CanProccesor, public SenderInterface
 {
   public:
     FakeCanSender(Logger &log_, uint8_t id);
-    // CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
 
-  void sendMessage(utils::io::can::Frame &message) override;
+    void sendMessage(utils::io::can::Frame &message) override;
 
-  void registerController() override;
+    void registerController() override;
 
-  void processNewData(utils::io::can::Frame &message) override;
+    void processNewData(utils::io::can::Frame &message) override;
 
-  bool hasId(uint32_t id, bool extended) override;
+    bool hasId(uint32_t id, bool extended) override;
 
-  bool getIsSending() override;
+    bool getIsSending() override;
 
   private:
     Logger log_;
