@@ -4,7 +4,7 @@
 SRCS := \
   data/data.cpp \
   navigation/imu_data_logger.cpp \
-  navigation/kalman_manager.cpp \
+  navigation/kalman_filter.cpp \
   navigation/main.cpp \
   navigation/navigation.cpp \
   embrakes/main.cpp \
