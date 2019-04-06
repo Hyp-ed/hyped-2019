@@ -67,6 +67,7 @@ class RetractorManager
     std::atomic<StatusCodes> *status;
     bool retracting;
     uint breakAmount_;
+    System &sys_;
 }; 
 
 }}  // hyped::embrakes
