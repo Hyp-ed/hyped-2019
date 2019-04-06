@@ -39,8 +39,6 @@ class ManagerInterface : public Thread {
    * @brief Checks if the data has been updated
    *
    */
-  virtual bool updated() = 0;
-  virtual void resetTimestamp() = 0;
   explicit ManagerInterface(utils::Logger& log) : Thread(log), old_timestamp_(0) {}
  protected:
   uint64_t old_timestamp_;

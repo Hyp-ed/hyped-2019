@@ -46,8 +46,6 @@ class BmsManager: public ManagerInterface  {
  public:
   explicit BmsManager(Logger& log);
   void run()                override;
-  bool updated()            override;
-  void resetTimestamp()     override;
 
  private:
   BatteriesLP    lp_batteries_;
@@ -62,8 +60,6 @@ class BmsManager: public ManagerInterface  {
   data::Data&     data_;
   data::Batteries batteries_;
   bool batteriesInRange();
-
-  uint64_t timestamp;
 };
 
 }}  // namespace hyped::sensors
