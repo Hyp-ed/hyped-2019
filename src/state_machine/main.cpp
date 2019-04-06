@@ -140,6 +140,7 @@ bool Main::checkReset()
   if (telemetry_data_.reset_command) {
     log_.INFO("STATE", "reset command received");
     hypedMachine.handleEvent(kReset);
+    telemetry_data_.reset_command = false;
     return true;
   }
   return false;
