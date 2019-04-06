@@ -279,12 +279,12 @@ System::System(int argc, char* argv[])
   if (verbose_tlm       == DEFAULT_VERBOSE) verbose_tlm       = verbose;
   if (verbose_embrakes  == DEFAULT_VERBOSE) verbose_embrakes  = verbose;
 
-  if (debug_motor   == DEFAULT_DEBUG) debug_motor     = debug;
-  if (debug_nav     == DEFAULT_DEBUG) debug_nav       = debug;
-  if (debug_sensor  == DEFAULT_DEBUG) debug_sensor    = debug;
-  if (debug_state   == DEFAULT_DEBUG) debug_state     = debug;
-  if (debug_tlm     == DEFAULT_DEBUG) debug_tlm       = debug;
-  if(debug_embrakes == DEFAULT_DEBUG) debug_embrakes  = debug;
+  if (debug_motor    == DEFAULT_DEBUG) debug_motor     = debug;
+  if (debug_nav      == DEFAULT_DEBUG) debug_nav       = debug;
+  if (debug_sensor   == DEFAULT_DEBUG) debug_sensor    = debug;
+  if (debug_state    == DEFAULT_DEBUG) debug_state     = debug;
+  if (debug_tlm      == DEFAULT_DEBUG) debug_tlm       = debug;
+  if (debug_embrakes == DEFAULT_DEBUG) debug_embrakes  = debug;
 
   log_    = new Logger(verbose, debug);
   system_ = this;   // own address
