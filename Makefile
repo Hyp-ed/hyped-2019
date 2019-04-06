@@ -14,6 +14,7 @@ LFLAGS:=-lpthread -pthread
 # default configuration
 CROSS=0
 NOLINT=0
+PROTOBUF=0
 
 ifeq ($(CROSS), 0)
 	CC:=g++
@@ -32,6 +33,11 @@ else
 	CFLAGS:=$(CFLAGS) -DARCH_32
 	LFLAGS:= -static
 $(info cross-compiling)
+endif
+
+ifeq ($(PROTOBUF), 1)
+	CFLAGS:=$(CFLAGS) $(shell pkg-config --cflags protobuf)
+	LFLAGS:=$(LFLAGS) $(shell pkg-config --libs protobuf)
 endif
 
 # test if compiler is installed
@@ -95,6 +101,11 @@ endef
 .PHONY: doc
 doc:
 	$(Verb) doxygen Doxyfile
+
+protoc:
+	-$(Verb) mkdir src/telemetry/types
+	$(Verb) protoc -I=src/telemetry --cpp_out=src/telemetry/types message.proto
+	$(Verb) mv src/telemetry/types/message.pb.cc src/telemetry/types/message.pb.cpp
 
 info:
 	$(call echo_var,CC)

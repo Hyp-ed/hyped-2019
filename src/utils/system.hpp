@@ -62,6 +62,11 @@ class System {
   // Fake System variables below
   bool fake_imu;
   bool fake_batteries;
+  bool fake_keyence;
+
+  // Navigation System IDs
+  int8_t imu_id;
+  int8_t run_id;
 
   // barriers
   /**

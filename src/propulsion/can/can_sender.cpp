@@ -32,8 +32,7 @@ CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
 
 void CanSender::sendMessage(utils::io::can::Frame &message)
 {
-    while (isSending)
-        ;
+    while (isSending);
     std::cout << "sending" << std::endl;
     can_.send(message);
     isSending = true;

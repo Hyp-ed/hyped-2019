@@ -30,7 +30,7 @@
 namespace hyped {
 namespace sensors {
 
-BmsManager::BmsManager(Logger& log)   // TODO(Greg): these are initialised in the manager and data written to struct from there
+BmsManager::BmsManager(Logger& log)
     : ManagerInterface(log),
       sys_(utils::System::getSystem()),
       data_(Data::getInstance())

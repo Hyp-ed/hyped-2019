@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "sensors/manager_interface.hpp"
+
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
@@ -43,7 +44,7 @@ class BmsManager: public ManagerInterface  {
   typedef array<BatteryData, data::Batteries::kNumLPBatteries> BatteriesLP;
   typedef array<BatteryData, data::Batteries::kNumHPBatteries> BatteriesHP;
  public:
-  BmsManager(Logger& log);
+  explicit BmsManager(Logger& log);
   void run()                override;
   bool updated()            override;
   void resetTimestamp()     override;
@@ -53,10 +54,10 @@ class BmsManager: public ManagerInterface  {
   BatteriesHP    hp_batteries_;
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
-  
+
   /**
    * @brief needs to be references because run() passes directly to data struct
-   * 
+   *
    */
   data::Data&     data_;
   data::Batteries batteries_;

@@ -47,7 +47,7 @@ class FakeCanSender : public CanProccesor, public SenderInterface
 
   bool hasId(uint32_t id, bool extended) override;
 
-  bool getIsSending();
+  bool getIsSending() override;
 
   private:
     Logger log_;

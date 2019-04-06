@@ -19,16 +19,20 @@ int main(int argc, char* argv[]) {
   System::parseArgs(argc, argv);
   Logger log(true, 0);
 
-  GPIO pin_38(38, io::gpio::kOut);
-  GPIO pin_39(39, io::gpio::kIn);
+  GPIO pin_38(38, io::gpio::kIn);
+  GPIO pin_39(39, io::gpio::kOut);
 
   Timer timer;
   timer.reset();
   timer.start();
   for (int i = 0; i < 1000000; i++) {     // create cycle of set and clear (0 to 1)
-    pin_38.clear();
-    pin_38.set();
+    pin_39.clear();
+    pin_39.set();
   }
   timer.stop();
   log.DBG("TEST-TIMER", "Time for 1 million cycles: %f", timer.getMillis());
+
+  log.DBG("TEST","Test time readings");
+  log.DBG("TEST","%f",timer.getTimeMicros());
+  
 }
