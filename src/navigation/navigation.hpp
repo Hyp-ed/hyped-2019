@@ -26,6 +26,7 @@
 #include "sensors/imu.hpp"
 #include "utils/logger.hpp"
 #include "utils/math/integrator.hpp"
+#include "utils/math/statistics.hpp"
 
 namespace hyped {
 
@@ -36,6 +37,7 @@ using data::NavigationType;
 using data::NavigationVector;
 using utils::Logger;
 using utils::math::Integrator;
+using utils::math::OnlineStatistics;
 
 namespace navigation {
 
@@ -99,7 +101,6 @@ namespace navigation {
 
       // System communication
       Logger& log_;
-      ImuManager imu_manager_;
       Data& data_;
 
       // To store estimated values

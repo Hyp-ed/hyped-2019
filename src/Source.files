@@ -3,16 +3,10 @@
 
 SRCS := \
   data/data.cpp \
-  navigation/gravity_calibrator.cpp \
   navigation/imu_data_logger.cpp \
-  navigation/imu_query.cpp \
   navigation/kalman_manager.cpp \
   navigation/main.cpp \
-  navigation/main_sim.cpp \
   navigation/navigation.cpp \
-  navigation/single_imu_kalman_navigation.cpp \
-  navigation/single_imu_navigation.cpp \
-  navigation/single_imu_simulation.cpp \
   embrakes/main.cpp \
   embrakes/retractor_manager.cpp \
   embrakes/fake_retractor.cpp \
