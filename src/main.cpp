@@ -67,8 +67,16 @@ int main(int argc, char* argv[])
 
   // Join the threads here
   sensors->join();
+  embrakes->join();
+  motors->join();
+  tlm->join();
+  state_machine->join();
 
   delete sensors;
+  delete embrakes;
+  delete motors;
+  delete tlm;
+  delete state_machine;
 
   return 0;
 }
