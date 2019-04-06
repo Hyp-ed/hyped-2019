@@ -140,6 +140,7 @@ Config::Config(char* config_file)
     }
   }
   log.DBG("CONFIG", "configuration file %s loaded", config_file);
+  fclose(file);
 }
 
 }}  // namespace hyped::utils
