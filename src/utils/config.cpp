@@ -24,6 +24,7 @@
 #include <cstring>
 
 #include "utils/logger.hpp"
+#include "utils/system.hpp"
 
 namespace hyped {
 namespace utils {
@@ -89,9 +90,16 @@ void Config::ParseTelemetry(char* line)
 
 Config::Config(char* config_file)
 {
+  Logger& log = System::getLogger();
+
   // load config file, parse it into data structure
   FILE* file = fopen(config_file, "r");
-  Logger log(true, -1);
+  if (!file) {
+    log.ERR("CONFIG", "no configuration file %s found, exiting", config_file);
+    return;
+  }
+
+  log.INFO("CONFIG", "loading configuration file %s", config_file);
 
   // allocate line buffer, read and parse file line by line
   char line[BUFFER_SIZE];
@@ -131,6 +139,7 @@ Config::Config(char* config_file)
       }
     }
   }
+  log.DBG("CONFIG", "configuration file %s loaded", config_file);
 }
 
 }}  // namespace hyped::utils

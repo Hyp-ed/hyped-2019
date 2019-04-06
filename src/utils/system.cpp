@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <csignal>
+#include <cstring>
 
 #include "utils/config.hpp"
 
@@ -101,6 +102,7 @@ System::System(int argc, char* argv[])
       {"verbose_sensor", optional_argument, 0, 'b'},
       {"verbose_state", optional_argument, 0, 'B'},
       {"verbose_tlm", optional_argument, 0, 'c'},
+      {"config", required_argument, 0, 'C'},
       {"debug", optional_argument, 0, 'd'},
       {"debug_motor", optional_argument, 0, 'e'},
       {"debug_nav", optional_argument, 0, 'E'},
@@ -154,6 +156,9 @@ System::System(int argc, char* argv[])
       case 'c':   // verbose_tlm
         if (optarg) verbose_tlm = atoi(optarg);
         else        verbose_tlm = true;
+        break;
+      case 'C':
+        strncpy(config_file, optarg, 250);
         break;
       case 'e':   // debug_motor
         if (optarg) debug_motor = atoi(optarg);
@@ -210,8 +215,6 @@ System::System(int argc, char* argv[])
   if (debug_state   == DEFAULT_DEBUG) debug_state   = debug;
   if (debug_tlm     == DEFAULT_DEBUG) debug_tlm     = debug;
 
-  if (config == 0) config = new Config(config_file);
-
   log_    = new Logger(verbose, debug);
   system_ = this;   // own address
 }
@@ -221,7 +224,9 @@ System* System::system_ = 0;
 void System::parseArgs(int argc, char* argv[])
 {
   if (system_) return;                  // when all command-line option have been parsed
+
   system_ = new System(argc, argv);     // System overloaded
+  if (system_->config == 0) system_->config = new Config(system_->config_file);
 }
 
 System& System::getSystem()
