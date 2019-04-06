@@ -35,17 +35,19 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
 {
   rpmCalculator = new CalculateRPM(log);
 
-  useTestControllers = sys_.fake_motors;
+  useFakeController = sys_.fake_motors;
 
   navigationData = Data::getInstance().getNavigationData();
 
   controllers = new ControllerInterface*[motorAmount];
 
-  if (useTestControllers) {  // Use the test controllers implementation
+  if (useFakeController) {  // Use the test controllers implementation
+    log_.INFO("Motor", "Intializing with fake controller");
     for (int i = 0; i < motorAmount; i++) {
       controllers[i] = new FakeController(log_, i, false);
     }
   } else {  // Use real controllers
+    log_.INFO("Motor", "Intializing with real controller");
     for (int i = 0; i < motorAmount; i++) {
       controllers[i] = new Controller(log_, i);
     }

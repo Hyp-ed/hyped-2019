@@ -54,9 +54,9 @@ void printUsage()
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
-    "    --fake_imu, --fake_keyence\n"
+    "    --fake_imu, --fake_keyence --fake_embrakes --fake_motors\n"
     "    To set navigation IDs.\n"
-    "    --imu_id, --run_id --fake_embrakes --fake_motors\n"
+    "    --imu_id, --run_id\n"
     "");
 }
 }   // namespace hyped::utils::System
@@ -187,6 +187,14 @@ System::System(int argc, char* argv[])
       case 'k':
         if (optarg) fake_keyence = atoi(optarg);
         else        fake_keyence = 1;
+        break;
+      case 'm':
+        if (optarg) fake_motors = atoi(optarg);
+        else        fake_motors = 1;
+        break;
+      case 'M':
+        if (optarg) fake_embrakes = atoi(optarg);
+        else        fake_embrakes = 1;
         break;
       default:
         printUsage();

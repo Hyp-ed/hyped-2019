@@ -28,9 +28,9 @@ RetractorManager::RetractorManager(uint breakAmount, Pins *pins,Logger& log) :  
   status = new std::atomic<StatusCodes>[breakAmount_];  
   retractors_ = new RetractorInterface*[breakAmount_]; 
 
-  bool useFakeController = sys_.fake_embrakes;;
+  bool useFakeController = sys_.fake_embrakes;
 
-  for(uint i = 0;i < breakAmount_;i++) {
+  for (uint i = 0;i < breakAmount_;i++) {
     status[i] = StatusCodes::IDLE;                
                 
     if (useFakeController) {
@@ -43,7 +43,7 @@ RetractorManager::RetractorManager(uint breakAmount, Pins *pins,Logger& log) :  
 
 void RetractorManager::retract()
 {
-  for(uint i = 0; i < breakAmount_;i++) {
+  for (uint i = 0; i < breakAmount_;i++) {
     status[i] = StatusCodes::STARTED;
     retractors_[i]->start();
     log_.INFO("Embrakes","Retracting brake");
@@ -54,7 +54,7 @@ int RetractorManager::getStatus()
 {
   StatusCodes statusCode = StatusCodes::FINISHED;
 
-  for(uint i = 0; i < breakAmount_;i++) {
+  for (uint i = 0; i < breakAmount_;i++) {
     if(status[i] < statusCode) {
     statusCode = status[i];
     }

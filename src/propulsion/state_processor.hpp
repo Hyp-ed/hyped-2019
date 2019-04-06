@@ -113,7 +113,7 @@ class StateProcessor : public StateProcessorInterface
      */
     void prepareMotors() override;
 
-    bool useTestControllers;
+    bool useFakeController;
     Logger &log_;
     System &sys_;
     int motorAmount;
