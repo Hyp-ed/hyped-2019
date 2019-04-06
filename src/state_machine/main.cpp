@@ -1,5 +1,5 @@
 /*
- * Author:
+ * Author:Ragnor Comerford and Kornelija Sukyte
  * Organisation: HYPED
  * Date:
  * Description:
@@ -114,8 +114,7 @@ bool Main::checkInitialised()
       nav_data_.module_status       == data::ModuleStatus::kInit &&
       motor_data_.module_status     == data::ModuleStatus::kInit &&
       // sensors_data_.module_status   == data::ModuleStatus::kInit &&
-      batteries_data_.module_status == data::ModuleStatus::kInit &&
-      emergency_brakes_data_.module_status == data::ModuleStatus::kInit) {
+      batteries_data_.module_status == data::ModuleStatus::kInit) {
     log_.INFO("STATE", "all modules are initialised");
     hypedMachine.handleEvent(kInitialised);
     return true;
@@ -127,7 +126,8 @@ bool Main::checkSystemsChecked()
 {
   // nav and motors must be ready
   if (nav_data_.module_status   == data::ModuleStatus::kReady &&
-      motor_data_.module_status == data::ModuleStatus::kReady) {
+      motor_data_.module_status == data::ModuleStatus::kReady &&
+      emergency_brakes_data_.module_status == data::ModuleStatus::kReady) {
     log_.INFO("STATE", "systems ready");
     hypedMachine.handleEvent(kSystemsChecked);
     return true;
@@ -188,6 +188,11 @@ bool Main::checkCriticalFailure()
   }
   if (batteries_data_.module_status == data::ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by batteries ");
+    criticalFailureFound = true;
+    // return true;
+  }
+  if (emergency_brakes_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+    log_.ERR("STATE", "Critical failure caused by emergency brakes ");
     criticalFailureFound = true;
     // return true;
   }

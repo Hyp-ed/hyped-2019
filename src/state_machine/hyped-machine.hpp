@@ -2,13 +2,13 @@
 /*
  * Authors: Yash Mittal and Ragnor Comerford
  * Organisation: HYPED
- * Date: 11. February 2018
+ * Date:
  * Description:
  * HypedMachine wraps around State objects, i.e. functions as a State manager.
  * HypedMachine reacts to events through handleEvent() function. Fucntion transition()
  * finalises changes of current state and facilitate updates to the shared data structure.
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
