@@ -50,7 +50,6 @@ class FakeCanSender : public CanProccesor, public SenderInterface
 
   private:
     Logger log_;
-    uint8_t node_id_;
     // Can& can_;
     std::atomic<bool> isSending;
 };
