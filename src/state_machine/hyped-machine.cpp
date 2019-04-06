@@ -2,10 +2,10 @@
 /*
  * Authors: Yash Mittal, Ragnor Comerford and Calum McMeekin
  * Organisation: HYPED
- * Date: 11. February 2018
+ * Date:
  * Description:
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at

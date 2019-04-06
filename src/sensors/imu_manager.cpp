@@ -67,22 +67,8 @@ void ImuManager::run()
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       imu_[i]->getData(&(sensors_imu_.value[i]));
     }
-    resetTimestamp();
     sensors_imu_.timestamp = utils::Timer::getTimeMicros();
     data_.setSensorsImuData(sensors_imu_);
   }
-}
-
-bool ImuManager::updated()
-{
-  if (old_timestamp_ != sensors_imu_.timestamp) {
-    return true;
-  }
-  return false;
-}
-
-void ImuManager::resetTimestamp()
-{
-  old_timestamp_ = sensors_imu_.timestamp;
 }
 }}  // namespace hyped::sensors

@@ -1,8 +1,8 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date:
- * Description:
+ * Date: 1.4.2019
+ * Description: Implements a mock system for the CAN Bus communication
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -24,6 +24,7 @@
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "sender_interface.hpp"
+#include "propulsion/can/fake_can_endpoint.hpp"
 
 namespace hyped
 {
@@ -37,23 +38,22 @@ class FakeCanSender : public CanProccesor, public SenderInterface
 {
   public:
     FakeCanSender(Logger &log_, uint8_t id);
-    // CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
 
-  void sendMessage(utils::io::can::Frame &message) override;
+    bool sendMessage(utils::io::can::Frame &message) override;
 
-  void registerController() override;
+    void registerController() override;
 
-  void processNewData(utils::io::can::Frame &message) override;
+    void processNewData(utils::io::can::Frame &message) override;
 
-  bool hasId(uint32_t id, bool extended) override;
+    bool hasId(uint32_t id, bool extended) override;
 
-  bool getIsSending() override;
+    bool getIsSending() override;
 
   private:
     Logger log_;
-    uint8_t node_id_;
     // Can& can_;
     std::atomic<bool> isSending;
+    FakeCanEndpoint *endpoint;
 };
 }  // namespace motor_control
 }  // namespace hyped

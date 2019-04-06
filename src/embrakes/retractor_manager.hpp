@@ -61,12 +61,11 @@ class RetractorManager
     int getStatus();
 
   private:
-    Pins *pins_;
     Logger &log_;
     RetractorInterface **retractors_;
     std::atomic<StatusCodes> *status;
-    bool retracting;
     uint breakAmount_;
+    System &sys_;
 }; 
 
 }}  // hyped::embrakes

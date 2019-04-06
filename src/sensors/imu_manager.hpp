@@ -59,21 +59,7 @@ class ImuManager: public ImuManagerInterface {
    * @brief Calibrate IMUs then begin collecting data.
    *
    */
-  void run()                            override;
-
-  /**
-   * @brief Check if the timestamp has been updated.
-   *
-   * @return true
-   * @return false
-   */
-  bool updated()                        override;
-
-  /**
-   * @brief Store the timestamp value as old_timestamp and reset the timestamp value.
-   *
-   */
-  void resetTimestamp()                 override;
+  void run() override;
 
  private:
   utils::System&   sys_;

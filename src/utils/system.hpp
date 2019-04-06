@@ -33,6 +33,9 @@ using utils::concurrent::Barrier;
 
 namespace utils {
 
+// forward declaration
+class Config;
+
 class System {
  public:
   static void parseArgs(int argc, char* argv[]);
@@ -61,7 +64,10 @@ class System {
 
   // Fake System variables below
   bool fake_imu;
+  bool fake_batteries;
   bool fake_keyence;
+  bool fake_embrakes;
+  bool fake_motors;
 
   // Navigation System IDs
   int8_t imu_id;
@@ -78,6 +84,9 @@ class System {
    */
   Barrier navigation_motors_sync_ = Barrier(2);
   bool running_;
+
+  char    config_file[250];
+  Config* config;
 
  private:
   Logger* log_;

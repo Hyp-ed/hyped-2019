@@ -26,6 +26,7 @@
 #include "sensors/bms.hpp"
 #include "data/data.hpp"
 #include "utils/timer.hpp"
+#include "sensors/fake_batteries.hpp"
 
 namespace hyped {
 namespace sensors {
@@ -36,22 +37,27 @@ BmsManager::BmsManager(Logger& log)
       data_(Data::getInstance())
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
-  // create BMS LP
-  for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
-    BMS* bms = new BMS(i, log_);
-    bms->start();
-    bms_[i] = bms;
-  }
-  for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-    bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
+
+  if (!sys_.fake_batteries) {
+    // create BMS LP
+    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+      BMS* bms = new BMS(i, log_);
+      bms->start();
+      bms_[i] = bms;
+    }
+    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+      bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
+    }
+  } else {
+    // fake batteries here
+    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+      bms_[i] = new FakeBatteries(log_, true, false);
+    }
+    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+      bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log_, false, false);
+    }
   }
 
-  // initialise batteries data
-  if (updated()) {
-    batteries_.high_power_batteries = hp_batteries_;
-    batteries_.low_power_batteries = lp_batteries_;
-    data_.setBatteriesData(batteries_);
-  }
   Thread::yield();
   log_.INFO("BMS-MANAGER", "batteries data has been initialised");
 }
@@ -61,43 +67,26 @@ void BmsManager::run()
   while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
-      bms_[i]->getData(&((lp_batteries_)[i]));
-      if (!bms_[i]->isOnline()) (lp_batteries_)[i].voltage = 0;
+      bms_[i]->getData(&batteries_.low_power_batteries[i]);
+      if (!bms_[i]->isOnline())
+        batteries_.low_power_batteries[i].voltage = 0;
     }
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-      bms_[i + data::Batteries::kNumLPBatteries]->getData(&(hp_batteries_)[i]);
-      if (!bms_[i + data::Batteries::kNumLPBatteries]->isOnline()) (hp_batteries_)[i].voltage = 0;
+      bms_[i + data::Batteries::kNumLPBatteries]->getData(&batteries_.high_power_batteries[i]);
+      if (!bms_[i + data::Batteries::kNumLPBatteries]->isOnline())
+        batteries_.high_power_batteries[i].voltage = 0;
     }
-
-    if (updated()) {
-      resetTimestamp();       // of battery manager
-      // check health of batteries
-      if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-        if (!batteriesInRange()) {
-          log_.ERR("BMS-MANAGER", "battery failure detected");
-          batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-        }
+    // check health of batteries
+    if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
+      if (!batteriesInRange()) {
+        log_.ERR("BMS-MANAGER", "battery failure detected");
+        batteries_.module_status = data::ModuleStatus::kCriticalFailure;
       }
-      // publish the new data
-      data_.setBatteriesData(batteries_);
     }
-    Thread::yield();
-    timestamp = utils::Timer::getTimeMicros();
+    // publish the new data
+    data_.setBatteriesData(batteries_);
     sleep(100);
   }
-}
-
-bool BmsManager::updated()
-{
-  if (old_timestamp_ != timestamp) {
-    return true;
-  }
-  return false;
-}
-
-void BmsManager::resetTimestamp()
-{
-  old_timestamp_ = timestamp;
 }
 
 bool BmsManager::batteriesInRange()

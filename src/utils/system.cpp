@@ -25,6 +25,11 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <csignal>
+#include <cstring>
+
+#include "utils/config.hpp"
+
+#define DEFAULT_CONFIG  "config.txt"
 
 #define DEFAULT_VERBOSE -1
 #define DEFAULT_DEBUG   -1
@@ -54,7 +59,10 @@ void printUsage()
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
-    "    --fake_imu, --fake_keyence\n"
+    "    --fake_imu\n"
+    "    --fake_batteries\n"
+    "    --fake_keyence\n"
+    "    --fake_embrakes --fake_motors\n"
     "    To set navigation IDs.\n"
     "    --imu_id, --run_id\n"
     "    To set run kind for navigation tests.\n"
@@ -83,14 +91,18 @@ System::System(int argc, char* argv[])
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
       fake_keyence(false),
+      fake_embrakes(false),
+      fake_motors(false),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
       tube_run(true),
       elevator_run(false),
       stationary_run(false),
-      running_(true)
-
+      running_(true),
+      config(0)
 {
+  strncpy(config_file, DEFAULT_CONFIG, 250);
+
   int c;
   int option_index = 0;
   while (1) {
@@ -101,6 +113,7 @@ System::System(int argc, char* argv[])
       {"verbose_sensor", optional_argument, 0, 'b'},
       {"verbose_state", optional_argument, 0, 'B'},
       {"verbose_tlm", optional_argument, 0, 'c'},
+      {"config", required_argument, 0, 'C'},
       {"debug", optional_argument, 0, 'd'},
       {"debug_motor", optional_argument, 0, 'e'},
       {"debug_nav", optional_argument, 0, 'E'},
@@ -110,6 +123,9 @@ System::System(int argc, char* argv[])
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
       {"fake_keyence", no_argument, 0, 'k'},
+      {"fake_motors", no_argument, 0, 'm'},
+      {"fake_embrakes", no_argument, 0, 'M'},
+      {"fake_batteries", no_argument, 0, 'j'},
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'q'},
       {"tube_run", no_argument, 0, 'r'},
@@ -158,6 +174,9 @@ System::System(int argc, char* argv[])
         if (optarg) verbose_tlm = atoi(optarg);
         else        verbose_tlm = true;
         break;
+      case 'C':
+        strncpy(config_file, optarg, 250);
+        break;
       case 'e':   // debug_motor
         if (optarg) debug_motor = atoi(optarg);
         else        debug_motor = 0;
@@ -182,9 +201,21 @@ System::System(int argc, char* argv[])
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
         break;
+      case 'j':
+        if (optarg) fake_batteries = atoi(optarg);
+        else        fake_batteries = 1;
+        break;
       case 'k':   // fake_keyence
         if (optarg) fake_keyence = atoi(optarg);
         else        fake_keyence = 1;
+        break;
+      case 'm':
+        if (optarg) fake_motors = atoi(optarg);
+        else        fake_motors = 1;
+        break;
+      case 'M':
+        if (optarg) fake_embrakes = atoi(optarg);
+        else        fake_embrakes = 1;
         break;
       case 'p':   // imu_id
         if (optarg) imu_id = atoi(optarg);
@@ -215,7 +246,6 @@ System::System(int argc, char* argv[])
           stationary_run = 1;
           tube_run = 0;
         }
-        break;
       default:
         printUsage();
         exit(1);
@@ -236,7 +266,7 @@ System::System(int argc, char* argv[])
   if (debug_state   == DEFAULT_DEBUG) debug_state   = debug;
   if (debug_tlm     == DEFAULT_DEBUG) debug_tlm     = debug;
 
-  log_ = new Logger(verbose, debug);
+  log_    = new Logger(verbose, debug);
   system_ = this;   // own address
 }
 
@@ -245,7 +275,9 @@ System* System::system_ = 0;
 void System::parseArgs(int argc, char* argv[])
 {
   if (system_) return;                  // when all command-line option have been parsed
+
   system_ = new System(argc, argv);     // System overloaded
+  if (system_->config == 0) system_->config = new Config(system_->config_file);
 }
 
 System& System::getSystem()

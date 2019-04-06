@@ -2,12 +2,13 @@
  * Author: Iain Macpherson
  * Organisation: HYPED
  * Date: 11/03/2019
- * Description: Main class for fake IMUs
+ * Description: Main class for fake Controllers
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
+ *
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -64,7 +65,7 @@ class FakeController : public ControllerInterface {
   void checkState() override;
   /**
    * @brief  Sets actual velocity = target velocity
-   * @param[in]  target_velocity in rmp (Calculated in speed calculator).
+   * @param[in]  target_velocity in rpm (Calculated in speed calculator).
    */
   void sendTargetVelocity(int32_t target_velocity) override;
   /**
@@ -95,6 +96,14 @@ class FakeController : public ControllerInterface {
    * @return state_
    */
   ControllerState getControllerState() override;
+
+  // empty functions from interface not used in the fake controller
+  void processEmergencyMessage(utils::io::can::Frame& message) override {/*EMPTY*/}
+  void processErrorMessage(uint16_t error_message) override {/*EMPTY*/}
+  void processSdoMessage(utils::io::can::Frame& message) override {/*EMPTY*/}
+  void processNmtMessage(utils::io::can::Frame& message) override {/*EMPTY*/}
+  void requestStateTransition(utils::io::can::Frame& message,
+                              ControllerState state) override {/*EMPTY*/}
 
  private:
   /**

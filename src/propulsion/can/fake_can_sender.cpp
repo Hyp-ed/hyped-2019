@@ -1,8 +1,8 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date:
- * Description:
+ * Date: 1.4.2019
+ * Description: Implements a mock system for the CAN Bus communication
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -16,25 +16,28 @@
  *    limitations under the License.
  */
 
-#include "fake_can_sender.hpp"
+#include "propulsion/can/fake_can_sender.hpp"
 
 namespace hyped
 {
 namespace motor_control
 {
-FakeCanSender::FakeCanSender(Logger &log_, uint8_t node_id) : log_(log_),
-                                                              node_id_(node_id)
+FakeCanSender::FakeCanSender(Logger &log_, uint8_t node_id) : log_(log_)
 {
-    isSending = false;
+  isSending = false;
+  endpoint = new FakeCanEndpoint(this);
 }
 
-void FakeCanSender::sendMessage(utils::io::can::Frame &message)
+bool FakeCanSender::sendMessage(utils::io::can::Frame &message)
 {
-    while (isSending)
-        ;
-    std::cout << "sending" << std::endl;
+  log_.INFO("MOTOR", "sending");
 
-    isSending = true;
+  isSending = true;
+  endpoint->start();
+
+  while (isSending);
+
+  return true;
 }
 
 void FakeCanSender::registerController()
@@ -43,18 +46,18 @@ void FakeCanSender::registerController()
 
 void FakeCanSender::processNewData(utils::io::can::Frame &message)
 {
-    std::cout << "processNewData" << std::endl;
-    isSending = false;
+  log_.INFO("MOTOR", "processNewData");
+  isSending = false;
 }
 
 bool FakeCanSender::hasId(uint32_t id, bool extended)
 {
-    return true;
+  return true;
 }
 
 bool FakeCanSender::getIsSending()
 {
-    return isSending;
+  return isSending;
 }
 }  // namespace motor_control
 }  // namespace hyped

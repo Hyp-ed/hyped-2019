@@ -2,7 +2,7 @@
  * Author: Iain Macpherson
  * Organisation: HYPED
  * Date: 11/03/2019
- * Description: Main class for fake IMUs
+ * Description: Main class for fake Controllers
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,13 +53,13 @@ void FakeController::startTimer()
 void FakeController::enterOperational()
 {
   state_ = kOperationEnabled;
-  log_.INFO("MOTOR", "Controller %d: Entering Operational", id_);
+  log_.DBG1("MOTOR", "Controller %d: Entering Operational", id_);
 }
 
 void FakeController::enterPreOperational()
 {
   if (state_ != kSwitchOnDisabled) {
-    log_.INFO("MOTOR", "Controller %d: Shutting down motor", id_);
+    log_.DBG1("MOTOR", "Controller %d: Shutting down motor", id_);
   }
   state_ = kSwitchOnDisabled;
   actual_velocity_ = 0;
@@ -67,7 +67,7 @@ void FakeController::enterPreOperational()
 
 void FakeController::checkState()
 {
-  log_.INFO("MOTOR", "Controller %d: Checking status", id_);
+  log_.DBG1("MOTOR", "Controller %d: Checking status", id_);
 }
 
 void FakeController::sendTargetVelocity(int32_t target_velocity)
@@ -75,7 +75,7 @@ void FakeController::sendTargetVelocity(int32_t target_velocity)
   if (!timer_started_) {
     startTimer();
   }
-  log_.INFO("MOTOR", "Controller %d: Updating target velocity to %d", id_, target_velocity);
+  log_.DBG2("MOTOR", "Controller %d: Updating target velocity to %d", id_, target_velocity);
   actual_velocity_ = target_velocity;
 }
 
@@ -89,7 +89,7 @@ int32_t FakeController::getVelocity()
 
 void FakeController::quickStop()
 {
-  log_.INFO("MOTOR", "Controller %d: Sending quick stop command", id_);
+  log_.DBG1("MOTOR", "Controller %d: Sending quick stop command", id_);
 }
 
 void FakeController::healthCheck()

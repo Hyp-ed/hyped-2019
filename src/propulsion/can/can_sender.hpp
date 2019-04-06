@@ -1,8 +1,8 @@
 /*
  * Author: Gregor Konzett
  * Organisation: HYPED
- * Date:
- * Description:
+ * Date: 1.4.2019
+ * Description: Handles the communication with the CAN Bus
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -23,7 +23,11 @@
 #include <iostream>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
+#include "propulsion/controller_interface.hpp"
 #include "sender_interface.hpp"
+#include "utils/timer.hpp"
+
+#define TIMEOUT 5000
 
 namespace hyped
 {
@@ -32,6 +36,7 @@ namespace motor_control
 using utils::Logger;
 using utils::io::Can;
 using utils::io::CanProccesor;
+using utils::Timer;
 
 class CanSender : public CanProccesor, public SenderInterface
 {
@@ -39,18 +44,18 @@ class CanSender : public CanProccesor, public SenderInterface
     /**
        * @brief { Initialise the CanSender with the logger and the id }
        */
-    CanSender(Logger &log_, uint8_t id);
+    CanSender(Logger &log_, uint8_t node_id);
 
     /**
        * @brief { Initialise the CanSender with the logger, the id and the controller as an attribute,
        * to access it's attributes }
        */
-    // CanSender(ControllerInterface* controller,uint_8_t id,Logger& log_);
+    CanSender(ControllerInterface* controller, uint8_t node_id, Logger& log_);
 
     /**
        * @brief { Sends CAN messages }
        */
-    void sendMessage(utils::io::can::Frame &message) override;
+    bool sendMessage(utils::io::can::Frame &message) override;
 
     /**
        * @brief { Registers the controller to process incoming CAN messages }
@@ -77,6 +82,13 @@ class CanSender : public CanProccesor, public SenderInterface
     uint8_t node_id_;
     Can &can_;
     std::atomic<bool> isSending;
+    ControllerInterface *controller_;
+    Timer timer;
+    uint64_t messageTimestamp;
+
+    const uint32_t kEmgyTransmit          = 0x80;
+    const uint32_t kSdoTransmit           = 0x580;
+    const uint32_t kNmtTransmit           = 0x700;
 };
 }  // namespace motor_control
 }  // namespace hyped

@@ -1,5 +1,5 @@
 /*
- * Author: Ragnor Comerford, Calum McMeekin, Sneha Sinha and Siu Wang (Ian) Ma
+ * Author: Ragnor Comerford, Calum McMeekin, Sneha Sinha, Siu Wang (Ian) Ma and Kornelija Sukyte
  * Organisation: HYPED
  * Date:
  * Description:
