@@ -1,7 +1,7 @@
 /*
- * Author:
+ * Author: Lukas Schaefer, Neil McBlane
  * Organisation: HYPED
- * Date:
+ * Date: 05/04/2019
  * Description: Main file for navigation class.
  *
  *    Copyright 2019 HYPED
@@ -18,29 +18,16 @@
 #ifndef NAVIGATION_MAIN_HPP_
 #define NAVIGATION_MAIN_HPP_
 
-#include "data/data.hpp"
+#include "navigation/navigation.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
-#include "utils/timer.hpp"
-#include "sensors/imu.hpp"
-#include "navigation/gravity_calibrator.hpp"
-#include "navigation/imu_data_logger.hpp"
-#include "navigation/imu_query.hpp"
-#include "navigation/single_imu_navigation.hpp"
 
 namespace hyped {
-using data::ImuData;
+
 using utils::concurrent::Thread;
 using utils::System;
 using utils::Logger;
-using utils::Timer;
-using sensors::Imu;
-
-using navigation::GravityCalibrator;
-using navigation::ImuDataLogger;
-using navigation::ImuQuery;
-using navigation::SingleImuNavigation;
 
 namespace navigation {
 
@@ -49,8 +36,11 @@ class Main: public Thread {
     explicit Main(uint8_t id, Logger& log);
     void run() override;
   private:
-    Logger& log;
+    Logger& log_;
+    System& sys_;
+    Navigation nav_;
 };
-}}  // namespace hyped navigation
+
+}}  // namespace hyped::navigation
 
 #endif  // NAVIGATION_MAIN_HPP_

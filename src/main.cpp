@@ -21,6 +21,7 @@
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
+#include "navigation/main.hpp"
 #include "sensors/main.hpp"
 #include "propulsion/main.hpp"
 #include "embrakes/main.hpp"
@@ -56,23 +57,27 @@ int main(int argc, char* argv[])
   Thread* embrakes = new hyped::embrakes::Main(1, log_embrakes);
   Thread* motors = new hyped::motor_control::Main(2, log_motor);
   Thread* state_machine = new hyped::state_machine::Main(4, log_state);
-
+  Thread* nav     = new hyped::navigation::Main(1, log_nav);
+  
   // Start the threads here
   sensors->start();
   embrakes->start();
   motors->start();
   state_machine->start();
+  nav->start();
 
   // Join the threads here
   sensors->join();
   embrakes->join();
   motors->join();
   state_machine->join();
+  nav->join();
 
   delete sensors;
   delete embrakes;
   delete motors;
   delete state_machine;
+  delete nav;
 
   return 0;
 }
