@@ -235,17 +235,19 @@ System::System(int argc, char* argv[])
   }
 
   // propagate verbose and debug to modules if not set module-specific
-  if (verbose_motor   == DEFAULT_VERBOSE) verbose_motor   = verbose;
-  if (verbose_nav     == DEFAULT_VERBOSE) verbose_nav     = verbose;
-  if (verbose_sensor  == DEFAULT_VERBOSE) verbose_sensor  = verbose;
-  if (verbose_state   == DEFAULT_VERBOSE) verbose_state   = verbose;
-  if (verbose_tlm     == DEFAULT_VERBOSE) verbose_tlm     = verbose;
+  if (verbose_motor     == DEFAULT_VERBOSE) verbose_motor     = verbose;
+  if (verbose_nav       == DEFAULT_VERBOSE) verbose_nav       = verbose;
+  if (verbose_sensor    == DEFAULT_VERBOSE) verbose_sensor    = verbose;
+  if (verbose_state     == DEFAULT_VERBOSE) verbose_state     = verbose;
+  if (verbose_tlm       == DEFAULT_VERBOSE) verbose_tlm       = verbose;
+  if (verbose_embrakes  == DEFAULT_VERBOSE) verbose_embrakes  = verbose;
 
-  if (debug_motor   == DEFAULT_DEBUG) debug_motor   = debug;
-  if (debug_nav     == DEFAULT_DEBUG) debug_nav     = debug;
-  if (debug_sensor  == DEFAULT_DEBUG) debug_sensor  = debug;
-  if (debug_state   == DEFAULT_DEBUG) debug_state   = debug;
-  if (debug_tlm     == DEFAULT_DEBUG) debug_tlm     = debug;
+  if (debug_motor   == DEFAULT_DEBUG) debug_motor     = debug;
+  if (debug_nav     == DEFAULT_DEBUG) debug_nav       = debug;
+  if (debug_sensor  == DEFAULT_DEBUG) debug_sensor    = debug;
+  if (debug_state   == DEFAULT_DEBUG) debug_state     = debug;
+  if (debug_tlm     == DEFAULT_DEBUG) debug_tlm       = debug;
+  if(debug_embrakes == DEFAULT_DEBUG) debug_embrakes  = debug;
 
   log_    = new Logger(verbose, debug);
   system_ = this;   // own address
