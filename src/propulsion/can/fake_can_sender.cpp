@@ -28,13 +28,15 @@ FakeCanSender::FakeCanSender(Logger &log_, uint8_t node_id) : log_(log_),
     isSending = false;
 }
 
-void FakeCanSender::sendMessage(utils::io::can::Frame &message)
+bool FakeCanSender::sendMessage(utils::io::can::Frame &message)
 {
-    while (isSending)
-        ;
     std::cout << "sending" << std::endl;
 
     isSending = true;
+
+    while (isSending);
+
+    return true;
 }
 
 void FakeCanSender::registerController()

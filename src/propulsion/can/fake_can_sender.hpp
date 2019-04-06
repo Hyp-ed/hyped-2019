@@ -38,7 +38,7 @@ class FakeCanSender : public CanProccesor, public SenderInterface
   public:
     FakeCanSender(Logger &log_, uint8_t id);
 
-    void sendMessage(utils::io::can::Frame &message) override;
+    bool sendMessage(utils::io::can::Frame &message) override;
 
     void registerController() override;
 

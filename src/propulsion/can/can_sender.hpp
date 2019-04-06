@@ -25,6 +25,9 @@
 #include "utils/logger.hpp"
 #include "propulsion/controller_interface.hpp"
 #include "sender_interface.hpp"
+#include "utils/timer.hpp"
+
+#define TIMEOUT 5000
 
 namespace hyped
 {
@@ -33,6 +36,7 @@ namespace motor_control
 using utils::Logger;
 using utils::io::Can;
 using utils::io::CanProccesor;
+using utils::Timer;
 
 class CanSender : public CanProccesor, public SenderInterface
 {
@@ -51,7 +55,7 @@ class CanSender : public CanProccesor, public SenderInterface
     /**
        * @brief { Sends CAN messages }
        */
-    void sendMessage(utils::io::can::Frame &message) override;
+    bool sendMessage(utils::io::can::Frame &message) override;
 
     /**
        * @brief { Registers the controller to process incoming CAN messages }
@@ -79,6 +83,8 @@ class CanSender : public CanProccesor, public SenderInterface
     Can &can_;
     std::atomic<bool> isSending;
     ControllerInterface *controller_;
+    Timer timer;
+    uint64_t messageTimestamp;
 
     const uint32_t kEmgyTransmit          = 0x80;
     const uint32_t kSdoTransmit           = 0x580;
