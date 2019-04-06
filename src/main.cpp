@@ -49,14 +49,18 @@ int main(int argc, char* argv[])
 
   // Initalise the threads here
   Thread* sensors = new hyped::sensors::Main(0, log_sensor);
+  Thread* nav     = new hyped::navigation::Main(1, log_nav);
 
   // Start the threads here
   sensors->start();
+  nav->start();
 
   // Join the threads here
   sensors->join();
+  nav->join();
 
   delete sensors;
+  delete nav;
 
   return 0;
 }
