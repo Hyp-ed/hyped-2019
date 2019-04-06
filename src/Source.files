@@ -16,6 +16,7 @@ SRCS := \
   embrakes/retractor_manager.cpp \
   embrakes/fake_retractor.cpp \
   embrakes/retractor.cpp \
+  propulsion/can/fake_can_endpoint.cpp \
   propulsion/state_processor.cpp \
   propulsion/main.cpp \
   propulsion/can/can_sender.cpp \

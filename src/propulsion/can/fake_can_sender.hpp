@@ -24,6 +24,7 @@
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "sender_interface.hpp"
+#include "propulsion/can/fake_can_endpoint.hpp"
 
 namespace hyped
 {
@@ -52,6 +53,7 @@ class FakeCanSender : public CanProccesor, public SenderInterface
     Logger log_;
     // Can& can_;
     std::atomic<bool> isSending;
+    FakeCanEndpoint *endpoint;
 };
 }  // namespace motor_control
 }  // namespace hyped
