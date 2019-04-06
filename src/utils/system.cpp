@@ -54,7 +54,7 @@ void printUsage()
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
-    "    --fake_imu, --fake_keyence\n"
+    "    --fake_imu, --fake_keyence --fake_embrakes --fake_motors\n"
     "    To set navigation IDs.\n"
     "    --imu_id, --run_id\n"
     "");
@@ -81,6 +81,8 @@ System::System(int argc, char* argv[])
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
       fake_keyence(false),
+      fake_embrakes(false),
+      fake_motors(false),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
       running_(true)
@@ -106,6 +108,8 @@ System::System(int argc, char* argv[])
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'P'},
       {"fake_keyence", no_argument, 0, 'k'},
+      {"fake_motors", no_argument, 0, 'm'},
+      {"fake_embrakes", no_argument, 0, 'M'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
     // returns option character from argv array following '-' or '--' from command line
@@ -183,6 +187,14 @@ System::System(int argc, char* argv[])
       case 'k':
         if (optarg) fake_keyence = atoi(optarg);
         else        fake_keyence = 1;
+        break;
+      case 'm':
+        if (optarg) fake_motors = atoi(optarg);
+        else        fake_motors = 1;
+        break;
+      case 'M':
+        if (optarg) fake_embrakes = atoi(optarg);
+        else        fake_embrakes = 1;
         break;
       default:
         printUsage();
