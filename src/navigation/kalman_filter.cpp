@@ -2,7 +2,7 @@
  * Author: Lukas Schaefer
  * Organisation: HYPED
  * Date: 30/03/2019
- * Description: Kalman filter manager (interface for filter and filter setup)
+ * Description: Kalman filter (interface for filter and filter setup)
  *
  *  Copyright 2019 HYPED
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -16,31 +16,38 @@
  *  limitations under the License.
  */
 
-#include "kalman_manager.hpp"
+#include "kalman_filter.hpp"
 
 namespace hyped {
 namespace navigation {
-KalmanManager::KalmanManager(unsigned int n_, unsigned int m_)
+KalmanFilter::KalmanFilter(unsigned int n_, unsigned int m_)
   : n(n_),
   m(m_),
   k(0),
   kalmanFilter(KalmanMultivariate(n_, m_))
 {}
 
-KalmanManager::KalmanManager(unsigned int n_, unsigned int m_, unsigned int k_)
+KalmanFilter::KalmanFilter(unsigned int n_, unsigned int m_, unsigned int k_)
   : n(n_),
   m(m_),
   k(k_),
   kalmanFilter(KalmanMultivariate(n_, m_, k_))
 {}
 
-void KalmanManager::setupStationary()
+void KalmanFilter::setup()
 {
   // setup dynamics & measurement models for stationary test
   MatrixXf A = createStateTransitionMatrix(0.0);
   MatrixXf Q = createStateTransitionCovarianceMatrix();
   MatrixXf H = createMeasurementMatrix();
-  MatrixXf R = createStationaryMeasurementCovarianceMatrix();
+
+  // check system navigation run for R setup
+  System &sys = System::getSystem();
+  MatrixXf R = MatrixXf::Zero(m, m);;
+  if (sys.tube_run) R = createTubeMeasurementCovarianceMatrix();
+  else if (sys.elevator_run) R = createElevatorMeasurementCovarianceMatrix();
+  else if (sys.stationary_run) R = createStationaryMeasurementCovarianceMatrix();
+
   kalmanFilter.setModels(A, Q, H, R);
 
   // setup initial estimates
@@ -49,37 +56,25 @@ void KalmanManager::setupStationary()
   kalmanFilter.setInitial(x, P);
 }
 
-void KalmanManager::setupElevator()
-{
-  // setup dynamics & measurement models for elevator test
-  MatrixXf A = createStateTransitionMatrix(0.0);
-  MatrixXf Q = createStateTransitionCovarianceMatrix();
-  MatrixXf H = createMeasurementMatrix();
-  MatrixXf R = createElevatorMeasurementCovarianceMatrix();
-  kalmanFilter.setModels(A, Q, H, R);
-
-  // setup initial estimates
-  VectorXf x = VectorXf::Zero(n);
-  MatrixXf P = createInitialErrorCovarianceMatrix();
-  kalmanFilter.setInitial(x, P);
-}
-
-void KalmanManager::updateStateTransitionMatrix(double dt)
+void KalmanFilter::updateStateTransitionMatrix(double dt)
 {
   MatrixXf A = createStateTransitionMatrix(dt);
   kalmanFilter.update(A);
 }
 
-void KalmanManager::filter(NavigationVector& z_)
+const NavigationEstimate KalmanFilter::filter(NavigationVector& z_)
 {
   VectorXf z(m);
   for (unsigned int i = 0; i < m; i++) {
     z(i) = z_[i];
   }
   kalmanFilter.filter(z);
+
+  NavigationEstimate estimate = getNavigationEstimate();
+  return estimate;
 }
 
-void KalmanManager::filter(NavigationVector& u_, NavigationVector& z_)
+const NavigationEstimate KalmanFilter::filter(NavigationVector& u_, NavigationVector& z_)
 {
   VectorXf u(k);
   for (unsigned int i = 0; i < k; i++) {
@@ -92,19 +87,12 @@ void KalmanManager::filter(NavigationVector& u_, NavigationVector& z_)
   }
 
   kalmanFilter.filter(u, z);
+
+  NavigationEstimate estimate = getNavigationEstimate();
+  return estimate;
 }
 
-const NavigationEstimate KalmanManager::getEstimate()
-{
-  VectorXf x = kalmanFilter.getStateEstimate();
-  NavigationVector pos = NavigationVector({x(0), x(1), x(2)});
-  NavigationVector vel = NavigationVector({x(3), x(4), x(5)});
-  NavigationVector acc = NavigationVector({x(6), x(7), x(8)});
-  NavigationEstimate est = {pos, vel, acc};
-  return est;
-}
-
-const MatrixXf KalmanManager::createInitialErrorCovarianceMatrix()
+const MatrixXf KalmanFilter::createInitialErrorCovarianceMatrix()
 {
   MatrixXf P = MatrixXf::Constant(n, n, 0.0);
   std::default_random_engine generator;
@@ -124,7 +112,7 @@ const MatrixXf KalmanManager::createInitialErrorCovarianceMatrix()
   return P;
 }
 
-void KalmanManager::setInitialEstimate()
+void KalmanFilter::setInitialEstimate()
 {
   // create initial error covariance matrix P
   MatrixXf P = MatrixXf::Constant(n, n, 0.0);
@@ -148,7 +136,7 @@ void KalmanManager::setInitialEstimate()
   kalmanFilter.setInitial(x, P);
 }
 
-const MatrixXf KalmanManager::createStateTransitionMatrix(double dt)
+const MatrixXf KalmanFilter::createStateTransitionMatrix(double dt)
 {
   MatrixXf A(n, n);
   double acc_ddt = 0.5 * dt * dt;
@@ -164,7 +152,7 @@ const MatrixXf KalmanManager::createStateTransitionMatrix(double dt)
   return A;
 }
 
-const MatrixXf KalmanManager::createMeasurementMatrix()
+const MatrixXf KalmanFilter::createMeasurementMatrix()
 {
   MatrixXf H = MatrixXf::Zero(m, n);
   for (unsigned int i = 0; i < m; i++) {
@@ -173,7 +161,7 @@ const MatrixXf KalmanManager::createMeasurementMatrix()
   return H;
 }
 
-const MatrixXf KalmanManager::createStateTransitionCovarianceMatrix()
+const MatrixXf KalmanFilter::createStateTransitionCovarianceMatrix()
 {
   std::default_random_engine generator;
   std::normal_distribution<double> var_noise(0.01, 0.02);
@@ -191,7 +179,7 @@ const MatrixXf KalmanManager::createStateTransitionCovarianceMatrix()
   return Q;
 }
 
-const MatrixXf KalmanManager::createStationaryMeasurementCovarianceMatrix()
+const MatrixXf KalmanFilter::createStationaryMeasurementCovarianceMatrix()
 {
   std::default_random_engine generator;
   std::normal_distribution<double> var_noise(0.0, 0.0005);
@@ -210,12 +198,28 @@ const MatrixXf KalmanManager::createStationaryMeasurementCovarianceMatrix()
   return R;
 }
 
-const MatrixXf KalmanManager::createElevatorMeasurementCovarianceMatrix()
+const MatrixXf KalmanFilter::createTubeMeasurementCovarianceMatrix()
+{
+    // TODO(Lukas): implement proper covariance setup for tube based on simulation
+    MatrixXf R = MatrixXf::Zero(m, m);
+    return R;
+}
+const MatrixXf KalmanFilter::createElevatorMeasurementCovarianceMatrix()
 {
   MatrixXf R(m, m);
   R << 0.0085, 0.0014, 0.0025,
        0.0014, 0.007, -0.004,
        0.0025, -0.004, 0.12;
   return R;
+}
+
+const NavigationEstimate KalmanFilter::getNavigationEstimate()
+{
+  VectorXf x = kalmanFilter.getStateEstimate();
+  NavigationVector pos = NavigationVector({x(0), x(1), x(2)});
+  NavigationVector vel = NavigationVector({x(3), x(4), x(5)});
+  NavigationVector acc = NavigationVector({x(6), x(7), x(8)});
+  NavigationEstimate est = {pos, vel, acc};
+  return est;
 }
 }}  // namespace hyped navigation
