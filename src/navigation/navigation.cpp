@@ -25,10 +25,9 @@ Navigation::Navigation(Logger& log)
          : log_(log),
            imu_manager_(log),
            data_(Data::getInstance()),
-           sensor_readings_(nullptr),
-           acceleration_(0., {0., 0., 0.}),
-           velocity_(0., {0., 0., 0.}),
-           distance_(0., {0., 0., 0.}),
+           acceleration_(0., NavigationVector(0)),
+           velocity_(0., NavigationVector(0)),
+           distance_(0., NavigationVector(0)),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -101,18 +100,18 @@ void Navigation::calibrateGravity()
   std::array<OnlineStatistics<NavigationVector>, data::Sensors::kNumImus> online_array;
   // Average each sensor over specified number of readings
   for (int i = 0; i < kNumCalibrationQueries; ++i) {
-    sensor_readings = data_.getSensorsImuData();
+    sensor_readings_ = data_.getSensorsImuData();
     for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-      online_array[j].update(sensor_readings.value[j].acc);
+      online_array[j].update(sensor_readings_.value[j].acc);
     }
   }
-  for (int j = 0; j < kNumImus; ++j) {
+  for (int j = 0; j < data::Sensors::kNumImus; ++j) {
     gravity_calibration_[j] = online_array[j].getMean();
     log_.INFO("NAV",
       "Update: g=(%.2f, %.2f, %.2f)", //NOLINT
-                  gravity_calibration_[j].value[0],
-                  gravity_calibration_[j].value[1],
-                  gravity_calibration_[j].value[2]);
+                  gravity_calibration_[j][0],
+                  gravity_calibration_[j][1],
+                  gravity_calibration_[j][2]);
   }
 }
 
@@ -120,7 +119,7 @@ void Navigation::calibrateGravity()
 void Navigation::queryImus()
 {
   OnlineStatistics<NavigationVector> filter;
-  sensor_readings = data_.getSensorsImuData();
+  sensor_readings_ = data_.getSensorsImuData();
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
     filter.update(sensor_readings_.value[i] - gravity_calibration_[i]);
