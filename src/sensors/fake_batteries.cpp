@@ -33,6 +33,11 @@ namespace sensors {
 FakeBatteries::FakeBatteries(Logger& log, bool is_lp, bool is_fail)
       : data_(Data::getInstance()),
       log_(log),
+      lp_failure_ {10, 5000, 0, 100, 100, 500},
+      lp_success_ {252, 200, 0, 50, 140, 252},
+      hp_failure_ {170, 20000, 0, 100, 200, 2000},
+      hp_success_ {1000, 10000, 0, 50, 720, 1246},
+      cases_ {lp_failure_, lp_success_, hp_failure_, hp_success_},
       is_lp_(is_lp),
       is_fail_(is_fail),
       acc_start_time_(0),

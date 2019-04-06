@@ -51,12 +51,12 @@ class FakeBatteries : public BMSInterface {
   void checkFailure();
   void updateBatteryData();
 
-  BatteryInformation lp_failure_ = {10, 5000, 0, 100, 100, 500};
-  BatteryInformation lp_success_ = {252, 200, 0, 50, 140, 252};    // TODO(Greg): adjust values
-  BatteryInformation hp_failure_ = {170, 20000, 0, 100, 200, 2000};
-  BatteryInformation hp_success_ = {1000, 10000, 0, 50, 720, 1246};    // TODO(Greg): adjust values
+  BatteryInformation lp_failure_;
+  BatteryInformation lp_success_;    // TODO(Greg): adjust values
+  BatteryInformation hp_failure_;
+  BatteryInformation hp_success_;    // TODO(Greg): adjust values
   // different success and fail cases
-  BatteryCases cases_ = {lp_failure_, lp_success_, hp_failure_, hp_success_};
+  BatteryCases cases_;
 
   bool is_lp_;
   bool is_fail_;
