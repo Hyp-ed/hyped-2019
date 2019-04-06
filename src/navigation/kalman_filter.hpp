@@ -2,7 +2,7 @@
  * Author: Lukas Schaefer
  * Organisation: HYPED
  * Date: 30/03/2019
- * Description: Header for Kalman filter manager (interface for filter and filter setup)
+ * Description: Header for Kalman filter (interface for filter and filter setup)
  *
  *  Copyright 2019 HYPED
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -16,13 +16,14 @@
  *  limitations under the License.
  */
 
-#ifndef NAVIGATION_KALMAN_MANAGER_HPP_
-#define NAVIGATION_KALMAN_MANAGER_HPP_
+#ifndef NAVIGATION_KALMAN_FILTER_HPP_
+#define NAVIGATION_KALMAN_FILTER_HPP_
 
 #include <random>
 #include <Eigen/Dense>
 
 #include "data/data.hpp"
+#include "utils/system.hpp"
 #include "utils/math/kalman_multivariate.hpp"
 
 using Eigen::MatrixXf;
@@ -31,22 +32,20 @@ using Eigen::VectorXf;
 namespace hyped {
 using data::NavigationVector;
 using data::NavigationEstimate;
+using utils::System;
 using utils::math::KalmanMultivariate;
 
 namespace navigation {
 
-class KalmanManager
+class KalmanFilter
 {
   public:
-    KalmanManager(unsigned int n_, unsigned int m_);
-    KalmanManager(unsigned int n_, unsigned int m_, unsigned int k_);
-    void setupStationary();
-    void setupElevator();
+    KalmanFilter(unsigned int n_, unsigned int m_);
+    KalmanFilter(unsigned int n_, unsigned int m_, unsigned int k_);
+    void setup();
     void updateStateTransitionMatrix(double dt);
-    void filter(NavigationVector& z_);
-    void filter(NavigationVector& u_, NavigationVector& z_);
-    const NavigationEstimate getEstimate();
-
+    const NavigationEstimate filter(NavigationVector& z_);
+    const NavigationEstimate filter(NavigationVector& u_, NavigationVector& z_);
   private:
     unsigned int    n;
     unsigned int    m;
@@ -69,9 +68,13 @@ class KalmanManager
     const MatrixXf createStateTransitionCovarianceMatrix();
 
     // create measurement covariance matrices R
+    const MatrixXf createTubeMeasurementCovarianceMatrix();
     const MatrixXf createStationaryMeasurementCovarianceMatrix();
     const MatrixXf createElevatorMeasurementCovarianceMatrix();
+
+    // transfer estimate to NavigationEstimate
+    const NavigationEstimate getNavigationEstimate();
 };
 }}  // namespace hyped navigation
 
-#endif  // NAVIGATION_KALMAN_MANAGER_HPP_
+#endif  // NAVIGATION_KALMAN_FILTER_HPP_

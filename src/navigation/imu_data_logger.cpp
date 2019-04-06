@@ -26,7 +26,7 @@ ImuDataLogger::ImuDataLogger(std::ofstream* outfile_)
 
 void ImuDataLogger::setup(int imu_id, int run_id)
 {
-  char fname[20];
+  char fname[100];
   snprintf(fname, sizeof(fname), "test_data/imu%d_run%d_data.csv", imu_id, run_id);
   outfile->open(fname);
   *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,t\n";
@@ -34,7 +34,7 @@ void ImuDataLogger::setup(int imu_id, int run_id)
 
 void ImuDataLogger::setupKalman(int imu_id, int run_id)
 {
-  char fname[20];
+  char fname[100];
   snprintf(fname, sizeof(fname), "test_data/imu%d_run%d_data.csv", imu_id, run_id);
   outfile->open(fname);
   *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,sfx,sfy,sfz,vfx,vfy,vfz,"

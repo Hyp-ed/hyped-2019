@@ -65,6 +65,8 @@ void printUsage()
     "    --fake_embrakes --fake_motors\n"
     "    To set navigation IDs.\n"
     "    --imu_id, --run_id\n"
+    "    To set run kind for navigation tests.\n"
+    "    --tube_run, --elevator_run, --stationary_run\n"
     "");
 }
 }   // namespace hyped::utils::System
@@ -93,6 +95,9 @@ System::System(int argc, char* argv[])
       fake_motors(false),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
+      tube_run(true),
+      elevator_run(false),
+      stationary_run(false),
       running_(true),
       config(0)
 {
@@ -117,12 +122,15 @@ System::System(int argc, char* argv[])
       {"debug_tlm", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
-      {"fake_batteries", no_argument, 0, 'j'},
-      {"imu_id", no_argument, 0, 'p'},
-      {"run_id", no_argument, 0, 'P'},
       {"fake_keyence", no_argument, 0, 'k'},
       {"fake_motors", no_argument, 0, 'm'},
       {"fake_embrakes", no_argument, 0, 'M'},
+      {"fake_batteries", no_argument, 0, 'j'},
+      {"imu_id", no_argument, 0, 'p'},
+      {"run_id", no_argument, 0, 'q'},
+      {"tube_run", no_argument, 0, 'r'},
+      {"elevator_run", no_argument, 0, 's'},
+      {"stationary_run", no_argument, 0, 't'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
     // returns option character from argv array following '-' or '--' from command line
@@ -189,14 +197,7 @@ System::System(int argc, char* argv[])
         if (optarg) debug_tlm = atoi(optarg);
         else        debug_tlm = 0;
         break;
-      case 'p':
-        if (optarg) imu_id = atoi(optarg);
-        else        imu_id = 1;
-        break;
-      case 'P':
-        if (optarg) run_id = atoi(optarg);
-        else        run_id = 1;
-      case 'i':
+      case 'i':   // fake_imu
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
         break;
@@ -204,7 +205,7 @@ System::System(int argc, char* argv[])
         if (optarg) fake_batteries = atoi(optarg);
         else        fake_batteries = 1;
         break;
-      case 'k':
+      case 'k':   // fake_keyence
         if (optarg) fake_keyence = atoi(optarg);
         else        fake_keyence = 1;
         break;
@@ -216,6 +217,35 @@ System::System(int argc, char* argv[])
         if (optarg) fake_embrakes = atoi(optarg);
         else        fake_embrakes = 1;
         break;
+      case 'p':   // imu_id
+        if (optarg) imu_id = atoi(optarg);
+        else        imu_id = 1;
+        break;
+      case 'q':   // run_id
+        if (optarg) run_id = atoi(optarg);
+        else        run_id = 1;
+        break;
+      case 'r':   // tube_run
+        if (optarg) tube_run = atoi(optarg);
+        else        tube_run = 1;
+        break;
+      case 's':   // elevator_run
+        if (optarg) {
+          elevator_run = atoi(optarg);
+          tube_run = 0;
+        } else {
+          elevator_run = 1;
+          tube_run = 0;
+        }
+        break;
+      case 't':   // stationary_run
+        if (optarg) {
+          stationary_run = atoi(optarg);
+          tube_run = 0;
+        } else {
+          stationary_run = 1;
+          tube_run = 0;
+        }
       default:
         printUsage();
         exit(1);
