@@ -21,9 +21,14 @@
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
+#include "sensors/main.hpp"
+#include "utils/concurrent/thread.hpp"
 
 using hyped::utils::Logger;
 using hyped::utils::System;
+using hyped::utils::concurrent::Thread;
+
+using hyped::data::Sensors;
 
 int main(int argc, char* argv[])
 {
@@ -41,6 +46,17 @@ int main(int argc, char* argv[])
   log_system.DBG1("MAIN", "DBG1");
   log_system.DBG2("MAIN", "DBG2");
   log_system.DBG3("MAIN", "DBG3");
+
+  // Initalise the threads here
+  Thread* sensors = new hyped::sensors::Main(0, log_sensor);
+
+  // Start the threads here
+  sensors->start();
+
+  // Join the threads here
+  sensors->join();
+
+  delete sensors;
 
   return 0;
 }

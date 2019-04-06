@@ -189,9 +189,9 @@ System::System(int argc, char* argv[])
         else        fake_imu = 1;
         break;
       case 'j':
-      if (optarg) fake_batteries = atoi(optarg);
-      else        fake_batteries = 1;
-      break;
+        if (optarg) fake_batteries = atoi(optarg);
+        else        fake_batteries = 1;
+        break;
       case 'k':
         if (optarg) fake_keyence = atoi(optarg);
         else        fake_keyence = 1;
