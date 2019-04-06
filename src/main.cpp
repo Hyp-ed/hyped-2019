@@ -25,6 +25,7 @@
 #include "propulsion/main.hpp"
 #include "embrakes/main.hpp"
 #include "telemetry/main.hpp"
+#include "state_machine/main.hpp"
 #include "utils/concurrent/thread.hpp"
 
 using hyped::utils::Logger;
@@ -55,12 +56,14 @@ int main(int argc, char* argv[])
   Thread* embrakes = new hyped::embrakes::Main(1, log_motor);
   Thread* motors = new hyped::motor_control::Main(2, log_motor);
   Thread* tlm = new hyped::motor_control::Main(3, log_tlm);
+  Thread* state_machine = new hyped::state_machine::Main(4, log_state);
 
   // Start the threads here
   sensors->start();
   embrakes->start();
   motors->start();
   tlm->start();
+  state_machine->start();
 
   // Join the threads here
   sensors->join();
