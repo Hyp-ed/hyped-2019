@@ -24,7 +24,6 @@
 #include "data/data.hpp"
 #include "data/data_point.hpp"
 #include "sensors/imu.hpp"
-#include "sensors/imu_manager.hpp"
 #include "utils/logger.hpp"
 #include "utils/math/integrator.hpp"
 
@@ -35,98 +34,94 @@ using data::DataPoint;
 using data::ImuData;
 using data::NavigationType;
 using data::NavigationVector;
-using sensors::ImuManager;
 using utils::Logger;
 using utils::math::Integrator;
 
-
 namespace navigation {
 
-
   class Navigation {
-    friend class Main;
 
-  public:
-    typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
-    typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
-    typedef std::array<NavigationVector, data::Sensors::kNumImus> NavigationArray;
+    public:
+      typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
+      typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
+      typedef std::array<NavigationVector, data::Sensors::kNumImus> NavigationArray;
 
-    /**
-     * @brief Construct a new Navigation object
-     *
-     * @param log System logger
-     */
-    explicit Navigation(Logger& log);
-    /**
-     * @brief Get the measured acceleration [m/s^2]
-     *
-     * @return NavigationType Returns the forward component of acceleration vector (negative when
-     *                        decelerating) [m/s^2]
-     */
-    NavigationType getAcceleration() const;
-    /**
-     * @brief Get the measured velocity [m/s]
-     *
-     * @return NavigationType Returns the forward component of velocity vector [m/s]
-     */
-    NavigationType getVelocity() const;
-    /**
-     * @brief Get the measured displacement [m]
-     *
-     * @return NavigationType Returns the forward component of displacement vector [m]
-     */
-    NavigationType getDistance() const;
-    /**
-     * @brief Get the emergency braking distance [m]
-     *
-     * @return NavigationType emergency braking distance [m]
-     */
-    NavigationType getEmergencyBrakingDistance() const;
-    /**
-     * @brief Get the braking distance [m]
-     *
-     * @return NavigationType braking distance [m]
-     */
-    NavigationType getBrakingDistance() const;
-    /**
-     * @brief Get the determined gravity calibration [m/s^2]
-     *
-     * @return NavitationArray recorded gravitational acceleration [m/s^2]
-     */
-    NavigationArray getGravityCalibration() const;
+      /**
+       * @brief Construct a new Navigation object
+       *
+       * @param log System logger
+       */
+      explicit Navigation(Logger& log);
+      /**
+       * @brief Get the measured acceleration [m/s^2]
+       *
+       * @return NavigationType Returns the forward component of acceleration vector (negative when
+       *                        decelerating) [m/s^2]
+       */
+      NavigationType getAcceleration() const;
+      /**
+       * @brief Get the measured velocity [m/s]
+       *
+       * @return NavigationType Returns the forward component of velocity vector [m/s]
+       */
+      NavigationType getVelocity() const;
+      /**
+       * @brief Get the measured displacement [m]
+       *
+       * @return NavigationType Returns the forward component of displacement vector [m]
+       */
+      NavigationType getDistance() const;
+      /**
+       * @brief Get the emergency braking distance [m]
+       *
+       * @return NavigationType emergency braking distance [m]
+       */
+      NavigationType getEmergencyBrakingDistance() const;
+      /**
+       * @brief Get the braking distance [m]
+       *
+       * @return NavigationType braking distance [m]
+       */
+      NavigationType getBrakingDistance() const;
+      /**
+       * @brief Get the determined gravity calibration [m/s^2]
+       *
+       * @return NavitationArray recorded gravitational acceleration [m/s^2]
+       */
+      NavigationArray getGravityCalibration() const;
+      /**
+       * @brief Update central data structure
+       */
+      void updateData();
 
-  private:
-    static constexpr int kNumCalibrationQueries = 10000;
-    static constexpr NavigationType kEmergencyDeceleration = 24;
+    private:
+      static constexpr int kNumCalibrationQueries = 10000;
+      static constexpr NavigationType kEmergencyDeceleration = 24;
 
-    // System communication
-    Logger& log_;
-    ImuManager imu_manager_;
-    Data& data_;
+      // System communication
+      Logger& log_;
+      ImuManager imu_manager_;
+      Data& data_;
 
-    // To store estimated values
-    ImuDataPointArray sensor_readings_;
-    DataPoint<NavigationVector> acceleration_;
-    DataPoint<NavigationVector> velocity_;
-    DataPoint<NavigationVector> distance_;
-    NavigationArray gravity_calibration_;
+      // To store estimated values
+      ImuDataPointArray sensor_readings_;
+      DataPoint<NavigationVector> acceleration_;
+      DataPoint<NavigationVector> velocity_;
+      DataPoint<NavigationVector> distance_;
+      NavigationArray gravity_calibration_;
 
-    // To convert acceleration -> velocity -> distance
-    Integrator<NavigationVector> acceleration_integrator_;  // acceleration to velocity
-    Integrator<NavigationVector> velocity_integrator_;      // velocity to distance
+      // To convert acceleration -> velocity -> distance
+      Integrator<NavigationVector> acceleration_integrator_;  // acceleration to velocity
+      Integrator<NavigationVector> velocity_integrator_;      // velocity to distance
 
-    /**
-     * @brief Determine the value of gravitational acceleration measured by sensors at rest
-     */
-    void calibrateGravity();
-    /**
-     * @brief Query sensors to determine acceleration, velocity and distance
-     */
-    void queryImus();
-    /**
-     * @brief Update central data structure
-     */
-    void updateData();
+      /**
+       * @brief Determine the value of gravitational acceleration measured by sensors at rest
+       */
+      void calibrateGravity();
+      /**
+       * @brief Query sensors to determine acceleration, velocity and distance
+       */
+      void queryImus();
   };
 
 

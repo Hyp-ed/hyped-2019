@@ -19,10 +19,12 @@
  *    limitations under the License.
  */
 
+#include "navigation/main.hpp"
+#include "sensors/imu_manager.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
-#include "navigation/main.hpp"
 
+using sensors::ImuManager;
 using hyped::utils::System;
 using hyped::utils::Logger;
 using hyped::navigation::Main;
@@ -32,6 +34,11 @@ int main(int argc, char* argv[])
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
+  
+  // Initialise sensors
+  ImuManager imu_manager(log_nav);
+  imu_manager.start();
+
   Main* main = new Main(1, *log_nav);
   main->run();
 

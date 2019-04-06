@@ -27,7 +27,6 @@ namespace navigation {
 
 Navigation::Navigation(Logger& log)
          : log_(log),
-           imu_manager_(log),
            data_(Data::getInstance()),
            acceleration_(0., NavigationVector(0)),
            velocity_(0., NavigationVector(0)),
@@ -35,35 +34,31 @@ Navigation::Navigation(Logger& log)
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
-  // Initialise sensors
-  imu_manager_.start();
-
   calibrateGravity();
 }
 
-// TODO(Neil/Lukas): do this more smartly?
+// TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getAcceleration() const
 {
   return acceleration_.value[0];
 }
 
-// TODO(Neil/Lukas): do this more smartly?
+// TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getVelocity() const
 {
   return velocity_.value[0];
 }
 
-// TODO(Neil/Lukas): do this more smartly?
+// TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getDistance() const
 {
   return distance_.value[0];
 }
 
-// TODO(Neil): check this is still the same, why is it so?
 NavigationType Navigation::getEmergencyBrakingDistance() const
 {
   // TODO(Neil): Account for actuation delay and/or communication latency?
-  return velocity_.value[0]*velocity_.value[0] / kEmergencyDeceleration;
+  return getVelocity()*getVelocity() / (2*kEmergencyDeceleration);
 }
 
 // TODO(Neil): check this is still the same, why is it so?
@@ -138,6 +133,9 @@ void Navigation::queryImus()
 
 void Navigation::updateData()
 {
+  // Take new readings first
+  queryImus();
+
   data::Navigation nav_data;
   nav_data.distance                   = getDistance();
   nav_data.velocity                   = getVelocity();
