@@ -147,11 +147,12 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
+  // Crude test of data writing
+  nav_data = data_.getNavigationData();
+
   log_.INFO("NAV",
-      "Update: a=(%.3f, %.3f, %.3f), v=(%.3f, %.3f, %.3f), d=(%.3f, %.3f, %.3f)", //NOLINT
-      acceleration_.value[0], acceleration_.value[1], acceleration_.value[2],
-      velocity_.value[0]    , velocity_.value[1]    , velocity_.value[2],
-      distance_.value[0]    , distance_.value[1]    , distance_.value[2]);
+      "Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
+      nav_data.acceleration, nav_data.velocity, nav_data.distance);
 }
 
 
