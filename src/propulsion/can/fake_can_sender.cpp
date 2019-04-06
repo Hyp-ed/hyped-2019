@@ -25,18 +25,18 @@ namespace motor_control
 FakeCanSender::FakeCanSender(Logger &log_, uint8_t node_id) : log_(log_),
                                                               node_id_(node_id)
 {
-    isSending = false;
+  isSending = false;
 }
 
 bool FakeCanSender::sendMessage(utils::io::can::Frame &message)
 {
-    std::cout << "sending" << std::endl;
+  std::cout << "sending" << std::endl;
 
-    isSending = true;
+  isSending = true;
 
-    while (isSending);
+  while (isSending);
 
-    return true;
+  return true;
 }
 
 void FakeCanSender::registerController()
@@ -45,18 +45,18 @@ void FakeCanSender::registerController()
 
 void FakeCanSender::processNewData(utils::io::can::Frame &message)
 {
-    std::cout << "processNewData" << std::endl;
-    isSending = false;
+  std::cout << "processNewData" << std::endl;
+  isSending = false;
 }
 
 bool FakeCanSender::hasId(uint32_t id, bool extended)
 {
-    return true;
+  return true;
 }
 
 bool FakeCanSender::getIsSending()
 {
-    return isSending;
+  return isSending;
 }
 }  // namespace motor_control
 }  // namespace hyped
