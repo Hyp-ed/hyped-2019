@@ -19,6 +19,8 @@
  *    limitations under the License.
  */
 
+#include <iostream>
+
 #include "navigation/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "utils/concurrent/thread.hpp"
@@ -36,7 +38,7 @@ int main(int argc, char* argv[])
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
-  
+
   // Initialise sensors
   ImuManager imu_manager(*log_nav);
   imu_manager.start();

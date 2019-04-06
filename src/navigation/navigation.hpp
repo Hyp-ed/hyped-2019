@@ -1,5 +1,5 @@
 /*
- * Author: Neil McBlane
+ * Author: Neil McBlane, Brano Pilnan
  * Organisation: HYPED
  * Date: 05/04/2019
  * Description: Main file for navigation class.
