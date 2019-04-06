@@ -36,6 +36,11 @@ namespace navigation {
   {
     log_.INFO("NAV", "Navigation starting");
 
+    while (sys_.running_) {
+      nav_.queryImus();
+      nav_.updateData();
+    }
+
     std::cout << "All done!" << std::endl;
   }
 

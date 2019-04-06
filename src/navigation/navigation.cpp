@@ -17,8 +17,12 @@
  */
 
 #include "navigation/navigation.hpp"
+#include "utils/concurrent/thread.hpp"
 
 namespace hyped {
+
+using hyped::utils::concurrent::Thread;
+
 namespace navigation {
 
 Navigation::Navigation(Logger& log)
@@ -104,11 +108,12 @@ void Navigation::calibrateGravity()
     for (int j = 0; j < data::Sensors::kNumImus; ++j) {
       online_array[j].update(sensor_readings_.value[j].acc);
     }
+    Thread::sleep(1);
   }
   for (int j = 0; j < data::Sensors::kNumImus; ++j) {
     gravity_calibration_[j] = online_array[j].getMean();
     log_.INFO("NAV",
-      "Update: g=(%.2f, %.2f, %.2f)", //NOLINT
+      "Update: g=(%.5f, %.5f, %.5f)", //NOLINT
                   gravity_calibration_[j][0],
                   gravity_calibration_[j][1],
                   gravity_calibration_[j][2]);
@@ -122,7 +127,7 @@ void Navigation::queryImus()
   sensor_readings_ = data_.getSensorsImuData();
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
-    filter.update(sensor_readings_.value[i] - gravity_calibration_[i]);
+    filter.update(sensor_readings_.value[i].acc - gravity_calibration_[i]);
   }
   acceleration_.value = filter.getMean();
   acceleration_.timestamp = sensor_readings_.timestamp;
@@ -143,7 +148,7 @@ void Navigation::updateData()
   data_.setNavigationData(nav_data);
 
   log_.INFO("NAV",
-      "Update: a=(%.2f, %.2f, %.2f), v=(%.2f, %.2f, %.2f), d=(%.2f, %.2f, %.2f)", //NOLINT
+      "Update: a=(%.3f, %.3f, %.3f), v=(%.3f, %.3f, %.3f), d=(%.3f, %.3f, %.3f)", //NOLINT
       acceleration_.value[0], acceleration_.value[1], acceleration_.value[2],
       velocity_.value[0]    , velocity_.value[1]    , velocity_.value[2],
       distance_.value[0]    , distance_.value[1]    , distance_.value[2]);
