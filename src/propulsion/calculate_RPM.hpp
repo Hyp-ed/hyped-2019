@@ -2,7 +2,7 @@
  * Author: George Karabassis
  * Organisation: HYPED
  * Date: 30/3/2018
- * Description:
+ * Description: Calculates the new RPM based on the current velocity
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
