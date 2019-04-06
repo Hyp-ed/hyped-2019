@@ -45,7 +45,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     data_(data::Data::getInstance()),
     sys_(utils::System::getSystem()),
     log_(log),
-    pins_ {36, 33},
+    pins_ {kKeyencePinLeft, kKeyencePinRight},
     imu_manager_(new ImuManager(log)),
     battery_manager_(new BmsManager(log))
 {

@@ -48,7 +48,6 @@ class FakeBatteries : public BMSInterface {
  private:
   Data& data_;
   utils::Logger& log_;
-  bool is_started_;
   void checkFailure();
   void updateBatteryData();
 

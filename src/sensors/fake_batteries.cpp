@@ -33,11 +33,10 @@ namespace sensors {
 FakeBatteries::FakeBatteries(Logger& log, bool is_lp, bool is_fail)
       : data_(Data::getInstance()),
       log_(log),
-      is_started_(false),
       is_lp_(is_lp),
       is_fail_(is_fail),
-      acc_started_(false),
       acc_start_time_(0),
+      acc_started_(false),
       failure_time_(0),
       failure_happened_(false)
 {
@@ -47,6 +46,7 @@ FakeBatteries::FakeBatteries(Logger& log, bool is_lp, bool is_fail)
     case_index_ = 3;
   }
   updateBatteryData();
+  log_.DBG("FakeBatteries", "Fake Battery initialised");
 }
 
 void FakeBatteries::getData(BatteryData* battery)

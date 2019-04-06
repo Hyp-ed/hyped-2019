@@ -48,8 +48,6 @@ class BmsManager: public ManagerInterface  {
   void run()                override;
 
  private:
-  BatteriesLP    lp_batteries_;
-  BatteriesHP    hp_batteries_;
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
 
