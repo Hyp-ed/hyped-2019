@@ -89,9 +89,10 @@ System::System(int argc, char* argv[])
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
       running_(true),
-      config_file(DEFAULT_CONFIG),
       config(0)
 {
+  strncpy(config_file, DEFAULT_CONFIG, 250);
+
   int c;
   int option_index = 0;
   while (1) {
