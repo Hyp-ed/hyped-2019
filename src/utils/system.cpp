@@ -111,10 +111,10 @@ System::System(int argc, char* argv[])
       {"fake_imu", no_argument, 0, 'i'},
       {"fake_keyence", no_argument, 0, 'k'},
       {"imu_id", no_argument, 0, 'p'},
-      {"run_id", no_argument, 0, 'P'},
-      {"tube_run", no_argument, 0, 'q'},
-      {"elevator_run", no_argument, 0, 'r'},
-      {"stationary_run", no_argument, 0, 's'},
+      {"run_id", no_argument, 0, 'q'},
+      {"tube_run", no_argument, 0, 'r'},
+      {"elevator_run", no_argument, 0, 's'},
+      {"stationary_run", no_argument, 0, 't'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
     // returns option character from argv array following '-' or '--' from command line
@@ -194,11 +194,11 @@ System::System(int argc, char* argv[])
         if (optarg) run_id = atoi(optarg);
         else        run_id = 1;
         break;
-      case 'q':   // tube_run
+      case 'r':   // tube_run
         if (optarg) tube_run = atoi(optarg);
         else        tube_run = 1;
         break;
-      case 'r':   // elevator_run
+      case 's':   // elevator_run
         if (optarg) {
           elevator_run = atoi(optarg);
           tube_run = 0;
@@ -207,7 +207,7 @@ System::System(int argc, char* argv[])
           tube_run = 0;
         }
         break;
-      case 's':   // stationary_run
+      case 't':   // stationary_run
         if (optarg) {
           stationary_run = atoi(optarg);
           tube_run = 0;
