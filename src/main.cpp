@@ -24,7 +24,6 @@
 #include "sensors/main.hpp"
 #include "propulsion/main.hpp"
 #include "embrakes/main.hpp"
-#include "telemetry/main.hpp"
 #include "state_machine/main.hpp"
 #include "utils/concurrent/thread.hpp"
 
@@ -55,27 +54,23 @@ int main(int argc, char* argv[])
   Thread* sensors = new hyped::sensors::Main(0, log_sensor);
   Thread* embrakes = new hyped::embrakes::Main(1, log_motor);
   Thread* motors = new hyped::motor_control::Main(2, log_motor);
-  Thread* tlm = new hyped::motor_control::Main(3, log_tlm);
   Thread* state_machine = new hyped::state_machine::Main(4, log_state);
 
   // Start the threads here
   sensors->start();
   embrakes->start();
   motors->start();
-  tlm->start();
   state_machine->start();
 
   // Join the threads here
   sensors->join();
   embrakes->join();
   motors->join();
-  tlm->join();
   state_machine->join();
 
   delete sensors;
   delete embrakes;
   delete motors;
-  delete tlm;
   delete state_machine;
 
   return 0;
