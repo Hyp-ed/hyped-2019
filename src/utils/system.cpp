@@ -52,7 +52,7 @@ void printUsage()
     "Default value of debug   flags is 0\n"
     "\n  -v, --verbose[=<bool>]\n"
     "    Set system-wide setting of verbosity. If enabled, prints all INFO messages\n"
-    "\n  --verbose_motor, --verbose_nav, --verbose_sensor, --verbose_state, --verbose_tlm, \n"
+    "\n  --verbose_motor, --verbose_nav, --verbose_sensor, --verbose_state, --verbose_tlm, "
     "--verbose_embrakes\n"
     "    Set module-specific setting of verbosity. If enabled, prints all INFO messages\n"
     "\n  -d, --debug[=<level>]\n"
