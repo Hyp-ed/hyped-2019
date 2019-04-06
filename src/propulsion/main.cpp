@@ -24,82 +24,82 @@ namespace hyped
 namespace motor_control
 {
 Main::Main(uint8_t id, Logger &log)
-    : Thread(id, log),
-      isRunning(true),
-      log_(log)
+  : Thread(id, log),
+    isRunning(true),
+    log_(log)
 {
-    log_.INFO("Motor", "Logger constructor was called");
+  log_.INFO("Motor", "Logger constructor was called");
 
-    stateProcessor = new StateProcessor(6, log);
+  stateProcessor = new StateProcessor(6, log);
 }
 
 void Main::run()
 {
-    log_.INFO("Motor", "Thread started");
+  log_.INFO("Motor", "Thread started");
 
-    System &sys = System::getSystem();
+  System &sys = System::getSystem();
 
-    Data stateMachineData = Data::getInstance();
+  Data stateMachineData = Data::getInstance();
 
-    while (isRunning && sys.running_) {
-        // Get the current state of the system from the state machine's data
+  while (isRunning && sys.running_) {
+    // Get the current state of the system from the state machine's data
 
-        currentState = stateMachineData.getStateMachineData().current_state;
+    currentState = stateMachineData.getStateMachineData().current_state;
 
-        if (currentState == State::kIdle) {  // Initialize motors
-            log_.INFO("Motor", "State idle");
+    if (currentState == State::kIdle) {  // Initialize motors
+      log_.INFO("Motor", "State idle");
 
-            yield();
-        } else if (currentState == State::kCalibrating) {
-            // Calculate slip values
-            log_.INFO("Motor", "State Calibrating");
+      yield();
+      } else if (currentState == State::kCalibrating) {
+        // Calculate slip values
+        log_.INFO("Motor", "State Calibrating");
 
-            if (!stateProcessor->isInitialized()) {
-                stateProcessor->initMotors();
-                if (stateProcessor->isCriticalFailure()) {
-                    // TODO(gregor): Set data error flag to critical
-                    isRunning = false;
-                }
-            }
-
-            yield();
-        } else if (currentState == State::kReady) {
-            // Standby and wait
-            log_.INFO("Motor", "State Ready");
-            yield();
-        } else if (currentState == State::kAccelerating) {
-            // Accelerate the motors
-            // TODO(gregor): Controller should handle the communication with the SpeedCalculator
-            log_.INFO("Motor", "State Accelerating");
-            stateProcessor->accelerate();
-        } else if (currentState == State::kNominalBraking) {
-            // Stop all motors
-            log_.INFO("Motor", "State NominalBraking");
-            stateProcessor->quickStopAll();
-        } else if (currentState == State::kEmergencyBraking) {
-            // Stop all motors
-            log_.INFO("Motor", "State EmergencyBraking");
-            stateProcessor->quickStopAll();
-        } else if (currentState == State::kExiting) {
-            // Move very slowly out of tube
-            log_.INFO("Motor", "State Exiting");
-            stateProcessor->servicePropulsion();
-        } else if (currentState == State::kFailureStopped) {
-            // Enter preoperational
-            log_.INFO("Motor", "State FailureStopped");
-            stateProcessor->enterPreOperational();
-        } else if (currentState == State::kFinished) {
-            log_.INFO("Motor", "State Finished");
-            stateProcessor->enterPreOperational();
-        } else if (currentState == State::kRunComplete) {
-            // Run complete
-            log_.INFO("Motor", "State RunComplete");
-            stateProcessor->quickStopAll();
-        } else {
-            // Unknown State
-            log_.INFO("Motor", "State Unknown");
+        if (!stateProcessor->isInitialized()) {
+          stateProcessor->initMotors();
+          if (stateProcessor->isCriticalFailure()) {
+            // TODO(gregor): Set data error flag to critical
             isRunning = false;
-            stateProcessor->quickStopAll();
+          }
+        }
+
+        yield();
+        } else if (currentState == State::kReady) {
+          // Standby and wait
+          log_.INFO("Motor", "State Ready");
+          yield();
+        } else if (currentState == State::kAccelerating) {
+          // Accelerate the motors
+          // TODO(gregor): Controller should handle the communication with the SpeedCalculator
+          log_.INFO("Motor", "State Accelerating");
+          stateProcessor->accelerate();
+        } else if (currentState == State::kNominalBraking) {
+          // Stop all motors
+          log_.INFO("Motor", "State NominalBraking");
+          stateProcessor->quickStopAll();
+        } else if (currentState == State::kEmergencyBraking) {
+          // Stop all motors
+          log_.INFO("Motor", "State EmergencyBraking");
+          stateProcessor->quickStopAll();
+        } else if (currentState == State::kExiting) {
+          // Move very slowly out of tube
+          log_.INFO("Motor", "State Exiting");
+          stateProcessor->servicePropulsion();
+        } else if (currentState == State::kFailureStopped) {
+          // Enter preoperational
+          log_.INFO("Motor", "State FailureStopped");
+          stateProcessor->enterPreOperational();
+        } else if (currentState == State::kFinished) {
+          log_.INFO("Motor", "State Finished");
+          stateProcessor->enterPreOperational();
+        } else if (currentState == State::kRunComplete) {
+          // Run complete
+          log_.INFO("Motor", "State RunComplete");
+          stateProcessor->quickStopAll();
+        } else {
+          // Unknown State
+          log_.INFO("Motor", "State Unknown");
+          isRunning = false;
+          stateProcessor->quickStopAll();
         }
     }
 

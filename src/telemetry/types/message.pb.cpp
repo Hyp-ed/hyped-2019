@@ -19,50 +19,241 @@
 #endif
 // @@protoc_insertion_point(includes)
 
-namespace protoTypes {
+namespace protobuf_message_2eproto {
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_EmergencyBrakes;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Motors;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Navigation;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_StateMachine;
+}  // namespace protobuf_message_2eproto
+namespace telemetry_data {
 class TestMessageDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<TestMessage>
       _instance;
 } _TestMessage_default_instance_;
-}  // namespace protoTypes
+class ServerToClientDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ServerToClient>
+      _instance;
+} _ServerToClient_default_instance_;
+class ClientToServer_NavigationDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_Navigation>
+      _instance;
+} _ClientToServer_Navigation_default_instance_;
+class ClientToServer_StateMachineDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_StateMachine>
+      _instance;
+} _ClientToServer_StateMachine_default_instance_;
+class ClientToServer_MotorsDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_Motors>
+      _instance;
+} _ClientToServer_Motors_default_instance_;
+class ClientToServer_EmergencyBrakesDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_EmergencyBrakes>
+      _instance;
+} _ClientToServer_EmergencyBrakes_default_instance_;
+class ClientToServerDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer>
+      _instance;
+} _ClientToServer_default_instance_;
+}  // namespace telemetry_data
 namespace protobuf_message_2eproto {
 static void InitDefaultsTestMessage() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::protoTypes::_TestMessage_default_instance_;
-    new (ptr) ::protoTypes::TestMessage();
+    void* ptr = &::telemetry_data::_TestMessage_default_instance_;
+    new (ptr) ::telemetry_data::TestMessage();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::protoTypes::TestMessage::InitAsDefaultInstance();
+  ::telemetry_data::TestMessage::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_TestMessage =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsTestMessage}, {}};
 
-void InitDefaults() {
-  ::google::protobuf::internal::InitSCC(&scc_info_TestMessage.base);
+static void InitDefaultsServerToClient() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ServerToClient_default_instance_;
+    new (ptr) ::telemetry_data::ServerToClient();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ServerToClient::InitAsDefaultInstance();
 }
 
-::google::protobuf::Metadata file_level_metadata[1];
-const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[1];
+::google::protobuf::internal::SCCInfo<0> scc_info_ServerToClient =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsServerToClient}, {}};
+
+static void InitDefaultsClientToServer_Navigation() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Navigation_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Navigation();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Navigation::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Navigation =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_Navigation}, {}};
+
+static void InitDefaultsClientToServer_StateMachine() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_StateMachine_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_StateMachine();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_StateMachine::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_StateMachine =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_StateMachine}, {}};
+
+static void InitDefaultsClientToServer_Motors() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Motors_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Motors();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Motors::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Motors =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_Motors}, {}};
+
+static void InitDefaultsClientToServer_EmergencyBrakes() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_EmergencyBrakes_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_EmergencyBrakes();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_EmergencyBrakes::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_EmergencyBrakes =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_EmergencyBrakes}, {}};
+
+static void InitDefaultsClientToServer() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<4> scc_info_ClientToServer =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 4, InitDefaultsClientToServer}, {
+      &protobuf_message_2eproto::scc_info_ClientToServer_Navigation.base,
+      &protobuf_message_2eproto::scc_info_ClientToServer_StateMachine.base,
+      &protobuf_message_2eproto::scc_info_ClientToServer_Motors.base,
+      &protobuf_message_2eproto::scc_info_ClientToServer_EmergencyBrakes.base,}};
+
+void InitDefaults() {
+  ::google::protobuf::internal::InitSCC(&scc_info_TestMessage.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_ServerToClient.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_Navigation.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_StateMachine.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_Motors.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_EmergencyBrakes.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer.base);
+}
+
+::google::protobuf::Metadata file_level_metadata[7];
+const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[3];
 
 const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::protoTypes::TestMessage, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::TestMessage, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::protoTypes::TestMessage, command_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::protoTypes::TestMessage, data_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::TestMessage, command_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::TestMessage, data_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, command_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, run_length_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, service_propulsion_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, distance_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, velocity_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, acceleration_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_StateMachine, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_StateMachine, state_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_1_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_2_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_3_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_4_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_5_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_6_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, front_brakes_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, rear_brakes_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, navigation_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, state_machine_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, motors_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, emergency_brakes_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::protoTypes::TestMessage)},
+  { 0, -1, sizeof(::telemetry_data::TestMessage)},
+  { 7, -1, sizeof(::telemetry_data::ServerToClient)},
+  { 15, -1, sizeof(::telemetry_data::ClientToServer_Navigation)},
+  { 23, -1, sizeof(::telemetry_data::ClientToServer_StateMachine)},
+  { 29, -1, sizeof(::telemetry_data::ClientToServer_Motors)},
+  { 40, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
+  { 47, -1, sizeof(::telemetry_data::ClientToServer)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::protoTypes::_TestMessage_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_TestMessage_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ServerToClient_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_Navigation_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_StateMachine_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_Motors_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_EmergencyBrakes_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_default_instance_),
 };
 
 void protobuf_AssignDescriptors() {
@@ -80,21 +271,48 @@ void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 1);
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 7);
 }
 
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\rmessage.proto\022\nprotoTypes\"\254\001\n\013TestMess"
-      "age\0220\n\007command\030\001 \001(\0162\037.protoTypes.TestMe"
-      "ssage.Command\022\014\n\004data\030\002 \001(\005\"]\n\007Command\022\t"
-      "\n\005ERROR\020\000\022\014\n\010VELOCITY\020\001\022\020\n\014ACCELERATION\020"
-      "\002\022\016\n\nBRAKE_TEMP\020\003\022\n\n\006FINISH\020\004\022\013\n\007EM_STOP"
-      "\020\005B\033\n\nprotoTypesB\rMessageProtosb\006proto3"
+      "\n\rmessage.proto\022\016telemetry_data\"\260\001\n\013Test"
+      "Message\0224\n\007command\030\001 \001(\0162#.telemetry_dat"
+      "a.TestMessage.Command\022\014\n\004data\030\002 \001(\005\"]\n\007C"
+      "ommand\022\t\n\005ERROR\020\000\022\014\n\010VELOCITY\020\001\022\020\n\014ACCEL"
+      "ERATION\020\002\022\016\n\nBRAKE_TEMP\020\003\022\n\n\006FINISH\020\004\022\013\n"
+      "\007EM_STOP\020\005\"\326\001\n\016ServerToClient\0227\n\007command"
+      "\030\001 \001(\0162&.telemetry_data.ServerToClient.C"
+      "ommand\022\022\n\nrun_length\030\002 \001(\002\022\032\n\022service_pr"
+      "opulsion\030\003 \001(\010\"[\n\007Command\022\007\n\003ACK\020\000\022\010\n\004ST"
+      "OP\020\001\022\n\n\006LAUNCH\020\002\022\t\n\005RESET\020\003\022\016\n\nRUN_LENGT"
+      "H\020\004\022\026\n\022SERVICE_PROPULSION\020\005\"\255\006\n\016ClientTo"
+      "Server\022=\n\nnavigation\030\001 \001(\0132).telemetry_d"
+      "ata.ClientToServer.Navigation\022B\n\rstate_m"
+      "achine\030\002 \001(\0132+.telemetry_data.ClientToSe"
+      "rver.StateMachine\0225\n\006motors\030\003 \001(\0132%.tele"
+      "metry_data.ClientToServer.Motors\022H\n\020emer"
+      "gency_brakes\030\006 \001(\0132..telemetry_data.Clie"
+      "ntToServer.EmergencyBrakes\032F\n\nNavigation"
+      "\022\020\n\010distance\030\001 \001(\002\022\020\n\010velocity\030\002 \001(\002\022\024\n\014"
+      "acceleration\030\003 \001(\002\032\215\002\n\014StateMachine\022@\n\005s"
+      "tate\030\001 \001(\01621.telemetry_data.ClientToServ"
+      "er.StateMachine.State\"\272\001\n\005State\022\010\n\004IDLE\020"
+      "\000\022\017\n\013CALIBRATING\020\001\022\t\n\005READY\020\002\022\020\n\014ACCELER"
+      "ATING\020\003\022\023\n\017NOMINAL_BRAKING\020\004\022\025\n\021EMERGENC"
+      "Y_BRAKING\020\005\022\020\n\014RUN_COMPLETE\020\006\022\023\n\017FAILURE"
+      "_STOPPED\020\007\022\013\n\007EXITING\020\010\022\014\n\010FINISHED\020\t\022\013\n"
+      "\007INVALID\020\n\032\200\001\n\006Motors\022\022\n\nvelocity_1\030\001 \001("
+      "\021\022\022\n\nvelocity_2\030\002 \001(\021\022\022\n\nvelocity_3\030\003 \001("
+      "\021\022\022\n\nvelocity_4\030\004 \001(\021\022\022\n\nvelocity_5\030\005 \001("
+      "\021\022\022\n\nvelocity_6\030\006 \001(\021\032<\n\017EmergencyBrakes"
+      "\022\024\n\014front_brakes\030\001 \001(\010\022\023\n\013rear_brakes\030\002 "
+      "\001(\010B\036\n\rtelemetrydataB\rTelemetryDatab\006pro"
+      "to3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 239);
+      descriptor, 1283);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
 }
@@ -110,7 +328,7 @@ struct StaticDescriptorInitializer {
   }
 } static_descriptor_initializer;
 }  // namespace protobuf_message_2eproto
-namespace protoTypes {
+namespace telemetry_data {
 const ::google::protobuf::EnumDescriptor* TestMessage_Command_descriptor() {
   protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
   return protobuf_message_2eproto::file_level_enum_descriptors[0];
@@ -140,6 +358,74 @@ const TestMessage_Command TestMessage::Command_MIN;
 const TestMessage_Command TestMessage::Command_MAX;
 const int TestMessage::Command_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+const ::google::protobuf::EnumDescriptor* ServerToClient_Command_descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_enum_descriptors[1];
+}
+bool ServerToClient_Command_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const ServerToClient_Command ServerToClient::ACK;
+const ServerToClient_Command ServerToClient::STOP;
+const ServerToClient_Command ServerToClient::LAUNCH;
+const ServerToClient_Command ServerToClient::RESET;
+const ServerToClient_Command ServerToClient::RUN_LENGTH;
+const ServerToClient_Command ServerToClient::SERVICE_PROPULSION;
+const ServerToClient_Command ServerToClient::Command_MIN;
+const ServerToClient_Command ServerToClient::Command_MAX;
+const int ServerToClient::Command_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+const ::google::protobuf::EnumDescriptor* ClientToServer_StateMachine_State_descriptor() {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_message_2eproto::file_level_enum_descriptors[2];
+}
+bool ClientToServer_StateMachine_State_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::IDLE;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::CALIBRATING;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::READY;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::ACCELERATING;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::NOMINAL_BRAKING;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::EMERGENCY_BRAKING;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::RUN_COMPLETE;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::FAILURE_STOPPED;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::EXITING;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::FINISHED;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::INVALID;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::State_MIN;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::State_MAX;
+const int ClientToServer_StateMachine::State_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 // ===================================================================
 
@@ -155,7 +441,7 @@ TestMessage::TestMessage()
   ::google::protobuf::internal::InitSCC(
       &protobuf_message_2eproto::scc_info_TestMessage.base);
   SharedCtor();
-  // @@protoc_insertion_point(constructor:protoTypes.TestMessage)
+  // @@protoc_insertion_point(constructor:telemetry_data.TestMessage)
 }
 TestMessage::TestMessage(const TestMessage& from)
   : ::google::protobuf::Message(),
@@ -164,7 +450,7 @@ TestMessage::TestMessage(const TestMessage& from)
   ::memcpy(&command_, &from.command_,
     static_cast<size_t>(reinterpret_cast<char*>(&data_) -
     reinterpret_cast<char*>(&command_)) + sizeof(data_));
-  // @@protoc_insertion_point(copy_constructor:protoTypes.TestMessage)
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.TestMessage)
 }
 
 void TestMessage::SharedCtor() {
@@ -174,7 +460,7 @@ void TestMessage::SharedCtor() {
 }
 
 TestMessage::~TestMessage() {
-  // @@protoc_insertion_point(destructor:protoTypes.TestMessage)
+  // @@protoc_insertion_point(destructor:telemetry_data.TestMessage)
   SharedDtor();
 }
 
@@ -196,7 +482,7 @@ const TestMessage& TestMessage::default_instance() {
 
 
 void TestMessage::Clear() {
-// @@protoc_insertion_point(message_clear_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(message_clear_start:telemetry_data.TestMessage)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -211,13 +497,13 @@ bool TestMessage::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:protoTypes.TestMessage)
+  // @@protoc_insertion_point(parse_start:telemetry_data.TestMessage)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .protoTypes.TestMessage.Command command = 1;
+      // .telemetry_data.TestMessage.Command command = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
@@ -225,7 +511,7 @@ bool TestMessage::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_command(static_cast< ::protoTypes::TestMessage_Command >(value));
+          set_command(static_cast< ::telemetry_data::TestMessage_Command >(value));
         } else {
           goto handle_unusual;
         }
@@ -258,21 +544,21 @@ bool TestMessage::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:protoTypes.TestMessage)
+  // @@protoc_insertion_point(parse_success:telemetry_data.TestMessage)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:protoTypes.TestMessage)
+  // @@protoc_insertion_point(parse_failure:telemetry_data.TestMessage)
   return false;
 #undef DO_
 }
 
 void TestMessage::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:protoTypes.TestMessage)
+  // @@protoc_insertion_point(serialize_start:telemetry_data.TestMessage)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .protoTypes.TestMessage.Command command = 1;
+  // .telemetry_data.TestMessage.Command command = 1;
   if (this->command() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->command(), output);
@@ -287,17 +573,17 @@ void TestMessage::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
   }
-  // @@protoc_insertion_point(serialize_end:protoTypes.TestMessage)
+  // @@protoc_insertion_point(serialize_end:telemetry_data.TestMessage)
 }
 
 ::google::protobuf::uint8* TestMessage::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:protoTypes.TestMessage)
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.TestMessage)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .protoTypes.TestMessage.Command command = 1;
+  // .telemetry_data.TestMessage.Command command = 1;
   if (this->command() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->command(), target);
@@ -312,12 +598,12 @@ void TestMessage::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:protoTypes.TestMessage)
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.TestMessage)
   return target;
 }
 
 size_t TestMessage::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.TestMessage)
   size_t total_size = 0;
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -325,7 +611,7 @@ size_t TestMessage::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // .protoTypes.TestMessage.Command command = 1;
+  // .telemetry_data.TestMessage.Command command = 1;
   if (this->command() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->command());
@@ -344,22 +630,22 @@ size_t TestMessage::ByteSizeLong() const {
 }
 
 void TestMessage::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.TestMessage)
   GOOGLE_DCHECK_NE(&from, this);
   const TestMessage* source =
       ::google::protobuf::internal::DynamicCastToGenerated<const TestMessage>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protoTypes.TestMessage)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.TestMessage)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:protoTypes.TestMessage)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.TestMessage)
     MergeFrom(*source);
   }
 }
 
 void TestMessage::MergeFrom(const TestMessage& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.TestMessage)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -374,14 +660,14 @@ void TestMessage::MergeFrom(const TestMessage& from) {
 }
 
 void TestMessage::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.TestMessage)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void TestMessage::CopyFrom(const TestMessage& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:protoTypes.TestMessage)
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.TestMessage)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -408,12 +694,1902 @@ void TestMessage::InternalSwap(TestMessage* other) {
 }
 
 
+// ===================================================================
+
+void ServerToClient::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ServerToClient::kCommandFieldNumber;
+const int ServerToClient::kRunLengthFieldNumber;
+const int ServerToClient::kServicePropulsionFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ServerToClient::ServerToClient()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_message_2eproto::scc_info_ServerToClient.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:telemetry_data.ServerToClient)
+}
+ServerToClient::ServerToClient(const ServerToClient& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&command_, &from.command_,
+    static_cast<size_t>(reinterpret_cast<char*>(&service_propulsion_) -
+    reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.ServerToClient)
+}
+
+void ServerToClient::SharedCtor() {
+  ::memset(&command_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&service_propulsion_) -
+      reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
+}
+
+ServerToClient::~ServerToClient() {
+  // @@protoc_insertion_point(destructor:telemetry_data.ServerToClient)
+  SharedDtor();
+}
+
+void ServerToClient::SharedDtor() {
+}
+
+void ServerToClient::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* ServerToClient::descriptor() {
+  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const ServerToClient& ServerToClient::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ServerToClient.base);
+  return *internal_default_instance();
+}
+
+
+void ServerToClient::Clear() {
+// @@protoc_insertion_point(message_clear_start:telemetry_data.ServerToClient)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&command_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&service_propulsion_) -
+      reinterpret_cast<char*>(&command_)) + sizeof(service_propulsion_));
+  _internal_metadata_.Clear();
+}
+
+bool ServerToClient::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:telemetry_data.ServerToClient)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .telemetry_data.ServerToClient.Command command = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_command(static_cast< ::telemetry_data::ServerToClient_Command >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // float run_length = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(21u /* 21 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &run_length_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // bool service_propulsion = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &service_propulsion_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:telemetry_data.ServerToClient)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:telemetry_data.ServerToClient)
+  return false;
+#undef DO_
+}
+
+void ServerToClient::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:telemetry_data.ServerToClient)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .telemetry_data.ServerToClient.Command command = 1;
+  if (this->command() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->command(), output);
+  }
+
+  // float run_length = 2;
+  if (this->run_length() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->run_length(), output);
+  }
+
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->service_propulsion(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:telemetry_data.ServerToClient)
+}
+
+::google::protobuf::uint8* ServerToClient::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ServerToClient)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .telemetry_data.ServerToClient.Command command = 1;
+  if (this->command() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->command(), target);
+  }
+
+  // float run_length = 2;
+  if (this->run_length() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->run_length(), target);
+  }
+
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->service_propulsion(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ServerToClient)
+  return target;
+}
+
+size_t ServerToClient::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.ServerToClient)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // .telemetry_data.ServerToClient.Command command = 1;
+  if (this->command() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->command());
+  }
+
+  // float run_length = 2;
+  if (this->run_length() != 0) {
+    total_size += 1 + 4;
+  }
+
+  // bool service_propulsion = 3;
+  if (this->service_propulsion() != 0) {
+    total_size += 1 + 1;
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ServerToClient::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ServerToClient)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ServerToClient* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ServerToClient>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ServerToClient)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ServerToClient)
+    MergeFrom(*source);
+  }
+}
+
+void ServerToClient::MergeFrom(const ServerToClient& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ServerToClient)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.command() != 0) {
+    set_command(from.command());
+  }
+  if (from.run_length() != 0) {
+    set_run_length(from.run_length());
+  }
+  if (from.service_propulsion() != 0) {
+    set_service_propulsion(from.service_propulsion());
+  }
+}
+
+void ServerToClient::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ServerToClient)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ServerToClient::CopyFrom(const ServerToClient& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.ServerToClient)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ServerToClient::IsInitialized() const {
+  return true;
+}
+
+void ServerToClient::Swap(ServerToClient* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ServerToClient::InternalSwap(ServerToClient* other) {
+  using std::swap;
+  swap(command_, other->command_);
+  swap(run_length_, other->run_length_);
+  swap(service_propulsion_, other->service_propulsion_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata ServerToClient::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void ClientToServer_Navigation::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ClientToServer_Navigation::kDistanceFieldNumber;
+const int ClientToServer_Navigation::kVelocityFieldNumber;
+const int ClientToServer_Navigation::kAccelerationFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ClientToServer_Navigation::ClientToServer_Navigation()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_message_2eproto::scc_info_ClientToServer_Navigation.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Navigation)
+}
+ClientToServer_Navigation::ClientToServer_Navigation(const ClientToServer_Navigation& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&distance_, &from.distance_,
+    static_cast<size_t>(reinterpret_cast<char*>(&acceleration_) -
+    reinterpret_cast<char*>(&distance_)) + sizeof(acceleration_));
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.Navigation)
+}
+
+void ClientToServer_Navigation::SharedCtor() {
+  ::memset(&distance_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&acceleration_) -
+      reinterpret_cast<char*>(&distance_)) + sizeof(acceleration_));
+}
+
+ClientToServer_Navigation::~ClientToServer_Navigation() {
+  // @@protoc_insertion_point(destructor:telemetry_data.ClientToServer.Navigation)
+  SharedDtor();
+}
+
+void ClientToServer_Navigation::SharedDtor() {
+}
+
+void ClientToServer_Navigation::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* ClientToServer_Navigation::descriptor() {
+  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const ClientToServer_Navigation& ClientToServer_Navigation::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_Navigation.base);
+  return *internal_default_instance();
+}
+
+
+void ClientToServer_Navigation::Clear() {
+// @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Navigation)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&distance_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&acceleration_) -
+      reinterpret_cast<char*>(&distance_)) + sizeof(acceleration_));
+  _internal_metadata_.Clear();
+}
+
+bool ClientToServer_Navigation::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Navigation)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // float distance = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(13u /* 13 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &distance_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // float velocity = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(21u /* 21 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &velocity_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // float acceleration = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(29u /* 29 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &acceleration_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:telemetry_data.ClientToServer.Navigation)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:telemetry_data.ClientToServer.Navigation)
+  return false;
+#undef DO_
+}
+
+void ClientToServer_Navigation::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Navigation)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // float distance = 1;
+  if (this->distance() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->distance(), output);
+  }
+
+  // float velocity = 2;
+  if (this->velocity() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->velocity(), output);
+  }
+
+  // float acceleration = 3;
+  if (this->acceleration() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->acceleration(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Navigation)
+}
+
+::google::protobuf::uint8* ClientToServer_Navigation::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Navigation)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // float distance = 1;
+  if (this->distance() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->distance(), target);
+  }
+
+  // float velocity = 2;
+  if (this->velocity() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->velocity(), target);
+  }
+
+  // float acceleration = 3;
+  if (this->acceleration() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->acceleration(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Navigation)
+  return target;
+}
+
+size_t ClientToServer_Navigation::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Navigation)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // float distance = 1;
+  if (this->distance() != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float velocity = 2;
+  if (this->velocity() != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float acceleration = 3;
+  if (this->acceleration() != 0) {
+    total_size += 1 + 4;
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ClientToServer_Navigation::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Navigation)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ClientToServer_Navigation* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_Navigation>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Navigation)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Navigation)
+    MergeFrom(*source);
+  }
+}
+
+void ClientToServer_Navigation::MergeFrom(const ClientToServer_Navigation& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Navigation)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.distance() != 0) {
+    set_distance(from.distance());
+  }
+  if (from.velocity() != 0) {
+    set_velocity(from.velocity());
+  }
+  if (from.acceleration() != 0) {
+    set_acceleration(from.acceleration());
+  }
+}
+
+void ClientToServer_Navigation::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Navigation)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ClientToServer_Navigation::CopyFrom(const ClientToServer_Navigation& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.ClientToServer.Navigation)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClientToServer_Navigation::IsInitialized() const {
+  return true;
+}
+
+void ClientToServer_Navigation::Swap(ClientToServer_Navigation* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ClientToServer_Navigation::InternalSwap(ClientToServer_Navigation* other) {
+  using std::swap;
+  swap(distance_, other->distance_);
+  swap(velocity_, other->velocity_);
+  swap(acceleration_, other->acceleration_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata ClientToServer_Navigation::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void ClientToServer_StateMachine::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ClientToServer_StateMachine::kStateFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ClientToServer_StateMachine::ClientToServer_StateMachine()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_message_2eproto::scc_info_ClientToServer_StateMachine.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.StateMachine)
+}
+ClientToServer_StateMachine::ClientToServer_StateMachine(const ClientToServer_StateMachine& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  state_ = from.state_;
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.StateMachine)
+}
+
+void ClientToServer_StateMachine::SharedCtor() {
+  state_ = 0;
+}
+
+ClientToServer_StateMachine::~ClientToServer_StateMachine() {
+  // @@protoc_insertion_point(destructor:telemetry_data.ClientToServer.StateMachine)
+  SharedDtor();
+}
+
+void ClientToServer_StateMachine::SharedDtor() {
+}
+
+void ClientToServer_StateMachine::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* ClientToServer_StateMachine::descriptor() {
+  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const ClientToServer_StateMachine& ClientToServer_StateMachine::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_StateMachine.base);
+  return *internal_default_instance();
+}
+
+
+void ClientToServer_StateMachine::Clear() {
+// @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.StateMachine)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  state_ = 0;
+  _internal_metadata_.Clear();
+}
+
+bool ClientToServer_StateMachine::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.StateMachine)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .telemetry_data.ClientToServer.StateMachine.State state = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_state(static_cast< ::telemetry_data::ClientToServer_StateMachine_State >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:telemetry_data.ClientToServer.StateMachine)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:telemetry_data.ClientToServer.StateMachine)
+  return false;
+#undef DO_
+}
+
+void ClientToServer_StateMachine::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.StateMachine)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .telemetry_data.ClientToServer.StateMachine.State state = 1;
+  if (this->state() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->state(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.StateMachine)
+}
+
+::google::protobuf::uint8* ClientToServer_StateMachine::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.StateMachine)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .telemetry_data.ClientToServer.StateMachine.State state = 1;
+  if (this->state() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->state(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.StateMachine)
+  return target;
+}
+
+size_t ClientToServer_StateMachine::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.StateMachine)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // .telemetry_data.ClientToServer.StateMachine.State state = 1;
+  if (this->state() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->state());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ClientToServer_StateMachine::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.StateMachine)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ClientToServer_StateMachine* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_StateMachine>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.StateMachine)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.StateMachine)
+    MergeFrom(*source);
+  }
+}
+
+void ClientToServer_StateMachine::MergeFrom(const ClientToServer_StateMachine& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.StateMachine)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.state() != 0) {
+    set_state(from.state());
+  }
+}
+
+void ClientToServer_StateMachine::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.StateMachine)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ClientToServer_StateMachine::CopyFrom(const ClientToServer_StateMachine& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.ClientToServer.StateMachine)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClientToServer_StateMachine::IsInitialized() const {
+  return true;
+}
+
+void ClientToServer_StateMachine::Swap(ClientToServer_StateMachine* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ClientToServer_StateMachine::InternalSwap(ClientToServer_StateMachine* other) {
+  using std::swap;
+  swap(state_, other->state_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata ClientToServer_StateMachine::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void ClientToServer_Motors::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ClientToServer_Motors::kVelocity1FieldNumber;
+const int ClientToServer_Motors::kVelocity2FieldNumber;
+const int ClientToServer_Motors::kVelocity3FieldNumber;
+const int ClientToServer_Motors::kVelocity4FieldNumber;
+const int ClientToServer_Motors::kVelocity5FieldNumber;
+const int ClientToServer_Motors::kVelocity6FieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ClientToServer_Motors::ClientToServer_Motors()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_message_2eproto::scc_info_ClientToServer_Motors.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Motors)
+}
+ClientToServer_Motors::ClientToServer_Motors(const ClientToServer_Motors& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&velocity_1_, &from.velocity_1_,
+    static_cast<size_t>(reinterpret_cast<char*>(&velocity_6_) -
+    reinterpret_cast<char*>(&velocity_1_)) + sizeof(velocity_6_));
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.Motors)
+}
+
+void ClientToServer_Motors::SharedCtor() {
+  ::memset(&velocity_1_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&velocity_6_) -
+      reinterpret_cast<char*>(&velocity_1_)) + sizeof(velocity_6_));
+}
+
+ClientToServer_Motors::~ClientToServer_Motors() {
+  // @@protoc_insertion_point(destructor:telemetry_data.ClientToServer.Motors)
+  SharedDtor();
+}
+
+void ClientToServer_Motors::SharedDtor() {
+}
+
+void ClientToServer_Motors::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* ClientToServer_Motors::descriptor() {
+  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const ClientToServer_Motors& ClientToServer_Motors::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_Motors.base);
+  return *internal_default_instance();
+}
+
+
+void ClientToServer_Motors::Clear() {
+// @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Motors)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&velocity_1_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&velocity_6_) -
+      reinterpret_cast<char*>(&velocity_1_)) + sizeof(velocity_6_));
+  _internal_metadata_.Clear();
+}
+
+bool ClientToServer_Motors::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Motors)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // sint32 velocity_1 = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+                 input, &velocity_1_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // sint32 velocity_2 = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+                 input, &velocity_2_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // sint32 velocity_3 = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+                 input, &velocity_3_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // sint32 velocity_4 = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(32u /* 32 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+                 input, &velocity_4_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // sint32 velocity_5 = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(40u /* 40 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+                 input, &velocity_5_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // sint32 velocity_6 = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(48u /* 48 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+                 input, &velocity_6_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:telemetry_data.ClientToServer.Motors)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:telemetry_data.ClientToServer.Motors)
+  return false;
+#undef DO_
+}
+
+void ClientToServer_Motors::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Motors)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // sint32 velocity_1 = 1;
+  if (this->velocity_1() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteSInt32(1, this->velocity_1(), output);
+  }
+
+  // sint32 velocity_2 = 2;
+  if (this->velocity_2() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteSInt32(2, this->velocity_2(), output);
+  }
+
+  // sint32 velocity_3 = 3;
+  if (this->velocity_3() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteSInt32(3, this->velocity_3(), output);
+  }
+
+  // sint32 velocity_4 = 4;
+  if (this->velocity_4() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteSInt32(4, this->velocity_4(), output);
+  }
+
+  // sint32 velocity_5 = 5;
+  if (this->velocity_5() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteSInt32(5, this->velocity_5(), output);
+  }
+
+  // sint32 velocity_6 = 6;
+  if (this->velocity_6() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteSInt32(6, this->velocity_6(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Motors)
+}
+
+::google::protobuf::uint8* ClientToServer_Motors::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Motors)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // sint32 velocity_1 = 1;
+  if (this->velocity_1() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(1, this->velocity_1(), target);
+  }
+
+  // sint32 velocity_2 = 2;
+  if (this->velocity_2() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(2, this->velocity_2(), target);
+  }
+
+  // sint32 velocity_3 = 3;
+  if (this->velocity_3() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(3, this->velocity_3(), target);
+  }
+
+  // sint32 velocity_4 = 4;
+  if (this->velocity_4() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(4, this->velocity_4(), target);
+  }
+
+  // sint32 velocity_5 = 5;
+  if (this->velocity_5() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(5, this->velocity_5(), target);
+  }
+
+  // sint32 velocity_6 = 6;
+  if (this->velocity_6() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(6, this->velocity_6(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Motors)
+  return target;
+}
+
+size_t ClientToServer_Motors::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Motors)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // sint32 velocity_1 = 1;
+  if (this->velocity_1() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+        this->velocity_1());
+  }
+
+  // sint32 velocity_2 = 2;
+  if (this->velocity_2() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+        this->velocity_2());
+  }
+
+  // sint32 velocity_3 = 3;
+  if (this->velocity_3() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+        this->velocity_3());
+  }
+
+  // sint32 velocity_4 = 4;
+  if (this->velocity_4() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+        this->velocity_4());
+  }
+
+  // sint32 velocity_5 = 5;
+  if (this->velocity_5() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+        this->velocity_5());
+  }
+
+  // sint32 velocity_6 = 6;
+  if (this->velocity_6() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+        this->velocity_6());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ClientToServer_Motors::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Motors)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ClientToServer_Motors* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_Motors>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Motors)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Motors)
+    MergeFrom(*source);
+  }
+}
+
+void ClientToServer_Motors::MergeFrom(const ClientToServer_Motors& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Motors)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.velocity_1() != 0) {
+    set_velocity_1(from.velocity_1());
+  }
+  if (from.velocity_2() != 0) {
+    set_velocity_2(from.velocity_2());
+  }
+  if (from.velocity_3() != 0) {
+    set_velocity_3(from.velocity_3());
+  }
+  if (from.velocity_4() != 0) {
+    set_velocity_4(from.velocity_4());
+  }
+  if (from.velocity_5() != 0) {
+    set_velocity_5(from.velocity_5());
+  }
+  if (from.velocity_6() != 0) {
+    set_velocity_6(from.velocity_6());
+  }
+}
+
+void ClientToServer_Motors::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Motors)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ClientToServer_Motors::CopyFrom(const ClientToServer_Motors& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.ClientToServer.Motors)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClientToServer_Motors::IsInitialized() const {
+  return true;
+}
+
+void ClientToServer_Motors::Swap(ClientToServer_Motors* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ClientToServer_Motors::InternalSwap(ClientToServer_Motors* other) {
+  using std::swap;
+  swap(velocity_1_, other->velocity_1_);
+  swap(velocity_2_, other->velocity_2_);
+  swap(velocity_3_, other->velocity_3_);
+  swap(velocity_4_, other->velocity_4_);
+  swap(velocity_5_, other->velocity_5_);
+  swap(velocity_6_, other->velocity_6_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata ClientToServer_Motors::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void ClientToServer_EmergencyBrakes::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ClientToServer_EmergencyBrakes::kFrontBrakesFieldNumber;
+const int ClientToServer_EmergencyBrakes::kRearBrakesFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ClientToServer_EmergencyBrakes::ClientToServer_EmergencyBrakes()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_message_2eproto::scc_info_ClientToServer_EmergencyBrakes.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.EmergencyBrakes)
+}
+ClientToServer_EmergencyBrakes::ClientToServer_EmergencyBrakes(const ClientToServer_EmergencyBrakes& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&front_brakes_, &from.front_brakes_,
+    static_cast<size_t>(reinterpret_cast<char*>(&rear_brakes_) -
+    reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.EmergencyBrakes)
+}
+
+void ClientToServer_EmergencyBrakes::SharedCtor() {
+  ::memset(&front_brakes_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&rear_brakes_) -
+      reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
+}
+
+ClientToServer_EmergencyBrakes::~ClientToServer_EmergencyBrakes() {
+  // @@protoc_insertion_point(destructor:telemetry_data.ClientToServer.EmergencyBrakes)
+  SharedDtor();
+}
+
+void ClientToServer_EmergencyBrakes::SharedDtor() {
+}
+
+void ClientToServer_EmergencyBrakes::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* ClientToServer_EmergencyBrakes::descriptor() {
+  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const ClientToServer_EmergencyBrakes& ClientToServer_EmergencyBrakes::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_EmergencyBrakes.base);
+  return *internal_default_instance();
+}
+
+
+void ClientToServer_EmergencyBrakes::Clear() {
+// @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&front_brakes_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&rear_brakes_) -
+      reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
+  _internal_metadata_.Clear();
+}
+
+bool ClientToServer_EmergencyBrakes::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // bool front_brakes = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &front_brakes_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // bool rear_brakes = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &rear_brakes_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:telemetry_data.ClientToServer.EmergencyBrakes)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:telemetry_data.ClientToServer.EmergencyBrakes)
+  return false;
+#undef DO_
+}
+
+void ClientToServer_EmergencyBrakes::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool front_brakes = 1;
+  if (this->front_brakes() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->front_brakes(), output);
+  }
+
+  // bool rear_brakes = 2;
+  if (this->rear_brakes() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->rear_brakes(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.EmergencyBrakes)
+}
+
+::google::protobuf::uint8* ClientToServer_EmergencyBrakes::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool front_brakes = 1;
+  if (this->front_brakes() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->front_brakes(), target);
+  }
+
+  // bool rear_brakes = 2;
+  if (this->rear_brakes() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->rear_brakes(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.EmergencyBrakes)
+  return target;
+}
+
+size_t ClientToServer_EmergencyBrakes::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // bool front_brakes = 1;
+  if (this->front_brakes() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool rear_brakes = 2;
+  if (this->rear_brakes() != 0) {
+    total_size += 1 + 1;
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ClientToServer_EmergencyBrakes::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ClientToServer_EmergencyBrakes* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_EmergencyBrakes>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.EmergencyBrakes)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.EmergencyBrakes)
+    MergeFrom(*source);
+  }
+}
+
+void ClientToServer_EmergencyBrakes::MergeFrom(const ClientToServer_EmergencyBrakes& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.front_brakes() != 0) {
+    set_front_brakes(from.front_brakes());
+  }
+  if (from.rear_brakes() != 0) {
+    set_rear_brakes(from.rear_brakes());
+  }
+}
+
+void ClientToServer_EmergencyBrakes::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ClientToServer_EmergencyBrakes::CopyFrom(const ClientToServer_EmergencyBrakes& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.ClientToServer.EmergencyBrakes)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClientToServer_EmergencyBrakes::IsInitialized() const {
+  return true;
+}
+
+void ClientToServer_EmergencyBrakes::Swap(ClientToServer_EmergencyBrakes* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ClientToServer_EmergencyBrakes::InternalSwap(ClientToServer_EmergencyBrakes* other) {
+  using std::swap;
+  swap(front_brakes_, other->front_brakes_);
+  swap(rear_brakes_, other->rear_brakes_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata ClientToServer_EmergencyBrakes::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void ClientToServer::InitAsDefaultInstance() {
+  ::telemetry_data::_ClientToServer_default_instance_._instance.get_mutable()->navigation_ = const_cast< ::telemetry_data::ClientToServer_Navigation*>(
+      ::telemetry_data::ClientToServer_Navigation::internal_default_instance());
+  ::telemetry_data::_ClientToServer_default_instance_._instance.get_mutable()->state_machine_ = const_cast< ::telemetry_data::ClientToServer_StateMachine*>(
+      ::telemetry_data::ClientToServer_StateMachine::internal_default_instance());
+  ::telemetry_data::_ClientToServer_default_instance_._instance.get_mutable()->motors_ = const_cast< ::telemetry_data::ClientToServer_Motors*>(
+      ::telemetry_data::ClientToServer_Motors::internal_default_instance());
+  ::telemetry_data::_ClientToServer_default_instance_._instance.get_mutable()->emergency_brakes_ = const_cast< ::telemetry_data::ClientToServer_EmergencyBrakes*>(
+      ::telemetry_data::ClientToServer_EmergencyBrakes::internal_default_instance());
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ClientToServer::kNavigationFieldNumber;
+const int ClientToServer::kStateMachineFieldNumber;
+const int ClientToServer::kMotorsFieldNumber;
+const int ClientToServer::kEmergencyBrakesFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ClientToServer::ClientToServer()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_message_2eproto::scc_info_ClientToServer.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer)
+}
+ClientToServer::ClientToServer(const ClientToServer& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_navigation()) {
+    navigation_ = new ::telemetry_data::ClientToServer_Navigation(*from.navigation_);
+  } else {
+    navigation_ = NULL;
+  }
+  if (from.has_state_machine()) {
+    state_machine_ = new ::telemetry_data::ClientToServer_StateMachine(*from.state_machine_);
+  } else {
+    state_machine_ = NULL;
+  }
+  if (from.has_motors()) {
+    motors_ = new ::telemetry_data::ClientToServer_Motors(*from.motors_);
+  } else {
+    motors_ = NULL;
+  }
+  if (from.has_emergency_brakes()) {
+    emergency_brakes_ = new ::telemetry_data::ClientToServer_EmergencyBrakes(*from.emergency_brakes_);
+  } else {
+    emergency_brakes_ = NULL;
+  }
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer)
+}
+
+void ClientToServer::SharedCtor() {
+  ::memset(&navigation_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&emergency_brakes_) -
+      reinterpret_cast<char*>(&navigation_)) + sizeof(emergency_brakes_));
+}
+
+ClientToServer::~ClientToServer() {
+  // @@protoc_insertion_point(destructor:telemetry_data.ClientToServer)
+  SharedDtor();
+}
+
+void ClientToServer::SharedDtor() {
+  if (this != internal_default_instance()) delete navigation_;
+  if (this != internal_default_instance()) delete state_machine_;
+  if (this != internal_default_instance()) delete motors_;
+  if (this != internal_default_instance()) delete emergency_brakes_;
+}
+
+void ClientToServer::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* ClientToServer::descriptor() {
+  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const ClientToServer& ClientToServer::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer.base);
+  return *internal_default_instance();
+}
+
+
+void ClientToServer::Clear() {
+// @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaNoVirtual() == NULL && navigation_ != NULL) {
+    delete navigation_;
+  }
+  navigation_ = NULL;
+  if (GetArenaNoVirtual() == NULL && state_machine_ != NULL) {
+    delete state_machine_;
+  }
+  state_machine_ = NULL;
+  if (GetArenaNoVirtual() == NULL && motors_ != NULL) {
+    delete motors_;
+  }
+  motors_ = NULL;
+  if (GetArenaNoVirtual() == NULL && emergency_brakes_ != NULL) {
+    delete emergency_brakes_;
+  }
+  emergency_brakes_ = NULL;
+  _internal_metadata_.Clear();
+}
+
+bool ClientToServer::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .telemetry_data.ClientToServer.Navigation navigation = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_navigation()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_state_machine()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .telemetry_data.ClientToServer.Motors motors = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u /* 26 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_motors()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(50u /* 50 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_emergency_brakes()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:telemetry_data.ClientToServer)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:telemetry_data.ClientToServer)
+  return false;
+#undef DO_
+}
+
+void ClientToServer::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .telemetry_data.ClientToServer.Navigation navigation = 1;
+  if (this->has_navigation()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->_internal_navigation(), output);
+  }
+
+  // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
+  if (this->has_state_machine()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2, this->_internal_state_machine(), output);
+  }
+
+  // .telemetry_data.ClientToServer.Motors motors = 3;
+  if (this->has_motors()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      3, this->_internal_motors(), output);
+  }
+
+  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+  if (this->has_emergency_brakes()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      6, this->_internal_emergency_brakes(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer)
+}
+
+::google::protobuf::uint8* ClientToServer::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .telemetry_data.ClientToServer.Navigation navigation = 1;
+  if (this->has_navigation()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->_internal_navigation(), deterministic, target);
+  }
+
+  // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
+  if (this->has_state_machine()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        2, this->_internal_state_machine(), deterministic, target);
+  }
+
+  // .telemetry_data.ClientToServer.Motors motors = 3;
+  if (this->has_motors()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        3, this->_internal_motors(), deterministic, target);
+  }
+
+  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+  if (this->has_emergency_brakes()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        6, this->_internal_emergency_brakes(), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer)
+  return target;
+}
+
+size_t ClientToServer::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // .telemetry_data.ClientToServer.Navigation navigation = 1;
+  if (this->has_navigation()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *navigation_);
+  }
+
+  // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
+  if (this->has_state_machine()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *state_machine_);
+  }
+
+  // .telemetry_data.ClientToServer.Motors motors = 3;
+  if (this->has_motors()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *motors_);
+  }
+
+  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+  if (this->has_emergency_brakes()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *emergency_brakes_);
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ClientToServer::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ClientToServer* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer)
+    MergeFrom(*source);
+  }
+}
+
+void ClientToServer::MergeFrom(const ClientToServer& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.has_navigation()) {
+    mutable_navigation()->::telemetry_data::ClientToServer_Navigation::MergeFrom(from.navigation());
+  }
+  if (from.has_state_machine()) {
+    mutable_state_machine()->::telemetry_data::ClientToServer_StateMachine::MergeFrom(from.state_machine());
+  }
+  if (from.has_motors()) {
+    mutable_motors()->::telemetry_data::ClientToServer_Motors::MergeFrom(from.motors());
+  }
+  if (from.has_emergency_brakes()) {
+    mutable_emergency_brakes()->::telemetry_data::ClientToServer_EmergencyBrakes::MergeFrom(from.emergency_brakes());
+  }
+}
+
+void ClientToServer::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ClientToServer::CopyFrom(const ClientToServer& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.ClientToServer)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClientToServer::IsInitialized() const {
+  return true;
+}
+
+void ClientToServer::Swap(ClientToServer* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ClientToServer::InternalSwap(ClientToServer* other) {
+  using std::swap;
+  swap(navigation_, other->navigation_);
+  swap(state_machine_, other->state_machine_);
+  swap(motors_, other->motors_);
+  swap(emergency_brakes_, other->emergency_brakes_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata ClientToServer::GetMetadata() const {
+  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
 // @@protoc_insertion_point(namespace_scope)
-}  // namespace protoTypes
+}  // namespace telemetry_data
 namespace google {
 namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::protoTypes::TestMessage* Arena::CreateMaybeMessage< ::protoTypes::TestMessage >(Arena* arena) {
-  return Arena::CreateInternal< ::protoTypes::TestMessage >(arena);
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::TestMessage* Arena::CreateMaybeMessage< ::telemetry_data::TestMessage >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::TestMessage >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage< ::telemetry_data::ServerToClient >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::ServerToClient >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_Navigation* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Navigation >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::ClientToServer_Navigation >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_StateMachine* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_StateMachine >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::ClientToServer_StateMachine >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_Motors* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Motors >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::ClientToServer_Motors >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_EmergencyBrakes* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_EmergencyBrakes >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::ClientToServer_EmergencyBrakes >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::ClientToServer >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

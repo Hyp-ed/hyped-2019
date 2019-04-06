@@ -52,12 +52,17 @@ class SenderInterface
     /**
        * @brief { Sends CAN messages }
        */
-    virtual void sendMessage(utils::io::can::Frame &message) = 0;
+    virtual bool sendMessage(utils::io::can::Frame &message) = 0;
 
     /**
      * @brief { Registers the controller to process incoming CAN messages}
      * */
     virtual void registerController() = 0;
+
+    /**
+       * @brief { Return if the can_sender is sending a CAN message right now }
+       */
+    virtual bool getIsSending() = 0;
 };
 
 }  // namespace motor_control

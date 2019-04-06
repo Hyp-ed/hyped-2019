@@ -1,5 +1,5 @@
 /*
- * Author: Gregory Dayao
+ * Author: Gregory Dayao and Jack Horsburgh
  * Organisation: HYPED
  * Date: 1/4/19
  * Description:
@@ -121,6 +121,9 @@ class FakeGpioCounter : public GpioInterface {
    *
    */
   std::vector<StripeCounter> stripe_data_;
+  bool is_from_file_;
+  uint64_t accel_ref_time_;
+  bool acc_ref_init_;
 };
 
 }}  // namespace hyped::sensors

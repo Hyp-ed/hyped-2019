@@ -28,9 +28,15 @@
 
 #include "utils/config.hpp"
 
+#define DEFAULT_CONFIG  "config.txt"
+
 #define DEFAULT_VERBOSE -1
 #define DEFAULT_DEBUG   -1
-#define DEFAULT_CONFIG  "config.txt"
+#define DEFAULT_IMU     -1
+#define DEFAULT_RUN     -1
+#define DEFAULT_QUERIES -1
+#define DEFAULT_Q_DELAY -1
+#define DEFAULT_NAV_ID  -1
 
 namespace hyped {
 namespace utils {
@@ -53,6 +59,8 @@ void printUsage()
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
     "    --fake_imu, --fake_keyence\n"
+    "    To set navigation IDs.\n"
+    "    --imu_id, --run_id\n"
     "");
 }
 }   // namespace hyped::utils::System
@@ -77,9 +85,11 @@ System::System(int argc, char* argv[])
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
       fake_keyence(false),
-      running_(true),
       config_file(DEFAULT_CONFIG),
-      config(0)
+      config(0),
+      imu_id(DEFAULT_NAV_ID),
+      run_id(DEFAULT_NAV_ID),
+      running_(true)
 {
   int c;
   int option_index = 0;
@@ -99,6 +109,8 @@ System::System(int argc, char* argv[])
       {"debug_tlm", optional_argument, 0, 'g'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
+      {"imu_id", no_argument, 0, 'p'},
+      {"run_id", no_argument, 0, 'P'},
       {"fake_keyence", no_argument, 0, 'k'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
@@ -163,6 +175,13 @@ System::System(int argc, char* argv[])
         if (optarg) debug_tlm = atoi(optarg);
         else        debug_tlm = 0;
         break;
+      case 'p':
+        if (optarg) imu_id = atoi(optarg);
+        else        imu_id = 1;
+        break;
+      case 'P':
+        if (optarg) run_id = atoi(optarg);
+        else        run_id = 1;
       case 'i':
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
