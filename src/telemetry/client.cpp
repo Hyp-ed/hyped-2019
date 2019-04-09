@@ -32,7 +32,7 @@ namespace hyped {
 namespace client {
 
 Client::Client(Logger& log)
-    : log_(log)
+    : log_ {log}
 {
     log_.DBG("Telemetry", "Client object created");
 }

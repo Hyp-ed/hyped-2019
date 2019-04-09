@@ -162,6 +162,29 @@ inline bool ClientToServer_StateMachine_State_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<ClientToServer_StateMachine_State>(
     ClientToServer_StateMachine_State_descriptor(), name, value);
 }
+enum ClientToServer_ModuleStatus {
+  ClientToServer_ModuleStatus_START = 0,
+  ClientToServer_ModuleStatus_INIT = 1,
+  ClientToServer_ModuleStatus_READY = 2,
+  ClientToServer_ModuleStatus_CRITICAL_FAILURE = 3,
+  ClientToServer_ModuleStatus_ClientToServer_ModuleStatus_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  ClientToServer_ModuleStatus_ClientToServer_ModuleStatus_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool ClientToServer_ModuleStatus_IsValid(int value);
+const ClientToServer_ModuleStatus ClientToServer_ModuleStatus_ModuleStatus_MIN = ClientToServer_ModuleStatus_START;
+const ClientToServer_ModuleStatus ClientToServer_ModuleStatus_ModuleStatus_MAX = ClientToServer_ModuleStatus_CRITICAL_FAILURE;
+const int ClientToServer_ModuleStatus_ModuleStatus_ARRAYSIZE = ClientToServer_ModuleStatus_ModuleStatus_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* ClientToServer_ModuleStatus_descriptor();
+inline const ::std::string& ClientToServer_ModuleStatus_Name(ClientToServer_ModuleStatus value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    ClientToServer_ModuleStatus_descriptor(), value);
+}
+inline bool ClientToServer_ModuleStatus_Parse(
+    const ::std::string& name, ClientToServer_ModuleStatus* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ClientToServer_ModuleStatus>(
+    ClientToServer_ModuleStatus_descriptor(), name, value);
+}
 // ===================================================================
 
 class TestMessage : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.TestMessage) */ {
@@ -546,21 +569,27 @@ class ClientToServer_Navigation : public ::google::protobuf::Message /* @@protoc
 
   // accessors -------------------------------------------------------
 
-  // float distance = 1;
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // float distance = 2;
   void clear_distance();
-  static const int kDistanceFieldNumber = 1;
+  static const int kDistanceFieldNumber = 2;
   float distance() const;
   void set_distance(float value);
 
-  // float velocity = 2;
+  // float velocity = 3;
   void clear_velocity();
-  static const int kVelocityFieldNumber = 2;
+  static const int kVelocityFieldNumber = 3;
   float velocity() const;
   void set_velocity(float value);
 
-  // float acceleration = 3;
+  // float acceleration = 4;
   void clear_acceleration();
-  static const int kAccelerationFieldNumber = 3;
+  static const int kAccelerationFieldNumber = 4;
   float acceleration() const;
   void set_acceleration(float value);
 
@@ -568,6 +597,7 @@ class ClientToServer_Navigation : public ::google::protobuf::Message /* @@protoc
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  int module_status_;
   float distance_;
   float velocity_;
   float acceleration_;
@@ -707,17 +737,24 @@ class ClientToServer_StateMachine : public ::google::protobuf::Message /* @@prot
 
   // accessors -------------------------------------------------------
 
-  // .telemetry_data.ClientToServer.StateMachine.State state = 1;
-  void clear_state();
-  static const int kStateFieldNumber = 1;
-  ::telemetry_data::ClientToServer_StateMachine_State state() const;
-  void set_state(::telemetry_data::ClientToServer_StateMachine_State value);
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
+  void clear_current_state();
+  static const int kCurrentStateFieldNumber = 2;
+  ::telemetry_data::ClientToServer_StateMachine_State current_state() const;
+  void set_current_state(::telemetry_data::ClientToServer_StateMachine_State value);
 
   // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.StateMachine)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  int state_;
+  int module_status_;
+  int current_state_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
 };
@@ -810,39 +847,45 @@ class ClientToServer_Motors : public ::google::protobuf::Message /* @@protoc_ins
 
   // accessors -------------------------------------------------------
 
-  // sint32 velocity_1 = 1;
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // sint32 velocity_1 = 2;
   void clear_velocity_1();
-  static const int kVelocity1FieldNumber = 1;
+  static const int kVelocity1FieldNumber = 2;
   ::google::protobuf::int32 velocity_1() const;
   void set_velocity_1(::google::protobuf::int32 value);
 
-  // sint32 velocity_2 = 2;
+  // sint32 velocity_2 = 3;
   void clear_velocity_2();
-  static const int kVelocity2FieldNumber = 2;
+  static const int kVelocity2FieldNumber = 3;
   ::google::protobuf::int32 velocity_2() const;
   void set_velocity_2(::google::protobuf::int32 value);
 
-  // sint32 velocity_3 = 3;
+  // sint32 velocity_3 = 4;
   void clear_velocity_3();
-  static const int kVelocity3FieldNumber = 3;
+  static const int kVelocity3FieldNumber = 4;
   ::google::protobuf::int32 velocity_3() const;
   void set_velocity_3(::google::protobuf::int32 value);
 
-  // sint32 velocity_4 = 4;
+  // sint32 velocity_4 = 5;
   void clear_velocity_4();
-  static const int kVelocity4FieldNumber = 4;
+  static const int kVelocity4FieldNumber = 5;
   ::google::protobuf::int32 velocity_4() const;
   void set_velocity_4(::google::protobuf::int32 value);
 
-  // sint32 velocity_5 = 5;
+  // sint32 velocity_5 = 6;
   void clear_velocity_5();
-  static const int kVelocity5FieldNumber = 5;
+  static const int kVelocity5FieldNumber = 6;
   ::google::protobuf::int32 velocity_5() const;
   void set_velocity_5(::google::protobuf::int32 value);
 
-  // sint32 velocity_6 = 6;
+  // sint32 velocity_6 = 7;
   void clear_velocity_6();
-  static const int kVelocity6FieldNumber = 6;
+  static const int kVelocity6FieldNumber = 7;
   ::google::protobuf::int32 velocity_6() const;
   void set_velocity_6(::google::protobuf::int32 value);
 
@@ -850,6 +893,7 @@ class ClientToServer_Motors : public ::google::protobuf::Message /* @@protoc_ins
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  int module_status_;
   ::google::protobuf::int32 velocity_1_;
   ::google::protobuf::int32 velocity_2_;
   ::google::protobuf::int32 velocity_3_;
@@ -1061,6 +1105,36 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   typedef ClientToServer_Motors Motors;
   typedef ClientToServer_EmergencyBrakes EmergencyBrakes;
 
+  typedef ClientToServer_ModuleStatus ModuleStatus;
+  static const ModuleStatus START =
+    ClientToServer_ModuleStatus_START;
+  static const ModuleStatus INIT =
+    ClientToServer_ModuleStatus_INIT;
+  static const ModuleStatus READY =
+    ClientToServer_ModuleStatus_READY;
+  static const ModuleStatus CRITICAL_FAILURE =
+    ClientToServer_ModuleStatus_CRITICAL_FAILURE;
+  static inline bool ModuleStatus_IsValid(int value) {
+    return ClientToServer_ModuleStatus_IsValid(value);
+  }
+  static const ModuleStatus ModuleStatus_MIN =
+    ClientToServer_ModuleStatus_ModuleStatus_MIN;
+  static const ModuleStatus ModuleStatus_MAX =
+    ClientToServer_ModuleStatus_ModuleStatus_MAX;
+  static const int ModuleStatus_ARRAYSIZE =
+    ClientToServer_ModuleStatus_ModuleStatus_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  ModuleStatus_descriptor() {
+    return ClientToServer_ModuleStatus_descriptor();
+  }
+  static inline const ::std::string& ModuleStatus_Name(ModuleStatus value) {
+    return ClientToServer_ModuleStatus_Name(value);
+  }
+  static inline bool ModuleStatus_Parse(const ::std::string& name,
+      ModuleStatus* value) {
+    return ClientToServer_ModuleStatus_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // .telemetry_data.ClientToServer.Navigation navigation = 1;
@@ -1211,7 +1285,21 @@ inline void ServerToClient::set_service_propulsion(bool value) {
 
 // ClientToServer_Navigation
 
-// float distance = 1;
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_Navigation::clear_module_status() {
+  module_status_ = 0;
+}
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_Navigation::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Navigation.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
+}
+inline void ClientToServer_Navigation::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
+  
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.module_status)
+}
+
+// float distance = 2;
 inline void ClientToServer_Navigation::clear_distance() {
   distance_ = 0;
 }
@@ -1225,7 +1313,7 @@ inline void ClientToServer_Navigation::set_distance(float value) {
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.distance)
 }
 
-// float velocity = 2;
+// float velocity = 3;
 inline void ClientToServer_Navigation::clear_velocity() {
   velocity_ = 0;
 }
@@ -1239,7 +1327,7 @@ inline void ClientToServer_Navigation::set_velocity(float value) {
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.velocity)
 }
 
-// float acceleration = 3;
+// float acceleration = 4;
 inline void ClientToServer_Navigation::clear_acceleration() {
   acceleration_ = 0;
 }
@@ -1257,25 +1345,53 @@ inline void ClientToServer_Navigation::set_acceleration(float value) {
 
 // ClientToServer_StateMachine
 
-// .telemetry_data.ClientToServer.StateMachine.State state = 1;
-inline void ClientToServer_StateMachine::clear_state() {
-  state_ = 0;
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_StateMachine::clear_module_status() {
+  module_status_ = 0;
 }
-inline ::telemetry_data::ClientToServer_StateMachine_State ClientToServer_StateMachine::state() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.StateMachine.state)
-  return static_cast< ::telemetry_data::ClientToServer_StateMachine_State >(state_);
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_StateMachine::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.StateMachine.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
 }
-inline void ClientToServer_StateMachine::set_state(::telemetry_data::ClientToServer_StateMachine_State value) {
+inline void ClientToServer_StateMachine::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
   
-  state_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.StateMachine.state)
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.StateMachine.module_status)
+}
+
+// .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
+inline void ClientToServer_StateMachine::clear_current_state() {
+  current_state_ = 0;
+}
+inline ::telemetry_data::ClientToServer_StateMachine_State ClientToServer_StateMachine::current_state() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.StateMachine.current_state)
+  return static_cast< ::telemetry_data::ClientToServer_StateMachine_State >(current_state_);
+}
+inline void ClientToServer_StateMachine::set_current_state(::telemetry_data::ClientToServer_StateMachine_State value) {
+  
+  current_state_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.StateMachine.current_state)
 }
 
 // -------------------------------------------------------------------
 
 // ClientToServer_Motors
 
-// sint32 velocity_1 = 1;
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_Motors::clear_module_status() {
+  module_status_ = 0;
+}
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_Motors::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
+}
+inline void ClientToServer_Motors::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
+  
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.module_status)
+}
+
+// sint32 velocity_1 = 2;
 inline void ClientToServer_Motors::clear_velocity_1() {
   velocity_1_ = 0;
 }
@@ -1289,7 +1405,7 @@ inline void ClientToServer_Motors::set_velocity_1(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_1)
 }
 
-// sint32 velocity_2 = 2;
+// sint32 velocity_2 = 3;
 inline void ClientToServer_Motors::clear_velocity_2() {
   velocity_2_ = 0;
 }
@@ -1303,7 +1419,7 @@ inline void ClientToServer_Motors::set_velocity_2(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_2)
 }
 
-// sint32 velocity_3 = 3;
+// sint32 velocity_3 = 4;
 inline void ClientToServer_Motors::clear_velocity_3() {
   velocity_3_ = 0;
 }
@@ -1317,7 +1433,7 @@ inline void ClientToServer_Motors::set_velocity_3(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_3)
 }
 
-// sint32 velocity_4 = 4;
+// sint32 velocity_4 = 5;
 inline void ClientToServer_Motors::clear_velocity_4() {
   velocity_4_ = 0;
 }
@@ -1331,7 +1447,7 @@ inline void ClientToServer_Motors::set_velocity_4(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_4)
 }
 
-// sint32 velocity_5 = 5;
+// sint32 velocity_5 = 6;
 inline void ClientToServer_Motors::clear_velocity_5() {
   velocity_5_ = 0;
 }
@@ -1345,7 +1461,7 @@ inline void ClientToServer_Motors::set_velocity_5(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_5)
 }
 
-// sint32 velocity_6 = 6;
+// sint32 velocity_6 = 7;
 inline void ClientToServer_Motors::clear_velocity_6() {
   velocity_6_ = 0;
 }
@@ -1648,6 +1764,11 @@ template <> struct is_proto_enum< ::telemetry_data::ClientToServer_StateMachine_
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::telemetry_data::ClientToServer_StateMachine_State>() {
   return ::telemetry_data::ClientToServer_StateMachine_State_descriptor();
+}
+template <> struct is_proto_enum< ::telemetry_data::ClientToServer_ModuleStatus> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::telemetry_data::ClientToServer_ModuleStatus>() {
+  return ::telemetry_data::ClientToServer_ModuleStatus_descriptor();
 }
 
 }  // namespace protobuf

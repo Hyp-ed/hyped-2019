@@ -21,6 +21,7 @@
 #include <thread>
 #include "telemetry/telemetrydata/message.pb.h"
 #include "main.hpp"
+#include "utils.hpp"
 
 namespace hyped {
 
@@ -31,7 +32,7 @@ using data::Data;
 namespace telemetry {
 
 Main::Main(uint8_t id, Logger& log)
-    : Thread(id, log),
+    : Thread {id, log},
       client_ {log},
       data_ {Data::getInstance()}
 {
@@ -60,13 +61,14 @@ void Main::sendLoop()
 
     while (true) {
         nav_data_               = data_.getNavigationData();
-        sm_data_                = data_.getStateMachineData();
-        motor_data_             = data_.getMotorData();
-        batteries_data_         = data_.getBatteriesData();
-        sensors_data_           = data_.getSensorsData();
-        emergency_brakes_data_  = data_.getEmergencyBrakesData();
+        // sm_data_                = data_.getStateMachineData();
+        // motor_data_             = data_.getMotorData();
+        // batteries_data_         = data_.getBatteriesData();
+        // sensors_data_           = data_.getSensorsData();
+        // emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
         telemetry_data::ClientToServer::Navigation* navigation_msg = msg.mutable_navigation();
+        navigation_msg->set_module_status(Utils::moduleStatusEnumConversion(nav_data_.module_status)); // NOLINT
         navigation_msg->set_distance(nav_data_.distance);
         navigation_msg->set_velocity(nav_data_.velocity);
         navigation_msg->set_acceleration(nav_data_.acceleration);

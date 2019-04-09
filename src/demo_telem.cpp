@@ -20,6 +20,7 @@ int main(int argc, char* argv[]) {
     Thread* telemetry = new hyped::telemetry::Main(4, log_tlm);
     telemetry->start();
     telemetry->join();
+    delete telemetry;
 
     loopThread.join();
 }
@@ -37,6 +38,7 @@ void loop(Logger& logger) {
         logger.DBG2("Telemetry", "SHARED run_length: %f", telem_data.run_length);
         logger.DBG2("Telemetry", "SHARED service_propulsion_go: %s", telem_data.service_propulsion_go ? "true" : "false"); // NOLINT
 
+        nav_data.module_status = ModuleStatus::kReady;
         nav_data.distance = 111;
         nav_data.velocity = 111;
         nav_data.acceleration = 111;
@@ -44,6 +46,7 @@ void loop(Logger& logger) {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
+        nav_data.module_status = ModuleStatus::kInit;
         nav_data.distance = 222;
         nav_data.velocity = 222;
         nav_data.acceleration = 222;
