@@ -208,7 +208,6 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_StateMachine, module_status_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_StateMachine, current_state_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, _internal_metadata_),
@@ -244,9 +243,9 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 7, -1, sizeof(::telemetry_data::ServerToClient)},
   { 15, -1, sizeof(::telemetry_data::ClientToServer_Navigation)},
   { 24, -1, sizeof(::telemetry_data::ClientToServer_StateMachine)},
-  { 31, -1, sizeof(::telemetry_data::ClientToServer_Motors)},
-  { 43, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
-  { 50, -1, sizeof(::telemetry_data::ClientToServer)},
+  { 30, -1, sizeof(::telemetry_data::ClientToServer_Motors)},
+  { 42, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
+  { 49, -1, sizeof(::telemetry_data::ClientToServer)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -290,7 +289,7 @@ void AddDescriptorsImpl() {
       "ommand\022\022\n\nrun_length\030\002 \001(\002\022\032\n\022service_pr"
       "opulsion\030\003 \001(\010\"[\n\007Command\022\007\n\003ACK\020\000\022\010\n\004ST"
       "OP\020\001\022\n\n\006LAUNCH\020\002\022\t\n\005RESET\020\003\022\016\n\nRUN_LENGT"
-      "H\020\004\022\026\n\022SERVICE_PROPULSION\020\005\"\310\010\n\016ClientTo"
+      "H\020\004\022\026\n\022SERVICE_PROPULSION\020\005\"\204\010\n\016ClientTo"
       "Server\022=\n\nnavigation\030\001 \001(\0132).telemetry_d"
       "ata.ClientToServer.Navigation\022B\n\rstate_m"
       "achine\030\002 \001(\0132+.telemetry_data.ClientToSe"
@@ -301,28 +300,26 @@ void AddDescriptorsImpl() {
       "n\022B\n\rmodule_status\030\001 \001(\0162+.telemetry_dat"
       "a.ClientToServer.ModuleStatus\022\020\n\010distanc"
       "e\030\002 \001(\002\022\020\n\010velocity\030\003 \001(\002\022\024\n\014acceleratio"
-      "n\030\004 \001(\002\032\331\002\n\014StateMachine\022B\n\rmodule_statu"
-      "s\030\001 \001(\0162+.telemetry_data.ClientToServer."
-      "ModuleStatus\022H\n\rcurrent_state\030\002 \001(\01621.te"
-      "lemetry_data.ClientToServer.StateMachine"
-      ".State\"\272\001\n\005State\022\010\n\004IDLE\020\000\022\017\n\013CALIBRATIN"
-      "G\020\001\022\t\n\005READY\020\002\022\020\n\014ACCELERATING\020\003\022\023\n\017NOMI"
-      "NAL_BRAKING\020\004\022\025\n\021EMERGENCY_BRAKING\020\005\022\020\n\014"
-      "RUN_COMPLETE\020\006\022\023\n\017FAILURE_STOPPED\020\007\022\013\n\007E"
-      "XITING\020\010\022\014\n\010FINISHED\020\t\022\013\n\007INVALID\020\n\032\304\001\n\006"
-      "Motors\022B\n\rmodule_status\030\001 \001(\0162+.telemetr"
-      "y_data.ClientToServer.ModuleStatus\022\022\n\nve"
-      "locity_1\030\002 \001(\021\022\022\n\nvelocity_2\030\003 \001(\021\022\022\n\nve"
-      "locity_3\030\004 \001(\021\022\022\n\nvelocity_4\030\005 \001(\021\022\022\n\nve"
-      "locity_5\030\006 \001(\021\022\022\n\nvelocity_6\030\007 \001(\021\032<\n\017Em"
-      "ergencyBrakes\022\024\n\014front_brakes\030\001 \001(\010\022\023\n\013r"
-      "ear_brakes\030\002 \001(\010\"D\n\014ModuleStatus\022\t\n\005STAR"
-      "T\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020CRITICAL_FAI"
-      "LURE\020\003B\036\n\rtelemetrydataB\rTelemetryDatab\006"
-      "proto3"
+      "n\030\004 \001(\002\032\225\002\n\014StateMachine\022H\n\rcurrent_stat"
+      "e\030\002 \001(\01621.telemetry_data.ClientToServer."
+      "StateMachine.State\"\272\001\n\005State\022\010\n\004IDLE\020\000\022\017"
+      "\n\013CALIBRATING\020\001\022\t\n\005READY\020\002\022\020\n\014ACCELERATI"
+      "NG\020\003\022\023\n\017NOMINAL_BRAKING\020\004\022\025\n\021EMERGENCY_B"
+      "RAKING\020\005\022\020\n\014RUN_COMPLETE\020\006\022\023\n\017FAILURE_ST"
+      "OPPED\020\007\022\013\n\007EXITING\020\010\022\014\n\010FINISHED\020\t\022\013\n\007IN"
+      "VALID\020\n\032\304\001\n\006Motors\022B\n\rmodule_status\030\001 \001("
+      "\0162+.telemetry_data.ClientToServer.Module"
+      "Status\022\022\n\nvelocity_1\030\002 \001(\021\022\022\n\nvelocity_2"
+      "\030\003 \001(\021\022\022\n\nvelocity_3\030\004 \001(\021\022\022\n\nvelocity_4"
+      "\030\005 \001(\021\022\022\n\nvelocity_5\030\006 \001(\021\022\022\n\nvelocity_6"
+      "\030\007 \001(\021\032<\n\017EmergencyBrakes\022\024\n\014front_brake"
+      "s\030\001 \001(\010\022\023\n\013rear_brakes\030\002 \001(\010\"D\n\014ModuleSt"
+      "atus\022\t\n\005START\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020"
+      "CRITICAL_FAILURE\020\003B\036\n\rtelemetrydataB\rTel"
+      "emetryDatab\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 1566);
+      descriptor, 1498);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
 }
@@ -1366,7 +1363,6 @@ void ClientToServer_Navigation::InternalSwap(ClientToServer_Navigation* other) {
 void ClientToServer_StateMachine::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ClientToServer_StateMachine::kModuleStatusFieldNumber;
 const int ClientToServer_StateMachine::kCurrentStateFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -1381,16 +1377,12 @@ ClientToServer_StateMachine::ClientToServer_StateMachine(const ClientToServer_St
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::memcpy(&module_status_, &from.module_status_,
-    static_cast<size_t>(reinterpret_cast<char*>(&current_state_) -
-    reinterpret_cast<char*>(&module_status_)) + sizeof(current_state_));
+  current_state_ = from.current_state_;
   // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.StateMachine)
 }
 
 void ClientToServer_StateMachine::SharedCtor() {
-  ::memset(&module_status_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&current_state_) -
-      reinterpret_cast<char*>(&module_status_)) + sizeof(current_state_));
+  current_state_ = 0;
 }
 
 ClientToServer_StateMachine::~ClientToServer_StateMachine() {
@@ -1421,9 +1413,7 @@ void ClientToServer_StateMachine::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&module_status_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&current_state_) -
-      reinterpret_cast<char*>(&module_status_)) + sizeof(current_state_));
+  current_state_ = 0;
   _internal_metadata_.Clear();
 }
 
@@ -1437,21 +1427,6 @@ bool ClientToServer_StateMachine::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
-      case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_module_status(static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
       // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
@@ -1493,12 +1468,6 @@ void ClientToServer_StateMachine::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
-  if (this->module_status() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      1, this->module_status(), output);
-  }
-
   // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
   if (this->current_state() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
@@ -1518,12 +1487,6 @@ void ClientToServer_StateMachine::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.StateMachine)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
-
-  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
-  if (this->module_status() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      1, this->module_status(), target);
-  }
 
   // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
   if (this->current_state() != 0) {
@@ -1548,12 +1511,6 @@ size_t ClientToServer_StateMachine::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
-  if (this->module_status() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->module_status());
-  }
-
   // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
   if (this->current_state() != 0) {
     total_size += 1 +
@@ -1587,9 +1544,6 @@ void ClientToServer_StateMachine::MergeFrom(const ClientToServer_StateMachine& f
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.module_status() != 0) {
-    set_module_status(from.module_status());
-  }
   if (from.current_state() != 0) {
     set_current_state(from.current_state());
   }
@@ -1619,7 +1573,6 @@ void ClientToServer_StateMachine::Swap(ClientToServer_StateMachine* other) {
 }
 void ClientToServer_StateMachine::InternalSwap(ClientToServer_StateMachine* other) {
   using std::swap;
-  swap(module_status_, other->module_status_);
   swap(current_state_, other->current_state_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }

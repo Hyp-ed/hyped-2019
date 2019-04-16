@@ -41,5 +41,34 @@ ProtoModuleStatus Utils::moduleStatusEnumConversion(DataModuleStatus status)
     }
 }
 
+ProtoState Utils::stateEnumConversion(DataState state)
+{
+    switch (state) {
+        case data::State::kIdle:
+            return telemetry_data::ClientToServer::StateMachine::IDLE;
+        case data::State::kCalibrating:
+            return telemetry_data::ClientToServer::StateMachine::CALIBRATING;
+        case data::State::kReady:
+            return telemetry_data::ClientToServer::StateMachine::READY;
+        case data::State::kAccelerating:
+            return telemetry_data::ClientToServer::StateMachine::ACCELERATING;
+        case data::State::kNominalBraking:
+            return telemetry_data::ClientToServer::StateMachine::NOMINAL_BRAKING;
+        case data::State::kEmergencyBraking:
+            return telemetry_data::ClientToServer::StateMachine::EMERGENCY_BRAKING;
+        case data::State::kRunComplete:
+            return telemetry_data::ClientToServer::StateMachine::RUN_COMPLETE;
+        case data::State::kFailureStopped:
+            return telemetry_data::ClientToServer::StateMachine::FAILURE_STOPPED;
+        case data::State::kExiting:
+            return telemetry_data::ClientToServer::StateMachine::EXITING;
+        case data::State::kFinished:
+            return telemetry_data::ClientToServer::StateMachine::FINISHED;
+        default:
+            // TODO(neil): throw error or something
+            return telemetry_data::ClientToServer::StateMachine::INVALID;
+    }
+}
+
 }  // namespace telemetry
 }  // namespace hyped

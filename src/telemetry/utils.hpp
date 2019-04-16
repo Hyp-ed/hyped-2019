@@ -27,13 +27,16 @@
 namespace hyped {
 
 using ProtoModuleStatus = telemetry_data::ClientToServer::ModuleStatus;
-using DataModuleStatus = data::ModuleStatus;
+using ProtoState        = telemetry_data::ClientToServer::StateMachine::State;
+using DataModuleStatus  = data::ModuleStatus;
+using DataState         = data::State;
 
 namespace telemetry {
 
 class Utils {
     public:
         static ProtoModuleStatus moduleStatusEnumConversion(DataModuleStatus status);
+        static ProtoState stateEnumConversion(DataState state);
 };
 
 }  // namespace telemetry

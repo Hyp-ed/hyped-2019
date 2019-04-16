@@ -737,12 +737,6 @@ class ClientToServer_StateMachine : public ::google::protobuf::Message /* @@prot
 
   // accessors -------------------------------------------------------
 
-  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
-  void clear_module_status();
-  static const int kModuleStatusFieldNumber = 1;
-  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
-  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
-
   // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
   void clear_current_state();
   static const int kCurrentStateFieldNumber = 2;
@@ -753,7 +747,6 @@ class ClientToServer_StateMachine : public ::google::protobuf::Message /* @@prot
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  int module_status_;
   int current_state_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
@@ -1344,20 +1337,6 @@ inline void ClientToServer_Navigation::set_acceleration(float value) {
 // -------------------------------------------------------------------
 
 // ClientToServer_StateMachine
-
-// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
-inline void ClientToServer_StateMachine::clear_module_status() {
-  module_status_ = 0;
-}
-inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_StateMachine::module_status() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.StateMachine.module_status)
-  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
-}
-inline void ClientToServer_StateMachine::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
-  
-  module_status_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.StateMachine.module_status)
-}
 
 // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
 inline void ClientToServer_StateMachine::clear_current_state() {

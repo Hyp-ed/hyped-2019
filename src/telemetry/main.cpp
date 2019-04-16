@@ -61,17 +61,36 @@ void Main::sendLoop()
 
     while (true) {
         nav_data_               = data_.getNavigationData();
-        // sm_data_                = data_.getStateMachineData();
-        // motor_data_             = data_.getMotorData();
+        sm_data_                = data_.getStateMachineData();
+        motor_data_             = data_.getMotorData();
         // batteries_data_         = data_.getBatteriesData();
         // sensors_data_           = data_.getSensorsData();
-        // emergency_brakes_data_  = data_.getEmergencyBrakesData();
+        emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
+        /* NAVIGATION */
         telemetry_data::ClientToServer::Navigation* navigation_msg = msg.mutable_navigation();
         navigation_msg->set_module_status(Utils::moduleStatusEnumConversion(nav_data_.module_status)); // NOLINT
         navigation_msg->set_distance(nav_data_.distance);
         navigation_msg->set_velocity(nav_data_.velocity);
         navigation_msg->set_acceleration(nav_data_.acceleration);
+
+        /* STATE MACHINE */
+        telemetry_data::ClientToServer::StateMachine* state_machine_msg = msg.mutable_state_machine(); // NOLINT
+        state_machine_msg->set_current_state(Utils::stateEnumConversion(sm_data_.current_state));
+
+        /* MOTORS */
+        telemetry_data::ClientToServer::Motors* motors_msg = msg.mutable_motors();
+        motors_msg->set_velocity_1(motor_data_.velocity_1);
+        motors_msg->set_velocity_2(motor_data_.velocity_2);
+        motors_msg->set_velocity_3(motor_data_.velocity_3);
+        motors_msg->set_velocity_4(motor_data_.velocity_4);
+        motors_msg->set_velocity_5(motor_data_.velocity_5);
+        motors_msg->set_velocity_6(motor_data_.velocity_6);
+
+        /* EMERGENCY BRAKES */
+        telemetry_data::ClientToServer::EmergencyBrakes* emergency_brakes_msg = msg.mutable_emergency_brakes(); // NOLINT
+        emergency_brakes_msg->set_front_brakes(emergency_brakes_data_.front_brakes);
+        emergency_brakes_msg->set_rear_brakes(emergency_brakes_data_.rear_brakes);
 
         client_.sendData(msg);
         msg.Clear();

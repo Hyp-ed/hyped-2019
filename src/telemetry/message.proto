@@ -65,7 +65,6 @@ message ClientToServer {
             INVALID = 10;
         }
 
-        ModuleStatus module_status = 1;
         State current_state = 2;
     }
 
