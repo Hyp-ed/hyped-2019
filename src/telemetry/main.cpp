@@ -59,41 +59,13 @@ void Main::sendLoop()
     telemetry_data::ClientToServer msg;
 
     while (true) {
-        batteries_data_         = data_.getBatteriesData();
         // sensors_data_           = data_.getSensorsData();
         emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
         packNavigationData(msg);
         packStateMachineData(msg);
         packMotorsData(msg);
-
-        /* BATTERIES */
-        telemetry_data::ClientToServer::Batteries* batteries_msg = msg.mutable_batteries();
-        batteries_msg->set_module_status(Utils::moduleStatusEnumConversion(batteries_data_.module_status)); // NOLINT
-
-        // low power batteries
-        for (data::BatteryData lp_battery_data : batteries_data_.low_power_batteries) {
-            telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg->add_low_power_batteries(); // NOLINT
-
-            battery_data_msg->set_voltage(lp_battery_data.voltage);
-            battery_data_msg->set_current(lp_battery_data.current);
-            battery_data_msg->set_charge(lp_battery_data.charge);
-            battery_data_msg->set_temperature(lp_battery_data.temperature);
-            battery_data_msg->set_low_voltage_cell(lp_battery_data.low_voltage_cell);
-            battery_data_msg->set_high_voltage_cell(lp_battery_data.high_voltage_cell);
-        }
-
-        // high power batteries
-        for (data::BatteryData hp_battery_data : batteries_data_.high_power_batteries) {
-            telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg->add_high_power_batteries(); // NOLINT
-
-            battery_data_msg->set_voltage(hp_battery_data.voltage);
-            battery_data_msg->set_current(hp_battery_data.current);
-            battery_data_msg->set_charge(hp_battery_data.charge);
-            battery_data_msg->set_temperature(hp_battery_data.temperature);
-            battery_data_msg->set_low_voltage_cell(hp_battery_data.low_voltage_cell);
-            battery_data_msg->set_high_voltage_cell(hp_battery_data.high_voltage_cell);
-        }
+        packBatteriesData(msg);
 
         /* EMERGENCY BRAKES */
         telemetry_data::ClientToServer::EmergencyBrakes* emergency_brakes_msg = msg.mutable_emergency_brakes(); // NOLINT
@@ -138,6 +110,45 @@ void Main::packMotorsData(telemetry_data::ClientToServer& msg)
     motors_msg->set_velocity_4(motor_data_.velocity_4);
     motors_msg->set_velocity_5(motor_data_.velocity_5);
     motors_msg->set_velocity_6(motor_data_.velocity_6);
+}
+
+void Main::packBatteriesData(telemetry_data::ClientToServer& msg)
+{
+    batteries_data_ = data_.getBatteriesData();
+    telemetry_data::ClientToServer::Batteries* batteries_msg = msg.mutable_batteries();
+
+    batteries_msg->set_module_status(Utils::moduleStatusEnumConversion(batteries_data_.module_status)); // NOLINT
+
+    packLpBatteryDataData(*batteries_msg, batteries_data_.low_power_batteries);
+    packHpBatteryDataData(*batteries_msg, batteries_data_.high_power_batteries);
+}
+
+template<std::size_t SIZE>
+void Main::packLpBatteryDataData(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
+{
+    for (auto battery_data : battery_data_array) {
+        telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg.add_low_power_batteries(); // NOLINT
+        packBatteryDataMessageHelper(*battery_data_msg, battery_data);
+    }
+}
+
+template<std::size_t SIZE>
+void Main::packHpBatteryDataData(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
+{
+    for (auto battery_data : battery_data_array) {
+        telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg.add_high_power_batteries(); // NOLINT
+        packBatteryDataMessageHelper(*battery_data_msg, battery_data);
+    }
+}
+
+void Main::packBatteryDataMessageHelper(telemetry_data::ClientToServer::Batteries::BatteryData& battery_data_msg, data::BatteryData& battery_data) // NOLINT
+{
+    battery_data_msg.set_voltage(battery_data.voltage);
+    battery_data_msg.set_current(battery_data.current);
+    battery_data_msg.set_charge(battery_data.charge);
+    battery_data_msg.set_temperature(battery_data.temperature);
+    battery_data_msg.set_low_voltage_cell(battery_data.low_voltage_cell);
+    battery_data_msg.set_high_voltage_cell(battery_data.high_voltage_cell);
 }
 
 void Main::recvLoop()
