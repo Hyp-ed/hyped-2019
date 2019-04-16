@@ -59,17 +59,13 @@ void Main::sendLoop()
     telemetry_data::ClientToServer msg;
 
     while (true) {
-        sm_data_                = data_.getStateMachineData();
         motor_data_             = data_.getMotorData();
         batteries_data_         = data_.getBatteriesData();
         // sensors_data_           = data_.getSensorsData();
         emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
         packNavigationData(msg);
-
-        /* STATE MACHINE */
-        telemetry_data::ClientToServer::StateMachine* state_machine_msg = msg.mutable_state_machine(); // NOLINT
-        state_machine_msg->set_current_state(Utils::stateEnumConversion(sm_data_.current_state));
+        packStateMachineData(msg);
 
         /* BATTERIES */
         telemetry_data::ClientToServer::Batteries* batteries_msg = msg.mutable_batteries();
@@ -129,6 +125,14 @@ void Main::packNavigationData(telemetry_data::ClientToServer& msg)
     navigation_msg->set_distance(nav_data_.distance);
     navigation_msg->set_velocity(nav_data_.velocity);
     navigation_msg->set_acceleration(nav_data_.acceleration);
+}
+
+void Main::packStateMachineData(telemetry_data::ClientToServer& msg)
+{
+    sm_data_ = data_.getStateMachineData();
+    telemetry_data::ClientToServer::StateMachine* state_machine_msg = msg.mutable_state_machine();
+
+    state_machine_msg->set_current_state(Utils::stateEnumConversion(sm_data_.current_state));
 }
 
 void Main::recvLoop()
