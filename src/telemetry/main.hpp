@@ -46,6 +46,7 @@ class Main: public Thread {
         void recvLoop();
         void packNavigationData(telemetry_data::ClientToServer& msg);
         void packStateMachineData(telemetry_data::ClientToServer& msg);
+        void packMotorsData(telemetry_data::ClientToServer& msg);
         Data& data_;
         data::Navigation        nav_data_;
         data::StateMachine      sm_data_;

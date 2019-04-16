@@ -59,13 +59,13 @@ void Main::sendLoop()
     telemetry_data::ClientToServer msg;
 
     while (true) {
-        motor_data_             = data_.getMotorData();
         batteries_data_         = data_.getBatteriesData();
         // sensors_data_           = data_.getSensorsData();
         emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
         packNavigationData(msg);
         packStateMachineData(msg);
+        packMotorsData(msg);
 
         /* BATTERIES */
         telemetry_data::ClientToServer::Batteries* batteries_msg = msg.mutable_batteries();
@@ -94,15 +94,6 @@ void Main::sendLoop()
             battery_data_msg->set_low_voltage_cell(hp_battery_data.low_voltage_cell);
             battery_data_msg->set_high_voltage_cell(hp_battery_data.high_voltage_cell);
         }
-
-        /* MOTORS */
-        telemetry_data::ClientToServer::Motors* motors_msg = msg.mutable_motors();
-        motors_msg->set_velocity_1(motor_data_.velocity_1);
-        motors_msg->set_velocity_2(motor_data_.velocity_2);
-        motors_msg->set_velocity_3(motor_data_.velocity_3);
-        motors_msg->set_velocity_4(motor_data_.velocity_4);
-        motors_msg->set_velocity_5(motor_data_.velocity_5);
-        motors_msg->set_velocity_6(motor_data_.velocity_6);
 
         /* EMERGENCY BRAKES */
         telemetry_data::ClientToServer::EmergencyBrakes* emergency_brakes_msg = msg.mutable_emergency_brakes(); // NOLINT
@@ -133,6 +124,20 @@ void Main::packStateMachineData(telemetry_data::ClientToServer& msg)
     telemetry_data::ClientToServer::StateMachine* state_machine_msg = msg.mutable_state_machine();
 
     state_machine_msg->set_current_state(Utils::stateEnumConversion(sm_data_.current_state));
+}
+
+void Main::packMotorsData(telemetry_data::ClientToServer& msg)
+{
+    motor_data_ = data_.getMotorData();
+    telemetry_data::ClientToServer::Motors* motors_msg = msg.mutable_motors();
+
+    motors_msg->set_module_status(Utils::moduleStatusEnumConversion(motor_data_.module_status));
+    motors_msg->set_velocity_1(motor_data_.velocity_1);
+    motors_msg->set_velocity_2(motor_data_.velocity_2);
+    motors_msg->set_velocity_3(motor_data_.velocity_3);
+    motors_msg->set_velocity_4(motor_data_.velocity_4);
+    motors_msg->set_velocity_5(motor_data_.velocity_5);
+    motors_msg->set_velocity_6(motor_data_.velocity_6);
 }
 
 void Main::recvLoop()
