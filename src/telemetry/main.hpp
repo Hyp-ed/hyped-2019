@@ -53,6 +53,7 @@ class Main: public Thread {
         template<std::size_t SIZE>
         void packHpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
         void packBatteryDataMessageHelper(telemetry_data::ClientToServer::Batteries::BatteryData& battery_data_msg, data::BatteryData& battery_data); // NOLINT
+        void packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg);
         Data& data_;
         data::Navigation        nav_data_;
         data::StateMachine      sm_data_;

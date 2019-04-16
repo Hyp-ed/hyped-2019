@@ -60,17 +60,12 @@ void Main::sendLoop()
 
     while (true) {
         // sensors_data_           = data_.getSensorsData();
-        emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
         packNavigationMessage(msg);
         packStateMachineMessage(msg);
         packMotorsMessage(msg);
         packBatteriesMessage(msg);
-
-        /* EMERGENCY BRAKES */
-        telemetry_data::ClientToServer::EmergencyBrakes* emergency_brakes_msg = msg.mutable_emergency_brakes(); // NOLINT
-        emergency_brakes_msg->set_front_brakes(emergency_brakes_data_.front_brakes);
-        emergency_brakes_msg->set_rear_brakes(emergency_brakes_data_.rear_brakes);
+        packEmergencyBrakesMessage(msg);
 
         client_.sendData(msg);
         msg.Clear();
@@ -149,6 +144,15 @@ void Main::packBatteryDataMessageHelper(telemetry_data::ClientToServer::Batterie
     battery_data_msg.set_temperature(battery_data.temperature);
     battery_data_msg.set_low_voltage_cell(battery_data.low_voltage_cell);
     battery_data_msg.set_high_voltage_cell(battery_data.high_voltage_cell);
+}
+
+void Main::packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg)
+{
+    emergency_brakes_data_ = data_.getEmergencyBrakesData();
+    telemetry_data::ClientToServer::EmergencyBrakes* emergency_brakes_msg = msg.mutable_emergency_brakes(); // NOLINT
+
+    emergency_brakes_msg->set_front_brakes(emergency_brakes_data_.front_brakes);
+    emergency_brakes_msg->set_rear_brakes(emergency_brakes_data_.rear_brakes);
 }
 
 void Main::recvLoop()
