@@ -21,6 +21,7 @@
 #ifndef TELEMETRY_MAIN_HPP_
 #define TELEMETRY_MAIN_HPP_
 
+#include "telemetry/telemetrydata/message.pb.h"
 #include "client.hpp"
 #include "data/data.hpp"
 #include "utils/concurrent/thread.hpp"
@@ -43,6 +44,7 @@ class Main: public Thread {
         Client client_;
         void sendLoop();
         void recvLoop();
+        void packNavigationData(telemetry_data::ClientToServer& msg);
         Data& data_;
         data::Navigation        nav_data_;
         data::StateMachine      sm_data_;

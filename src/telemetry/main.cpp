@@ -19,7 +19,6 @@
  */
 
 #include <thread>
-#include "telemetry/telemetrydata/message.pb.h"
 #include "main.hpp"
 #include "utils.hpp"
 
@@ -60,19 +59,13 @@ void Main::sendLoop()
     telemetry_data::ClientToServer msg;
 
     while (true) {
-        nav_data_               = data_.getNavigationData();
         sm_data_                = data_.getStateMachineData();
         motor_data_             = data_.getMotorData();
         batteries_data_         = data_.getBatteriesData();
         // sensors_data_           = data_.getSensorsData();
         emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
-        /* NAVIGATION */
-        telemetry_data::ClientToServer::Navigation* navigation_msg = msg.mutable_navigation();
-        navigation_msg->set_module_status(Utils::moduleStatusEnumConversion(nav_data_.module_status)); // NOLINT
-        navigation_msg->set_distance(nav_data_.distance);
-        navigation_msg->set_velocity(nav_data_.velocity);
-        navigation_msg->set_acceleration(nav_data_.acceleration);
+        packNavigationData(msg);
 
         /* STATE MACHINE */
         telemetry_data::ClientToServer::StateMachine* state_machine_msg = msg.mutable_state_machine(); // NOLINT
@@ -125,6 +118,17 @@ void Main::sendLoop()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+}
+
+void Main::packNavigationData(telemetry_data::ClientToServer& msg)
+{
+    nav_data_ = data_.getNavigationData();
+    telemetry_data::ClientToServer::Navigation* navigation_msg = msg.mutable_navigation();
+
+    navigation_msg->set_module_status(Utils::moduleStatusEnumConversion(nav_data_.module_status));
+    navigation_msg->set_distance(nav_data_.distance);
+    navigation_msg->set_velocity(nav_data_.velocity);
+    navigation_msg->set_acceleration(nav_data_.acceleration);
 }
 
 void Main::recvLoop()
