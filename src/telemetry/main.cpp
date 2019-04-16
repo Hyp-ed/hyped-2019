@@ -62,10 +62,10 @@ void Main::sendLoop()
         // sensors_data_           = data_.getSensorsData();
         emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
-        packNavigationData(msg);
-        packStateMachineData(msg);
-        packMotorsData(msg);
-        packBatteriesData(msg);
+        packNavigationMessage(msg);
+        packStateMachineMessage(msg);
+        packMotorsMessage(msg);
+        packBatteriesMessage(msg);
 
         /* EMERGENCY BRAKES */
         telemetry_data::ClientToServer::EmergencyBrakes* emergency_brakes_msg = msg.mutable_emergency_brakes(); // NOLINT
@@ -79,7 +79,7 @@ void Main::sendLoop()
     }
 }
 
-void Main::packNavigationData(telemetry_data::ClientToServer& msg)
+void Main::packNavigationMessage(telemetry_data::ClientToServer& msg)
 {
     nav_data_ = data_.getNavigationData();
     telemetry_data::ClientToServer::Navigation* navigation_msg = msg.mutable_navigation();
@@ -90,7 +90,7 @@ void Main::packNavigationData(telemetry_data::ClientToServer& msg)
     navigation_msg->set_acceleration(nav_data_.acceleration);
 }
 
-void Main::packStateMachineData(telemetry_data::ClientToServer& msg)
+void Main::packStateMachineMessage(telemetry_data::ClientToServer& msg)
 {
     sm_data_ = data_.getStateMachineData();
     telemetry_data::ClientToServer::StateMachine* state_machine_msg = msg.mutable_state_machine();
@@ -98,7 +98,7 @@ void Main::packStateMachineData(telemetry_data::ClientToServer& msg)
     state_machine_msg->set_current_state(Utils::stateEnumConversion(sm_data_.current_state));
 }
 
-void Main::packMotorsData(telemetry_data::ClientToServer& msg)
+void Main::packMotorsMessage(telemetry_data::ClientToServer& msg)
 {
     motor_data_ = data_.getMotorData();
     telemetry_data::ClientToServer::Motors* motors_msg = msg.mutable_motors();
@@ -112,19 +112,19 @@ void Main::packMotorsData(telemetry_data::ClientToServer& msg)
     motors_msg->set_velocity_6(motor_data_.velocity_6);
 }
 
-void Main::packBatteriesData(telemetry_data::ClientToServer& msg)
+void Main::packBatteriesMessage(telemetry_data::ClientToServer& msg)
 {
     batteries_data_ = data_.getBatteriesData();
     telemetry_data::ClientToServer::Batteries* batteries_msg = msg.mutable_batteries();
 
     batteries_msg->set_module_status(Utils::moduleStatusEnumConversion(batteries_data_.module_status)); // NOLINT
 
-    packLpBatteryDataData(*batteries_msg, batteries_data_.low_power_batteries);
-    packHpBatteryDataData(*batteries_msg, batteries_data_.high_power_batteries);
+    packLpBatteryDataMessage(*batteries_msg, batteries_data_.low_power_batteries);
+    packHpBatteryDataMessage(*batteries_msg, batteries_data_.high_power_batteries);
 }
 
 template<std::size_t SIZE>
-void Main::packLpBatteryDataData(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
+void Main::packLpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
 {
     for (auto battery_data : battery_data_array) {
         telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg.add_low_power_batteries(); // NOLINT
@@ -133,7 +133,7 @@ void Main::packLpBatteryDataData(telemetry_data::ClientToServer::Batteries& batt
 }
 
 template<std::size_t SIZE>
-void Main::packHpBatteryDataData(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
+void Main::packHpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
 {
     for (auto battery_data : battery_data_array) {
         telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg.add_high_power_batteries(); // NOLINT

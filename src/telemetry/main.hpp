@@ -44,12 +44,12 @@ class Main: public Thread {
         Client client_;
         void sendLoop();
         void recvLoop();
-        void packNavigationData(telemetry_data::ClientToServer& msg);
-        void packStateMachineData(telemetry_data::ClientToServer& msg);
-        void packMotorsData(telemetry_data::ClientToServer& msg);
-        void packBatteriesData(telemetry_data::ClientToServer& msg);
+        void packNavigationMessage(telemetry_data::ClientToServer& msg);
+        void packStateMachineMessage(telemetry_data::ClientToServer& msg);
+        void packMotorsMessage(telemetry_data::ClientToServer& msg);
+        void packBatteriesMessage(telemetry_data::ClientToServer& msg);
         template<std::size_t SIZE>
-        void packLpBatteryDataData(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
+        void packLpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
         template<std::size_t SIZE>
         void packHpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
         void packBatteryDataMessageHelper(telemetry_data::ClientToServer::Batteries::BatteryData& battery_data_msg, data::BatteryData& battery_data); // NOLINT
