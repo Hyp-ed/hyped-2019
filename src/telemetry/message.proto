@@ -78,10 +78,20 @@ message ClientToServer {
         sint32 velocity_6 = 7;
     }
 
-    // message Batteries {
-        // ModuleStatus module_status = 1;
-// 
-    // }
+    message Batteries {
+        message BatteryData {
+            uint32 voltage = 1;
+            sint32 current = 2;
+            uint32 charge = 3;
+            int32 temperature = 4;
+            uint32 low_voltage_cell = 5;
+            uint32 high_voltage_cell = 6;
+        }
+
+        ModuleStatus module_status = 1;
+        repeated BatteryData low_power_batteries = 2;
+        repeated BatteryData high_power_batteries = 3;
+    }
 
     // message Sensors {
         // ModuleStatus module_status = 1;
@@ -96,7 +106,7 @@ message ClientToServer {
     Navigation navigation = 1;
     StateMachine state_machine = 2;
     Motors motors = 3;
-    // Batteries batteries = 4;
+    Batteries batteries = 4;
     // Sensors sensors = 5;
     EmergencyBrakes emergency_brakes = 6;
 }

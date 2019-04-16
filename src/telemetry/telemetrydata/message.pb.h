@@ -39,7 +39,7 @@ namespace protobuf_message_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[7];
+  static const ::google::protobuf::internal::ParseTable schema[9];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -50,6 +50,12 @@ namespace telemetry_data {
 class ClientToServer;
 class ClientToServerDefaultTypeInternal;
 extern ClientToServerDefaultTypeInternal _ClientToServer_default_instance_;
+class ClientToServer_Batteries;
+class ClientToServer_BatteriesDefaultTypeInternal;
+extern ClientToServer_BatteriesDefaultTypeInternal _ClientToServer_Batteries_default_instance_;
+class ClientToServer_Batteries_BatteryData;
+class ClientToServer_Batteries_BatteryDataDefaultTypeInternal;
+extern ClientToServer_Batteries_BatteryDataDefaultTypeInternal _ClientToServer_Batteries_BatteryData_default_instance_;
 class ClientToServer_EmergencyBrakes;
 class ClientToServer_EmergencyBrakesDefaultTypeInternal;
 extern ClientToServer_EmergencyBrakesDefaultTypeInternal _ClientToServer_EmergencyBrakes_default_instance_;
@@ -72,6 +78,8 @@ extern TestMessageDefaultTypeInternal _TestMessage_default_instance_;
 namespace google {
 namespace protobuf {
 template<> ::telemetry_data::ClientToServer* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer>(Arena*);
+template<> ::telemetry_data::ClientToServer_Batteries* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Batteries>(Arena*);
+template<> ::telemetry_data::ClientToServer_Batteries_BatteryData* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Batteries_BatteryData>(Arena*);
 template<> ::telemetry_data::ClientToServer_EmergencyBrakes* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_EmergencyBrakes>(Arena*);
 template<> ::telemetry_data::ClientToServer_Motors* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Motors>(Arena*);
 template<> ::telemetry_data::ClientToServer_Navigation* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Navigation>(Arena*);
@@ -898,6 +906,275 @@ class ClientToServer_Motors : public ::google::protobuf::Message /* @@protoc_ins
 };
 // -------------------------------------------------------------------
 
+class ClientToServer_Batteries_BatteryData : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Batteries.BatteryData) */ {
+ public:
+  ClientToServer_Batteries_BatteryData();
+  virtual ~ClientToServer_Batteries_BatteryData();
+
+  ClientToServer_Batteries_BatteryData(const ClientToServer_Batteries_BatteryData& from);
+
+  inline ClientToServer_Batteries_BatteryData& operator=(const ClientToServer_Batteries_BatteryData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Batteries_BatteryData(ClientToServer_Batteries_BatteryData&& from) noexcept
+    : ClientToServer_Batteries_BatteryData() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Batteries_BatteryData& operator=(ClientToServer_Batteries_BatteryData&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Batteries_BatteryData& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Batteries_BatteryData* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Batteries_BatteryData*>(
+               &_ClientToServer_Batteries_BatteryData_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  void Swap(ClientToServer_Batteries_BatteryData* other);
+  friend void swap(ClientToServer_Batteries_BatteryData& a, ClientToServer_Batteries_BatteryData& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Batteries_BatteryData* New() const final {
+    return CreateMaybeMessage<ClientToServer_Batteries_BatteryData>(NULL);
+  }
+
+  ClientToServer_Batteries_BatteryData* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Batteries_BatteryData>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Batteries_BatteryData& from);
+  void MergeFrom(const ClientToServer_Batteries_BatteryData& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Batteries_BatteryData* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // uint32 voltage = 1;
+  void clear_voltage();
+  static const int kVoltageFieldNumber = 1;
+  ::google::protobuf::uint32 voltage() const;
+  void set_voltage(::google::protobuf::uint32 value);
+
+  // sint32 current = 2;
+  void clear_current();
+  static const int kCurrentFieldNumber = 2;
+  ::google::protobuf::int32 current() const;
+  void set_current(::google::protobuf::int32 value);
+
+  // uint32 charge = 3;
+  void clear_charge();
+  static const int kChargeFieldNumber = 3;
+  ::google::protobuf::uint32 charge() const;
+  void set_charge(::google::protobuf::uint32 value);
+
+  // int32 temperature = 4;
+  void clear_temperature();
+  static const int kTemperatureFieldNumber = 4;
+  ::google::protobuf::int32 temperature() const;
+  void set_temperature(::google::protobuf::int32 value);
+
+  // uint32 low_voltage_cell = 5;
+  void clear_low_voltage_cell();
+  static const int kLowVoltageCellFieldNumber = 5;
+  ::google::protobuf::uint32 low_voltage_cell() const;
+  void set_low_voltage_cell(::google::protobuf::uint32 value);
+
+  // uint32 high_voltage_cell = 6;
+  void clear_high_voltage_cell();
+  static const int kHighVoltageCellFieldNumber = 6;
+  ::google::protobuf::uint32 high_voltage_cell() const;
+  void set_high_voltage_cell(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Batteries.BatteryData)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 voltage_;
+  ::google::protobuf::int32 current_;
+  ::google::protobuf::uint32 charge_;
+  ::google::protobuf::int32 temperature_;
+  ::google::protobuf::uint32 low_voltage_cell_;
+  ::google::protobuf::uint32 high_voltage_cell_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_Batteries : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Batteries) */ {
+ public:
+  ClientToServer_Batteries();
+  virtual ~ClientToServer_Batteries();
+
+  ClientToServer_Batteries(const ClientToServer_Batteries& from);
+
+  inline ClientToServer_Batteries& operator=(const ClientToServer_Batteries& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Batteries(ClientToServer_Batteries&& from) noexcept
+    : ClientToServer_Batteries() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Batteries& operator=(ClientToServer_Batteries&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Batteries& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Batteries* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Batteries*>(
+               &_ClientToServer_Batteries_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  void Swap(ClientToServer_Batteries* other);
+  friend void swap(ClientToServer_Batteries& a, ClientToServer_Batteries& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Batteries* New() const final {
+    return CreateMaybeMessage<ClientToServer_Batteries>(NULL);
+  }
+
+  ClientToServer_Batteries* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Batteries>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Batteries& from);
+  void MergeFrom(const ClientToServer_Batteries& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Batteries* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ClientToServer_Batteries_BatteryData BatteryData;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
+  int low_power_batteries_size() const;
+  void clear_low_power_batteries();
+  static const int kLowPowerBatteriesFieldNumber = 2;
+  ::telemetry_data::ClientToServer_Batteries_BatteryData* mutable_low_power_batteries(int index);
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >*
+      mutable_low_power_batteries();
+  const ::telemetry_data::ClientToServer_Batteries_BatteryData& low_power_batteries(int index) const;
+  ::telemetry_data::ClientToServer_Batteries_BatteryData* add_low_power_batteries();
+  const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >&
+      low_power_batteries() const;
+
+  // repeated .telemetry_data.ClientToServer.Batteries.BatteryData high_power_batteries = 3;
+  int high_power_batteries_size() const;
+  void clear_high_power_batteries();
+  static const int kHighPowerBatteriesFieldNumber = 3;
+  ::telemetry_data::ClientToServer_Batteries_BatteryData* mutable_high_power_batteries(int index);
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >*
+      mutable_high_power_batteries();
+  const ::telemetry_data::ClientToServer_Batteries_BatteryData& high_power_batteries(int index) const;
+  ::telemetry_data::ClientToServer_Batteries_BatteryData* add_high_power_batteries();
+  const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >&
+      high_power_batteries() const;
+
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Batteries)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData > low_power_batteries_;
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData > high_power_batteries_;
+  int module_status_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class ClientToServer_EmergencyBrakes : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.EmergencyBrakes) */ {
  public:
   ClientToServer_EmergencyBrakes();
@@ -933,7 +1210,7 @@ class ClientToServer_EmergencyBrakes : public ::google::protobuf::Message /* @@p
                &_ClientToServer_EmergencyBrakes_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    7;
 
   void Swap(ClientToServer_EmergencyBrakes* other);
   friend void swap(ClientToServer_EmergencyBrakes& a, ClientToServer_EmergencyBrakes& b) {
@@ -1043,7 +1320,7 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
                &_ClientToServer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    8;
 
   void Swap(ClientToServer* other);
   friend void swap(ClientToServer& a, ClientToServer& b) {
@@ -1096,6 +1373,7 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   typedef ClientToServer_Navigation Navigation;
   typedef ClientToServer_StateMachine StateMachine;
   typedef ClientToServer_Motors Motors;
+  typedef ClientToServer_Batteries Batteries;
   typedef ClientToServer_EmergencyBrakes EmergencyBrakes;
 
   typedef ClientToServer_ModuleStatus ModuleStatus;
@@ -1166,6 +1444,18 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   ::telemetry_data::ClientToServer_Motors* mutable_motors();
   void set_allocated_motors(::telemetry_data::ClientToServer_Motors* motors);
 
+  // .telemetry_data.ClientToServer.Batteries batteries = 4;
+  bool has_batteries() const;
+  void clear_batteries();
+  static const int kBatteriesFieldNumber = 4;
+  private:
+  const ::telemetry_data::ClientToServer_Batteries& _internal_batteries() const;
+  public:
+  const ::telemetry_data::ClientToServer_Batteries& batteries() const;
+  ::telemetry_data::ClientToServer_Batteries* release_batteries();
+  ::telemetry_data::ClientToServer_Batteries* mutable_batteries();
+  void set_allocated_batteries(::telemetry_data::ClientToServer_Batteries* batteries);
+
   // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
   bool has_emergency_brakes() const;
   void clear_emergency_brakes();
@@ -1185,6 +1475,7 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   ::telemetry_data::ClientToServer_Navigation* navigation_;
   ::telemetry_data::ClientToServer_StateMachine* state_machine_;
   ::telemetry_data::ClientToServer_Motors* motors_;
+  ::telemetry_data::ClientToServer_Batteries* batteries_;
   ::telemetry_data::ClientToServer_EmergencyBrakes* emergency_brakes_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
@@ -1456,6 +1747,172 @@ inline void ClientToServer_Motors::set_velocity_6(::google::protobuf::int32 valu
 
 // -------------------------------------------------------------------
 
+// ClientToServer_Batteries_BatteryData
+
+// uint32 voltage = 1;
+inline void ClientToServer_Batteries_BatteryData::clear_voltage() {
+  voltage_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientToServer_Batteries_BatteryData::voltage() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.voltage)
+  return voltage_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_voltage(::google::protobuf::uint32 value) {
+  
+  voltage_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.voltage)
+}
+
+// sint32 current = 2;
+inline void ClientToServer_Batteries_BatteryData::clear_current() {
+  current_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Batteries_BatteryData::current() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.current)
+  return current_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_current(::google::protobuf::int32 value) {
+  
+  current_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.current)
+}
+
+// uint32 charge = 3;
+inline void ClientToServer_Batteries_BatteryData::clear_charge() {
+  charge_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientToServer_Batteries_BatteryData::charge() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.charge)
+  return charge_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_charge(::google::protobuf::uint32 value) {
+  
+  charge_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.charge)
+}
+
+// int32 temperature = 4;
+inline void ClientToServer_Batteries_BatteryData::clear_temperature() {
+  temperature_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Batteries_BatteryData::temperature() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.temperature)
+  return temperature_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_temperature(::google::protobuf::int32 value) {
+  
+  temperature_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.temperature)
+}
+
+// uint32 low_voltage_cell = 5;
+inline void ClientToServer_Batteries_BatteryData::clear_low_voltage_cell() {
+  low_voltage_cell_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientToServer_Batteries_BatteryData::low_voltage_cell() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.low_voltage_cell)
+  return low_voltage_cell_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_low_voltage_cell(::google::protobuf::uint32 value) {
+  
+  low_voltage_cell_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.low_voltage_cell)
+}
+
+// uint32 high_voltage_cell = 6;
+inline void ClientToServer_Batteries_BatteryData::clear_high_voltage_cell() {
+  high_voltage_cell_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientToServer_Batteries_BatteryData::high_voltage_cell() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.high_voltage_cell)
+  return high_voltage_cell_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_high_voltage_cell(::google::protobuf::uint32 value) {
+  
+  high_voltage_cell_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.high_voltage_cell)
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_Batteries
+
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_Batteries::clear_module_status() {
+  module_status_ = 0;
+}
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_Batteries::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
+}
+inline void ClientToServer_Batteries::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
+  
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.module_status)
+}
+
+// repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
+inline int ClientToServer_Batteries::low_power_batteries_size() const {
+  return low_power_batteries_.size();
+}
+inline void ClientToServer_Batteries::clear_low_power_batteries() {
+  low_power_batteries_.Clear();
+}
+inline ::telemetry_data::ClientToServer_Batteries_BatteryData* ClientToServer_Batteries::mutable_low_power_batteries(int index) {
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return low_power_batteries_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >*
+ClientToServer_Batteries::mutable_low_power_batteries() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return &low_power_batteries_;
+}
+inline const ::telemetry_data::ClientToServer_Batteries_BatteryData& ClientToServer_Batteries::low_power_batteries(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return low_power_batteries_.Get(index);
+}
+inline ::telemetry_data::ClientToServer_Batteries_BatteryData* ClientToServer_Batteries::add_low_power_batteries() {
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return low_power_batteries_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >&
+ClientToServer_Batteries::low_power_batteries() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return low_power_batteries_;
+}
+
+// repeated .telemetry_data.ClientToServer.Batteries.BatteryData high_power_batteries = 3;
+inline int ClientToServer_Batteries::high_power_batteries_size() const {
+  return high_power_batteries_.size();
+}
+inline void ClientToServer_Batteries::clear_high_power_batteries() {
+  high_power_batteries_.Clear();
+}
+inline ::telemetry_data::ClientToServer_Batteries_BatteryData* ClientToServer_Batteries::mutable_high_power_batteries(int index) {
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return high_power_batteries_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >*
+ClientToServer_Batteries::mutable_high_power_batteries() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return &high_power_batteries_;
+}
+inline const ::telemetry_data::ClientToServer_Batteries_BatteryData& ClientToServer_Batteries::high_power_batteries(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return high_power_batteries_.Get(index);
+}
+inline ::telemetry_data::ClientToServer_Batteries_BatteryData* ClientToServer_Batteries::add_high_power_batteries() {
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return high_power_batteries_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >&
+ClientToServer_Batteries::high_power_batteries() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return high_power_batteries_;
+}
+
+// -------------------------------------------------------------------
+
 // ClientToServer_EmergencyBrakes
 
 // bool front_brakes = 1;
@@ -1652,6 +2109,60 @@ inline void ClientToServer::set_allocated_motors(::telemetry_data::ClientToServe
   // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.motors)
 }
 
+// .telemetry_data.ClientToServer.Batteries batteries = 4;
+inline bool ClientToServer::has_batteries() const {
+  return this != internal_default_instance() && batteries_ != NULL;
+}
+inline void ClientToServer::clear_batteries() {
+  if (GetArenaNoVirtual() == NULL && batteries_ != NULL) {
+    delete batteries_;
+  }
+  batteries_ = NULL;
+}
+inline const ::telemetry_data::ClientToServer_Batteries& ClientToServer::_internal_batteries() const {
+  return *batteries_;
+}
+inline const ::telemetry_data::ClientToServer_Batteries& ClientToServer::batteries() const {
+  const ::telemetry_data::ClientToServer_Batteries* p = batteries_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.batteries)
+  return p != NULL ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_Batteries*>(
+      &::telemetry_data::_ClientToServer_Batteries_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_Batteries* ClientToServer::release_batteries() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.batteries)
+  
+  ::telemetry_data::ClientToServer_Batteries* temp = batteries_;
+  batteries_ = NULL;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_Batteries* ClientToServer::mutable_batteries() {
+  
+  if (batteries_ == NULL) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_Batteries>(GetArenaNoVirtual());
+    batteries_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.batteries)
+  return batteries_;
+}
+inline void ClientToServer::set_allocated_batteries(::telemetry_data::ClientToServer_Batteries* batteries) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete batteries_;
+  }
+  if (batteries) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      batteries = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, batteries, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  batteries_ = batteries;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.batteries)
+}
+
 // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
 inline bool ClientToServer::has_emergency_brakes() const {
   return this != internal_default_instance() && emergency_brakes_ != NULL;
@@ -1709,6 +2220,10 @@ inline void ClientToServer::set_allocated_emergency_brakes(::telemetry_data::Cli
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -63,7 +63,7 @@ void Main::sendLoop()
         nav_data_               = data_.getNavigationData();
         sm_data_                = data_.getStateMachineData();
         motor_data_             = data_.getMotorData();
-        // batteries_data_         = data_.getBatteriesData();
+        batteries_data_         = data_.getBatteriesData();
         // sensors_data_           = data_.getSensorsData();
         emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
@@ -77,6 +77,34 @@ void Main::sendLoop()
         /* STATE MACHINE */
         telemetry_data::ClientToServer::StateMachine* state_machine_msg = msg.mutable_state_machine(); // NOLINT
         state_machine_msg->set_current_state(Utils::stateEnumConversion(sm_data_.current_state));
+
+        /* BATTERIES */
+        telemetry_data::ClientToServer::Batteries* batteries_msg = msg.mutable_batteries();
+        batteries_msg->set_module_status(Utils::moduleStatusEnumConversion(batteries_data_.module_status)); // NOLINT
+
+        // low power batteries
+        for (data::BatteryData lp_battery_data : batteries_data_.low_power_batteries) {
+            telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg->add_low_power_batteries(); // NOLINT
+
+            battery_data_msg->set_voltage(lp_battery_data.voltage);
+            battery_data_msg->set_current(lp_battery_data.current);
+            battery_data_msg->set_charge(lp_battery_data.charge);
+            battery_data_msg->set_temperature(lp_battery_data.temperature);
+            battery_data_msg->set_low_voltage_cell(lp_battery_data.low_voltage_cell);
+            battery_data_msg->set_high_voltage_cell(lp_battery_data.high_voltage_cell);
+        }
+
+        // high power batteries
+        for (data::BatteryData hp_battery_data : batteries_data_.high_power_batteries) {
+            telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg->add_high_power_batteries(); // NOLINT
+
+            battery_data_msg->set_voltage(hp_battery_data.voltage);
+            battery_data_msg->set_current(hp_battery_data.current);
+            battery_data_msg->set_charge(hp_battery_data.charge);
+            battery_data_msg->set_temperature(hp_battery_data.temperature);
+            battery_data_msg->set_low_voltage_cell(hp_battery_data.low_voltage_cell);
+            battery_data_msg->set_high_voltage_cell(hp_battery_data.high_voltage_cell);
+        }
 
         /* MOTORS */
         telemetry_data::ClientToServer::Motors* motors_msg = msg.mutable_motors();

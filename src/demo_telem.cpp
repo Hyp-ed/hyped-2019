@@ -33,7 +33,8 @@ void loop(Logger& logger) {
         StateMachine sm_data                    = data.getStateMachineData();
         Motors motor_data                       = data.getMotorData();
         EmergencyBrakes emergency_brakes_data   = data.getEmergencyBrakesData();
-        Telemetry telem_data = data.getTelemetryData();
+        Batteries batteries_data                = data.getBatteriesData();
+        Telemetry telem_data                    = data.getTelemetryData();
 
         logger.DBG2("Telemetry", "SHARED module_status: %d", telem_data.module_status);
         logger.DBG2("Telemetry", "SHARED launch_command: %s", telem_data.launch_command ? "true" : "false"); // NOLINT
@@ -58,6 +59,26 @@ void loop(Logger& logger) {
         emergency_brakes_data.rear_brakes = false;
         data.setEmergencyBrakesData(emergency_brakes_data);
 
+        BatteryData low_power;
+        low_power.voltage = 16;
+        low_power.current = -16;
+        low_power.charge = 16;
+        low_power.temperature = -16;
+        low_power.low_voltage_cell = 16;
+        low_power.high_voltage_cell = 16;
+
+        BatteryData high_power;
+        high_power.voltage = 10;
+        high_power.current = -10;
+        high_power.charge = 10;
+        high_power.temperature = -10;
+        high_power.low_voltage_cell = 10;
+        high_power.high_voltage_cell = 10;
+
+        batteries_data.low_power_batteries.at(0) = low_power;
+        batteries_data.high_power_batteries.at(0) = high_power;
+        data.setBatteriesData(batteries_data);
+
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
         nav_data.module_status = ModuleStatus::kInit;
@@ -76,6 +97,24 @@ void loop(Logger& logger) {
         emergency_brakes_data.front_brakes = true;
         emergency_brakes_data.rear_brakes = true;
         data.setEmergencyBrakesData(emergency_brakes_data);
+
+        low_power.voltage = 26;
+        low_power.current = -26;
+        low_power.charge = 26;
+        low_power.temperature = -26;
+        low_power.low_voltage_cell = 26;
+        low_power.high_voltage_cell = 26;
+
+        high_power.voltage = 20;
+        high_power.current = -20;
+        high_power.charge = 20;
+        high_power.temperature = -20;
+        high_power.low_voltage_cell = 20;
+        high_power.high_voltage_cell = 20;
+
+        batteries_data.low_power_batteries.at(0) = low_power;
+        batteries_data.high_power_batteries.at(0) = high_power;
+        data.setBatteriesData(batteries_data);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
