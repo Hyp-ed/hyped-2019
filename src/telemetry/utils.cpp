@@ -26,47 +26,53 @@ namespace telemetry {
 
 ProtoModuleStatus Utils::moduleStatusEnumConversion(DataModuleStatus status)
 {
+    // Proto Module Status enum namespace
+    using pms = telemetry_data::ClientToServer;
+
     switch (status) {
         case data::ModuleStatus::kStart:
-            return telemetry_data::ClientToServer::START;
+            return pms::START;
         case data::ModuleStatus::kInit:
-            return telemetry_data::ClientToServer::INIT;
+            return pms::INIT;
         case data::ModuleStatus::kReady:
-            return telemetry_data::ClientToServer::READY;
+            return pms::READY;
         case data::ModuleStatus::kCriticalFailure:
-            return telemetry_data::ClientToServer::CRITICAL_FAILURE;
+            return pms::CRITICAL_FAILURE;
         default:
             // TODO(neil): throw error or something
-            return telemetry_data::ClientToServer::CRITICAL_FAILURE;
+            return pms::CRITICAL_FAILURE;
     }
 }
 
 ProtoState Utils::stateEnumConversion(DataState state)
 {
+    // Proto State Machine State enum namespace
+    using psms = telemetry_data::ClientToServer::StateMachine;
+
     switch (state) {
         case data::State::kIdle:
-            return telemetry_data::ClientToServer::StateMachine::IDLE;
+            return psms::IDLE;
         case data::State::kCalibrating:
-            return telemetry_data::ClientToServer::StateMachine::CALIBRATING;
+            return psms::CALIBRATING;
         case data::State::kReady:
-            return telemetry_data::ClientToServer::StateMachine::READY;
+            return psms::READY;
         case data::State::kAccelerating:
-            return telemetry_data::ClientToServer::StateMachine::ACCELERATING;
+            return psms::ACCELERATING;
         case data::State::kNominalBraking:
-            return telemetry_data::ClientToServer::StateMachine::NOMINAL_BRAKING;
+            return psms::NOMINAL_BRAKING;
         case data::State::kEmergencyBraking:
-            return telemetry_data::ClientToServer::StateMachine::EMERGENCY_BRAKING;
+            return psms::EMERGENCY_BRAKING;
         case data::State::kRunComplete:
-            return telemetry_data::ClientToServer::StateMachine::RUN_COMPLETE;
+            return psms::RUN_COMPLETE;
         case data::State::kFailureStopped:
-            return telemetry_data::ClientToServer::StateMachine::FAILURE_STOPPED;
+            return psms::FAILURE_STOPPED;
         case data::State::kExiting:
-            return telemetry_data::ClientToServer::StateMachine::EXITING;
+            return psms::EXITING;
         case data::State::kFinished:
-            return telemetry_data::ClientToServer::StateMachine::FINISHED;
+            return psms::FINISHED;
         default:
             // TODO(neil): throw error or something
-            return telemetry_data::ClientToServer::StateMachine::INVALID;
+            return psms::INVALID;
     }
 }
 
