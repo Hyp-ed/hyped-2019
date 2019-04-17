@@ -39,7 +39,7 @@ namespace protobuf_message_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[9];
+  static const ::google::protobuf::internal::ParseTable schema[11];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -65,6 +65,12 @@ extern ClientToServer_MotorsDefaultTypeInternal _ClientToServer_Motors_default_i
 class ClientToServer_Navigation;
 class ClientToServer_NavigationDefaultTypeInternal;
 extern ClientToServer_NavigationDefaultTypeInternal _ClientToServer_Navigation_default_instance_;
+class ClientToServer_Sensors;
+class ClientToServer_SensorsDefaultTypeInternal;
+extern ClientToServer_SensorsDefaultTypeInternal _ClientToServer_Sensors_default_instance_;
+class ClientToServer_Sensors_ImuData;
+class ClientToServer_Sensors_ImuDataDefaultTypeInternal;
+extern ClientToServer_Sensors_ImuDataDefaultTypeInternal _ClientToServer_Sensors_ImuData_default_instance_;
 class ClientToServer_StateMachine;
 class ClientToServer_StateMachineDefaultTypeInternal;
 extern ClientToServer_StateMachineDefaultTypeInternal _ClientToServer_StateMachine_default_instance_;
@@ -83,6 +89,8 @@ template<> ::telemetry_data::ClientToServer_Batteries_BatteryData* Arena::Create
 template<> ::telemetry_data::ClientToServer_EmergencyBrakes* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_EmergencyBrakes>(Arena*);
 template<> ::telemetry_data::ClientToServer_Motors* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Motors>(Arena*);
 template<> ::telemetry_data::ClientToServer_Navigation* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Navigation>(Arena*);
+template<> ::telemetry_data::ClientToServer_Sensors* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Sensors>(Arena*);
+template<> ::telemetry_data::ClientToServer_Sensors_ImuData* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Sensors_ImuData>(Arena*);
 template<> ::telemetry_data::ClientToServer_StateMachine* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_StateMachine>(Arena*);
 template<> ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage<::telemetry_data::ServerToClient>(Arena*);
 template<> ::telemetry_data::TestMessage* Arena::CreateMaybeMessage<::telemetry_data::TestMessage>(Arena*);
@@ -1175,6 +1183,241 @@ class ClientToServer_Batteries : public ::google::protobuf::Message /* @@protoc_
 };
 // -------------------------------------------------------------------
 
+class ClientToServer_Sensors_ImuData : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Sensors.ImuData) */ {
+ public:
+  ClientToServer_Sensors_ImuData();
+  virtual ~ClientToServer_Sensors_ImuData();
+
+  ClientToServer_Sensors_ImuData(const ClientToServer_Sensors_ImuData& from);
+
+  inline ClientToServer_Sensors_ImuData& operator=(const ClientToServer_Sensors_ImuData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Sensors_ImuData(ClientToServer_Sensors_ImuData&& from) noexcept
+    : ClientToServer_Sensors_ImuData() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Sensors_ImuData& operator=(ClientToServer_Sensors_ImuData&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Sensors_ImuData& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Sensors_ImuData* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Sensors_ImuData*>(
+               &_ClientToServer_Sensors_ImuData_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  void Swap(ClientToServer_Sensors_ImuData* other);
+  friend void swap(ClientToServer_Sensors_ImuData& a, ClientToServer_Sensors_ImuData& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Sensors_ImuData* New() const final {
+    return CreateMaybeMessage<ClientToServer_Sensors_ImuData>(NULL);
+  }
+
+  ClientToServer_Sensors_ImuData* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Sensors_ImuData>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Sensors_ImuData& from);
+  void MergeFrom(const ClientToServer_Sensors_ImuData& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Sensors_ImuData* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated float acc = 2;
+  int acc_size() const;
+  void clear_acc();
+  static const int kAccFieldNumber = 2;
+  float acc(int index) const;
+  void set_acc(int index, float value);
+  void add_acc(float value);
+  const ::google::protobuf::RepeatedField< float >&
+      acc() const;
+  ::google::protobuf::RepeatedField< float >*
+      mutable_acc();
+
+  // bool operational = 1;
+  void clear_operational();
+  static const int kOperationalFieldNumber = 1;
+  bool operational() const;
+  void set_operational(bool value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Sensors.ImuData)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedField< float > acc_;
+  mutable int _acc_cached_byte_size_;
+  bool operational_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_Sensors : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Sensors) */ {
+ public:
+  ClientToServer_Sensors();
+  virtual ~ClientToServer_Sensors();
+
+  ClientToServer_Sensors(const ClientToServer_Sensors& from);
+
+  inline ClientToServer_Sensors& operator=(const ClientToServer_Sensors& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Sensors(ClientToServer_Sensors&& from) noexcept
+    : ClientToServer_Sensors() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Sensors& operator=(ClientToServer_Sensors&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Sensors& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Sensors* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Sensors*>(
+               &_ClientToServer_Sensors_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  void Swap(ClientToServer_Sensors* other);
+  friend void swap(ClientToServer_Sensors& a, ClientToServer_Sensors& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Sensors* New() const final {
+    return CreateMaybeMessage<ClientToServer_Sensors>(NULL);
+  }
+
+  ClientToServer_Sensors* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Sensors>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Sensors& from);
+  void MergeFrom(const ClientToServer_Sensors& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Sensors* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ClientToServer_Sensors_ImuData ImuData;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
+  int imu_size() const;
+  void clear_imu();
+  static const int kImuFieldNumber = 2;
+  ::telemetry_data::ClientToServer_Sensors_ImuData* mutable_imu(int index);
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData >*
+      mutable_imu();
+  const ::telemetry_data::ClientToServer_Sensors_ImuData& imu(int index) const;
+  ::telemetry_data::ClientToServer_Sensors_ImuData* add_imu();
+  const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData >&
+      imu() const;
+
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Sensors)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData > imu_;
+  int module_status_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class ClientToServer_EmergencyBrakes : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.EmergencyBrakes) */ {
  public:
   ClientToServer_EmergencyBrakes();
@@ -1210,7 +1453,7 @@ class ClientToServer_EmergencyBrakes : public ::google::protobuf::Message /* @@p
                &_ClientToServer_EmergencyBrakes_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    9;
 
   void Swap(ClientToServer_EmergencyBrakes* other);
   friend void swap(ClientToServer_EmergencyBrakes& a, ClientToServer_EmergencyBrakes& b) {
@@ -1320,7 +1563,7 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
                &_ClientToServer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    10;
 
   void Swap(ClientToServer* other);
   friend void swap(ClientToServer& a, ClientToServer& b) {
@@ -1374,6 +1617,7 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   typedef ClientToServer_StateMachine StateMachine;
   typedef ClientToServer_Motors Motors;
   typedef ClientToServer_Batteries Batteries;
+  typedef ClientToServer_Sensors Sensors;
   typedef ClientToServer_EmergencyBrakes EmergencyBrakes;
 
   typedef ClientToServer_ModuleStatus ModuleStatus;
@@ -1456,6 +1700,18 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   ::telemetry_data::ClientToServer_Batteries* mutable_batteries();
   void set_allocated_batteries(::telemetry_data::ClientToServer_Batteries* batteries);
 
+  // .telemetry_data.ClientToServer.Sensors sensors = 5;
+  bool has_sensors() const;
+  void clear_sensors();
+  static const int kSensorsFieldNumber = 5;
+  private:
+  const ::telemetry_data::ClientToServer_Sensors& _internal_sensors() const;
+  public:
+  const ::telemetry_data::ClientToServer_Sensors& sensors() const;
+  ::telemetry_data::ClientToServer_Sensors* release_sensors();
+  ::telemetry_data::ClientToServer_Sensors* mutable_sensors();
+  void set_allocated_sensors(::telemetry_data::ClientToServer_Sensors* sensors);
+
   // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
   bool has_emergency_brakes() const;
   void clear_emergency_brakes();
@@ -1476,6 +1732,7 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   ::telemetry_data::ClientToServer_StateMachine* state_machine_;
   ::telemetry_data::ClientToServer_Motors* motors_;
   ::telemetry_data::ClientToServer_Batteries* batteries_;
+  ::telemetry_data::ClientToServer_Sensors* sensors_;
   ::telemetry_data::ClientToServer_EmergencyBrakes* emergency_brakes_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
@@ -1913,6 +2170,102 @@ ClientToServer_Batteries::high_power_batteries() const {
 
 // -------------------------------------------------------------------
 
+// ClientToServer_Sensors_ImuData
+
+// bool operational = 1;
+inline void ClientToServer_Sensors_ImuData::clear_operational() {
+  operational_ = false;
+}
+inline bool ClientToServer_Sensors_ImuData::operational() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Sensors.ImuData.operational)
+  return operational_;
+}
+inline void ClientToServer_Sensors_ImuData::set_operational(bool value) {
+  
+  operational_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Sensors.ImuData.operational)
+}
+
+// repeated float acc = 2;
+inline int ClientToServer_Sensors_ImuData::acc_size() const {
+  return acc_.size();
+}
+inline void ClientToServer_Sensors_ImuData::clear_acc() {
+  acc_.Clear();
+}
+inline float ClientToServer_Sensors_ImuData::acc(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+  return acc_.Get(index);
+}
+inline void ClientToServer_Sensors_ImuData::set_acc(int index, float value) {
+  acc_.Set(index, value);
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+}
+inline void ClientToServer_Sensors_ImuData::add_acc(float value) {
+  acc_.Add(value);
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+}
+inline const ::google::protobuf::RepeatedField< float >&
+ClientToServer_Sensors_ImuData::acc() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+  return acc_;
+}
+inline ::google::protobuf::RepeatedField< float >*
+ClientToServer_Sensors_ImuData::mutable_acc() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+  return &acc_;
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_Sensors
+
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_Sensors::clear_module_status() {
+  module_status_ = 0;
+}
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_Sensors::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Sensors.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
+}
+inline void ClientToServer_Sensors::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
+  
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Sensors.module_status)
+}
+
+// repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
+inline int ClientToServer_Sensors::imu_size() const {
+  return imu_.size();
+}
+inline void ClientToServer_Sensors::clear_imu() {
+  imu_.Clear();
+}
+inline ::telemetry_data::ClientToServer_Sensors_ImuData* ClientToServer_Sensors::mutable_imu(int index) {
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.Sensors.imu)
+  return imu_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData >*
+ClientToServer_Sensors::mutable_imu() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Sensors.imu)
+  return &imu_;
+}
+inline const ::telemetry_data::ClientToServer_Sensors_ImuData& ClientToServer_Sensors::imu(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Sensors.imu)
+  return imu_.Get(index);
+}
+inline ::telemetry_data::ClientToServer_Sensors_ImuData* ClientToServer_Sensors::add_imu() {
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Sensors.imu)
+  return imu_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData >&
+ClientToServer_Sensors::imu() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Sensors.imu)
+  return imu_;
+}
+
+// -------------------------------------------------------------------
+
 // ClientToServer_EmergencyBrakes
 
 // bool front_brakes = 1;
@@ -2163,6 +2516,60 @@ inline void ClientToServer::set_allocated_batteries(::telemetry_data::ClientToSe
   // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.batteries)
 }
 
+// .telemetry_data.ClientToServer.Sensors sensors = 5;
+inline bool ClientToServer::has_sensors() const {
+  return this != internal_default_instance() && sensors_ != NULL;
+}
+inline void ClientToServer::clear_sensors() {
+  if (GetArenaNoVirtual() == NULL && sensors_ != NULL) {
+    delete sensors_;
+  }
+  sensors_ = NULL;
+}
+inline const ::telemetry_data::ClientToServer_Sensors& ClientToServer::_internal_sensors() const {
+  return *sensors_;
+}
+inline const ::telemetry_data::ClientToServer_Sensors& ClientToServer::sensors() const {
+  const ::telemetry_data::ClientToServer_Sensors* p = sensors_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.sensors)
+  return p != NULL ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_Sensors*>(
+      &::telemetry_data::_ClientToServer_Sensors_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_Sensors* ClientToServer::release_sensors() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.sensors)
+  
+  ::telemetry_data::ClientToServer_Sensors* temp = sensors_;
+  sensors_ = NULL;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_Sensors* ClientToServer::mutable_sensors() {
+  
+  if (sensors_ == NULL) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_Sensors>(GetArenaNoVirtual());
+    sensors_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.sensors)
+  return sensors_;
+}
+inline void ClientToServer::set_allocated_sensors(::telemetry_data::ClientToServer_Sensors* sensors) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete sensors_;
+  }
+  if (sensors) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      sensors = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, sensors, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  sensors_ = sensors;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.sensors)
+}
+
 // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
 inline bool ClientToServer::has_emergency_brakes() const {
   return this != internal_default_instance() && emergency_brakes_ != NULL;
@@ -2220,6 +2627,10 @@ inline void ClientToServer::set_allocated_emergency_brakes(::telemetry_data::Cli
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

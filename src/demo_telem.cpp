@@ -6,7 +6,11 @@
 using hyped::utils::Logger;
 using hyped::utils::System;
 using hyped::utils::concurrent::Thread;
+using hyped::utils::math::Vector;
+using hyped::data::DataPoint;
 using namespace hyped::data;
+
+typedef Vector<float, 3> NavigationVector;
 
 void loop(Logger& logger);
 
@@ -34,6 +38,7 @@ void loop(Logger& logger) {
         Motors motor_data                       = data.getMotorData();
         EmergencyBrakes emergency_brakes_data   = data.getEmergencyBrakesData();
         Batteries batteries_data                = data.getBatteriesData();
+        Sensors sensors_data                    = data.getSensorsData();
         Telemetry telem_data                    = data.getTelemetryData();
 
         logger.DBG2("Telemetry", "SHARED module_status: %d", telem_data.module_status);
@@ -79,6 +84,17 @@ void loop(Logger& logger) {
         batteries_data.high_power_batteries.at(0) = high_power;
         data.setBatteriesData(batteries_data);
 
+        const std::array<float, 3> ray {{1, 1, 1}};
+        NavigationVector acc_vector(ray);
+        ImuData imu_data;
+        imu_data.operational = true;
+        imu_data.acc = acc_vector;
+        std::array<ImuData, Sensors::kNumImus> ray_of_imu_data {{imu_data}};
+        DataPoint<std::array<ImuData, Sensors::kNumImus>> dp(1000, ray_of_imu_data);
+        sensors_data.module_status = ModuleStatus::kReady;
+        sensors_data.imu = dp;
+        data.setSensorsData(sensors_data);
+
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
         nav_data.module_status = ModuleStatus::kInit;
@@ -115,6 +131,17 @@ void loop(Logger& logger) {
         batteries_data.low_power_batteries.at(0) = low_power;
         batteries_data.high_power_batteries.at(0) = high_power;
         data.setBatteriesData(batteries_data);
+
+        const std::array<float, 3> ray2 {{2, 2, 2}};
+        NavigationVector acc_vector2(ray2);
+        ImuData imu_data2;
+        imu_data2.operational = false;
+        imu_data2.acc = acc_vector2;
+        std::array<ImuData, Sensors::kNumImus> ray_of_imu_data2 {{imu_data2}};
+        DataPoint<std::array<ImuData, Sensors::kNumImus>> dp2(9999, ray_of_imu_data2);
+        sensors_data.module_status = ModuleStatus::kReady;
+        sensors_data.imu = dp2;
+        data.setSensorsData(sensors_data);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }

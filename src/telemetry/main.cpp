@@ -63,6 +63,7 @@ void Main::sendLoop()
         packStateMachineMessage(msg);
         packMotorsMessage(msg);
         packBatteriesMessage(msg);
+        packSensorsMessage(msg);
         packEmergencyBrakesMessage(msg);
 
         client_.sendData(msg);
@@ -142,6 +143,26 @@ void Main::packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_data_
     battery_data_msg.set_temperature(battery_data.temperature);
     battery_data_msg.set_low_voltage_cell(battery_data.low_voltage_cell);
     battery_data_msg.set_high_voltage_cell(battery_data.high_voltage_cell);
+}
+
+void Main::packSensorsMessage(telemetry_data::ClientToServer& msg)
+{
+    sensors_data_ = data_.getSensorsData();
+    telemetry_data::ClientToServer::Sensors* sensors_msg = msg.mutable_sensors();
+
+    sensors_msg->set_module_status(Utils::moduleStatusEnumConversion(sensors_data_.module_status));
+
+    for (data::ImuData imu_data : sensors_data_.imu.value) {
+        telemetry_data::ClientToServer::Sensors::ImuData* imu_data_msg = sensors_msg->add_imu();
+
+        imu_data_msg->set_operational(imu_data.operational);
+
+        // hardcoded atm to loop three times bc hyped vector doesn't have a method for vector length
+        // or have an iterator to support a ranged for loop
+        for (int i = 0; i < 3; i++) {
+            imu_data_msg->add_acc(imu_data.acc[i]);
+        }
+    }
 }
 
 void Main::packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg)

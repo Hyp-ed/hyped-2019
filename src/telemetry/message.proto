@@ -93,10 +93,15 @@ message ClientToServer {
         repeated BatteryData high_power_batteries = 3;
     }
 
-    // message Sensors {
-        // ModuleStatus module_status = 1;
-// 
-    // }
+    message Sensors {
+        message ImuData {
+            bool operational = 1;
+            repeated float acc = 2;
+        }
+
+        ModuleStatus module_status = 1;
+        repeated ImuData imu = 2;
+    }
 
     message EmergencyBrakes {
         bool front_brakes = 1;
@@ -107,6 +112,6 @@ message ClientToServer {
     StateMachine state_machine = 2;
     Motors motors = 3;
     Batteries batteries = 4;
-    // Sensors sensors = 5;
+    Sensors sensors = 5;
     EmergencyBrakes emergency_brakes = 6;
 }
