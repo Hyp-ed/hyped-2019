@@ -26,7 +26,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <iostream>
-#include "client.hpp"
+#include "telemetry/client.hpp"
 
 namespace hyped {
 namespace client {
@@ -54,7 +54,7 @@ bool Client::connect()
     if ((return_val = getaddrinfo(kServerIP, kPort, &hints, &server_info)) != 0) {
         log_.ERR("Telemetry", "%s", gai_strerror(return_val));
         return false;
-        // probably throw exception here or something
+        // TODO(neil): probably throw exception here or something
     }
 
     // get a socket file descriptor
@@ -62,7 +62,7 @@ bool Client::connect()
     if (sockfd_ == -1) {
         log_.ERR("Telemetry", "%s", strerror(errno));
         return false;
-        // probably throw exception here or something
+        // TODO(neil): probably throw exception here or something
     }
 
     // connect socket to server
@@ -70,7 +70,7 @@ bool Client::connect()
         close(sockfd_);
         log_.ERR("Telemetry", "%s", strerror(errno));
         return false;
-        // probably throw exception here or something
+        // TODO(neil): probably throw exception here or something
     }
 
     log_.INFO("Telemetry", "Connected to server");
@@ -109,7 +109,7 @@ telemetry_data::ServerToClient Client::receiveData()
 
     if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_, NULL)) {
         log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
-        // throw exception or something here
+        // TODO(neil): probably throw exception here or something
     }
 
     log_.DBG1("Telemetry", "Finished receiving from server");

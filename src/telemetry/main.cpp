@@ -19,8 +19,8 @@
  */
 
 #include <thread>
-#include "main.hpp"
-#include "utils.hpp"
+#include "telemetry/main.hpp"
+#include "telemetry/utils.hpp"
 
 namespace hyped {
 
@@ -47,8 +47,8 @@ void Main::run()
 
     // syntax explanation so I don't forget: thread constructor expects pointer to member function,
     //                                       also needs 'this' as object to call member function on
-    std::thread recv_thread {&Main::recvLoop, this};  // NOLINT (linter thinks semicolon is syntax error...)
     std::thread send_thread {&Main::sendLoop, this};  // NOLINT (linter thinks semicolon is syntax error...)
+    std::thread recv_thread {&Main::recvLoop, this};  // NOLINT (linter thinks semicolon is syntax error...)
 
     recv_thread.join();
     send_thread.join();
@@ -59,8 +59,6 @@ void Main::sendLoop()
     telemetry_data::ClientToServer msg;
 
     while (true) {
-        // sensors_data_           = data_.getSensorsData();
-
         packNavigationMessage(msg);
         packStateMachineMessage(msg);
         packMotorsMessage(msg);
@@ -189,7 +187,7 @@ void Main::recvLoop()
                 telem_data_struct.service_propulsion_go = msg.service_propulsion();
                 break;
             default:
-                log_.ERR("Telemetry", "Unrecognized input from server, entering critical failure");
+                log_.ERR("Telemetry", "Unrecognized input from server, ENTERING CRITICAL FAILURE");
                 telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
                 break;
         }

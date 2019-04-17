@@ -18,7 +18,7 @@
  *    limitations under the License.
  */
 
-#include "utils.hpp"
+#include "telemetry/utils.hpp"
 
 namespace hyped {
 

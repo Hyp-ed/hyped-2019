@@ -21,7 +21,7 @@
 #ifndef TELEMETRY_UTILS_HPP_
 #define TELEMETRY_UTILS_HPP_
 
-#include "types/message.pb.h"
+#include "telemetry/telemetrydata/message.pb.h"
 #include "data/data.hpp"
 
 namespace hyped {

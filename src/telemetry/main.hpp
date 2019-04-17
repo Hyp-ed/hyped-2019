@@ -22,7 +22,7 @@
 #define TELEMETRY_MAIN_HPP_
 
 #include "telemetry/telemetrydata/message.pb.h"
-#include "client.hpp"
+#include "telemetry/client.hpp"
 #include "data/data.hpp"
 #include "utils/concurrent/thread.hpp"
 

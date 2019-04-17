@@ -34,8 +34,8 @@ using google::protobuf::io::ZeroCopyInputStream;
 namespace client {
 
 constexpr auto kPort = "9090";
-// constexpr auto kServerIP = "localhost";
-constexpr auto kServerIP = "192.168.1.50";
+constexpr auto kServerIP = "localhost";
+// constexpr auto kServerIP = "192.168.1.50";
 
 class Client {
     public:

@@ -35,7 +35,7 @@ SRCS := \
   telemetry/main.cpp \
   telemetry/client.cpp \
   telemetry/utils.cpp \
-  telemetry/types/message.pb.cpp \
+  telemetry/telemetrydata/message.pb.cpp \
   utils/concurrent/barrier.cpp \
   utils/concurrent/condition_variable.cpp \
   utils/concurrent/lock.cpp \
