@@ -117,7 +117,7 @@ void Main::packBatteriesMessage(telemetry_data::ClientToServer& msg)
 }
 
 template<std::size_t SIZE>
-void Main::packLpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
+void Main::packLpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
 {
     for (auto battery_data : battery_data_array) {
         telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg.add_low_power_batteries(); // NOLINT
@@ -126,7 +126,7 @@ void Main::packLpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& b
 }
 
 template<std::size_t SIZE>
-void Main::packHpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
+void Main::packHpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array) // NOLINT
 {
     for (auto battery_data : battery_data_array) {
         telemetry_data::ClientToServer::Batteries::BatteryData* battery_data_msg = batteries_msg.add_high_power_batteries(); // NOLINT
@@ -134,7 +134,7 @@ void Main::packHpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& b
     }
 }
 
-void Main::packBatteryDataMessageHelper(telemetry_data::ClientToServer::Batteries::BatteryData& battery_data_msg, data::BatteryData& battery_data) // NOLINT
+void Main::packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_data_msg, data::BatteryData& battery_data) // NOLINT
 {
     battery_data_msg.set_voltage(battery_data.voltage);
     battery_data_msg.set_current(battery_data.current);

@@ -32,6 +32,7 @@ using client::Client;
 using utils::concurrent::Thread;
 using utils::Logger;
 using data::Data;
+using batteriesMsg = telemetry_data::ClientToServer::Batteries;
 
 namespace telemetry {
 
@@ -49,10 +50,10 @@ class Main: public Thread {
         void packMotorsMessage(telemetry_data::ClientToServer& msg);
         void packBatteriesMessage(telemetry_data::ClientToServer& msg);
         template<std::size_t SIZE>
-        void packLpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
+        void packLpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
         template<std::size_t SIZE>
-        void packHpBatteryDataMessage(telemetry_data::ClientToServer::Batteries& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
-        void packBatteryDataMessageHelper(telemetry_data::ClientToServer::Batteries::BatteryData& battery_data_msg, data::BatteryData& battery_data); // NOLINT
+        void packHpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
+        void packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_data_msg, data::BatteryData& battery_data); // NOLINT
         void packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg);
         Data& data_;
         data::Navigation        nav_data_;
