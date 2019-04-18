@@ -1,16 +1,14 @@
 #include <thread>
+#include "data/data.hpp"
 #include "telemetry/main.hpp"
+#include "sensors/main.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 
 using hyped::utils::Logger;
 using hyped::utils::System;
 using hyped::utils::concurrent::Thread;
-using hyped::utils::math::Vector;
-using hyped::data::DataPoint;
 using namespace hyped::data;
-
-typedef Vector<float, 3> NavigationVector;
 
 void loop(Logger& logger);
 
@@ -18,12 +16,19 @@ int main(int argc, char* argv[]) {
     System::parseArgs(argc, argv);
     System& sys = System::getSystem();
     Logger log_tlm(sys.verbose_tlm, sys.debug_tlm);
+    Logger log_sensor(sys.verbose_sensor, sys.debug_sensor);
 
     std::thread loopThread {loop, std::ref(log_tlm)};
 
     Thread* telemetry = new hyped::telemetry::Main(4, log_tlm);
+    Thread* sensors = new hyped::sensors::Main(0, log_sensor);
+
     telemetry->start();
+    sensors->start();
+    sensors->join();
     telemetry->join();
+
+    delete sensors;
     delete telemetry;
 
     loopThread.join();
@@ -37,8 +42,6 @@ void loop(Logger& logger) {
         StateMachine sm_data                    = data.getStateMachineData();
         Motors motor_data                       = data.getMotorData();
         EmergencyBrakes emergency_brakes_data   = data.getEmergencyBrakesData();
-        Batteries batteries_data                = data.getBatteriesData();
-        Sensors sensors_data                    = data.getSensorsData();
         Telemetry telem_data                    = data.getTelemetryData();
 
         logger.DBG2("Telemetry", "SHARED module_status: %d", telem_data.module_status);
@@ -64,37 +67,6 @@ void loop(Logger& logger) {
         emergency_brakes_data.rear_brakes = false;
         data.setEmergencyBrakesData(emergency_brakes_data);
 
-        BatteryData low_power;
-        low_power.voltage = 16;
-        low_power.current = -16;
-        low_power.charge = 16;
-        low_power.temperature = -16;
-        low_power.low_voltage_cell = 16;
-        low_power.high_voltage_cell = 16;
-
-        BatteryData high_power;
-        high_power.voltage = 10;
-        high_power.current = -10;
-        high_power.charge = 10;
-        high_power.temperature = -10;
-        high_power.low_voltage_cell = 10;
-        high_power.high_voltage_cell = 10;
-
-        batteries_data.low_power_batteries.at(0) = low_power;
-        batteries_data.high_power_batteries.at(0) = high_power;
-        data.setBatteriesData(batteries_data);
-
-        const std::array<float, 3> ray {{1, 1, 1}};
-        NavigationVector acc_vector(ray);
-        ImuData imu_data;
-        imu_data.operational = true;
-        imu_data.acc = acc_vector;
-        std::array<ImuData, Sensors::kNumImus> ray_of_imu_data {{imu_data}};
-        DataPoint<std::array<ImuData, Sensors::kNumImus>> dp(1000, ray_of_imu_data);
-        sensors_data.module_status = ModuleStatus::kReady;
-        sensors_data.imu = dp;
-        data.setSensorsData(sensors_data);
-
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
         nav_data.module_status = ModuleStatus::kInit;
@@ -113,35 +85,6 @@ void loop(Logger& logger) {
         emergency_brakes_data.front_brakes = true;
         emergency_brakes_data.rear_brakes = true;
         data.setEmergencyBrakesData(emergency_brakes_data);
-
-        low_power.voltage = 26;
-        low_power.current = -26;
-        low_power.charge = 26;
-        low_power.temperature = -26;
-        low_power.low_voltage_cell = 26;
-        low_power.high_voltage_cell = 26;
-
-        high_power.voltage = 20;
-        high_power.current = -20;
-        high_power.charge = 20;
-        high_power.temperature = -20;
-        high_power.low_voltage_cell = 20;
-        high_power.high_voltage_cell = 20;
-
-        batteries_data.low_power_batteries.at(0) = low_power;
-        batteries_data.high_power_batteries.at(0) = high_power;
-        data.setBatteriesData(batteries_data);
-
-        const std::array<float, 3> ray2 {{2, 2, 2}};
-        NavigationVector acc_vector2(ray2);
-        ImuData imu_data2;
-        imu_data2.operational = false;
-        imu_data2.acc = acc_vector2;
-        std::array<ImuData, Sensors::kNumImus> ray_of_imu_data2 {{imu_data2}};
-        DataPoint<std::array<ImuData, Sensors::kNumImus>> dp2(9999, ray_of_imu_data2);
-        sensors_data.module_status = ModuleStatus::kReady;
-        sensors_data.imu = dp2;
-        data.setSensorsData(sensors_data);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
