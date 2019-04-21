@@ -6,7 +6,7 @@
  * BMS manager for getting battery data and pushes to data struct.
  * Checks whether batteries are in range and enters emergency state if fails.
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -97,17 +97,17 @@ bool BmsManager::batteriesInRange()
   // check LP
   for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
     auto& battery = batteries_.low_power_batteries[i];      // reference batteries individually
-    if (battery.voltage < 140 || battery.voltage > 252) {   // voltage in 14V to 25.2V
+    if (battery.voltage < 240 || battery.voltage > 252) {   // voltage in 24V to 25.2V
       log_.ERR("BMS-MANAGER", "BMS LP %d voltage out of range: %d", i, battery.voltage);
       return false;
     }
 
-    if (battery.current < 0 || battery.current > 300) {       // current in 0A to 30A
+    if (battery.current < 120 || battery.current > 700) {       // current in 12A to 70A
       log_.ERR("BMS-MANAGER", "BMS LP %d current out of range: %d", i, battery.current);
       return false;
     }
 
-    if (battery.temperature < -20 || battery.temperature > 70) {  // temperature in -20C to 70C
+    if (battery.temperature < 10 || battery.temperature > 50) {  // temperature in 10C to 50C
       log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.temperature);
       return false;
     }
@@ -116,17 +116,17 @@ bool BmsManager::batteriesInRange()
   // check HP
   for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
     auto& battery = batteries_.high_power_batteries[i];     // reference battereis individually
-    if (battery.voltage < 720 || battery.voltage > 1246) {   // voltage in 72V to 124.6V
+    if (battery.voltage < 1100 || battery.voltage > 1188) {   // voltage in 110V to 118.8V
       log_.ERR("BMS-MANAGER", "BMS HP %d voltage out of range: %d", i, battery.voltage);
       return false;
     }
 
-    if (battery.current < -4000 || battery.current > 13500) {       // current in -400A to 1350A
+    if (battery.current < -4000 || battery.current > 4000) {       // current in -400A to 400A (just maximum)
       log_.ERR("BMS-MANAGER", "BMS HP %d current out of range: %d", i, battery.current);
       return false;
     }
 
-    if (battery.temperature < -20 || battery.temperature > 70) {  // temperature in -20C to 70C
+    if (battery.temperature < 10 || battery.temperature > 50) {  // temperature in 10C to 50C
       log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.temperature);
       return false;
     }

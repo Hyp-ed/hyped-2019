@@ -6,7 +6,7 @@
  * BMS manager for getting battery data and pushes to data struct.
  * Checks whether batteries are in range and enters emergency state if fails.
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
