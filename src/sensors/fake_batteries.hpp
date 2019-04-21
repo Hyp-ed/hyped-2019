@@ -1,5 +1,5 @@
 /*
- * Author: Jack Horsburgh and Gregory Dayo
+ * Author: Jack Horsburgh and Gregory Dayao
  * Organisation: HYPED
  * Date: 6/04/19
  * Description: Main class for fake.
@@ -52,9 +52,9 @@ class FakeBatteries : public BMSInterface {
   void updateBatteryData();
 
   BatteryInformation lp_failure_;
-  BatteryInformation lp_success_;    // TODO(Greg): adjust values
+  BatteryInformation lp_success_;
   BatteryInformation hp_failure_;
-  BatteryInformation hp_success_;    // TODO(Greg): adjust values
+  BatteryInformation hp_success_;
   // different success and fail cases
   BatteryCases cases_;
 
