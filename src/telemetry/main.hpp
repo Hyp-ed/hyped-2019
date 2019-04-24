@@ -22,8 +22,6 @@
 #define TELEMETRY_MAIN_HPP_
 
 #include "telemetry/client.hpp"
-#include "telemetry/telemetrydata/message.pb.h"
-#include "data/data.hpp"
 #include "utils/concurrent/thread.hpp"
 
 namespace hyped {
@@ -31,8 +29,6 @@ namespace hyped {
 using client::Client;
 using utils::concurrent::Thread;
 using utils::Logger;
-using data::Data;
-using batteriesMsg = telemetry_data::ClientToServer::Batteries;
 
 namespace telemetry {
 
@@ -42,10 +38,9 @@ class Main: public Thread {
         void run() override;
 
     private:
-        void recvLoop();
         friend class SendLoop;
+        friend class RecvLoop;
         Client client_;
-        Data& data_;
 };
 
 }  // namespace telemetry

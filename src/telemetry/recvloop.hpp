@@ -1,7 +1,7 @@
 /*
  * Author: Neil Weidinger
  * Organisation: HYPED
- * Date: March 2019
+ * Date: April 2019
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -18,42 +18,30 @@
  *    limitations under the License.
  */
 
+#ifndef TELEMETRY_RECVLOOP_HPP_
+#define TELEMETRY_RECVLOOP_HPP_
+
 #include "telemetry/main.hpp"
-#include "telemetry/sendloop.hpp"
-#include "telemetry/recvloop.hpp"
+#include "data/data.hpp"
+#include "utils/concurrent/thread.hpp"
 
 namespace hyped {
 
+using data::Data;
+
 namespace telemetry {
 
-Main::Main(uint8_t id, Logger& log)
-    : Thread {id, log},
-      client_ {log}
-{
-    log_.DBG("Telemetry", "Telemetry Main thread object created");
-}
+class RecvLoop: public Thread {
+    public:
+        explicit RecvLoop(Logger &log, Main* main_pointer);
+        void run() override;
 
-void Main::run()
-{
-    log_.DBG("Telemetry", "Telemetry Main thread started");
-
-    if (!client_.connect()) {
-        // idk throw exception or something
-        log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
-    }
-
-    Thread* sendloop_thread = new SendLoop(log_, this);
-    Thread* recvloop_thread = new RecvLoop(log_, this);
-
-    sendloop_thread->start();
-    recvloop_thread->start();
-
-    recvloop_thread->join();
-    sendloop_thread->join();
-
-    delete recvloop_thread;
-    delete sendloop_thread;
-}
+    private:
+        Main& main_ref_;
+        Data& data_;
+};
 
 }  // namespace telemetry
 }  // namespace hyped
+
+#endif  // TELEMETRY_RECVLOOP_HPP_

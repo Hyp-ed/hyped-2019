@@ -35,6 +35,7 @@ SRCS := \
   telemetry/main.cpp \
   telemetry/client.cpp \
   telemetry/sendloop.cpp \
+  telemetry/recvloop.cpp \
   telemetry/utils.cpp \
   telemetry/telemetrydata/message.pb.cpp \
   utils/concurrent/barrier.cpp \
