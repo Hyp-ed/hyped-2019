@@ -27,7 +27,7 @@ namespace telemetry {
 SendLoop::SendLoop(Logger& log, Main* main_pointer)
     : Thread {log},
       main_ref_ {*main_pointer},
-      data_ {Data::getInstance()}
+      data_ {data::Data::getInstance()}
 {
     log_.DBG("Telemetry", "Telemetry SendLoop thread object created");
 }

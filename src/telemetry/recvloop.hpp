@@ -27,8 +27,6 @@
 
 namespace hyped {
 
-using data::Data;
-
 namespace telemetry {
 
 class RecvLoop: public Thread {
@@ -38,7 +36,7 @@ class RecvLoop: public Thread {
 
     private:
         Main& main_ref_;
-        Data& data_;
+        data::Data& data_;
 };
 
 }  // namespace telemetry

@@ -42,17 +42,14 @@ void Main::run()
         log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
     }
 
-    Thread* sendloop_thread = new SendLoop(log_, this);
-    Thread* recvloop_thread = new RecvLoop(log_, this);
+    SendLoop sendloop_thread {log_, this};  // NOLINT
+    RecvLoop recvloop_thread {log_, this};  // NOLINT
 
-    sendloop_thread->start();
-    recvloop_thread->start();
+    sendloop_thread.start();
+    recvloop_thread.start();
 
-    recvloop_thread->join();
-    sendloop_thread->join();
-
-    delete recvloop_thread;
-    delete sendloop_thread;
+    sendloop_thread.join();
+    recvloop_thread.join();
 }
 
 }  // namespace telemetry

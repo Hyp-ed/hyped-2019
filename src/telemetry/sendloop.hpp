@@ -30,7 +30,6 @@ namespace hyped {
 
 using utils::concurrent::Thread;
 using utils::Logger;
-using data::Data;
 using batteriesMsg = telemetry_data::ClientToServer::Batteries;
 
 namespace telemetry {
@@ -53,7 +52,7 @@ class SendLoop: public Thread {
         void packSensorsMessage(telemetry_data::ClientToServer& msg);
         void packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg);
         Main& main_ref_;
-        Data& data_;
+        data::Data& data_;
         data::Navigation        nav_data_;
         data::StateMachine      sm_data_;
         data::Motors            motor_data_;
