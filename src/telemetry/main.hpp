@@ -21,9 +21,7 @@
 #ifndef TELEMETRY_MAIN_HPP_
 #define TELEMETRY_MAIN_HPP_
 
-#include "telemetry/telemetrydata/message.pb.h"
 #include "telemetry/client.hpp"
-#include "data/data.hpp"
 #include "utils/concurrent/thread.hpp"
 
 namespace hyped {
@@ -31,38 +29,18 @@ namespace hyped {
 using client::Client;
 using utils::concurrent::Thread;
 using utils::Logger;
-using data::Data;
-using batteriesMsg = telemetry_data::ClientToServer::Batteries;
 
 namespace telemetry {
 
 class Main: public Thread {
-    public:
-        Main(uint8_t id, Logger& log);
-        void run() override;
+  public:
+    Main(uint8_t id, Logger& log);
+    void run() override;
 
-    private:
-        Client client_;
-        void sendLoop();
-        void recvLoop();
-        void packNavigationMessage(telemetry_data::ClientToServer& msg);
-        void packStateMachineMessage(telemetry_data::ClientToServer& msg);
-        void packMotorsMessage(telemetry_data::ClientToServer& msg);
-        void packBatteriesMessage(telemetry_data::ClientToServer& msg);
-        template<std::size_t SIZE>
-        void packLpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
-        template<std::size_t SIZE>
-        void packHpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
-        void packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_data_msg, data::BatteryData& battery_data); // NOLINT
-        void packSensorsMessage(telemetry_data::ClientToServer& msg);
-        void packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg);
-        Data& data_;
-        data::Navigation        nav_data_;
-        data::StateMachine      sm_data_;
-        data::Motors            motor_data_;
-        data::Batteries         batteries_data_;
-        data::Sensors           sensors_data_;
-        data::EmergencyBrakes   emergency_brakes_data_;
+  private:
+    friend class SendLoop;
+    friend class RecvLoop;
+    Client client_;
 };
 
 }  // namespace telemetry
