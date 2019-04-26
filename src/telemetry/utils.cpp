@@ -26,54 +26,54 @@ namespace telemetry {
 
 ProtoModuleStatus Utils::moduleStatusEnumConversion(DataModuleStatus status)
 {
-    // Proto Module Status enum namespace
-    using pms = telemetry_data::ClientToServer;
+  // Proto Module Status enum namespace
+  using pms = telemetry_data::ClientToServer;
 
-    switch (status) {
-        case data::ModuleStatus::kStart:
-            return pms::START;
-        case data::ModuleStatus::kInit:
-            return pms::INIT;
-        case data::ModuleStatus::kReady:
-            return pms::READY;
-        case data::ModuleStatus::kCriticalFailure:
-            return pms::CRITICAL_FAILURE;
-        default:
-            // TODO(neil): throw error or something
-            return pms::CRITICAL_FAILURE;
-    }
+  switch (status) {
+    case data::ModuleStatus::kStart:
+      return pms::START;
+    case data::ModuleStatus::kInit:
+      return pms::INIT;
+    case data::ModuleStatus::kReady:
+      return pms::READY;
+    case data::ModuleStatus::kCriticalFailure:
+      return pms::CRITICAL_FAILURE;
+    default:
+      // TODO(neil): throw error or something
+      return pms::CRITICAL_FAILURE;
+  }
 }
 
 ProtoState Utils::stateEnumConversion(DataState state)
 {
-    // Proto State Machine State enum namespace
-    using psms = telemetry_data::ClientToServer::StateMachine;
+  // Proto State Machine State enum namespace
+  using psms = telemetry_data::ClientToServer::StateMachine;
 
-    switch (state) {
-        case data::State::kIdle:
-            return psms::IDLE;
-        case data::State::kCalibrating:
-            return psms::CALIBRATING;
-        case data::State::kReady:
-            return psms::READY;
-        case data::State::kAccelerating:
-            return psms::ACCELERATING;
-        case data::State::kNominalBraking:
-            return psms::NOMINAL_BRAKING;
-        case data::State::kEmergencyBraking:
-            return psms::EMERGENCY_BRAKING;
-        case data::State::kRunComplete:
-            return psms::RUN_COMPLETE;
-        case data::State::kFailureStopped:
-            return psms::FAILURE_STOPPED;
-        case data::State::kExiting:
-            return psms::EXITING;
-        case data::State::kFinished:
-            return psms::FINISHED;
-        default:
-            // TODO(neil): throw error or something
-            return psms::INVALID;
-    }
+  switch (state) {
+    case data::State::kIdle:
+      return psms::IDLE;
+    case data::State::kCalibrating:
+      return psms::CALIBRATING;
+    case data::State::kReady:
+      return psms::READY;
+    case data::State::kAccelerating:
+      return psms::ACCELERATING;
+    case data::State::kNominalBraking:
+      return psms::NOMINAL_BRAKING;
+    case data::State::kEmergencyBraking:
+      return psms::EMERGENCY_BRAKING;
+    case data::State::kRunComplete:
+      return psms::RUN_COMPLETE;
+    case data::State::kFailureStopped:
+      return psms::FAILURE_STOPPED;
+    case data::State::kExiting:
+      return psms::EXITING;
+    case data::State::kFinished:
+      return psms::FINISHED;
+    default:
+      // TODO(neil): throw error or something
+      return psms::INVALID;
+  }
 }
 
 }  // namespace telemetry

@@ -30,13 +30,13 @@ namespace hyped {
 namespace telemetry {
 
 class RecvLoop: public Thread {
-    public:
-        explicit RecvLoop(Logger &log, Main* main_pointer);
-        void run() override;
+  public:
+    explicit RecvLoop(Logger &log, Main* main_pointer);
+    void run() override;
 
-    private:
-        Main& main_ref_;
-        data::Data& data_;
+  private:
+    Main& main_ref_;
+    data::Data& data_;
 };
 
 }  // namespace telemetry

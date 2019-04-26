@@ -28,54 +28,54 @@ using data::ModuleStatus;
 namespace telemetry {
 
 RecvLoop::RecvLoop(Logger &log, Main* main_pointer)
-    : Thread {log},
-      main_ref_ {*main_pointer},
-      data_ {data::Data::getInstance()}
+  : Thread {log},
+    main_ref_ {*main_pointer},
+    data_ {data::Data::getInstance()}
 {
-    log_.DBG("Telemetry", "Telemetry RecvLoop thread object created");
+  log_.DBG("Telemetry", "Telemetry RecvLoop thread object created");
 }
 
 void RecvLoop::run()
 {
-    telemetry_data::ServerToClient msg;
-    // not sure whether to put this in or ouside of loop
-    data::Telemetry telem_data_struct = data_.getTelemetryData();
+  telemetry_data::ServerToClient msg;
+  // not sure whether to put this in or ouside of loop
+  data::Telemetry telem_data_struct = data_.getTelemetryData();
 
-    while (true) {
-        msg = main_ref_.client_.receiveData();
+  while (true) {
+    msg = main_ref_.client_.receiveData();
 
-        switch (msg.command()) {
-            case telemetry_data::ServerToClient::ACK:
-                log_.DBG1("Telemetry", "FROM SERVER: ACK");
-                break;
-            case telemetry_data::ServerToClient::STOP:
-                log_.DBG1("Telemetry", "FROM SERVER: STOP");
-                telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
-                break;
-            case telemetry_data::ServerToClient::LAUNCH:
-                log_.DBG1("Telemetry", "FROM SERVER: LAUNCH");
-                telem_data_struct.launch_command = true;
-                break;
-            case telemetry_data::ServerToClient::RESET:
-                log_.DBG1("Telemetry", "FROM SERVER: RESET");
-                telem_data_struct.reset_command = true;
-                break;
-            case telemetry_data::ServerToClient::RUN_LENGTH:
-                log_.DBG1("Telemetry", "FROM SERVER: RUN_LENGTH %f", msg.run_length());
-                telem_data_struct.run_length = msg.run_length();
-                break;
-            case telemetry_data::ServerToClient::SERVICE_PROPULSION:
-                log_.DBG1("Telemetry", "FROM SERVER: SERVICE_PROPULSION %s", msg.service_propulsion() ? "true" : "false");  // NOLINT
-                telem_data_struct.service_propulsion_go = msg.service_propulsion();
-                break;
-            default:
-                log_.ERR("Telemetry", "Unrecognized input from server, ENTERING CRITICAL FAILURE");
-                telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
-                break;
-        }
-
-        data_.setTelemetryData(telem_data_struct);
+    switch (msg.command()) {
+      case telemetry_data::ServerToClient::ACK:
+        log_.DBG1("Telemetry", "FROM SERVER: ACK");
+        break;
+      case telemetry_data::ServerToClient::STOP:
+        log_.DBG1("Telemetry", "FROM SERVER: STOP");
+        telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
+        break;
+      case telemetry_data::ServerToClient::LAUNCH:
+        log_.DBG1("Telemetry", "FROM SERVER: LAUNCH");
+        telem_data_struct.launch_command = true;
+        break;
+      case telemetry_data::ServerToClient::RESET:
+        log_.DBG1("Telemetry", "FROM SERVER: RESET");
+        telem_data_struct.reset_command = true;
+        break;
+      case telemetry_data::ServerToClient::RUN_LENGTH:
+        log_.DBG1("Telemetry", "FROM SERVER: RUN_LENGTH %f", msg.run_length());
+        telem_data_struct.run_length = msg.run_length();
+        break;
+      case telemetry_data::ServerToClient::SERVICE_PROPULSION:
+        log_.DBG1("Telemetry", "FROM SERVER: SERVICE_PROPULSION %s", msg.service_propulsion() ? "true" : "false");  // NOLINT
+        telem_data_struct.service_propulsion_go = msg.service_propulsion();
+        break;
+      default:
+        log_.ERR("Telemetry", "Unrecognized input from server, ENTERING CRITICAL FAILURE");
+        telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
+        break;
     }
+
+    data_.setTelemetryData(telem_data_struct);
+  }
 }
 
 }  // namespace telemetry

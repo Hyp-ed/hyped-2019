@@ -35,30 +35,30 @@ using batteriesMsg = telemetry_data::ClientToServer::Batteries;
 namespace telemetry {
 
 class SendLoop: public Thread {
-    public:
-        explicit SendLoop(Logger &log, Main* main_pointer);
-        void run() override;
+  public:
+    explicit SendLoop(Logger &log, Main* main_pointer);
+    void run() override;
 
-    private:
-        void packNavigationMessage(telemetry_data::ClientToServer& msg);
-        void packStateMachineMessage(telemetry_data::ClientToServer& msg);
-        void packMotorsMessage(telemetry_data::ClientToServer& msg);
-        void packBatteriesMessage(telemetry_data::ClientToServer& msg);
-        template<std::size_t SIZE>
-        void packLpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
-        template<std::size_t SIZE>
-        void packHpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
-        void packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_data_msg, data::BatteryData& battery_data); // NOLINT
-        void packSensorsMessage(telemetry_data::ClientToServer& msg);
-        void packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg);
-        Main& main_ref_;
-        data::Data& data_;
-        data::Navigation        nav_data_;
-        data::StateMachine      sm_data_;
-        data::Motors            motor_data_;
-        data::Batteries         batteries_data_;
-        data::Sensors           sensors_data_;
-        data::EmergencyBrakes   emergency_brakes_data_;
+  private:
+    void packNavigationMessage(telemetry_data::ClientToServer& msg);
+    void packStateMachineMessage(telemetry_data::ClientToServer& msg);
+    void packMotorsMessage(telemetry_data::ClientToServer& msg);
+    void packBatteriesMessage(telemetry_data::ClientToServer& msg);
+    template<std::size_t SIZE>
+    void packLpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
+    template<std::size_t SIZE>
+    void packHpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
+    void packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_data_msg, data::BatteryData& battery_data); // NOLINT
+    void packSensorsMessage(telemetry_data::ClientToServer& msg);
+    void packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg);
+    Main&                   main_ref_;
+    data::Data&             data_;
+    data::Navigation        nav_data_;
+    data::StateMachine      sm_data_;
+    data::Motors            motor_data_;
+    data::Batteries         batteries_data_;
+    data::Sensors           sensors_data_;
+    data::EmergencyBrakes   emergency_brakes_data_;
 };
 
 }  // namespace telemetry

@@ -34,9 +34,9 @@ using DataState         = data::State;
 namespace telemetry {
 
 class Utils {
-    public:
-        static ProtoModuleStatus moduleStatusEnumConversion(DataModuleStatus status);
-        static ProtoState stateEnumConversion(DataState state);
+  public:
+    static ProtoModuleStatus moduleStatusEnumConversion(DataModuleStatus status);
+    static ProtoState stateEnumConversion(DataState state);
 };
 
 }  // namespace telemetry

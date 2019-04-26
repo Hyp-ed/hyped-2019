@@ -27,29 +27,29 @@ namespace hyped {
 namespace telemetry {
 
 Main::Main(uint8_t id, Logger& log)
-    : Thread {id, log},
-      client_ {log}
+  : Thread {id, log},
+    client_ {log}
 {
-    log_.DBG("Telemetry", "Telemetry Main thread object created");
+  log_.DBG("Telemetry", "Telemetry Main thread object created");
 }
 
 void Main::run()
 {
-    log_.DBG("Telemetry", "Telemetry Main thread started");
+  log_.DBG("Telemetry", "Telemetry Main thread started");
 
-    if (!client_.connect()) {
-        // idk throw exception or something
-        log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
-    }
+  if (!client_.connect()) {
+    // idk throw exception or something
+    log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
+  }
 
-    SendLoop sendloop_thread {log_, this};  // NOLINT
-    RecvLoop recvloop_thread {log_, this};  // NOLINT
+  SendLoop sendloop_thread {log_, this};  // NOLINT
+  RecvLoop recvloop_thread {log_, this};  // NOLINT
 
-    sendloop_thread.start();
-    recvloop_thread.start();
+  sendloop_thread.start();
+  recvloop_thread.start();
 
-    sendloop_thread.join();
-    recvloop_thread.join();
+  sendloop_thread.join();
+  recvloop_thread.join();
 }
 
 }  // namespace telemetry

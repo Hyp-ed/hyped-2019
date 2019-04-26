@@ -33,14 +33,14 @@ using utils::Logger;
 namespace telemetry {
 
 class Main: public Thread {
-    public:
-        Main(uint8_t id, Logger& log);
-        void run() override;
+  public:
+    Main(uint8_t id, Logger& log);
+    void run() override;
 
-    private:
-        friend class SendLoop;
-        friend class RecvLoop;
-        Client client_;
+  private:
+    friend class SendLoop;
+    friend class RecvLoop;
+    Client client_;
 };
 
 }  // namespace telemetry
