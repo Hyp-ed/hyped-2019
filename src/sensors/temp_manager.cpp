@@ -15,8 +15,9 @@ TempManager::TempManager(Logger& log)
       data_(Data::getInstance())
 {}
 
+
 void TempManager::run() {
-  
+
 }
 
 }}  // namespace hyped::sensors 
