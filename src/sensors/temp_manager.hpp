@@ -16,17 +16,18 @@ using utils::Logger;
 
 namespace sensors {
 
-class TempManager: public ManagerInterface {
-  typedef data::DataPoint<array<int, 1>>  DataArray;      // kNumThermistors
+class TempManager: public Thread {
+  typedef array<AIN*, data::Sensors::kNumThermistors>  DataArray;      // kNumThermistors
 
  public:
   TempManager(Logger& log);
-
   void run()            override;
  private:
   utils::System&   sys_;
   DataArray        temp_;
   data::Data&      data_;
+  utils::Logger&   log_;
+  // TempInterface*   temp_[data::Sensors::kNumThermistors];  // TODO(anyone): need to implement?
 };
 
 }}    // namespace hyped::sensors
