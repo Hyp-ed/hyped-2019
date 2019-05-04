@@ -21,19 +21,21 @@ class AIN {
  public:
   AIN(uint32_t pin);
   AIN(uint32_t pin, Logger& log);
-  int read();
+  uint8_t read();
 
 private:
   AIN() = delete;
 
-  static void initialise();
+  void initialise();
 
-  static void uninitialise();
+  void uninitialise();
 
   static bool initialised_;
 
+  static std::vector<uint32_t> exported_pins;
   uint32_t pin_;
   Logger& log_;
+  int fd_;
 };
 }}}
 
