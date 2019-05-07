@@ -38,18 +38,18 @@ constexpr auto kPort = "9090";
 constexpr auto kServerIP = "192.168.1.50";
 
 class Client {
-    public:
-        explicit Client(Logger& log);
-        ~Client();
-        bool connect();
-        bool sendData(telemetry_data::ClientToServer message);
-        telemetry_data::ServerToClient receiveData();
+  public:
+    explicit Client(Logger& log);
+    ~Client();
+    bool connect();
+    bool sendData(telemetry_data::ClientToServer message);
+    telemetry_data::ServerToClient receiveData();
 
-    private:
-        int sockfd_;
-        Logger& log_;
-        // socket_stream_ is member var bc need to keep reading from same stream
-        ZeroCopyInputStream* socket_stream_;
+  private:
+    int sockfd_;
+    Logger& log_;
+    // socket_stream_ is member var bc need to keep reading from same stream
+    ZeroCopyInputStream* socket_stream_;
 };
 
 }  // namespace client

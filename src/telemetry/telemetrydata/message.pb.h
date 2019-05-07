@@ -39,7 +39,7 @@ namespace protobuf_message_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[7];
+  static const ::google::protobuf::internal::ParseTable schema[11];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -50,6 +50,12 @@ namespace telemetry_data {
 class ClientToServer;
 class ClientToServerDefaultTypeInternal;
 extern ClientToServerDefaultTypeInternal _ClientToServer_default_instance_;
+class ClientToServer_Batteries;
+class ClientToServer_BatteriesDefaultTypeInternal;
+extern ClientToServer_BatteriesDefaultTypeInternal _ClientToServer_Batteries_default_instance_;
+class ClientToServer_Batteries_BatteryData;
+class ClientToServer_Batteries_BatteryDataDefaultTypeInternal;
+extern ClientToServer_Batteries_BatteryDataDefaultTypeInternal _ClientToServer_Batteries_BatteryData_default_instance_;
 class ClientToServer_EmergencyBrakes;
 class ClientToServer_EmergencyBrakesDefaultTypeInternal;
 extern ClientToServer_EmergencyBrakesDefaultTypeInternal _ClientToServer_EmergencyBrakes_default_instance_;
@@ -59,6 +65,12 @@ extern ClientToServer_MotorsDefaultTypeInternal _ClientToServer_Motors_default_i
 class ClientToServer_Navigation;
 class ClientToServer_NavigationDefaultTypeInternal;
 extern ClientToServer_NavigationDefaultTypeInternal _ClientToServer_Navigation_default_instance_;
+class ClientToServer_Sensors;
+class ClientToServer_SensorsDefaultTypeInternal;
+extern ClientToServer_SensorsDefaultTypeInternal _ClientToServer_Sensors_default_instance_;
+class ClientToServer_Sensors_ImuData;
+class ClientToServer_Sensors_ImuDataDefaultTypeInternal;
+extern ClientToServer_Sensors_ImuDataDefaultTypeInternal _ClientToServer_Sensors_ImuData_default_instance_;
 class ClientToServer_StateMachine;
 class ClientToServer_StateMachineDefaultTypeInternal;
 extern ClientToServer_StateMachineDefaultTypeInternal _ClientToServer_StateMachine_default_instance_;
@@ -72,9 +84,13 @@ extern TestMessageDefaultTypeInternal _TestMessage_default_instance_;
 namespace google {
 namespace protobuf {
 template<> ::telemetry_data::ClientToServer* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer>(Arena*);
+template<> ::telemetry_data::ClientToServer_Batteries* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Batteries>(Arena*);
+template<> ::telemetry_data::ClientToServer_Batteries_BatteryData* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Batteries_BatteryData>(Arena*);
 template<> ::telemetry_data::ClientToServer_EmergencyBrakes* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_EmergencyBrakes>(Arena*);
 template<> ::telemetry_data::ClientToServer_Motors* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Motors>(Arena*);
 template<> ::telemetry_data::ClientToServer_Navigation* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Navigation>(Arena*);
+template<> ::telemetry_data::ClientToServer_Sensors* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Sensors>(Arena*);
+template<> ::telemetry_data::ClientToServer_Sensors_ImuData* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Sensors_ImuData>(Arena*);
 template<> ::telemetry_data::ClientToServer_StateMachine* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_StateMachine>(Arena*);
 template<> ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage<::telemetry_data::ServerToClient>(Arena*);
 template<> ::telemetry_data::TestMessage* Arena::CreateMaybeMessage<::telemetry_data::TestMessage>(Arena*);
@@ -161,6 +177,29 @@ inline bool ClientToServer_StateMachine_State_Parse(
     const ::std::string& name, ClientToServer_StateMachine_State* value) {
   return ::google::protobuf::internal::ParseNamedEnum<ClientToServer_StateMachine_State>(
     ClientToServer_StateMachine_State_descriptor(), name, value);
+}
+enum ClientToServer_ModuleStatus {
+  ClientToServer_ModuleStatus_START = 0,
+  ClientToServer_ModuleStatus_INIT = 1,
+  ClientToServer_ModuleStatus_READY = 2,
+  ClientToServer_ModuleStatus_CRITICAL_FAILURE = 3,
+  ClientToServer_ModuleStatus_ClientToServer_ModuleStatus_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  ClientToServer_ModuleStatus_ClientToServer_ModuleStatus_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool ClientToServer_ModuleStatus_IsValid(int value);
+const ClientToServer_ModuleStatus ClientToServer_ModuleStatus_ModuleStatus_MIN = ClientToServer_ModuleStatus_START;
+const ClientToServer_ModuleStatus ClientToServer_ModuleStatus_ModuleStatus_MAX = ClientToServer_ModuleStatus_CRITICAL_FAILURE;
+const int ClientToServer_ModuleStatus_ModuleStatus_ARRAYSIZE = ClientToServer_ModuleStatus_ModuleStatus_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* ClientToServer_ModuleStatus_descriptor();
+inline const ::std::string& ClientToServer_ModuleStatus_Name(ClientToServer_ModuleStatus value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    ClientToServer_ModuleStatus_descriptor(), value);
+}
+inline bool ClientToServer_ModuleStatus_Parse(
+    const ::std::string& name, ClientToServer_ModuleStatus* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ClientToServer_ModuleStatus>(
+    ClientToServer_ModuleStatus_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -546,21 +585,27 @@ class ClientToServer_Navigation : public ::google::protobuf::Message /* @@protoc
 
   // accessors -------------------------------------------------------
 
-  // float distance = 1;
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // float distance = 2;
   void clear_distance();
-  static const int kDistanceFieldNumber = 1;
+  static const int kDistanceFieldNumber = 2;
   float distance() const;
   void set_distance(float value);
 
-  // float velocity = 2;
+  // float velocity = 3;
   void clear_velocity();
-  static const int kVelocityFieldNumber = 2;
+  static const int kVelocityFieldNumber = 3;
   float velocity() const;
   void set_velocity(float value);
 
-  // float acceleration = 3;
+  // float acceleration = 4;
   void clear_acceleration();
-  static const int kAccelerationFieldNumber = 3;
+  static const int kAccelerationFieldNumber = 4;
   float acceleration() const;
   void set_acceleration(float value);
 
@@ -568,6 +613,7 @@ class ClientToServer_Navigation : public ::google::protobuf::Message /* @@protoc
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  int module_status_;
   float distance_;
   float velocity_;
   float acceleration_;
@@ -707,17 +753,17 @@ class ClientToServer_StateMachine : public ::google::protobuf::Message /* @@prot
 
   // accessors -------------------------------------------------------
 
-  // .telemetry_data.ClientToServer.StateMachine.State state = 1;
-  void clear_state();
-  static const int kStateFieldNumber = 1;
-  ::telemetry_data::ClientToServer_StateMachine_State state() const;
-  void set_state(::telemetry_data::ClientToServer_StateMachine_State value);
+  // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
+  void clear_current_state();
+  static const int kCurrentStateFieldNumber = 2;
+  ::telemetry_data::ClientToServer_StateMachine_State current_state() const;
+  void set_current_state(::telemetry_data::ClientToServer_StateMachine_State value);
 
   // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.StateMachine)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  int state_;
+  int current_state_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
 };
@@ -810,39 +856,45 @@ class ClientToServer_Motors : public ::google::protobuf::Message /* @@protoc_ins
 
   // accessors -------------------------------------------------------
 
-  // sint32 velocity_1 = 1;
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // sint32 velocity_1 = 2;
   void clear_velocity_1();
-  static const int kVelocity1FieldNumber = 1;
+  static const int kVelocity1FieldNumber = 2;
   ::google::protobuf::int32 velocity_1() const;
   void set_velocity_1(::google::protobuf::int32 value);
 
-  // sint32 velocity_2 = 2;
+  // sint32 velocity_2 = 3;
   void clear_velocity_2();
-  static const int kVelocity2FieldNumber = 2;
+  static const int kVelocity2FieldNumber = 3;
   ::google::protobuf::int32 velocity_2() const;
   void set_velocity_2(::google::protobuf::int32 value);
 
-  // sint32 velocity_3 = 3;
+  // sint32 velocity_3 = 4;
   void clear_velocity_3();
-  static const int kVelocity3FieldNumber = 3;
+  static const int kVelocity3FieldNumber = 4;
   ::google::protobuf::int32 velocity_3() const;
   void set_velocity_3(::google::protobuf::int32 value);
 
-  // sint32 velocity_4 = 4;
+  // sint32 velocity_4 = 5;
   void clear_velocity_4();
-  static const int kVelocity4FieldNumber = 4;
+  static const int kVelocity4FieldNumber = 5;
   ::google::protobuf::int32 velocity_4() const;
   void set_velocity_4(::google::protobuf::int32 value);
 
-  // sint32 velocity_5 = 5;
+  // sint32 velocity_5 = 6;
   void clear_velocity_5();
-  static const int kVelocity5FieldNumber = 5;
+  static const int kVelocity5FieldNumber = 6;
   ::google::protobuf::int32 velocity_5() const;
   void set_velocity_5(::google::protobuf::int32 value);
 
-  // sint32 velocity_6 = 6;
+  // sint32 velocity_6 = 7;
   void clear_velocity_6();
-  static const int kVelocity6FieldNumber = 6;
+  static const int kVelocity6FieldNumber = 7;
   ::google::protobuf::int32 velocity_6() const;
   void set_velocity_6(::google::protobuf::int32 value);
 
@@ -850,12 +902,517 @@ class ClientToServer_Motors : public ::google::protobuf::Message /* @@protoc_ins
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  int module_status_;
   ::google::protobuf::int32 velocity_1_;
   ::google::protobuf::int32 velocity_2_;
   ::google::protobuf::int32 velocity_3_;
   ::google::protobuf::int32 velocity_4_;
   ::google::protobuf::int32 velocity_5_;
   ::google::protobuf::int32 velocity_6_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_Batteries_BatteryData : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Batteries.BatteryData) */ {
+ public:
+  ClientToServer_Batteries_BatteryData();
+  virtual ~ClientToServer_Batteries_BatteryData();
+
+  ClientToServer_Batteries_BatteryData(const ClientToServer_Batteries_BatteryData& from);
+
+  inline ClientToServer_Batteries_BatteryData& operator=(const ClientToServer_Batteries_BatteryData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Batteries_BatteryData(ClientToServer_Batteries_BatteryData&& from) noexcept
+    : ClientToServer_Batteries_BatteryData() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Batteries_BatteryData& operator=(ClientToServer_Batteries_BatteryData&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Batteries_BatteryData& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Batteries_BatteryData* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Batteries_BatteryData*>(
+               &_ClientToServer_Batteries_BatteryData_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  void Swap(ClientToServer_Batteries_BatteryData* other);
+  friend void swap(ClientToServer_Batteries_BatteryData& a, ClientToServer_Batteries_BatteryData& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Batteries_BatteryData* New() const final {
+    return CreateMaybeMessage<ClientToServer_Batteries_BatteryData>(NULL);
+  }
+
+  ClientToServer_Batteries_BatteryData* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Batteries_BatteryData>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Batteries_BatteryData& from);
+  void MergeFrom(const ClientToServer_Batteries_BatteryData& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Batteries_BatteryData* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // uint32 voltage = 1;
+  void clear_voltage();
+  static const int kVoltageFieldNumber = 1;
+  ::google::protobuf::uint32 voltage() const;
+  void set_voltage(::google::protobuf::uint32 value);
+
+  // sint32 current = 2;
+  void clear_current();
+  static const int kCurrentFieldNumber = 2;
+  ::google::protobuf::int32 current() const;
+  void set_current(::google::protobuf::int32 value);
+
+  // uint32 charge = 3;
+  void clear_charge();
+  static const int kChargeFieldNumber = 3;
+  ::google::protobuf::uint32 charge() const;
+  void set_charge(::google::protobuf::uint32 value);
+
+  // int32 temperature = 4;
+  void clear_temperature();
+  static const int kTemperatureFieldNumber = 4;
+  ::google::protobuf::int32 temperature() const;
+  void set_temperature(::google::protobuf::int32 value);
+
+  // uint32 low_voltage_cell = 5;
+  void clear_low_voltage_cell();
+  static const int kLowVoltageCellFieldNumber = 5;
+  ::google::protobuf::uint32 low_voltage_cell() const;
+  void set_low_voltage_cell(::google::protobuf::uint32 value);
+
+  // uint32 high_voltage_cell = 6;
+  void clear_high_voltage_cell();
+  static const int kHighVoltageCellFieldNumber = 6;
+  ::google::protobuf::uint32 high_voltage_cell() const;
+  void set_high_voltage_cell(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Batteries.BatteryData)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 voltage_;
+  ::google::protobuf::int32 current_;
+  ::google::protobuf::uint32 charge_;
+  ::google::protobuf::int32 temperature_;
+  ::google::protobuf::uint32 low_voltage_cell_;
+  ::google::protobuf::uint32 high_voltage_cell_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_Batteries : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Batteries) */ {
+ public:
+  ClientToServer_Batteries();
+  virtual ~ClientToServer_Batteries();
+
+  ClientToServer_Batteries(const ClientToServer_Batteries& from);
+
+  inline ClientToServer_Batteries& operator=(const ClientToServer_Batteries& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Batteries(ClientToServer_Batteries&& from) noexcept
+    : ClientToServer_Batteries() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Batteries& operator=(ClientToServer_Batteries&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Batteries& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Batteries* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Batteries*>(
+               &_ClientToServer_Batteries_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  void Swap(ClientToServer_Batteries* other);
+  friend void swap(ClientToServer_Batteries& a, ClientToServer_Batteries& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Batteries* New() const final {
+    return CreateMaybeMessage<ClientToServer_Batteries>(NULL);
+  }
+
+  ClientToServer_Batteries* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Batteries>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Batteries& from);
+  void MergeFrom(const ClientToServer_Batteries& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Batteries* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ClientToServer_Batteries_BatteryData BatteryData;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
+  int low_power_batteries_size() const;
+  void clear_low_power_batteries();
+  static const int kLowPowerBatteriesFieldNumber = 2;
+  ::telemetry_data::ClientToServer_Batteries_BatteryData* mutable_low_power_batteries(int index);
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >*
+      mutable_low_power_batteries();
+  const ::telemetry_data::ClientToServer_Batteries_BatteryData& low_power_batteries(int index) const;
+  ::telemetry_data::ClientToServer_Batteries_BatteryData* add_low_power_batteries();
+  const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >&
+      low_power_batteries() const;
+
+  // repeated .telemetry_data.ClientToServer.Batteries.BatteryData high_power_batteries = 3;
+  int high_power_batteries_size() const;
+  void clear_high_power_batteries();
+  static const int kHighPowerBatteriesFieldNumber = 3;
+  ::telemetry_data::ClientToServer_Batteries_BatteryData* mutable_high_power_batteries(int index);
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >*
+      mutable_high_power_batteries();
+  const ::telemetry_data::ClientToServer_Batteries_BatteryData& high_power_batteries(int index) const;
+  ::telemetry_data::ClientToServer_Batteries_BatteryData* add_high_power_batteries();
+  const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >&
+      high_power_batteries() const;
+
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Batteries)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData > low_power_batteries_;
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData > high_power_batteries_;
+  int module_status_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_Sensors_ImuData : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Sensors.ImuData) */ {
+ public:
+  ClientToServer_Sensors_ImuData();
+  virtual ~ClientToServer_Sensors_ImuData();
+
+  ClientToServer_Sensors_ImuData(const ClientToServer_Sensors_ImuData& from);
+
+  inline ClientToServer_Sensors_ImuData& operator=(const ClientToServer_Sensors_ImuData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Sensors_ImuData(ClientToServer_Sensors_ImuData&& from) noexcept
+    : ClientToServer_Sensors_ImuData() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Sensors_ImuData& operator=(ClientToServer_Sensors_ImuData&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Sensors_ImuData& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Sensors_ImuData* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Sensors_ImuData*>(
+               &_ClientToServer_Sensors_ImuData_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  void Swap(ClientToServer_Sensors_ImuData* other);
+  friend void swap(ClientToServer_Sensors_ImuData& a, ClientToServer_Sensors_ImuData& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Sensors_ImuData* New() const final {
+    return CreateMaybeMessage<ClientToServer_Sensors_ImuData>(NULL);
+  }
+
+  ClientToServer_Sensors_ImuData* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Sensors_ImuData>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Sensors_ImuData& from);
+  void MergeFrom(const ClientToServer_Sensors_ImuData& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Sensors_ImuData* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated float acc = 2;
+  int acc_size() const;
+  void clear_acc();
+  static const int kAccFieldNumber = 2;
+  float acc(int index) const;
+  void set_acc(int index, float value);
+  void add_acc(float value);
+  const ::google::protobuf::RepeatedField< float >&
+      acc() const;
+  ::google::protobuf::RepeatedField< float >*
+      mutable_acc();
+
+  // bool operational = 1;
+  void clear_operational();
+  static const int kOperationalFieldNumber = 1;
+  bool operational() const;
+  void set_operational(bool value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Sensors.ImuData)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedField< float > acc_;
+  mutable int _acc_cached_byte_size_;
+  bool operational_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_message_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ClientToServer_Sensors : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Sensors) */ {
+ public:
+  ClientToServer_Sensors();
+  virtual ~ClientToServer_Sensors();
+
+  ClientToServer_Sensors(const ClientToServer_Sensors& from);
+
+  inline ClientToServer_Sensors& operator=(const ClientToServer_Sensors& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ClientToServer_Sensors(ClientToServer_Sensors&& from) noexcept
+    : ClientToServer_Sensors() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Sensors& operator=(ClientToServer_Sensors&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientToServer_Sensors& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Sensors* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Sensors*>(
+               &_ClientToServer_Sensors_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  void Swap(ClientToServer_Sensors* other);
+  friend void swap(ClientToServer_Sensors& a, ClientToServer_Sensors& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Sensors* New() const final {
+    return CreateMaybeMessage<ClientToServer_Sensors>(NULL);
+  }
+
+  ClientToServer_Sensors* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Sensors>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ClientToServer_Sensors& from);
+  void MergeFrom(const ClientToServer_Sensors& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Sensors* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ClientToServer_Sensors_ImuData ImuData;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
+  int imu_size() const;
+  void clear_imu();
+  static const int kImuFieldNumber = 2;
+  ::telemetry_data::ClientToServer_Sensors_ImuData* mutable_imu(int index);
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData >*
+      mutable_imu();
+  const ::telemetry_data::ClientToServer_Sensors_ImuData& imu(int index) const;
+  ::telemetry_data::ClientToServer_Sensors_ImuData* add_imu();
+  const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData >&
+      imu() const;
+
+  // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+  void clear_module_status();
+  static const int kModuleStatusFieldNumber = 1;
+  ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
+  void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Sensors)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData > imu_;
+  int module_status_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
 };
@@ -896,7 +1453,7 @@ class ClientToServer_EmergencyBrakes : public ::google::protobuf::Message /* @@p
                &_ClientToServer_EmergencyBrakes_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    9;
 
   void Swap(ClientToServer_EmergencyBrakes* other);
   friend void swap(ClientToServer_EmergencyBrakes& a, ClientToServer_EmergencyBrakes& b) {
@@ -1006,7 +1563,7 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
                &_ClientToServer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    10;
 
   void Swap(ClientToServer* other);
   friend void swap(ClientToServer& a, ClientToServer& b) {
@@ -1059,7 +1616,39 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   typedef ClientToServer_Navigation Navigation;
   typedef ClientToServer_StateMachine StateMachine;
   typedef ClientToServer_Motors Motors;
+  typedef ClientToServer_Batteries Batteries;
+  typedef ClientToServer_Sensors Sensors;
   typedef ClientToServer_EmergencyBrakes EmergencyBrakes;
+
+  typedef ClientToServer_ModuleStatus ModuleStatus;
+  static const ModuleStatus START =
+    ClientToServer_ModuleStatus_START;
+  static const ModuleStatus INIT =
+    ClientToServer_ModuleStatus_INIT;
+  static const ModuleStatus READY =
+    ClientToServer_ModuleStatus_READY;
+  static const ModuleStatus CRITICAL_FAILURE =
+    ClientToServer_ModuleStatus_CRITICAL_FAILURE;
+  static inline bool ModuleStatus_IsValid(int value) {
+    return ClientToServer_ModuleStatus_IsValid(value);
+  }
+  static const ModuleStatus ModuleStatus_MIN =
+    ClientToServer_ModuleStatus_ModuleStatus_MIN;
+  static const ModuleStatus ModuleStatus_MAX =
+    ClientToServer_ModuleStatus_ModuleStatus_MAX;
+  static const int ModuleStatus_ARRAYSIZE =
+    ClientToServer_ModuleStatus_ModuleStatus_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  ModuleStatus_descriptor() {
+    return ClientToServer_ModuleStatus_descriptor();
+  }
+  static inline const ::std::string& ModuleStatus_Name(ModuleStatus value) {
+    return ClientToServer_ModuleStatus_Name(value);
+  }
+  static inline bool ModuleStatus_Parse(const ::std::string& name,
+      ModuleStatus* value) {
+    return ClientToServer_ModuleStatus_Parse(name, value);
+  }
 
   // accessors -------------------------------------------------------
 
@@ -1099,6 +1688,30 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   ::telemetry_data::ClientToServer_Motors* mutable_motors();
   void set_allocated_motors(::telemetry_data::ClientToServer_Motors* motors);
 
+  // .telemetry_data.ClientToServer.Batteries batteries = 4;
+  bool has_batteries() const;
+  void clear_batteries();
+  static const int kBatteriesFieldNumber = 4;
+  private:
+  const ::telemetry_data::ClientToServer_Batteries& _internal_batteries() const;
+  public:
+  const ::telemetry_data::ClientToServer_Batteries& batteries() const;
+  ::telemetry_data::ClientToServer_Batteries* release_batteries();
+  ::telemetry_data::ClientToServer_Batteries* mutable_batteries();
+  void set_allocated_batteries(::telemetry_data::ClientToServer_Batteries* batteries);
+
+  // .telemetry_data.ClientToServer.Sensors sensors = 5;
+  bool has_sensors() const;
+  void clear_sensors();
+  static const int kSensorsFieldNumber = 5;
+  private:
+  const ::telemetry_data::ClientToServer_Sensors& _internal_sensors() const;
+  public:
+  const ::telemetry_data::ClientToServer_Sensors& sensors() const;
+  ::telemetry_data::ClientToServer_Sensors* release_sensors();
+  ::telemetry_data::ClientToServer_Sensors* mutable_sensors();
+  void set_allocated_sensors(::telemetry_data::ClientToServer_Sensors* sensors);
+
   // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
   bool has_emergency_brakes() const;
   void clear_emergency_brakes();
@@ -1118,6 +1731,8 @@ class ClientToServer : public ::google::protobuf::Message /* @@protoc_insertion_
   ::telemetry_data::ClientToServer_Navigation* navigation_;
   ::telemetry_data::ClientToServer_StateMachine* state_machine_;
   ::telemetry_data::ClientToServer_Motors* motors_;
+  ::telemetry_data::ClientToServer_Batteries* batteries_;
+  ::telemetry_data::ClientToServer_Sensors* sensors_;
   ::telemetry_data::ClientToServer_EmergencyBrakes* emergency_brakes_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
@@ -1211,7 +1826,21 @@ inline void ServerToClient::set_service_propulsion(bool value) {
 
 // ClientToServer_Navigation
 
-// float distance = 1;
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_Navigation::clear_module_status() {
+  module_status_ = 0;
+}
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_Navigation::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Navigation.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
+}
+inline void ClientToServer_Navigation::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
+  
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.module_status)
+}
+
+// float distance = 2;
 inline void ClientToServer_Navigation::clear_distance() {
   distance_ = 0;
 }
@@ -1225,7 +1854,7 @@ inline void ClientToServer_Navigation::set_distance(float value) {
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.distance)
 }
 
-// float velocity = 2;
+// float velocity = 3;
 inline void ClientToServer_Navigation::clear_velocity() {
   velocity_ = 0;
 }
@@ -1239,7 +1868,7 @@ inline void ClientToServer_Navigation::set_velocity(float value) {
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Navigation.velocity)
 }
 
-// float acceleration = 3;
+// float acceleration = 4;
 inline void ClientToServer_Navigation::clear_acceleration() {
   acceleration_ = 0;
 }
@@ -1257,25 +1886,39 @@ inline void ClientToServer_Navigation::set_acceleration(float value) {
 
 // ClientToServer_StateMachine
 
-// .telemetry_data.ClientToServer.StateMachine.State state = 1;
-inline void ClientToServer_StateMachine::clear_state() {
-  state_ = 0;
+// .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
+inline void ClientToServer_StateMachine::clear_current_state() {
+  current_state_ = 0;
 }
-inline ::telemetry_data::ClientToServer_StateMachine_State ClientToServer_StateMachine::state() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.StateMachine.state)
-  return static_cast< ::telemetry_data::ClientToServer_StateMachine_State >(state_);
+inline ::telemetry_data::ClientToServer_StateMachine_State ClientToServer_StateMachine::current_state() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.StateMachine.current_state)
+  return static_cast< ::telemetry_data::ClientToServer_StateMachine_State >(current_state_);
 }
-inline void ClientToServer_StateMachine::set_state(::telemetry_data::ClientToServer_StateMachine_State value) {
+inline void ClientToServer_StateMachine::set_current_state(::telemetry_data::ClientToServer_StateMachine_State value) {
   
-  state_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.StateMachine.state)
+  current_state_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.StateMachine.current_state)
 }
 
 // -------------------------------------------------------------------
 
 // ClientToServer_Motors
 
-// sint32 velocity_1 = 1;
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_Motors::clear_module_status() {
+  module_status_ = 0;
+}
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_Motors::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
+}
+inline void ClientToServer_Motors::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
+  
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.module_status)
+}
+
+// sint32 velocity_1 = 2;
 inline void ClientToServer_Motors::clear_velocity_1() {
   velocity_1_ = 0;
 }
@@ -1289,7 +1932,7 @@ inline void ClientToServer_Motors::set_velocity_1(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_1)
 }
 
-// sint32 velocity_2 = 2;
+// sint32 velocity_2 = 3;
 inline void ClientToServer_Motors::clear_velocity_2() {
   velocity_2_ = 0;
 }
@@ -1303,7 +1946,7 @@ inline void ClientToServer_Motors::set_velocity_2(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_2)
 }
 
-// sint32 velocity_3 = 3;
+// sint32 velocity_3 = 4;
 inline void ClientToServer_Motors::clear_velocity_3() {
   velocity_3_ = 0;
 }
@@ -1317,7 +1960,7 @@ inline void ClientToServer_Motors::set_velocity_3(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_3)
 }
 
-// sint32 velocity_4 = 4;
+// sint32 velocity_4 = 5;
 inline void ClientToServer_Motors::clear_velocity_4() {
   velocity_4_ = 0;
 }
@@ -1331,7 +1974,7 @@ inline void ClientToServer_Motors::set_velocity_4(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_4)
 }
 
-// sint32 velocity_5 = 5;
+// sint32 velocity_5 = 6;
 inline void ClientToServer_Motors::clear_velocity_5() {
   velocity_5_ = 0;
 }
@@ -1345,7 +1988,7 @@ inline void ClientToServer_Motors::set_velocity_5(::google::protobuf::int32 valu
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_5)
 }
 
-// sint32 velocity_6 = 6;
+// sint32 velocity_6 = 7;
 inline void ClientToServer_Motors::clear_velocity_6() {
   velocity_6_ = 0;
 }
@@ -1357,6 +2000,268 @@ inline void ClientToServer_Motors::set_velocity_6(::google::protobuf::int32 valu
   
   velocity_6_ = value;
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_6)
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_Batteries_BatteryData
+
+// uint32 voltage = 1;
+inline void ClientToServer_Batteries_BatteryData::clear_voltage() {
+  voltage_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientToServer_Batteries_BatteryData::voltage() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.voltage)
+  return voltage_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_voltage(::google::protobuf::uint32 value) {
+  
+  voltage_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.voltage)
+}
+
+// sint32 current = 2;
+inline void ClientToServer_Batteries_BatteryData::clear_current() {
+  current_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Batteries_BatteryData::current() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.current)
+  return current_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_current(::google::protobuf::int32 value) {
+  
+  current_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.current)
+}
+
+// uint32 charge = 3;
+inline void ClientToServer_Batteries_BatteryData::clear_charge() {
+  charge_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientToServer_Batteries_BatteryData::charge() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.charge)
+  return charge_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_charge(::google::protobuf::uint32 value) {
+  
+  charge_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.charge)
+}
+
+// int32 temperature = 4;
+inline void ClientToServer_Batteries_BatteryData::clear_temperature() {
+  temperature_ = 0;
+}
+inline ::google::protobuf::int32 ClientToServer_Batteries_BatteryData::temperature() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.temperature)
+  return temperature_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_temperature(::google::protobuf::int32 value) {
+  
+  temperature_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.temperature)
+}
+
+// uint32 low_voltage_cell = 5;
+inline void ClientToServer_Batteries_BatteryData::clear_low_voltage_cell() {
+  low_voltage_cell_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientToServer_Batteries_BatteryData::low_voltage_cell() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.low_voltage_cell)
+  return low_voltage_cell_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_low_voltage_cell(::google::protobuf::uint32 value) {
+  
+  low_voltage_cell_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.low_voltage_cell)
+}
+
+// uint32 high_voltage_cell = 6;
+inline void ClientToServer_Batteries_BatteryData::clear_high_voltage_cell() {
+  high_voltage_cell_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientToServer_Batteries_BatteryData::high_voltage_cell() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.high_voltage_cell)
+  return high_voltage_cell_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_high_voltage_cell(::google::protobuf::uint32 value) {
+  
+  high_voltage_cell_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.high_voltage_cell)
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_Batteries
+
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_Batteries::clear_module_status() {
+  module_status_ = 0;
+}
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_Batteries::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
+}
+inline void ClientToServer_Batteries::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
+  
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.module_status)
+}
+
+// repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
+inline int ClientToServer_Batteries::low_power_batteries_size() const {
+  return low_power_batteries_.size();
+}
+inline void ClientToServer_Batteries::clear_low_power_batteries() {
+  low_power_batteries_.Clear();
+}
+inline ::telemetry_data::ClientToServer_Batteries_BatteryData* ClientToServer_Batteries::mutable_low_power_batteries(int index) {
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return low_power_batteries_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >*
+ClientToServer_Batteries::mutable_low_power_batteries() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return &low_power_batteries_;
+}
+inline const ::telemetry_data::ClientToServer_Batteries_BatteryData& ClientToServer_Batteries::low_power_batteries(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return low_power_batteries_.Get(index);
+}
+inline ::telemetry_data::ClientToServer_Batteries_BatteryData* ClientToServer_Batteries::add_low_power_batteries() {
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return low_power_batteries_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >&
+ClientToServer_Batteries::low_power_batteries() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Batteries.low_power_batteries)
+  return low_power_batteries_;
+}
+
+// repeated .telemetry_data.ClientToServer.Batteries.BatteryData high_power_batteries = 3;
+inline int ClientToServer_Batteries::high_power_batteries_size() const {
+  return high_power_batteries_.size();
+}
+inline void ClientToServer_Batteries::clear_high_power_batteries() {
+  high_power_batteries_.Clear();
+}
+inline ::telemetry_data::ClientToServer_Batteries_BatteryData* ClientToServer_Batteries::mutable_high_power_batteries(int index) {
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return high_power_batteries_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >*
+ClientToServer_Batteries::mutable_high_power_batteries() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return &high_power_batteries_;
+}
+inline const ::telemetry_data::ClientToServer_Batteries_BatteryData& ClientToServer_Batteries::high_power_batteries(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return high_power_batteries_.Get(index);
+}
+inline ::telemetry_data::ClientToServer_Batteries_BatteryData* ClientToServer_Batteries::add_high_power_batteries() {
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return high_power_batteries_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Batteries_BatteryData >&
+ClientToServer_Batteries::high_power_batteries() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Batteries.high_power_batteries)
+  return high_power_batteries_;
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_Sensors_ImuData
+
+// bool operational = 1;
+inline void ClientToServer_Sensors_ImuData::clear_operational() {
+  operational_ = false;
+}
+inline bool ClientToServer_Sensors_ImuData::operational() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Sensors.ImuData.operational)
+  return operational_;
+}
+inline void ClientToServer_Sensors_ImuData::set_operational(bool value) {
+  
+  operational_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Sensors.ImuData.operational)
+}
+
+// repeated float acc = 2;
+inline int ClientToServer_Sensors_ImuData::acc_size() const {
+  return acc_.size();
+}
+inline void ClientToServer_Sensors_ImuData::clear_acc() {
+  acc_.Clear();
+}
+inline float ClientToServer_Sensors_ImuData::acc(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+  return acc_.Get(index);
+}
+inline void ClientToServer_Sensors_ImuData::set_acc(int index, float value) {
+  acc_.Set(index, value);
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+}
+inline void ClientToServer_Sensors_ImuData::add_acc(float value) {
+  acc_.Add(value);
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+}
+inline const ::google::protobuf::RepeatedField< float >&
+ClientToServer_Sensors_ImuData::acc() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+  return acc_;
+}
+inline ::google::protobuf::RepeatedField< float >*
+ClientToServer_Sensors_ImuData::mutable_acc() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Sensors.ImuData.acc)
+  return &acc_;
+}
+
+// -------------------------------------------------------------------
+
+// ClientToServer_Sensors
+
+// .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+inline void ClientToServer_Sensors::clear_module_status() {
+  module_status_ = 0;
+}
+inline ::telemetry_data::ClientToServer_ModuleStatus ClientToServer_Sensors::module_status() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Sensors.module_status)
+  return static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(module_status_);
+}
+inline void ClientToServer_Sensors::set_module_status(::telemetry_data::ClientToServer_ModuleStatus value) {
+  
+  module_status_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Sensors.module_status)
+}
+
+// repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
+inline int ClientToServer_Sensors::imu_size() const {
+  return imu_.size();
+}
+inline void ClientToServer_Sensors::clear_imu() {
+  imu_.Clear();
+}
+inline ::telemetry_data::ClientToServer_Sensors_ImuData* ClientToServer_Sensors::mutable_imu(int index) {
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.Sensors.imu)
+  return imu_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData >*
+ClientToServer_Sensors::mutable_imu() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Sensors.imu)
+  return &imu_;
+}
+inline const ::telemetry_data::ClientToServer_Sensors_ImuData& ClientToServer_Sensors::imu(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Sensors.imu)
+  return imu_.Get(index);
+}
+inline ::telemetry_data::ClientToServer_Sensors_ImuData* ClientToServer_Sensors::add_imu() {
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Sensors.imu)
+  return imu_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::telemetry_data::ClientToServer_Sensors_ImuData >&
+ClientToServer_Sensors::imu() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Sensors.imu)
+  return imu_;
 }
 
 // -------------------------------------------------------------------
@@ -1557,6 +2462,114 @@ inline void ClientToServer::set_allocated_motors(::telemetry_data::ClientToServe
   // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.motors)
 }
 
+// .telemetry_data.ClientToServer.Batteries batteries = 4;
+inline bool ClientToServer::has_batteries() const {
+  return this != internal_default_instance() && batteries_ != NULL;
+}
+inline void ClientToServer::clear_batteries() {
+  if (GetArenaNoVirtual() == NULL && batteries_ != NULL) {
+    delete batteries_;
+  }
+  batteries_ = NULL;
+}
+inline const ::telemetry_data::ClientToServer_Batteries& ClientToServer::_internal_batteries() const {
+  return *batteries_;
+}
+inline const ::telemetry_data::ClientToServer_Batteries& ClientToServer::batteries() const {
+  const ::telemetry_data::ClientToServer_Batteries* p = batteries_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.batteries)
+  return p != NULL ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_Batteries*>(
+      &::telemetry_data::_ClientToServer_Batteries_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_Batteries* ClientToServer::release_batteries() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.batteries)
+  
+  ::telemetry_data::ClientToServer_Batteries* temp = batteries_;
+  batteries_ = NULL;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_Batteries* ClientToServer::mutable_batteries() {
+  
+  if (batteries_ == NULL) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_Batteries>(GetArenaNoVirtual());
+    batteries_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.batteries)
+  return batteries_;
+}
+inline void ClientToServer::set_allocated_batteries(::telemetry_data::ClientToServer_Batteries* batteries) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete batteries_;
+  }
+  if (batteries) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      batteries = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, batteries, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  batteries_ = batteries;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.batteries)
+}
+
+// .telemetry_data.ClientToServer.Sensors sensors = 5;
+inline bool ClientToServer::has_sensors() const {
+  return this != internal_default_instance() && sensors_ != NULL;
+}
+inline void ClientToServer::clear_sensors() {
+  if (GetArenaNoVirtual() == NULL && sensors_ != NULL) {
+    delete sensors_;
+  }
+  sensors_ = NULL;
+}
+inline const ::telemetry_data::ClientToServer_Sensors& ClientToServer::_internal_sensors() const {
+  return *sensors_;
+}
+inline const ::telemetry_data::ClientToServer_Sensors& ClientToServer::sensors() const {
+  const ::telemetry_data::ClientToServer_Sensors* p = sensors_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.sensors)
+  return p != NULL ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_Sensors*>(
+      &::telemetry_data::_ClientToServer_Sensors_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_Sensors* ClientToServer::release_sensors() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.sensors)
+  
+  ::telemetry_data::ClientToServer_Sensors* temp = sensors_;
+  sensors_ = NULL;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_Sensors* ClientToServer::mutable_sensors() {
+  
+  if (sensors_ == NULL) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_Sensors>(GetArenaNoVirtual());
+    sensors_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.sensors)
+  return sensors_;
+}
+inline void ClientToServer::set_allocated_sensors(::telemetry_data::ClientToServer_Sensors* sensors) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete sensors_;
+  }
+  if (sensors) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      sensors = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, sensors, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  sensors_ = sensors;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.sensors)
+}
+
 // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
 inline bool ClientToServer::has_emergency_brakes() const {
   return this != internal_default_instance() && emergency_brakes_ != NULL;
@@ -1626,6 +2639,14 @@ inline void ClientToServer::set_allocated_emergency_brakes(::telemetry_data::Cli
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -1648,6 +2669,11 @@ template <> struct is_proto_enum< ::telemetry_data::ClientToServer_StateMachine_
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::telemetry_data::ClientToServer_StateMachine_State>() {
   return ::telemetry_data::ClientToServer_StateMachine_State_descriptor();
+}
+template <> struct is_proto_enum< ::telemetry_data::ClientToServer_ModuleStatus> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::telemetry_data::ClientToServer_ModuleStatus>() {
+  return ::telemetry_data::ClientToServer_ModuleStatus_descriptor();
 }
 
 }  // namespace protobuf

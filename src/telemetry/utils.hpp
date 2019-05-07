@@ -18,39 +18,28 @@
  *    limitations under the License.
  */
 
-#include "telemetry/main.hpp"
-#include "telemetry/sendloop.hpp"
-#include "telemetry/recvloop.hpp"
+#ifndef TELEMETRY_UTILS_HPP_
+#define TELEMETRY_UTILS_HPP_
+
+#include "telemetry/telemetrydata/message.pb.h"
+#include "data/data.hpp"
 
 namespace hyped {
 
+using ProtoModuleStatus = telemetry_data::ClientToServer::ModuleStatus;
+using ProtoState        = telemetry_data::ClientToServer::StateMachine::State;
+using DataModuleStatus  = data::ModuleStatus;
+using DataState         = data::State;
+
 namespace telemetry {
 
-Main::Main(uint8_t id, Logger& log)
-  : Thread {id, log},
-    client_ {log}
-{
-  log_.DBG("Telemetry", "Telemetry Main thread object created");
-}
-
-void Main::run()
-{
-  log_.DBG("Telemetry", "Telemetry Main thread started");
-
-  if (!client_.connect()) {
-    // idk throw exception or something
-    log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
-  }
-
-  SendLoop sendloop_thread {log_, this};  // NOLINT
-  RecvLoop recvloop_thread {log_, this};  // NOLINT
-
-  sendloop_thread.start();
-  recvloop_thread.start();
-
-  sendloop_thread.join();
-  recvloop_thread.join();
-}
+class Utils {
+  public:
+    static ProtoModuleStatus moduleStatusEnumConversion(DataModuleStatus status);
+    static ProtoState stateEnumConversion(DataState state);
+};
 
 }  // namespace telemetry
 }  // namespace hyped
+
+#endif  // TELEMETRY_UTILS_HPP_
