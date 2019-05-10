@@ -1,5 +1,5 @@
-#ifndef UTILS_IO_AIN_HPP_
-#define UTILS_IO_AIN_HPP_
+#ifndef UTILS_IO_ADC_HPP_
+#define UTILS_IO_ADC_HPP_
 
 #include <cstdint>
 #include <vector>
@@ -13,22 +13,24 @@ namespace utils {
 class Logger;
 namespace io {
 
-namespace ain {
+namespace adc {
 // constexpr uint8_t kBankNum = 4;
-}   // namespace ain
+}   // namespace adc
 
-class AIN {
+class ADC {
  public:
-  AIN(uint32_t pin);
-  AIN(uint32_t pin, Logger& log);
+  ADC(uint32_t pin);
+  ADC(uint32_t pin, Logger& log);
   uint8_t read();
 
 private:
-  AIN() = delete;
+  ADC() = delete;
 
   void initialise();
 
   void uninitialise();
+
+  void exportBuffer();
 
   static bool initialised_;
 
@@ -39,4 +41,4 @@ private:
 };
 }}}
 
-#endif  // UTILS_IO_AIN_HPP_
+#endif  // UTILS_IO_ADC_HPP_
