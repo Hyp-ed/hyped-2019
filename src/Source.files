@@ -39,6 +39,7 @@ SRCS := \
   utils/io/can.cpp \
   utils/io/gpio.cpp \
   utils/io/spi.cpp \
+  utils/io/adc.cpp \
   utils/config.cpp \
   utils/logger.cpp \
   utils/system.cpp \
