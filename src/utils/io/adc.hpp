@@ -14,7 +14,6 @@ class Logger;
 namespace io {
 
 namespace adc {
-// constexpr uint8_t kBankNum = 4;
 }   // namespace adc
 
 class ADC {
@@ -26,18 +25,26 @@ class ADC {
 private:
   ADC() = delete;
 
-  void initialise();
+  static void initialise();
 
-  void uninitialise();
+  static void uninitialise();
 
-  void exportBuffer();
+  void exportADC();
+  
+  void attachADC();
+
+  void setupBuffer();
 
   static bool initialised_;
 
+  static void* base_mapping_;
+
   static std::vector<uint32_t> exported_pins;
-  uint32_t pin_;
-  Logger& log_;
-  int fd_;
+  uint32_t      pin_;
+  uint32_t      pin_mask_;
+  volatile      uint32_t* data_;       // data register
+  Logger&       log_;
+  int           fd_;
 };
 }}}
 
