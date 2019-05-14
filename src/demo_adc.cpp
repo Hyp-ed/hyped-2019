@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
   Thread::sleep(100);
 
   for (int i=0; i<20; i++) {
-    analog.read();
+    log.INFO("DEMO-ADC", "%d", analog.read());
   }
   
 }
