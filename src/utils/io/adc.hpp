@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "utils/utils.hpp"
-#include "logger.hpp"
+#include "utils/logger.hpp"
 
 namespace hyped {
 namespace utils {
@@ -40,10 +40,12 @@ private:
   static void* base_mapping_;
 
   static std::vector<uint32_t> exported_pins;
+
   uint32_t      pin_;
+  Logger&       log_;
+
   uint32_t      pin_mask_;
   volatile      uint32_t* data_;       // data register
-  Logger&       log_;
   int           fd_;
 };
 }}}

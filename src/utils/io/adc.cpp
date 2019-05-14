@@ -10,6 +10,9 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
+#include "utils/logger.hpp"
+#include "utils/system.hpp"
+
 namespace hyped {
 namespace utils {
 namespace io {
@@ -19,7 +22,7 @@ constexpr uint32_t kADCAddrBase = 0x44E0D000;
 constexpr uint32_t kMmapSize = 0x2000;          // (8 KB)
 constexpr int kBufSize  = 100;
 
-uint8_t readHelper(int fd)
+uint32_t readHelper(int fd)
 {
   char buf[10];
   lseek(fd, 0, SEEK_SET);                      // reset file pointer
@@ -29,8 +32,13 @@ uint8_t readHelper(int fd)
 
 }   // namespace adc
 
+bool ADC::initialised_ = false;
 void* ADC::base_mapping_;
 std::vector<uint32_t> ADC::exported_pins;              // NOLINT [build/include_what_you_use]
+
+ADC::ADC(uint32_t pin)
+    : ADC(pin, System::getLogger())
+{ /* EMPTY, delegate to the other constructor */ }
 
 ADC::ADC(uint32_t pin, Logger& log)
     : pin_(pin),
@@ -56,7 +64,7 @@ void ADC::initialise()
   Logger log(false, -1);
   int fd;                // file descriptor
   void* base;
-  char buf[adc::kBufSize];     // file buffer
+  // char buf[adc::kBufSize];     // file buffer
 
   fd = open("/dev/mem", O_RDWR);
   if (fd < 0) {
@@ -79,7 +87,6 @@ void ADC::uninitialise()
 {
   int fd;                 // file descriptor
   char buf[adc::kBufSize];     // file buffer
-  uint32_t len;
   Logger log(1, 1);
   log.ERR("ADC", "uninitialising");
 
@@ -107,9 +114,9 @@ void ADC::exportADC()
   if (fd < 0) {
     log_.ERR("ADC", "could not enable pin %d", pin_);
   }
-  char buf[10];
-  snprintf(buf, sizeof(buf), "%i", pin_);
-  len = write(fd, buf, strlen(buf) + 1);
+  char pinbuf[10];
+  snprintf(pinbuf, sizeof(pinbuf), "%i", pin_);
+  len = write(fd, pinbuf, strlen(pinbuf) + 1);
   close(fd);
   if (len != strlen(buf) +1) {
     log_.INFO("ADC", "could not enable ADC %d, might be already be enabled", pin_);
@@ -177,10 +184,10 @@ uint8_t ADC::read()
     log_.ERR("ADC", "service has not been initialised");
     return 0;
   }
-  if (!data_) {
-    log_.ERR("ADC", "data register not configured, pin %d", pin_);
-    return 0;
-  }
+  // if (!data_) {
+  //   log_.ERR("ADC", "data register not configured, pin %d", pin_);
+  //   return 0;
+  // }
 
   // TODO(Greg): needs to read from buffer
   // something with base mapping
@@ -193,7 +200,7 @@ uint8_t ADC::read()
   if (fd < 0) {
     log_.ERR("ADC", "problem reading pin %d raw voltage ", pin_);
   }
-  int val = adc::readHelper(fd);
+  uint32_t val = adc::readHelper(fd);      // TODO(Greg): Check readHelper function
   return val;
 }
 
