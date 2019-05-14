@@ -6,19 +6,36 @@
 #include <unistd.h>     //close()
 #include <fcntl.h>     //define O_WONLY and O_RDONLY
 #include <string>
+#include <errno.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
 
 namespace hyped {
 namespace utils {
 namespace io {
 namespace adc {
 
+constexpr uint32_t kADCAddrBase = 0x44E0D000;
+constexpr uint32_t kMmapSize = 0x2000;          // (8 KB)
 constexpr int kBufSize  = 100;
-std::vector<uint32_t> exported_pins;              // NOLINT [build/include_what_you_use]
 
+uint8_t readHelper(int fd)
+{
+  char buf[10];
+  lseek(fd, 0, SEEK_SET);                      // reset file pointer
+  read(fd, buf, sizeof(buf));                  // actually consume new data, changes value in buffer
+  return std::atoi(buf);
+}
+
+}   // namespace adc
+
+void* ADC::base_mapping_;
+std::vector<uint32_t> ADC::exported_pins;              // NOLINT [build/include_what_you_use]
 
 ADC::ADC(uint32_t pin, Logger& log)
     : pin_(pin),
       log_(log),
+      data_(0),
       fd_(0)
 {
   if (!initialised_)  initialise();
@@ -30,85 +47,128 @@ ADC::ADC(uint32_t pin, Logger& log)
     }
   }
   exported_pins.push_back(pin_);
-
-  exportBuffer();
-}
-
-uint8_t readHelper(int fd)
-{
-  char buf[2];
-  lseek(fd, 0, SEEK_SET);                      // reset file pointer
-  read(fd, buf, sizeof(buf));                  // actually consume new data, changes value in buffer
-  return std::atoi(buf);
+  exportADC();
+  attachADC();
 }
 
 void ADC::initialise()
-{  
+{
   Logger log(false, -1);
   int fd;                // file descriptor
-  char buf[kBufSize];     // file buffer
-  uint32_t len;
-  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio\:device0/scan_elements/in_voltage%i_en", pin_);    // device0 or device%i
-  fd = open(buf, O_WRONLY);     // write only, need to enable with 1
+  void* base;
+  char buf[adc::kBufSize];     // file buffer
+
+  fd = open("/dev/mem", O_RDWR);
   if (fd < 0) {
-    log.ERR("ADC", "problem isolating adc %d", pin_);
+    log.ERR("ADC", "could not open /dev/mem");
+    return;
   }
 
-  // fd_ = fd;
-  // atexit(uninitialise);
+  base = mmap(0, adc::kMmapSize, PROT_READ | PROT_WRITE, MAP_SHARED,
+              fd, adc::kADCAddrBase);
+  if (base == MAP_FAILED) {
+    log.ERR("ADC", "could not map bank 0x%x", adc::kADCAddrBase);
+    return;
+  }
+  base_mapping_ = base;
+  atexit(uninitialise);
   initialised_ = true;
 }
 
 void ADC::uninitialise()
 {
   int fd;                 // file descriptor
-  char buf[kBufSize];     // file buffer
+  char buf[adc::kBufSize];     // file buffer
   uint32_t len;
   Logger log(1, 1);
   log.ERR("ADC", "uninitialising");
 
-  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio\:device0/buffer/enable");
-  fd = open(buf, O_WRONLY);     // write only, need to disable with 0
-  if (fd < 0) {
-    log.ERR("ADC", "problem disabling buffer");
+  for (uint32_t pin : exported_pins) {
+    snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin);
+    fd = open(buf, O_WRONLY);
+    if (fd < 0) {
+    log.ERR("ADC", "could not disable pin %d", pin);
+    }
+    char buf[10];
+    snprintf(buf, sizeof(buf), "%i", pin);
+    write(fd, buf, strlen(buf) + 1);
   }
-  len = write(fd,"0", 1);
   close(fd);
 }
 
-void ADC::exportBuffer()
+void ADC::exportADC()
 {
-  Logger log(false, -1);
   int fd;                 // file descriptor
-  char buf[kBufSize];     // file buffer
+  char buf[adc::kBufSize];     // file buffer
   uint32_t len;
 
-  // set buffer length
-  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio\:device0/buffer/length");
-  fd = open(buf, O_WRONLY);     // write only
+  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin_);
+  fd = open(buf, O_WRONLY);
   if (fd < 0) {
-    log.ERR("ADC", "problem setting buffer length");
+    log_.ERR("ADC", "could not enable pin %d", pin_);
   }
-  len = write(fd,"100", 100);     // number of bytes
+  char buf[10];
+  snprintf(buf, sizeof(buf), "%i", pin_);
+  len = write(fd, buf, strlen(buf) + 1);
+  close(fd);
+  if (len != strlen(buf) +1) {
+    log_.INFO("ADC", "could not enable ADC %d, might be already be enabled", pin_);
+    // return;
+  } else {
+    log_.INFO("ADC", "pin %d was successfully exported", pin_);
+  }
+
+  return;
+}
+
+void ADC::attachADC()   // TODO(anyone): fix syntax for data_ = base + data 
+{
+  // // uint8_t bank;
+  // uint8_t pin_id;
+
+  // // bank      = pin_/32;
+  // pin_id    = pin_%32;
+  // // corresponds to desired data of pin by indicating specific bit within byte of pin data
+  // pin_mask_ = 1 << pin_id;
+  // log_.DBG1("ADC", "adc %d resolved as pin, %d", pin_, pin_id);
+
+  // uint32_t base = reinterpret_cast<uint32_t>(base_mapping_);
+  // data_  = reinterpret_cast<volatile uint32_t*>(base + kData);    // TODO(Greg): implement address space
+  // setupBuffer();
+}
+
+void ADC::setupBuffer()
+{
+  int fd;                      // file descriptor
+  char buf[adc::kBufSize];     // file buffer
+  uint32_t len;
+
+  // set buffer length to 100
+  fd = open("/sys/bus/iio/devices/iio:device0/buffer/length", O_WRONLY);     // write only
+  if (fd < 0) {
+    log_.ERR("ADC", "problem opening length");
+  }
+  uint32_t out = 100;
+  len = write(fd, &out, sizeof(out));     // TODO(Greg): check syntax
   close(fd);
   if (len != 100) {
-    log_.INFO("ADC", "could not set buffer for ADC %d, might be already exported", pin_);
+    log_.INFO("ADC", "could not set buffer length to %d", out);
     // return;
   }
 
-  // enable buffer
-  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio\:device0/buffer/enable");
-  fd = open(buf, O_WRONLY);     // write only, need to enable with 1
+  // enable buffer with 1
+  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/buffer/enable");
+  fd = open(buf, O_WRONLY);
   if (fd < 0) {
-    log.ERR("ADC", "problem enabling buffer");
+    log_.ERR("ADC", "problem opening enable");
   }
-  len = write(fd,"1", 1);     // number of bytes
+  out = 1;
+  len = write(fd, &out, sizeof(out));     // TODO(Greg): check syntax
   close(fd);
   if (len != 1) {
-    log_.INFO("ADC", "could not enable buffer for ADC %d", pin_);
+    log_.INFO("ADC", "could not enable buffer", pin_);
     // return;
   }
-
 }
 
 uint8_t ADC::read()
@@ -117,16 +177,25 @@ uint8_t ADC::read()
     log_.ERR("ADC", "service has not been initialised");
     return 0;
   }
+  if (!data_) {
+    log_.ERR("ADC", "data register not configured, pin %d", pin_);
+    return 0;
+  }
 
-  Logger log(false, -1);
-  int fd;                 // file descriptor
-  char buf[kBufSize];     // file buffer for data
-  snprintf(buf,sizeof(buf), "/sys/bus/iio/devices/iio:device0");   // reads buffer
-  fd = open(buf,O_RDONLY);
+  // TODO(Greg): needs to read from buffer
+  // something with base mapping
+  // maybe just fuck the buffer and read raw voltage data
 
-  int val = adc::readHelper(fd_);
+  int fd;
+  char buf[100];
+  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/in_voltage%i_raw", pin_);
+  fd = open(buf, O_RDONLY);
+  if (fd < 0) {
+    log_.ERR("ADC", "problem reading pin %d raw voltage ", pin_);
+  }
+  int val = adc::readHelper(fd);
   return val;
 }
 
-}   // namespace adc
+
 }}}   // namespace hyped::utils::io
