@@ -24,7 +24,7 @@ constexpr int kBufSize  = 100;
 
 uint32_t readHelper(int fd)
 {
-  char buf[10];
+  char buf[4];
   lseek(fd, 0, SEEK_SET);                      // reset file pointer
   read(fd, buf, sizeof(buf));                  // actually consume new data, changes value in buffer
   return std::atoi(buf);
@@ -201,6 +201,7 @@ uint8_t ADC::read()
     log_.ERR("ADC", "problem reading pin %d raw voltage ", pin_);
   }
   uint32_t val = adc::readHelper(fd);      // TODO(Greg): Check readHelper function
+  close(fd);
   return val;
 }
 
