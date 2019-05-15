@@ -28,7 +28,7 @@
 #include "telemetry/client.hpp"
 
 namespace hyped {
-namespace client {
+namespace telemetry {
 
 Client::Client(Logger& log)
   : log_ {log},

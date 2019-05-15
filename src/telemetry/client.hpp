@@ -29,11 +29,10 @@
 
 namespace hyped {
 
-using telemetry::SignalHandler;
 using utils::Logger;
 using google::protobuf::io::ZeroCopyInputStream;
 
-namespace client {  // TODO(Neil): wtf change this to telemetry
+namespace telemetry {
 
 constexpr auto kPort = "9090";
 constexpr auto kServerIP = "localhost";
