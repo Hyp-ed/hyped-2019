@@ -75,13 +75,15 @@ bool Client::connect()
 
   log_.INFO("Telemetry", "Connected to server");
 
-  socket_stream_ = new google::protobuf::io::FileInputStream(sockfd_);
+  socket_stream_in_ = new google::protobuf::io::FileInputStream(sockfd_);
+  socket_stream_out_ = new google::protobuf::io::FileOutputStream(sockfd_);
   return true;
 }
 
 Client::~Client()
 {
-  delete socket_stream_;
+  delete socket_stream_out_;
+  delete socket_stream_in_;
   close(sockfd_);
 }
 
@@ -90,7 +92,7 @@ bool Client::sendData(telemetry_data::ClientToServer message)
   using namespace google::protobuf::util;
   log_.DBG3("Telemetry", "Starting to send message to server");
 
-  if (!SerializeDelimitedToFileDescriptor(message, sockfd_)) {
+  if (!SerializeDelimitedToZeroCopyStream(message, socket_stream_out_)) {
     log_.ERR("Telemetry", "SerializeDelimitedToFileDescriptor didn't work");
     return false;
   }
@@ -107,7 +109,7 @@ telemetry_data::ServerToClient Client::receiveData()
   telemetry_data::ServerToClient messageFromServer;
   log_.DBG1("Telemetry", "Waiting to receive from server");
 
-  if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_, NULL)) {
+  if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_in_, NULL)) {
     log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
     // TODO(neil): probably throw exception here or something
   }

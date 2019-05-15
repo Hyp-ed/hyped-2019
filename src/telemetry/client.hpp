@@ -31,6 +31,7 @@ namespace hyped {
 
 using utils::Logger;
 using google::protobuf::io::ZeroCopyInputStream;
+using google::protobuf::io::ZeroCopyOutputStream;
 
 namespace telemetry {
 
@@ -49,8 +50,10 @@ class Client {
   private:
     int sockfd_;
     Logger& log_;
-    // socket_stream_ is member var bc need to keep reading from same stream
-    ZeroCopyInputStream* socket_stream_;
+    // socket_stream_in_ is member var bc need to keep reading from same stream
+    ZeroCopyInputStream* socket_stream_in_;
+    // socket_stream_out_ is member var to avoid constructing and flushing streams all the time
+    ZeroCopyOutputStream* socket_stream_out_;
     SignalHandler signal_handler_;
 };
 
