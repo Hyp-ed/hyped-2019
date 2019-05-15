@@ -89,12 +89,12 @@ Client::~Client()
 
 bool Client::sendData(telemetry_data::ClientToServer message)
 {
-  using namespace google::protobuf::util;
+  using google::protobuf::util::SerializeDelimitedToZeroCopyStream;
   log_.DBG3("Telemetry", "Starting to send message to server");
 
-  if (!SerializeDelimitedToZeroCopyStream(message, socket_stream_out_)) {
-    log_.ERR("Telemetry", "SerializeDelimitedToFileDescriptor didn't work");
-    return false;
+  if (!SerializeDelimitedToZeroCopyStream(message, socket_stream_out_) || signal_handler_.gotSigPipeSignal()) {  // NOLINT
+    log_.ERR("Telemetry", "Error sending message");
+    return false;  // probs change to throwing exception
   }
 
   log_.DBG3("Telemetry", "Finished sending message to server");
@@ -104,13 +104,13 @@ bool Client::sendData(telemetry_data::ClientToServer message)
 
 telemetry_data::ServerToClient Client::receiveData()
 {
-  using namespace google::protobuf::util;
+  using google::protobuf::util::ParseDelimitedFromZeroCopyStream;
 
   telemetry_data::ServerToClient messageFromServer;
   log_.DBG1("Telemetry", "Waiting to receive from server");
 
-  if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_in_, NULL)) {
-    log_.ERR("Telemetry", "ParseDelimitedFromZeroCopyStream didn't work");
+  if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_in_, NULL) || signal_handler_.gotSigPipeSignal()) {  // NOLINT
+    log_.ERR("Telemetry", "Error receiving message");
     // TODO(neil): probably throw exception here or something
   }
 
