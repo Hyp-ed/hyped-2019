@@ -114,11 +114,11 @@ void ADC::exportADC()
   if (fd < 0) {
     log_.ERR("ADC", "could not enable pin %d", pin_);
   }
-  char pinbuf[10];
+  char pinbuf[100];
   snprintf(pinbuf, sizeof(pinbuf), "%i", pin_);
   len = write(fd, pinbuf, strlen(pinbuf) + 1);
   close(fd);
-  if (len != strlen(buf) +1) {
+  if (len != strlen(pinbuf) +1) {           // TODO(Greg): error thrown here
     log_.INFO("ADC", "could not enable ADC %d, might be already be enabled", pin_);
     // return;
   } else {
@@ -189,10 +189,6 @@ uint8_t ADC::read()
   //   return 0;
   // }
 
-  // TODO(Greg): needs to read from buffer
-  // something with base mapping
-  // maybe just fuck the buffer and read raw voltage data
-
   int fd;
   char buf[100];
   snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/in_voltage%i_raw", pin_);
@@ -200,7 +196,9 @@ uint8_t ADC::read()
   if (fd < 0) {
     log_.ERR("ADC", "problem reading pin %d raw voltage ", pin_);
   }
+  log_.DBG("ADC", "fd: %d", fd);
   uint32_t val = adc::readHelper(fd);      // TODO(Greg): Check readHelper function
+  log_.DBG("ADC", "val: %d", val);
   close(fd);
   return val;
 }
