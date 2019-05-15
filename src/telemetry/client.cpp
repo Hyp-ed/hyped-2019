@@ -25,14 +25,14 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <cstring>
-#include <iostream>
 #include "telemetry/client.hpp"
 
 namespace hyped {
 namespace client {
 
 Client::Client(Logger& log)
-  : log_ {log}
+  : log_ {log},
+    signal_handler_ {}
 {
   log_.DBG("Telemetry", "Client object created");
 }
