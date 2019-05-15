@@ -23,19 +23,21 @@
 
 #include <google/protobuf/io/zero_copy_stream.h>
 #include <string>
+#include "telemetry/signalhandler.hpp"
 #include "telemetry/telemetrydata/message.pb.h"
 #include "utils/logger.hpp"
 
 namespace hyped {
 
+using telemetry::SignalHandler;
 using utils::Logger;
 using google::protobuf::io::ZeroCopyInputStream;
 
-namespace client {
+namespace client {  // TODO(Neil): wtf change this to telemetry
 
 constexpr auto kPort = "9090";
-// constexpr auto kServerIP = "localhost";
-constexpr auto kServerIP = "192.168.1.50";
+constexpr auto kServerIP = "localhost";
+// constexpr auto kServerIP = "192.168.1.50";
 
 class Client {
   public:
@@ -50,6 +52,7 @@ class Client {
     Logger& log_;
     // socket_stream_ is member var bc need to keep reading from same stream
     ZeroCopyInputStream* socket_stream_;
+    SignalHandler signal_handler_;
 };
 
 }  // namespace client
