@@ -27,7 +27,7 @@ namespace telemetry {
 bool SignalHandler::receivedSigPipeSignal = false;
 
 // didn't really want to set this as a static variable and hardcode logger values
-// but didn't really see any other way (sys.verbose_tlm gets set at runtime)
+// but don't really see any other way (sys.verbose_tlm gets set at runtime)
 Logger SignalHandler::log_(true, 2);
 
 SignalHandler::SignalHandler()
