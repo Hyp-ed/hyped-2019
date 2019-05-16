@@ -27,6 +27,7 @@
 namespace hyped {
 
 using data::ImuData;
+using data::TemperatureData;
 using data::BatteryData;
 using utils::concurrent::Thread;
 using data::NavigationVector;
@@ -47,6 +48,11 @@ class ManagerInterface : public Thread {
 class ImuManagerInterface : public ManagerInterface {
  public:
   explicit ImuManagerInterface(utils::Logger& log) : ManagerInterface(log) {}
+};
+
+class TempManagerInterface : public ManagerInterface {
+ public:
+  explicit TempManagerInterface(utils::Logger& log) : ManagerInterface(log) {}
 };
 }}  // namespace hyped::sensors
 

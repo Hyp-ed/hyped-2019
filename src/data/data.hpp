@@ -79,6 +79,10 @@ struct StripeCounter : public Sensor {
   DataPoint<uint32_t> count;
 };
 
+struct TemperatureData : public Sensor {
+  DataPoint<int> temp;
+};
+
 struct Sensors : public Module {
   static constexpr int kNumImus = 6;            // TODO(Greg): change back to final cte for PCB
   static constexpr int kNumKeyence = 2;
@@ -202,16 +206,16 @@ class Data {
   /**
    * @brief Get the Temperature from the IMU
    *
-   * @return int temperature in degrees C
+   * @return TemperatureData temperature in degrees C
    */
-  int getTemperature();
+  TemperatureData getTemperature();
 
   /**
    * @brief Set the Temperature from the IMU
    *
    * @param temp - temp in degrees C
    */
-  void setTemperature(int temp);
+  void setTemperature(TemperatureData& temp);
 
   /**
    * @brief      Retrieves data from all sensors
@@ -299,7 +303,7 @@ class Data {
   Telemetry telemetry_;
   SensorCalibration calibration_data_;
   EmergencyBrakes emergency_brakes_;
-  int temperature_;  // In degrees C
+  TemperatureData temperature_;  // In degrees C
 
 
   // locks for data substructures

@@ -27,6 +27,7 @@
 namespace hyped {
 
 using data::ImuData;
+using data::TemperatureData;
 using data::NavigationVector;
 using data::BatteryData;
 
@@ -57,6 +58,15 @@ class GpioInterface {
    * @param
    */
   virtual data::StripeCounter getStripeCounter() = 0;
+};
+
+class AdcInterface {
+ public:
+  /**
+   * @brief Get ADC data
+   * @param
+   */
+  virtual TemperatureData getAnalogRead() = 0;
 };
 
 class BMSInterface: public SensorInterface {
