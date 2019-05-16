@@ -85,13 +85,13 @@ array<StripeCounter, Sensors::kNumKeyence> Data::getSensorsKeyenceData()
   return sensors_.keyence_stripe_counter;
 }
 
-int Data::getTemperature()
+TemperatureData Data::getTemperature()
 {
   ScopedLock L(&lock_temp_);
   return temperature_;
 }
 
-void Data::setTemperature(int temp)
+void Data::setTemperature(TemperatureData& temp)
 {
   ScopedLock L(&lock_temp_);
   temperature_ = temp;
