@@ -16,7 +16,7 @@ namespace io = hyped::utils::io;
 
 int main(int argc, char* argv[]) { 
   System::parseArgs(argc, argv);
-  Logger log(true, 0);
+  Logger log(true, -1);
   
   ADC analog(0, log);
   Thread::sleep(100);
