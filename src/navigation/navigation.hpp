@@ -126,6 +126,10 @@ namespace navigation {
        */
       void calibrateGravity();
       /**
+       * @brief Compute norm of acceleration measurement
+       */
+      NavigationType accNorm(NavigationVector& acc);
+      /**
        * @brief Query sensors to determine acceleration, velocity and distance
        */
       void queryImus();

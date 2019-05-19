@@ -118,6 +118,17 @@ void Navigation::calibrateGravity()
   }
 }
 
+NavigationType Navigation::accNorm(NavigationVector& acc)
+{
+  NavigationType norm = 0.0;
+  for (unsigned int i = 0; i < 3; i ++) {
+      NavigationType a = acc[i];
+      norm += a*a;
+  }
+  norm = sqrt(norm);
+  return norm;
+}
+
 void Navigation::queryImus()
 {
   OnlineStatistics<NavigationType> pos_avg_filter;
@@ -129,8 +140,9 @@ void Navigation::queryImus()
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     filters_[i].updateStateTransitionMatrix(dt);
     // Apply calibrated correction
-    NavigationType acc = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
-    NavigationVector estimate = filters_[i].filter(acc);
+    NavigationVector acc = sensor_readings_.value[i].acc;
+    NavigationType acc_norm = (accNorm(acc) - gravity_calibration_[i]) * (1 - 2 * (acc[axis_] < 0));
+    NavigationVector estimate = filters_[i].filter(acc_norm);
 
     // avg over all estimates
     pos_avg_filter.update(estimate[0]);
