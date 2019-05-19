@@ -22,12 +22,13 @@
 #include <math.h>
 
 #include <array>
+#include <cstdint>
 
 #include "data/data.hpp"
 #include "data/data_point.hpp"
 #include "sensors/imu.hpp"
+#include "navigation/kalman_filter.hpp"
 #include "utils/logger.hpp"
-#include "utils/math/integrator.hpp"
 #include "utils/math/statistics.hpp"
 
 namespace hyped {
@@ -37,8 +38,8 @@ using data::DataPoint;
 using data::ImuData;
 using data::NavigationType;
 using data::NavigationVector;
+using navigation::KalmanFilter;
 using utils::Logger;
-using utils::math::Integrator;
 using utils::math::OnlineStatistics;
 
 namespace navigation {
@@ -109,16 +110,15 @@ namespace navigation {
       // movement axis
       unsigned int axis_;
 
+      // Kalman filter to filter the avg measurements
+      KalmanFilter filter_;
+
       // To store estimated values
       ImuDataPointArray sensor_readings_;
       DataPoint<NavigationType> acceleration_;
       DataPoint<NavigationType> velocity_;
       DataPoint<NavigationType> distance_;
       NavigationArray gravity_calibration_;
-
-      // To convert acceleration -> velocity -> distance
-      Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
-      Integrator<NavigationType> velocity_integrator_;      // velocity to distance
 
       /**
        * @brief Determine the value of gravitational acceleration measured by sensors at rest
