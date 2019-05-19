@@ -49,6 +49,7 @@ namespace navigation {
       typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
       typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
       typedef std::array<NavigationType, data::Sensors::kNumImus> NavigationArray;
+      typedef std::array<KalmanFilter, data::Sensors::kNumImus> FilterArray;
 
       /**
        * @brief Construct a new Navigation object
@@ -111,7 +112,7 @@ namespace navigation {
       unsigned int axis_;
 
       // Kalman filter to filter the avg measurements
-      KalmanFilter filter_;
+      FilterArray filters_;
 
       // To store estimated values
       ImuDataPointArray sensor_readings_;

@@ -29,13 +29,15 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
            axis_(axis),
-           filter_(3, 1),
            acceleration_(0., 0.),
            velocity_(0., 0.),
            distance_(0., 0.)
 {
   calibrateGravity();
-  filter_.setup();
+  for (unsigned int i = 0; i < data::Sensors::kNumImus; i++) {
+    filters_[i] = KalmanFilter(3, 1);
+    filters_[i].setup();
+  }
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
@@ -118,22 +120,30 @@ void Navigation::calibrateGravity()
 
 void Navigation::queryImus()
 {
-  OnlineStatistics<NavigationType> avg_filter;
+  OnlineStatistics<NavigationType> pos_avg_filter;
+  OnlineStatistics<NavigationType> vel_avg_filter;
+  OnlineStatistics<NavigationType> acc_avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
-  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    // Apply calibrated correction
-    avg_filter.update(sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i]);
-  }
   uint32_t t = sensor_readings_.timestamp;
   double dt = t - acceleration_.timestamp;
-  filter_.updateStateTransitionMatrix(dt);
-  NavigationVector estimate = filter_.filter(avg_filter.getMean());
+  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+    filters_[i].updateStateTransitionMatrix(dt);
+    // Apply calibrated correction
+    NavigationType acc = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
+    NavigationVector estimate = filters_[i].filter(acc);
 
-  distance_.value = estimate[0];
+    // avg over all estimates
+    pos_avg_filter.update(estimate[0]);
+    vel_avg_filter.update(estimate[1]);
+    acc_avg_filter.update(estimate[2]);
+  }
+
+  // get average over all filtered estimates
+  distance_.value = pos_avg_filter.getMean();
   distance_.timestamp = t;
-  velocity_.value = estimate[1];
+  velocity_.value = vel_avg_filter.getMean();
   velocity_.timestamp = t;
-  acceleration_.value = estimate[2];
+  acceleration_.value = acc_avg_filter.getMean();
   acceleration_.timestamp = t;
 }
 
