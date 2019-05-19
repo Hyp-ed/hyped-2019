@@ -19,6 +19,8 @@
 #ifndef NAVIGATION_NAVIGATION_HPP_
 #define NAVIGATION_NAVIGATION_HPP_
 
+#include <math.h>
+
 #include <array>
 
 #include "data/data.hpp"
@@ -122,6 +124,10 @@ namespace navigation {
        * @brief Determine the value of gravitational acceleration measured by sensors at rest
        */
       void calibrateGravity();
+      /**
+       * @brief Compute norm of acceleration measurement
+       */
+      NavigationType accNorm(NavigationVector& acc);
       /**
        * @brief Query sensors to determine acceleration, velocity and distance
        */

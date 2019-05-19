@@ -116,6 +116,17 @@ void Navigation::calibrateGravity()
   }
 }
 
+NavigationType Navigation::accNorm(NavigationVector& acc)
+{
+  NavigationType norm = 0.0;
+  for (unsigned int i = 0; i < 3; i ++) {
+      NavigationType a = acc[i];
+      norm += a*a;
+  }
+  norm = sqrt(norm);
+  return norm;
+}
+
 // TODO(Lukas): Kalman filter goes here
 void Navigation::queryImus()
 {
@@ -123,7 +134,8 @@ void Navigation::queryImus()
   sensor_readings_ = data_.getSensorsImuData();
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
-    filter.update(sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i]);
+    NavigationVector acc = sensor_readings_.value[i].acc;
+    filter.update((accNorm(acc) - gravity_calibration_[i]) * (1 - 2 * (acc[axis_] < 0)));
   }
   acceleration_.value = filter.getMean();
   acceleration_.timestamp = sensor_readings_.timestamp;
