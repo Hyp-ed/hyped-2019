@@ -29,13 +29,13 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
            axis_(axis),
+           filter_(3, 1),
            acceleration_(0., 0.),
            velocity_(0., 0.),
-           distance_(0., 0.),
-           acceleration_integrator_(&velocity_),
-           velocity_integrator_(&distance_)
+           distance_(0., 0.)
 {
   calibrateGravity();
+  filter_.setup();
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
@@ -116,20 +116,25 @@ void Navigation::calibrateGravity()
   }
 }
 
-// TODO(Lukas): Kalman filter goes here
 void Navigation::queryImus()
 {
-  OnlineStatistics<NavigationType> filter;
+  OnlineStatistics<NavigationType> avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
-    filter.update(sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i]);
+    avg_filter.update(sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i]);
   }
-  acceleration_.value = filter.getMean();
-  acceleration_.timestamp = sensor_readings_.timestamp;
+  uint32_t t = sensor_readings_.timestamp;
+  double dt = t - acceleration_.timestamp;
+  filter_.updateStateTransitionMatrix(dt);
+  NavigationVector estimate = filter_.filter(avg_filter.getMean());
 
-  acceleration_integrator_.update(acceleration_);
-  velocity_integrator_.update(velocity_);
+  distance_.value = estimate[0];
+  distance_.timestamp = t;
+  velocity_.value = estimate[1];
+  velocity_.timestamp = t;
+  acceleration_.value = estimate[2];
+  acceleration_.timestamp = t;
 }
 
 void Navigation::updateData()
