@@ -25,12 +25,13 @@ using hyped::utils::concurrent::Thread;
 
 namespace navigation {
 
-Navigation::Navigation(Logger& log)
+Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
-           acceleration_(0., NavigationVector(0)),
-           velocity_(0., NavigationVector(0)),
-           distance_(0., NavigationVector(0)),
+           axis_(axis),
+           acceleration_(0., 0.),
+           velocity_(0., 0.),
+           distance_(0., 0.),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -40,19 +41,19 @@ Navigation::Navigation(Logger& log)
 // TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getAcceleration() const
 {
-  return acceleration_.value[0];
+  return acceleration_.value;
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getVelocity() const
 {
-  return velocity_.value[0];
+  return velocity_.value;
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getDistance() const
 {
-  return distance_.value[0];
+  return distance_.value;
 }
 
 NavigationType Navigation::getEmergencyBrakingDistance() const
@@ -96,12 +97,12 @@ NavigationType Navigation::getBrakingDistance() const
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
-  std::array<OnlineStatistics<NavigationVector>, data::Sensors::kNumImus> online_array;
+  std::array<OnlineStatistics<NavigationType>, data::Sensors::kNumImus> online_array;
   // Average each sensor over specified number of readings
   for (int i = 0; i < kNumCalibrationQueries; ++i) {
     sensor_readings_ = data_.getSensorsImuData();
     for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-      online_array[j].update(sensor_readings_.value[j].acc);
+      online_array[j].update(sensor_readings_.value[j].acc[axis_]);
     }
     Thread::sleep(1);
   }
@@ -109,20 +110,20 @@ void Navigation::calibrateGravity()
     gravity_calibration_[j] = online_array[j].getMean();
     log_.INFO("NAV",
       "Update: g=(%.5f, %.5f, %.5f)", //NOLINT
-                  gravity_calibration_[j][0],
-                  gravity_calibration_[j][1],
-                  gravity_calibration_[j][2]);
+                  gravity_calibration_[j],
+                  gravity_calibration_[j],
+                  gravity_calibration_[j]);
   }
 }
 
 // TODO(Lukas): Kalman filter goes here
 void Navigation::queryImus()
 {
-  OnlineStatistics<NavigationVector> filter;
+  OnlineStatistics<NavigationType> filter;
   sensor_readings_ = data_.getSensorsImuData();
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
-    filter.update(sensor_readings_.value[i].acc - gravity_calibration_[i]);
+    filter.update(sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i]);
   }
   acceleration_.value = filter.getMean();
   acceleration_.timestamp = sensor_readings_.timestamp;

@@ -45,14 +45,15 @@ namespace navigation {
     public:
       typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
       typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
-      typedef std::array<NavigationVector, data::Sensors::kNumImus> NavigationArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus> NavigationArray;
 
       /**
        * @brief Construct a new Navigation object
        *
        * @param log System logger
+       * @param axis Axis used of acceleration measurements
        */
-      explicit Navigation(Logger& log);
+      explicit Navigation(Logger& log, unsigned int axis = 0);
       /**
        * @brief Get the measured acceleration [m/s^2]
        *
@@ -103,16 +104,19 @@ namespace navigation {
       Logger& log_;
       Data& data_;
 
+      // movement axis
+      unsigned int axis_;
+
       // To store estimated values
       ImuDataPointArray sensor_readings_;
-      DataPoint<NavigationVector> acceleration_;
-      DataPoint<NavigationVector> velocity_;
-      DataPoint<NavigationVector> distance_;
+      DataPoint<NavigationType> acceleration_;
+      DataPoint<NavigationType> velocity_;
+      DataPoint<NavigationType> distance_;
       NavigationArray gravity_calibration_;
 
       // To convert acceleration -> velocity -> distance
-      Integrator<NavigationVector> acceleration_integrator_;  // acceleration to velocity
-      Integrator<NavigationVector> velocity_integrator_;      // velocity to distance
+      Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
+      Integrator<NavigationType> velocity_integrator_;      // velocity to distance
 
       /**
        * @brief Determine the value of gravitational acceleration measured by sensors at rest

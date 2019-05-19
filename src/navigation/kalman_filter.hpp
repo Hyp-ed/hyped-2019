@@ -30,8 +30,8 @@ using Eigen::MatrixXf;
 using Eigen::VectorXf;
 
 namespace hyped {
+using data::NavigationType;
 using data::NavigationVector;
-using data::NavigationEstimate;
 using utils::System;
 using utils::math::KalmanMultivariate;
 
@@ -40,12 +40,11 @@ namespace navigation {
 class KalmanFilter
 {
   public:
-    KalmanFilter(unsigned int n_, unsigned int m_);
-    KalmanFilter(unsigned int n_, unsigned int m_, unsigned int k_);
+    KalmanFilter(unsigned int n_ = 3, unsigned int m_ = 1, unsigned int k_ = 0);
     void setup();
     void updateStateTransitionMatrix(double dt);
-    const NavigationEstimate filter(NavigationVector& z_);
-    const NavigationEstimate filter(NavigationVector& u_, NavigationVector& z_);
+    const NavigationVector filter(NavigationType z_);
+    const NavigationVector filter(NavigationType u_, NavigationType z_);
   private:
     unsigned int    n;
     unsigned int    m;
@@ -72,8 +71,8 @@ class KalmanFilter
     const MatrixXf createStationaryMeasurementCovarianceMatrix();
     const MatrixXf createElevatorMeasurementCovarianceMatrix();
 
-    // transfer estimate to NavigationEstimate
-    const NavigationEstimate getNavigationEstimate();
+    // transfer estimate to NavigationVector
+    const NavigationVector getNavigationVector();
 };
 }}  // namespace hyped navigation
 

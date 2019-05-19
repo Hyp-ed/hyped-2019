@@ -20,18 +20,12 @@
 
 namespace hyped {
 namespace navigation {
-KalmanFilter::KalmanFilter(unsigned int n_, unsigned int m_)
-  : n(n_),
-  m(m_),
-  k(0),
-  kalmanFilter(KalmanMultivariate(n_, m_))
-{}
 
-KalmanFilter::KalmanFilter(unsigned int n_, unsigned int m_, unsigned int k_)
+KalmanFilter::KalmanFilter(unsigned int n_/*=3*/, unsigned int m_/*=1*/, unsigned int k_/*=0*/)
   : n(n_),
-  m(m_),
-  k(k_),
-  kalmanFilter(KalmanMultivariate(n_, m_, k_))
+    m(m_),
+    k(k_),
+    kalmanFilter(KalmanMultivariate(n_, m_, k_))
 {}
 
 void KalmanFilter::setup()
@@ -62,33 +56,27 @@ void KalmanFilter::updateStateTransitionMatrix(double dt)
   kalmanFilter.update(A);
 }
 
-const NavigationEstimate KalmanFilter::filter(NavigationVector& z_)
+const NavigationVector KalmanFilter::filter(NavigationType z_)
 {
   VectorXf z(m);
-  for (unsigned int i = 0; i < m; i++) {
-    z(i) = z_[i];
-  }
+  z(0) = z_;
   kalmanFilter.filter(z);
 
-  NavigationEstimate estimate = getNavigationEstimate();
+  NavigationVector estimate = getNavigationVector();
   return estimate;
 }
 
-const NavigationEstimate KalmanFilter::filter(NavigationVector& u_, NavigationVector& z_)
+const NavigationVector KalmanFilter::filter(NavigationType u_, NavigationType z_)
 {
   VectorXf u(k);
-  for (unsigned int i = 0; i < k; i++) {
-    u(i) = u_[i];
-  }
+  u(0) = u_;
 
   VectorXf z(m);
-  for (unsigned int i = 0; i < m; i++) {
-    z(i) = z_[i];
-  }
+  z(0) = z_;
 
   kalmanFilter.filter(u, z);
 
-  NavigationEstimate estimate = getNavigationEstimate();
+  NavigationVector estimate = getNavigationVector();
   return estimate;
 }
 
@@ -138,17 +126,25 @@ void KalmanFilter::setInitialEstimate()
 
 const MatrixXf KalmanFilter::createStateTransitionMatrix(double dt)
 {
-  MatrixXf A(n, n);
+  MatrixXf A = MatrixXf::Zero(n, n);
   double acc_ddt = 0.5 * dt * dt;
-  A << 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt, 0.0, 0.0,
-     0.0, 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt, 0.0,
-     0.0, 0.0, 1.0, 0.0, 0.0, dt, 0.0, 0.0, acc_ddt,
-     0.0, 0.0, 0.0, 1.0, 0.0, 0.0, dt, 0.0, 0.0,
-     0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, dt, 0.0,
-     0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, dt,
-     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
+  //  number of values for each acc, vel, pos: usually 1 or 3
+  unsigned int n_val = n / 3;
+
+  for (unsigned int i = 0; i < n_val; i++) {
+      // compute pos rows
+      A(i, i) = 1.;
+      A(i, i + n_val) = dt;
+      A(i, i + 2 * n_val) = acc_ddt;
+
+      // compute vel rows
+      A(i + n_val, i + n_val) = 1.;
+      A(i + n_val, i + 2 * n_val) = dt;
+
+      // compute acc rows
+      A(i + 2 * n_val, i + 2 * n_val) = 1.;
+  }
+
   return A;
 }
 
@@ -185,16 +181,20 @@ const MatrixXf KalmanFilter::createStationaryMeasurementCovarianceMatrix()
   std::normal_distribution<double> var_noise(0.0, 0.0005);
   std::normal_distribution<double> cov_noise(0.0, 0.0001);
 
-  MatrixXf R(m, m);
+  MatrixXf R = MatrixXf::Zero(m, m);
   double covariance = -0.0002;
   double variance = 0.0017;
 
-  R << (variance + var_noise(generator)), (covariance + cov_noise(generator)),
-     (covariance + cov_noise(generator)),
-     (covariance + cov_noise(generator)), (variance + var_noise(generator)),
-     (covariance + cov_noise(generator)),
-     (covariance + cov_noise(generator)), (covariance + cov_noise(generator)),
-     (variance + var_noise(generator));
+  for (unsigned int i = 0; i < m; i++) {
+      for (unsigned int j = 0; j < m; j++) {
+          if (i == j) {
+              R(i, j) = variance + var_noise(generator);
+          } else {
+              R(i, j) = covariance + cov_noise(generator);
+          }
+      }
+  }
+
   return R;
 }
 
@@ -207,19 +207,19 @@ const MatrixXf KalmanFilter::createTubeMeasurementCovarianceMatrix()
 const MatrixXf KalmanFilter::createElevatorMeasurementCovarianceMatrix()
 {
   MatrixXf R(m, m);
+  /*
   R << 0.0085, 0.0014, 0.0025,
        0.0014, 0.007, -0.004,
        0.0025, -0.004, 0.12;
+   */
+  R << 0.12;
   return R;
 }
 
-const NavigationEstimate KalmanFilter::getNavigationEstimate()
+const NavigationVector KalmanFilter::getNavigationVector()
 {
   VectorXf x = kalmanFilter.getStateEstimate();
-  NavigationVector pos = NavigationVector({x(0), x(1), x(2)});
-  NavigationVector vel = NavigationVector({x(3), x(4), x(5)});
-  NavigationVector acc = NavigationVector({x(6), x(7), x(8)});
-  NavigationEstimate est = {pos, vel, acc};
+  NavigationVector est = NavigationVector({x(0), x(1), x(2)});
   return est;
 }
 }}  // namespace hyped navigation

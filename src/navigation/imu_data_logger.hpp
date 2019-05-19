@@ -30,8 +30,8 @@
 #include "data/data_point.hpp"
 
 namespace hyped {
+using data::NavigationType;
 using data::NavigationVector;
-using data::NavigationEstimate;
 using data::DataPoint;
 
 namespace navigation {
@@ -42,18 +42,18 @@ class ImuDataLogger
     explicit ImuDataLogger(std::ofstream* outfile_);
     void setup(int imu_id, int run_id);
     void setupKalman(int imu_id, int run_id);
-    void dataToFileSimulation(DataPoint<NavigationVector>* acc,
-                  DataPoint<NavigationVector>* vel,
-                  DataPoint<NavigationVector>* pos);
-    void dataToFile(DataPoint<NavigationVector>* accRaw,
-            DataPoint<NavigationVector>* accCor,
-            DataPoint<NavigationVector>*  vel,
-            DataPoint<NavigationVector>*  pos);
-    void dataToFileKalman(DataPoint<NavigationVector>* accRaw,
-                DataPoint<NavigationVector>* accCor,
-                DataPoint<NavigationVector>*  vel,
-                DataPoint<NavigationVector>*  pos,
-                NavigationEstimate& x);
+    void dataToFileSimulation(DataPoint<NavigationType>* acc,
+                  DataPoint<NavigationType>* vel,
+                  DataPoint<NavigationType>* pos);
+    void dataToFile(DataPoint<NavigationType>* accRaw,
+            DataPoint<NavigationType>* accCor,
+            DataPoint<NavigationType>*  vel,
+            DataPoint<NavigationType>*  pos);
+    void dataToFileKalman(DataPoint<NavigationType>* accRaw,
+                DataPoint<NavigationType>* accCor,
+                DataPoint<NavigationType>*  vel,
+                DataPoint<NavigationType>*  pos,
+                NavigationVector& x);
   private:
     std::ofstream*   outfile;
 };
