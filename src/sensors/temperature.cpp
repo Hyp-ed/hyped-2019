@@ -37,9 +37,7 @@ void Temperature::run()
 
 int Temperature::scaleData(int raw_value)
 {
-  // scale according to data sheet
-  int calculated = raw_value;
-  return calculated;
+  return ((raw_value*(180/255)) - 55);
 }
 
 TemperatureData Temperature::getAnalogRead()

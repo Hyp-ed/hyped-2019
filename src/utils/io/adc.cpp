@@ -24,7 +24,7 @@ constexpr int kBufSize  = 100;
 
 uint32_t readHelper(int fd)
 {
-  char buf[4];
+  char buf[4];                                 // buffer size 4 for fs value
   lseek(fd, 0, SEEK_SET);                      // reset file pointer
   read(fd, buf, sizeof(buf));                  // actually consume new data, changes value in buffer
   return std::atoi(buf);
