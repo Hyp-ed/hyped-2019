@@ -18,12 +18,13 @@ int main(int argc, char* argv[]) {
   System::parseArgs(argc, argv);
   Logger log(true, -1);
   
-  ADC analog(0, log);
+  ADC analog(1, log);
   Thread::sleep(100);
 
-  for (int i=0; i<20; i++) {
+  // for (int i=0; i<20; i++) {
+  while(1) {
     log.INFO("DEMO-ADC", "%d", analog.read());
-    Thread::sleep(200);
+    Thread::sleep(100);
   }
   
 }
