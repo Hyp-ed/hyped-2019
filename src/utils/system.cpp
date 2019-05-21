@@ -260,6 +260,7 @@ System::System(int argc, char* argv[])
           stationary_run = 1;
           tube_run = 0;
         }
+        break;
       default:
         printUsage();
         exit(1);
