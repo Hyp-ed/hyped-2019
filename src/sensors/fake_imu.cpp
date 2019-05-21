@@ -49,6 +49,7 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
       acc_file_path_(acc_file_path),
       dec_file_path_(dec_file_path),
       em_file_path_(em_file_path),
+      cal_started_(false),
       acc_started_(false),
       dec_started_(false),
       em_started_(false),
@@ -64,6 +65,11 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
   log_.INFO("Fake-IMU", "Fake IMU initialised");
 }
 
+void FakeImuFromFile::startCal()
+{
+  imu_ref_time_ = utils::Timer::getTimeMicros();
+  acc_count_ = 0;
+}
 
 void FakeImuFromFile::startAcc()
 {
@@ -87,9 +93,25 @@ void FakeImuFromFile::getData(ImuData* imu)
 {
   data::State state = data_.getStateMachineData().current_state;
   bool operational = true;
-  if (state == data::State::kAccelerating) {
+
+  if (state == data::State::kCalibrating) {
+    // start cal
+    if (!cal_started_) {
+      log_.INFO("Fake-IMUs", "Start calibrating ...");
+      cal_started_ = true;
+      startCal();
+    }
+
+    NavigationVector value;
+    value[0] = 0.0;
+    value[1] = 0.0;
+    value[2] = 9.8;
+    prev_acc_ = addNoiseToData(value, noise_);
+
+  } else if (state == data::State::kAccelerating) {
     // start acc
     if (!acc_started_) {
+      log_.INFO("Fake-IMUs", "Start accelerating ...");
       acc_started_ = true;
       startAcc();
     }
