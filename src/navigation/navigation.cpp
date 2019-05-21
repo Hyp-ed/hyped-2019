@@ -18,6 +18,7 @@
 
 #include "navigation/navigation.hpp"
 #include "utils/concurrent/thread.hpp"
+#include "utils/timer.hpp"
 
 namespace hyped {
 
@@ -33,11 +34,15 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            velocity_(0., 0.),
            distance_(0., 0.)
 {
-  calibrateGravity();
   for (unsigned int i = 0; i < data::Sensors::kNumImus; i++) {
     filters_[i] = KalmanFilter(3, 1);
     filters_[i].setup();
   }
+  calibrateGravity();
+
+  acceleration_.timestamp = utils::Timer::getTimeMicros();
+  velocity_.timestamp = utils::Timer::getTimeMicros();
+  distance_.timestamp = utils::Timer::getTimeMicros();
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
@@ -111,10 +116,7 @@ void Navigation::calibrateGravity()
   for (int j = 0; j < data::Sensors::kNumImus; ++j) {
     gravity_calibration_[j] = online_array[j].getMean();
     log_.INFO("NAV",
-      "Update: g=(%.5f, %.5f, %.5f)", //NOLINT
-                  gravity_calibration_[j],
-                  gravity_calibration_[j],
-                  gravity_calibration_[j]);
+      "Update: g=%.5f", gravity_calibration_[j]);
   }
 }
 
@@ -136,7 +138,9 @@ void Navigation::queryImus()
   OnlineStatistics<NavigationType> acc_avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
   uint32_t t = sensor_readings_.timestamp;
-  double dt = t - acceleration_.timestamp;
+  // passed time in second
+  double dt = (t - acceleration_.timestamp)/1e6;
+
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     filters_[i].updateStateTransitionMatrix(dt);
     // Apply calibrated correction
