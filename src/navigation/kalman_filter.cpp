@@ -175,6 +175,24 @@ const MatrixXf KalmanFilter::createStateTransitionCovarianceMatrix()
   return Q;
 }
 
+const MatrixXf KalmanFilter::createTubeMeasurementCovarianceMatrix()
+{
+    // TODO(Lukas): implement proper covariance setup for tube based on simulation
+    MatrixXf R = MatrixXf::Constant(m, m, 0.000001);
+    return R;
+}
+const MatrixXf KalmanFilter::createElevatorMeasurementCovarianceMatrix()
+{
+  MatrixXf R(m, m);
+  /*
+  R << 0.0085, 0.0014, 0.0025,
+       0.0014, 0.007, -0.004,
+       0.0025, -0.004, 0.12;
+   */
+  R << 0.12;
+  return R;
+}
+
 const MatrixXf KalmanFilter::createStationaryMeasurementCovarianceMatrix()
 {
   std::default_random_engine generator;
@@ -195,24 +213,6 @@ const MatrixXf KalmanFilter::createStationaryMeasurementCovarianceMatrix()
       }
   }
 
-  return R;
-}
-
-const MatrixXf KalmanFilter::createTubeMeasurementCovarianceMatrix()
-{
-    // TODO(Lukas): implement proper covariance setup for tube based on simulation
-    MatrixXf R = MatrixXf::Zero(m, m);
-    return R;
-}
-const MatrixXf KalmanFilter::createElevatorMeasurementCovarianceMatrix()
-{
-  MatrixXf R(m, m);
-  /*
-  R << 0.0085, 0.0014, 0.0025,
-       0.0014, 0.007, -0.004,
-       0.0025, -0.004, 0.12;
-   */
-  R << 0.12;
   return R;
 }
 

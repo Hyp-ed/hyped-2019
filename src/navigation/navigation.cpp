@@ -18,6 +18,7 @@
 
 #include "navigation/navigation.hpp"
 #include "utils/concurrent/thread.hpp"
+#include "utils/timer.hpp"
 
 namespace hyped {
 
@@ -34,8 +35,12 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            velocity_(0., 0.),
            distance_(0., 0.)
 {
-  calibrateGravity();
   filter_.setup();
+  calibrateGravity();
+
+  acceleration_.timestamp = utils::Timer::getTimeMicros();
+  velocity_.timestamp = utils::Timer::getTimeMicros();
+  distance_.timestamp = utils::Timer::getTimeMicros();
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
@@ -109,10 +114,7 @@ void Navigation::calibrateGravity()
   for (int j = 0; j < data::Sensors::kNumImus; ++j) {
     gravity_calibration_[j] = online_array[j].getMean();
     log_.INFO("NAV",
-      "Update: g=(%.5f, %.5f, %.5f)", //NOLINT
-                  gravity_calibration_[j],
-                  gravity_calibration_[j],
-                  gravity_calibration_[j]);
+      "Update: g=%.5f", gravity_calibration_[j]);
   }
 }
 
@@ -137,7 +139,8 @@ void Navigation::queryImus()
     avg_filter.update((accNorm(acc) - gravity_calibration_[i]) * (1 - 2 * (acc[axis_] < 0)));
   }
   uint32_t t = sensor_readings_.timestamp;
-  double dt = t - acceleration_.timestamp;
+  // passed time in second
+  double dt = (t - acceleration_.timestamp)/1e6;
   filter_.updateStateTransitionMatrix(dt);
   NavigationVector estimate = filter_.filter(avg_filter.getMean());
 
