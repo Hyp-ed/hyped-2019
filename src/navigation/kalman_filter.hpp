@@ -68,8 +68,8 @@ class KalmanFilter
 
     // create measurement covariance matrices R
     const MatrixXf createTubeMeasurementCovarianceMatrix();
-    const MatrixXf createStationaryMeasurementCovarianceMatrix();
     const MatrixXf createElevatorMeasurementCovarianceMatrix();
+    const MatrixXf createStationaryMeasurementCovarianceMatrix();
 
     // transfer estimate to NavigationVector
     const NavigationVector getNavigationVector();
