@@ -21,12 +21,16 @@
 
 #include <iostream>
 
+#include "data/data.hpp"
 #include "navigation/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 
+using hyped::data::Data;
+using hyped::data::State;
+using hyped::data::StateMachine;
 using hyped::navigation::Main;
 using hyped::sensors::ImuManager;
 using hyped::utils::concurrent::Thread;
@@ -38,6 +42,12 @@ int main(int argc, char* argv[])
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
+
+  static Data& d = Data::getInstance();
+  StateMachine state_machine = d.getStateMachineData();
+  state_machine.current_state = State::kCalibrating;
+  d.setStateMachineData(state_machine);
+
 
   // Initialise sensors
   ImuManager imu_manager(*log_nav);
