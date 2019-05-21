@@ -121,7 +121,7 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.current < -4000 || battery.current > 4000) {  // current in -400A to 400A (maximum)
+    if (battery.current < 0 || battery.current > 4000) {  // current in 0A to 400A
       log_.ERR("BMS-MANAGER", "BMS HP %d current out of range: %d", i, battery.current);
       return false;
     }
