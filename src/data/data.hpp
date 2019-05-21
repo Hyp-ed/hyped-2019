@@ -78,7 +78,7 @@ struct StripeCounter : public Sensor {
   DataPoint<uint32_t> count;
 };
 
-struct TemperatureData : public Sensor {
+struct TemperatureData : public Module, public Sensor {
   DataPoint<int> temp;
 };
 

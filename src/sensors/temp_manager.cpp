@@ -1,3 +1,23 @@
+/*
+ * Author:
+ * Organisation: HYPED
+ * Date:
+ * Description:
+ *
+ *    Copyright 2019 HYPED
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 #include "sensors/temp_manager.hpp"
 #include "sensors/temperature.hpp"
 #include "data/data.hpp"
@@ -22,14 +42,33 @@ TempManager::TempManager(Logger& log)
   log_.INFO("TEMP-MANAGER", "temp data has been initialised");
 }
 
-void TempManager::run() {
+void TempManager::run()
+{
   int average = 0;
   for (int i = 0; i < data::Sensors::kNumThermistors; i++) {
-    average += temp_[i]->getAnalogRead().temp.value;
+    average += temp_[i]->getAnalogRead().temp.value;      // TODO(anyone): average correctly
   }
-  sensors_temp_.temp.value = average;
-  sensors_temp_.temp.timestamp = utils::Timer::getTimeMicros();
-  data_.setTemperature(sensors_temp_);
+  average = round(average/data::Sensors::kNumThermistors);
+  pod_temp_.temp.value = average;
+  pod_temp_.temp.timestamp = utils::Timer::getTimeMicros();
+
+  // check ambient temperature
+  if (pod_temp_.module_status != data::ModuleStatus::kCriticalFailure) {
+    if (!temperatureInRange()) {
+      log_.ERR("BMS-MANAGER", "battery failure detected");
+      pod_temp_.module_status = data::ModuleStatus::kCriticalFailure;
+    }
+  }
+  data_.setTemperature(pod_temp_);
 }
 
-}}  // namespace hyped::sensors 
+bool TempManager::temperatureInRange()    // TODO(Anyone): add true temperature range
+{
+  auto& temperature = pod_temp_.temp;
+  if (temperature.value < -10 || temperature.value > 50) {  // temperature in -10C to 50C
+    log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", temperature.value);
+    return false;
+  }
+}
+
+}}  // namespace hyped::sensors
