@@ -1,14 +1,41 @@
+/*
+ * Author:
+ * Organisation: HYPED
+ * Date:
+ * Description:
+ *
+ *    Copyright 2019 HYPED
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 #include "utils/io/adc.hpp"
 
-#include <cstdlib>
 #include <stdio.h>
-#include <cstring>
-#include <unistd.h>     //close()
-#include <fcntl.h>     //define O_WONLY and O_RDONLY
 #include <string>
-#include <errno.h>
 #include <sys/ioctl.h>
+//
+#include <poll.h>
+#include <errno.h>
+#include <fcntl.h>      // define O_WONLY and O_RDONLY
+#include <unistd.h>     // close()
 #include <sys/mman.h>
+//
+#include <iostream>
+#include <fstream>
+//
+#include <cstdlib>
+#include <cstring>
+
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -91,7 +118,7 @@ void ADC::uninitialise()
   log.ERR("ADC", "uninitialising");
 
   for (uint32_t pin : exported_pins) {
-    snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin);
+    snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin);         // NOLINT [whitespace/line_length]
     fd = open(buf, O_WRONLY);
     if (fd < 0) {
     log.ERR("ADC", "could not disable pin %d", pin);
@@ -109,7 +136,7 @@ void ADC::exportADC()
   char buf[adc::kBufSize];     // file buffer
   uint32_t len;
 
-  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin_);
+  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin_);          // NOLINT [whitespace/line_length]
   fd = open(buf, O_WRONLY);
   if (fd < 0) {
     log_.ERR("ADC", "could not enable pin %d", pin_);
@@ -118,7 +145,7 @@ void ADC::exportADC()
   snprintf(pinbuf, sizeof(pinbuf), "%i", pin_);
   len = write(fd, pinbuf, strlen(pinbuf) + 1);
   close(fd);
-  if (len != strlen(pinbuf) +1) {           // TODO(Greg): error thrown here
+  if (len != strlen(pinbuf) +1) {
     log_.INFO("ADC", "could not enable ADC %d, might be already be enabled", pin_);
     // return;
   } else {
@@ -128,7 +155,7 @@ void ADC::exportADC()
   return;
 }
 
-void ADC::attachADC()   // TODO(anyone): fix syntax for data_ = base + data 
+void ADC::attachADC()   // TODO(anyone): fix syntax for data_ = base + data
 {
   // // uint8_t bank;
   // uint8_t pin_id;

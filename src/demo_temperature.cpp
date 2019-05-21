@@ -2,7 +2,7 @@
  * Author:
  * Organisation: HYPED
  * Date:
- * Description: Demo for ADC Pins on BeagleBone Black
+ * Description: Demo for LM35 Thermistor using temp_manager
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,31 +18,32 @@
  *    limitations under the License.
  */
 
-#include "utils/concurrent/thread.hpp"
-#include "utils/io/adc.hpp"
-#include "utils/system.hpp"
+#include "sensors/temp_manager.hpp"
 #include "utils/logger.hpp"
-#include "utils/timer.hpp"
+#include "utils/system.hpp"
+#include "utils/concurrent/thread.hpp"
+#include "data/data.hpp"
 
-// using hyped::utils::concurrent::Thread;
-using hyped::utils::io::ADC;
-using hyped::utils::System;
 using hyped::utils::Logger;
-using hyped::utils::Timer;
 using hyped::utils::concurrent::Thread;
-namespace io = hyped::utils::io;
+using namespace hyped::data;
+using namespace std;
+using hyped::sensors::TempManager;
 
-int main(int argc, char* argv[]) { 
-  System::parseArgs(argc, argv);
+int main(int argc, char* argv[])
+{
+  hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, -1);
-  
-  ADC analog(1, log);
-  Thread::sleep(100);
 
-  // for (int i=0; i<20; i++) {
-  while(1) {
-    log.INFO("DEMO-ADC", "%d", analog.read());
+  Data& data_ = Data::getInstance();    // read from data struct
+  TempManager temp_manager_(log);
+  temp_manager_.start();
+  Thread::sleep(500);
+  
+  log.INFO("TEST-Temp", "Temp instance successfully created");
+  for (int i = 0; i < 50; i++) {
+    log.INFO("TEST-Temp", "Thermistor %d reading: %d degrees C", i, data_.getTemperature());
     Thread::sleep(100);
   }
-  
+ 	return 0;
 }
