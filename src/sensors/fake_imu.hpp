@@ -88,6 +88,7 @@ class FakeImuFromFile : public ImuInterface {
  private:
   utils::Logger&       log_;
   const uint64_t kAccTimeInterval = 50;
+  void startCal();
   void startAcc();
   void startDec();
   void startEm();
@@ -115,6 +116,7 @@ class FakeImuFromFile : public ImuInterface {
   NavigationVector acc_noise_;
   NavigationVector prev_acc_;
 
+
   std::vector<NavigationVector> acc_val_read_;
   std::vector<bool>             acc_val_operational_;
   std::vector<NavigationVector> dec_val_read_;
@@ -127,6 +129,7 @@ class FakeImuFromFile : public ImuInterface {
   std::string acc_file_path_;
   std::string dec_file_path_;
   std::string em_file_path_;
+  bool cal_started_;
   bool acc_started_;
   bool dec_started_;
   bool em_started_;
