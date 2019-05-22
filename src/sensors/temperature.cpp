@@ -50,7 +50,7 @@ void Temperature::run()
 
   while (sys_.running_) {
     int raw_value = thepin.read();
-    // log_.DBG1("Temperatre", "Raw Data: %d", raw_value);
+    // log_.DBG1("Temperature", "Raw Data: %d", raw_value);
     temp_.temp.value = scaleData(raw_value);
     temp_.temp.timestamp = utils::Timer::getTimeMicros();
     temp_.operational = true;
