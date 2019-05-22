@@ -34,39 +34,48 @@ TempManager::TempManager(Logger& log)
     : TempManagerInterface(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-      analog_pins_ {0, 1, 2 , 3}
+      analog_pins_ {0}
 {
   for (int i = 0; i < data::Sensors::kNumThermistors; i++) {    // creates new real objects
-    temp_[i] = new Temperature(log, analog_pins_[i]);
+    // temp_[i] = new Temperature(log, analog_pins_[i]);
+    Temperature* temp = new Temperature(log, analog_pins_[i]);
+    temp->start();
+    temp_[i] = temp;
   }
   log_.INFO("TEMP-MANAGER", "temp data has been initialised");
 }
 
 void TempManager::run()
 {
-  int average = 0;
-  for (int i = 0; i < data::Sensors::kNumThermistors; i++) {
-    average += temp_[i]->getAnalogRead().temp.value;      // TODO(anyone): average correctly
-  }
-  average = round(average/data::Sensors::kNumThermistors);
-  pod_temp_.temp.value = average;
-  pod_temp_.temp.timestamp = utils::Timer::getTimeMicros();
-
-  // check ambient temperature
-  if (pod_temp_.module_status != data::ModuleStatus::kCriticalFailure) {
-    if (!temperatureInRange()) {
-      log_.ERR("BMS-MANAGER", "battery failure detected");
-      pod_temp_.module_status = data::ModuleStatus::kCriticalFailure;
+  while(sys_.running_) {
+    int average = 0;
+    for (int i = 0; i < data::Sensors::kNumThermistors; i++) {
+      average += temp_[i]->getAnalogRead().temp.value;      // TODO(anyone): average correctly
+      log_.DBG1("TEMP-MANAGER", "Average %d", average);
     }
+    average = round(average/data::Sensors::kNumThermistors);
+    log_.DBG1("TEMP-MANAGER", "Average after rounding %d", average);
+    pod_temp_.temp.value = average;
+    pod_temp_.temp.timestamp = utils::Timer::getTimeMicros();
+    log_.DBG1("TEMP-MANAGER", "pod_temp_ %d", pod_temp_.temp.value);
+
+
+    // check ambient temperature
+    if (pod_temp_.module_status != data::ModuleStatus::kCriticalFailure) {
+      if (!temperatureInRange()) {
+        log_.ERR("TEMP-MANAGER", "temperature spike detected");
+        pod_temp_.module_status = data::ModuleStatus::kCriticalFailure;
+      }
+    }
+    data_.setTemperature(pod_temp_);
   }
-  data_.setTemperature(pod_temp_);
 }
 
 bool TempManager::temperatureInRange()    // TODO(Anyone): add true temperature range
 {
   auto& temperature = pod_temp_.temp;
-  if (temperature.value < -10 || temperature.value > 50) {  // temperature in -10C to 50C
-    log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", temperature.value);
+  if (temperature.value < -10 || temperature.value > 90) {  // temperature in -10C to 50C
+    log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature.value);
     return false;
   }
 }

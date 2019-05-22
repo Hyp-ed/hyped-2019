@@ -85,7 +85,7 @@ struct TemperatureData : public Module, public Sensor {
 struct Sensors : public Module {
   static constexpr int kNumImus = 6;            // TODO(Greg): change back to final cte for PCB
   static constexpr int kNumKeyence = 2;
-  static constexpr int kNumThermistors = 4;
+  static constexpr int kNumThermistors = 1;
 
 
   DataPoint<array<ImuData, kNumImus>> imu;
@@ -216,7 +216,7 @@ class Data {
    *
    * @param temp - temp in degrees C
    */
-  void setTemperature(TemperatureData& temp);
+  void setTemperature(const TemperatureData& temp);
 
   /**
    * @brief      Retrieves data from all sensors
