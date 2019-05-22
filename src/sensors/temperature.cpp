@@ -59,8 +59,10 @@ void Temperature::run()
 // TODO(Anyone): scale data correctly
 int Temperature::scaleData(int raw_value)
 {
-  // return ((raw_value*(180/255)) - 55);
-  return raw_value;
+  // convert to C temperature
+  double temp = static_cast<double>(raw_value) / 255;
+  temp = (temp*175) - 50;
+  return static_cast<int>(temp);
 }
 
 TemperatureData Temperature::getAnalogRead()
