@@ -46,7 +46,7 @@ TempManager::TempManager(Logger& log)
 
 void TempManager::run()
 {
-  while(sys_.running_) {
+  while (sys_.running_) {
     int average = 0;
     for (int i = 0; i < data::Sensors::kNumThermistors; i++) {
       average += temp_[i]->getAnalogRead().temp.value;      // TODO(anyone): average correctly

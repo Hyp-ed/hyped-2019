@@ -20,8 +20,7 @@
 
 #include "utils/io/adc.hpp"
 
-#include <stdio.h>
-#include <string>
+
 #include <sys/ioctl.h>
 //
 #include <poll.h>
@@ -30,6 +29,8 @@
 #include <unistd.h>     // close()
 #include <sys/mman.h>
 //
+#include <stdio.h>
+#include <string>
 #include <iostream>
 #include <fstream>
 //
@@ -167,7 +168,7 @@ void ADC::attachADC()   // TODO(anyone): fix syntax for data_ = base + data
   // log_.DBG1("ADC", "adc %d resolved as pin, %d", pin_, pin_id);
 
   // uint32_t base = reinterpret_cast<uint32_t>(base_mapping_);
-  // data_  = reinterpret_cast<volatile uint32_t*>(base + kData);    // TODO(Greg): implement address space
+  // data_  = reinterpret_cast<volatile uint32_t*>(base + kData); // TODO(Greg): implement
   // setupBuffer();
 }
 
