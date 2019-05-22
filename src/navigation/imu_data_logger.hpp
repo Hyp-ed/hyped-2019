@@ -21,6 +21,7 @@
 
 #include <unistd.h>
 #include <cstdint>
+#include <string>
 
 #include <cstdio>
 #include <fstream>
@@ -50,7 +51,7 @@ class ImuDataLogger
                 NavigationVector& x,
                 uint32_t timestamp);
   private:
-    char file_path_[100];
+    std::string file_path_;
     std::ofstream* outfile_;
 };
 }}  // namespace hyped navigation

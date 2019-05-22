@@ -22,7 +22,7 @@ namespace hyped {
 namespace navigation {
 
 ImuDataLogger::ImuDataLogger()
-    : file_path_(""),
+    : file_path_(),
       outfile_(new std::ofstream())
 {}
 
@@ -33,14 +33,18 @@ ImuDataLogger::~ImuDataLogger()
 
 void ImuDataLogger::setup(int imu_id, int run_id)
 {
-  snprintf(file_path_, sizeof(file_path_), "test_data/run%d/imu%d/data.csv", run_id, imu_id);
+  char buff[100];
+  snprintf(buff, sizeof(buff), "test_data/run%d/imu%d/data.csv", run_id, imu_id);
+  file_path_ = buff;
   outfile_->open(file_path_);
   *outfile_ << "arx,ary,arz,acx,acy,acz,t\n";
 }
 
 void ImuDataLogger::setupKalman(int imu_id, int run_id)
 {
-  snprintf(file_path_, sizeof(file_path_), "test_data/run%d/imu%d/data.csv", run_id, imu_id);
+  char buff[100];
+  snprintf(buff, sizeof(buff), "test_data/run%d/imu%d/data.csv", run_id, imu_id);
+  file_path_ = buff;
   outfile_->open(file_path_);
   *outfile_ << "arx,ary,arz,acx,acy,acz,afx,afy,afz,t\n";
 }
