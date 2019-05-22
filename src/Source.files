@@ -6,6 +6,7 @@ SRCS := \
   navigation/imu_data_logger.cpp \
   navigation/kalman_filter.cpp \
   navigation/main.cpp \
+  navigation/main_log.cpp \
   navigation/navigation.cpp \
   embrakes/main.cpp \
   embrakes/retractor_manager.cpp \
