@@ -91,7 +91,7 @@ TemperatureData Data::getTemperature()
   return temperature_;
 }
 
-void Data::setTemperature(TemperatureData& temp)
+void Data::setTemperature(const TemperatureData& temp)
 {
   ScopedLock L(&lock_temp_);
   temperature_ = temp;

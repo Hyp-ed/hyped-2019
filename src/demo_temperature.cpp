@@ -33,7 +33,7 @@ using hyped::sensors::TempManager;
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
-  Logger log(true, -1);
+  Logger log(true, 1);
 
   Data& data_ = Data::getInstance();    // read from data struct
   TempManager temp_manager_(log);
@@ -42,7 +42,8 @@ int main(int argc, char* argv[])
   
   log.INFO("TEST-Temp", "Temp instance successfully created");
   for (int i = 0; i < 50; i++) {
-    log.INFO("TEST-Temp", "Thermistor %d reading: %d degrees C", i, data_.getTemperature());
+    int temperature = data_.getTemperature().temp.value;
+    log.INFO("TEST-Temp", "Thermistor reading: %d degrees C", temperature);
     Thread::sleep(100);
   }
  	return 0;
