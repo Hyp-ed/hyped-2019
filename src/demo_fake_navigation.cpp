@@ -39,6 +39,8 @@ int main(int argc, char* argv[])
 {
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
+
+  sys.fake_imu = 1;
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
 
   log_nav->INFO("MAIN", "Set state to CALIBRATING");
