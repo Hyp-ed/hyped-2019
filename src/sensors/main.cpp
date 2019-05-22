@@ -21,6 +21,7 @@
 #include "sensors/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "sensors/bms_manager.hpp"
+#include "sensors/temp_manager.hpp"
 #include "sensors/gpio_counter.hpp"
 #include "sensors/fake_gpio_counter.hpp"
 
@@ -47,7 +48,8 @@ Main::Main(uint8_t id, utils::Logger& log)
     log_(log),
     pins_ {kKeyencePinLeft, kKeyencePinRight},
     imu_manager_(new ImuManager(log)),
-    battery_manager_(new BmsManager(log))
+    battery_manager_(new BmsManager(log)),
+    temp_manager_(new TempManager(log))
 {
   if (!sys_.fake_keyence) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
@@ -76,6 +78,7 @@ void Main::run()
 // start all managers
   imu_manager_->start();
   battery_manager_->start();
+  temp_manager_->start();
 
   // Initalise the keyence arrays
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
@@ -97,5 +100,6 @@ void Main::run()
 
   imu_manager_->join();
   battery_manager_->join();
+  temp_manager_->join();
 }
 }}
