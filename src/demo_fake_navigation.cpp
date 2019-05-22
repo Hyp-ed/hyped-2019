@@ -56,17 +56,15 @@ int main(int argc, char* argv[])
   Main* main = new Main(1, *log_nav);
 
   log_nav->INFO("MAIN", "Set state to ACCELERATING");
-  state_machine = d.getStateMachineData();
   state_machine.current_state = State::kAccelerating;
   d.setStateMachineData(state_machine);
 
   main->start();
 
   // Accelerating for 20s
-  Thread::sleep(20000);
+  Thread::sleep(20250);
 
   log_nav->INFO("MAIN", "Set state to NOMINAL BREAKING");
-  state_machine = d.getStateMachineData();
   state_machine.current_state = State::kNominalBraking;
   d.setStateMachineData(state_machine);
 
