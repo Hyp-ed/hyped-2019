@@ -24,7 +24,6 @@
 #include "utils/logger.hpp"
 #include "utils/timer.hpp"
 
-// using hyped::utils::concurrent::Thread;
 using hyped::utils::io::ADC;
 using hyped::utils::System;
 using hyped::utils::Logger;
@@ -34,14 +33,13 @@ namespace io = hyped::utils::io;
 
 int main(int argc, char* argv[]) { 
   System::parseArgs(argc, argv);
-  Logger log(true, -1);
+  Logger log(true, 1);
   
   ADC analog(1, log);
   Thread::sleep(100);
 
-  // for (int i=0; i<20; i++) {
   while(1) {
-    log.INFO("DEMO-ADC", "%d", analog.read());
+    log.INFO("DEMO-ADC", "Analog in value: %d", analog.read());   // digital range [0,255]
     Thread::sleep(100);
   }
   

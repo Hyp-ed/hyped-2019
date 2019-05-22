@@ -37,7 +37,6 @@ TempManager::TempManager(Logger& log)
       analog_pins_ {0}
 {
   for (int i = 0; i < data::Sensors::kNumThermistors; i++) {    // creates new real objects
-    // temp_[i] = new Temperature(log, analog_pins_[i]);
     Temperature* temp = new Temperature(log, analog_pins_[i]);
     temp->start();
     temp_[i] = temp;
@@ -51,14 +50,13 @@ void TempManager::run()
     int average = 0;
     for (int i = 0; i < data::Sensors::kNumThermistors; i++) {
       average += temp_[i]->getAnalogRead().temp.value;      // TODO(anyone): average correctly
-      log_.DBG1("TEMP-MANAGER", "Average %d", average);
+      log_.DBG1("TEMP-MANAGER", "Sum: %d", average);
     }
     average = round(average/data::Sensors::kNumThermistors);
-    log_.DBG1("TEMP-MANAGER", "Average after rounding %d", average);
+    log_.DBG1("TEMP-MANAGER", "Average after rounding: %d", average);
     pod_temp_.temp.value = average;
     pod_temp_.temp.timestamp = utils::Timer::getTimeMicros();
-    log_.DBG1("TEMP-MANAGER", "pod_temp_ %d", pod_temp_.temp.value);
-
+    log_.DBG1("TEMP-MANAGER", "pod_temp_: %d", pod_temp_.temp.value);
 
     // check ambient temperature
     if (pod_temp_.module_status != data::ModuleStatus::kCriticalFailure) {
@@ -74,6 +72,7 @@ void TempManager::run()
 bool TempManager::temperatureInRange()    // TODO(Anyone): add true temperature range
 {
   auto& temperature = pod_temp_.temp;
+  log_.DBG1("TEMP-MANAGER", "Temperature from data struct: %d", temperature);
   if (temperature.value < -10 || temperature.value > 90) {  // temperature in -10C to 50C
     log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature.value);
     return false;

@@ -83,7 +83,7 @@ ADC::ADC(uint32_t pin, Logger& log)
   }
   exported_pins.push_back(pin_);
   exportADC();
-  attachADC();
+  // attachADC();
 }
 
 void ADC::initialise()
@@ -112,8 +112,8 @@ void ADC::initialise()
 
 void ADC::uninitialise()
 {
-  int fd;                 // file descriptor
-  char buf[adc::kBufSize];     // file buffer
+  int fd;                       // file descriptor
+  char buf[adc::kBufSize];      // file buffer
   Logger log(1, 1);
   log.ERR("ADC", "uninitialising");
 
@@ -132,8 +132,8 @@ void ADC::uninitialise()
 
 void ADC::exportADC()
 {
-  int fd;                 // file descriptor
-  char buf[adc::kBufSize];     // file buffer
+  int fd;                       // file descriptor
+  char buf[adc::kBufSize];      // file buffer
   uint32_t len;
 
   snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin_);          // NOLINT [whitespace/line_length]
@@ -223,9 +223,9 @@ uint8_t ADC::read()
   if (fd < 0) {
     log_.ERR("ADC", "problem reading pin %d raw voltage ", pin_);
   }
-  log_.DBG("ADC", "fd: %d", fd);
+  log_.DBG1("ADC", "fd: %d", fd);
   uint32_t val = adc::readHelper(fd);      // TODO(Greg): Check readHelper function
-  log_.DBG("ADC", "val: %d", val);
+  log_.DBG1("ADC", "val: %d", val);
   close(fd);
   return val;
 }

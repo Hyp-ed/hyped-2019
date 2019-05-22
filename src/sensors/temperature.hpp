@@ -82,5 +82,4 @@ class Temperature: public AdcInterface, public Thread {
 
 }}
 
-
 #endif  // SENSORS_TEMPERATURE_HPP_
