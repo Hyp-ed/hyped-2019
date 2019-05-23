@@ -50,7 +50,7 @@ constexpr uint32_t kADCAddrBase = 0x44E0D000;
 constexpr uint32_t kMmapSize = 0x2000;          // (8 KB)
 constexpr int kBufSize  = 100;
 
-uint32_t readHelper(int fd)
+uint8_t readHelper(int fd)
 {
   char buf[4];                                 // buffer size 4 for fs value
   lseek(fd, 0, SEEK_SET);                      // reset file pointer
@@ -227,7 +227,6 @@ uint8_t ADC::read()
   log_.DBG1("ADC", "fd: %d", fd);
   uint32_t val = adc::readHelper(fd);      // TODO(Greg): Check readHelper function
   log_.DBG1("ADC", "val: %d", val);
-  close(fd);
   return val;
 }
 
