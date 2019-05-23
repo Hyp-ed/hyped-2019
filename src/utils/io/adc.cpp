@@ -50,7 +50,7 @@ constexpr uint32_t kADCAddrBase = 0x44E0D000;
 constexpr uint32_t kMmapSize = 0x2000;          // (8 KB)
 constexpr int kBufSize  = 100;
 
-uint8_t readHelper(int fd)
+uint16_t readHelper(int fd)
 {
   char buf[4];                                 // buffer size 4 for fs value
   lseek(fd, 0, SEEK_SET);                      // reset file pointer
@@ -133,19 +133,19 @@ void ADC::uninitialise()
 
 void ADC::exportADC()
 {
-  int fd;                       // file descriptor
+  // int fd;                       // file descriptor
   char buf[adc::kBufSize];      // file buffer
   uint32_t len;
 
   snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin_);          // NOLINT [whitespace/line_length]
-  fd = open(buf, O_WRONLY);
-  if (fd < 0) {
+  fd_ = open(buf, O_WRONLY);
+  if (fd_ < 0) {
     log_.ERR("ADC", "could not enable pin %d", pin_);
   }
   char pinbuf[100];
   snprintf(pinbuf, sizeof(pinbuf), "%i", pin_);
-  len = write(fd, pinbuf, strlen(pinbuf) + 1);
-  close(fd);
+  len = write(fd_, pinbuf, strlen(pinbuf) + 1);
+  // close(fd_);
   if (len != strlen(pinbuf) +1) {
     log_.INFO("ADC", "could not enable ADC %d, might be already be enabled", pin_);
     // return;
@@ -174,18 +174,18 @@ void ADC::attachADC()   // TODO(anyone): fix syntax for data_ = base + data
 
 void ADC::setupBuffer()
 {
-  int fd;                      // file descriptor
+  // int fd;                      // file descriptor
   char buf[adc::kBufSize];     // file buffer
   uint32_t len;
 
   // set buffer length to 100
-  fd = open("/sys/bus/iio/devices/iio:device0/buffer/length", O_WRONLY);     // write only
-  if (fd < 0) {
+  fd_ = open("/sys/bus/iio/devices/iio:device0/buffer/length", O_WRONLY);     // write only
+  if (fd_ < 0) {
     log_.ERR("ADC", "problem opening length");
   }
   uint32_t out = 100;
-  len = write(fd, &out, sizeof(out));     // TODO(Greg): check syntax
-  close(fd);
+  len = write(fd_, &out, sizeof(out));     // TODO(Greg): check syntax
+  // close(fd_);
   if (len != 100) {
     log_.INFO("ADC", "could not set buffer length to %d", out);
     // return;
@@ -193,20 +193,20 @@ void ADC::setupBuffer()
 
   // enable buffer with 1
   snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/buffer/enable");
-  fd = open(buf, O_WRONLY);
-  if (fd < 0) {
+  fd_ = open(buf, O_WRONLY);
+  if (fd_ < 0) {
     log_.ERR("ADC", "problem opening enable");
   }
   out = 1;
-  len = write(fd, &out, sizeof(out));     // TODO(Greg): check syntax
-  close(fd);
+  len = write(fd_, &out, sizeof(out));     // TODO(Greg): check syntax
+  close(fd_);
   if (len != 1) {
     log_.INFO("ADC", "could not enable buffer", pin_);
     // return;
   }
 }
 
-uint8_t ADC::read()
+uint16_t ADC::read()
 {
   if (!initialised_) {
     log_.ERR("ADC", "service has not been initialised");
@@ -217,16 +217,17 @@ uint8_t ADC::read()
   //   return 0;
   // }
 
-  int fd;
+  // int fd;
   char buf[100];
   snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/in_voltage%i_raw", pin_);
-  fd = open(buf, O_RDONLY);
-  if (fd < 0) {
+  fd_ = open(buf, O_RDONLY);
+  if (fd_ < 0) {
     log_.ERR("ADC", "problem reading pin %d raw voltage ", pin_);
   }
-  log_.DBG1("ADC", "fd: %d", fd);
-  uint32_t val = adc::readHelper(fd);      // TODO(Greg): Check readHelper function
+  log_.DBG1("ADC", "fd: %d", fd_);
+  uint16_t val = adc::readHelper(fd_);
   log_.DBG1("ADC", "val: %d", val);
+  close(fd_);
   return val;
 }
 

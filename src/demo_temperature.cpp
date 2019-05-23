@@ -33,7 +33,7 @@ using hyped::sensors::TempManager;
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
-  Logger log(true, 1);
+  Logger log(true, -1);
 
   Data& data_ = Data::getInstance();    // read from data struct
   TempManager temp_manager_(log);
