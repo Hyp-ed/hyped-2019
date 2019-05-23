@@ -47,7 +47,7 @@ void Temperature::run()
   temp_.temp.timestamp = utils::Timer::getTimeMicros();
 
   while (sys_.running_) {
-    int raw_value = thepin.read();
+    uint16_t raw_value = thepin.read();
     log_.DBG1("Temperature", "Raw Data: %d", raw_value);
     temp_.temp.value = scaleData(raw_value);
     log_.DBG1("Temperature", "Scaled Data: %d", raw_value);
@@ -57,10 +57,10 @@ void Temperature::run()
 }
 
 // TODO(Anyone): scale data correctly
-int Temperature::scaleData(int raw_value)
+int Temperature::scaleData(uint16_t raw_value)
 {
   // convert to C temperature
-  double temp = static_cast<double>(raw_value) / 255;
+  double temp = static_cast<double>(raw_value) / 4095;
   temp = (temp*175) - 50;
   return static_cast<int>(temp);
 }

@@ -56,9 +56,9 @@ class ADC {
   /**
    * @brief reads AIN value from file system
    *
-   * @return uint8_t
+   * @return uint16_t return two bytes for [0,4095] range
    */
-  uint8_t read();
+  uint16_t read();
 
  private:
   ADC() = delete;

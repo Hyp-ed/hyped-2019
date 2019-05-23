@@ -68,7 +68,7 @@ class Temperature: public AdcInterface, public Thread {
    * @param voltage
    * @return int
    */
-  int scaleData(int voltage);
+  int scaleData(uint16_t voltage);
   int pin_;
   System& sys_;
   utils::Logger& log_;

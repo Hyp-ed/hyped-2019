@@ -34,7 +34,7 @@ TempManager::TempManager(Logger& log)
     : TempManagerInterface(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-      analog_pins_ {0}
+      analog_pins_ {1}
 {
   for (int i = 0; i < data::Sensors::kNumThermistors; i++) {    // creates new real objects
     Temperature* temp = new Temperature(log, analog_pins_[i]);
@@ -59,12 +59,12 @@ void TempManager::run()
     log_.DBG1("TEMP-MANAGER", "pod_temp_: %d", pod_temp_.temp.value);
 
     // check ambient temperature
-    if (pod_temp_.module_status != data::ModuleStatus::kCriticalFailure) {
-      if (!temperatureInRange()) {
-        log_.ERR("TEMP-MANAGER", "temperature spike detected");
-        pod_temp_.module_status = data::ModuleStatus::kCriticalFailure;
-      }
-    }
+    // if (pod_temp_.module_status != data::ModuleStatus::kCriticalFailure) {
+    //   if (!temperatureInRange()) {
+    //     log_.ERR("TEMP-MANAGER", "temperature spike detected");
+    //     pod_temp_.module_status = data::ModuleStatus::kCriticalFailure;
+    //   }
+    // }
     data_.setTemperature(pod_temp_);
   }
 }
