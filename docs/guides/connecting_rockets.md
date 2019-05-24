@@ -1,11 +1,52 @@
-# Guide on how to connect Rocket M900's
+# Guides on Telemetry Stuff
+- [Building the protobufs library (required for running telemetry code)](#building-protobufs)
+- [Connecting the Rockets](#connecting-the-rockets)
+<br>
+
+## Building Protobufs
+***Refer to [this readme file](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md) from the protobufs library***
+
+On Linux machines, make sure the following are installed:
+- autoconf
+- automake
+- libtool
+- make
+- g++
+- unzip
+
+Chances are they're already installed. If not, on Ubuntu/Debian run:
+```
+$ sudo apt-get install autoconf automake libtool curl make g++ unzip
+```
+
+On Mac's they will also likely be installed (xcode command line tools are also required, but this will almost certainly be already installed as it's a requirement for `g++` anyways).
+
+Now, download the source files for protobufs from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v3.6.1). Make sure you choose **protobuf-java-3.6.1.zip** (the java parts of the library are only necessary if you want to run the telemetry base-station and you could install the pure c++ version if you wanted, but I'd recommend downloading it anyways). Place these files where you want.
+
+**Warning: the following will likely take around an hour (sad reaccs), so only proceed when you have the time for it**
+
+Navigate to the root of the source protobufs directory. Now build and install the library by running the following:
+```
+$ ./configure
+$ make
+$ make check
+$ sudo make install
+$ sudo ldconfig # refresh shared library cache.
+```
+On Mac's [you can ignore](https://github.com/protocolbuffers/protobuf/issues/2570#issuecomment-271358087) `sudo ldconfig`.
+
+Check if protobufs was installed:
+```
+$ protoc --version
+libprotoc 3.6.1
+```
+
+## Connecting the Rockets
 ***Read instructions below sequentially***
 <br>
 ***Use [this video](https://www.youtube.com/watch?v=4zKNIveuCxM&feature=youtu.be) as reference***
 <br>
 *Just to clarify Access Point Computer refers to the computer with the designated Access Point Rocket plugged in; Station Computer refers to the computer with the designated Station Rocket plugged in*
-
-<br>
 <br>
 
 ### Physical setup
