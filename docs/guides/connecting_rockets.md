@@ -1,7 +1,37 @@
 # Guides on Telemetry Stuff
+- [Running the telemetry module](#running-the-telemetry-module)
 - [Building the protobufs library (required for running telemetry code)](#building-protobufs)
 - [Connecting the Rockets](#connecting-the-rockets)
 <br>
+
+## Running the telemetry module
+Make sure you've followed the [guide on building the protobufs library](#building-protobufs). Programs that use the telemetry module will not work unless protobufs is installed.
+
+In `Source.files`, manually add all `.cpp` files in the telemetry folder as well as `telemetry/telemetrydata/message.pb.cpp`, for example:
+```
+  telemetry/main.cpp \
+  telemetry/client.cpp \
+  telemetry/recvloop.cpp \
+  telemetry/sendloop.cpp \
+  telemetry/utils.cpp \
+  telemetry/signalhandler.cpp \
+  telemetry/telemetrydata/message.pb.cpp \
+```
+The files in the telemetry folder **might differ from what's written here at time of writing**, so please make sure you double check what is actually contained in the folder. I realize this is a pretty cumbersome process and am looking into automating it.
+
+Now run:
+```
+$ make protoc
+```
+This just compiles the generated protobuf files (shouldn't actually be necessary since the generated files are tracked in the repo, but run it just in case). This also will say `mkdir` ran into an error, this is expected and you can ignore this (if anyone knows how to not only ignore errors in make commands but also silence them let me know).
+
+Now whenever you want to compile a program that uses the telemetry module, make sure to use the `PROTOBUF=1` flag. For example:
+```
+$ make MAIN=demo_telem.cpp PROTOBUF=1
+```
+The linker will run into errors if this is not specified.
+
+Now you can run `./hyped` and it should work!
 
 ## Building Protobufs
 ***Refer to [this readme file](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md) from the protobufs library***
@@ -34,7 +64,7 @@ $ ./configure
 $ make
 $ make check
 $ sudo make install
-$ sudo ldconfig # refresh shared library cache.
+$ sudo ldconfig
 ```
 On Mac's [you can ignore](https://github.com/protocolbuffers/protobuf/issues/2570#issuecomment-271358087) `sudo ldconfig`.
 
@@ -43,6 +73,8 @@ Check if protobufs was installed:
 $ protoc --version
 libprotoc 3.6.1
 ```
+
+Now if you want to run code that uses the telemetry module refer to [this guide](#running-the-telemetry-system)
 
 ## Connecting the Rockets
 ***Read instructions below sequentially***
