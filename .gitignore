@@ -17,3 +17,5 @@ Debug/
 .vscode
 .idea
 .ipynb_checkpoints
+*.ipch
+*.ipch.icloud

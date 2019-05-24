@@ -1,3 +1,4 @@
+
 /*
  * Author: Lukas Schaefer
  * Organisation: HYPED
@@ -18,12 +19,16 @@
  *    limitations under the License.
  */
 
+#include "data/data.hpp"
 #include "navigation/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 
+using hyped::data::Data;
+using hyped::data::State;
+using hyped::data::StateMachine;
 using hyped::navigation::Main;
 using hyped::sensors::ImuManager;
 using hyped::utils::concurrent::Thread;
@@ -35,24 +40,36 @@ int main(int argc, char* argv[])
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
 
+  sys.fake_imu = 1;
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
 
-  if (sys.tube_run) {
-    log_nav->INFO("NAV", "TUBE RUN INITIALISED");
-  } else if (sys.elevator_run) {
-    log_nav->INFO("NAV", "ELEVATOR RUN INITIALISED");
-  } else if (sys.stationary_run) {
-    log_nav->INFO("NAV", "STATIONARY RUN INITIALISED");
-  }
+  log_nav->INFO("MAIN", "Set state to CALIBRATING");
+  static Data& d = Data::getInstance();
+  StateMachine state_machine = d.getStateMachineData();
+  state_machine.current_state = State::kCalibrating;
+  d.setStateMachineData(state_machine);
+
   // Initialise sensors
   ImuManager imu_manager(*log_nav);
   imu_manager.start();
 
   Main* main = new Main(1, *log_nav);
+
+  log_nav->INFO("MAIN", "Set state to ACCELERATING");
+  state_machine.current_state = State::kAccelerating;
+  d.setStateMachineData(state_machine);
+
   main->start();
 
-  // Run for 24s
-  Thread::sleep(24000);
+  // Accelerating for 20s
+  Thread::sleep(20250);
+
+  log_nav->INFO("MAIN", "Set state to NOMINAL BREAKING");
+  state_machine.current_state = State::kNominalBraking;
+  d.setStateMachineData(state_machine);
+
+  // Breaking for 4s
+  Thread::sleep(4000);
 
   // Exit gracefully
   sys.running_ = false;
