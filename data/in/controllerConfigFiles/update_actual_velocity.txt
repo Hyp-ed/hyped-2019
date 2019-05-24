@@ -3,14 +3,10 @@
 # File containing data to send to the controllers when the updateActualVelocity function
 # is called in controller.cpp
 
-# Format of 8-byte message:
-# First byte is the Function Code (eg: writeOneByte) the remaining 7 bytes are message
-# data to write.
-
 # NOTE: The current data is out of date:
 
 #-------------------------------------------------------------------------------------#
 
 # Check actual velocity in object dictionary
 >Controller %d: Reading actual velocity
-0x40 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+0x40 0x6C 0x60 0x00 0x00 0x00 0x00 0x00
