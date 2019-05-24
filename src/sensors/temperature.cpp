@@ -20,7 +20,7 @@
 
 #include <stdio.h>
 #include "utils/concurrent/thread.hpp"
-#include "utils/io/adc.hpp"
+#include "utils/io/i2c.hpp"
 #include "utils/timer.hpp"
 #include "sensors/temperature.hpp"
 
@@ -29,44 +29,32 @@ namespace hyped {
 using data::Data;
 using data::TemperatureData;
 using utils::concurrent::Thread;
-using utils::io::ADC;
+using utils::io::I2C;
 using hyped::utils::Logger;
 
 namespace sensors {
 
-Temperature::Temperature(utils::Logger& log, int pin)
-     : pin_(pin),
-       sys_(utils::System::getSystem()),
-       log_(log)
-{}
-
-void Temperature::run()
+Temperature::Temperature(utils::Logger& log)
+     : sys_(utils::System::getSystem()),
+       log_(log),
+       i2c_(I2C::getInstance())
 {
-  ADC thepin(pin_);
-  temp_.temp.value = 0;
-  temp_.temp.timestamp = utils::Timer::getTimeMicros();
-
-  while (sys_.running_) {
-    uint16_t raw_value = thepin.read();
-    log_.DBG1("Temperature", "Raw Data: %d", raw_value);
-    temp_.temp.value = scaleData(raw_value);
-    log_.DBG1("Temperature", "Scaled Data: %d", raw_value);
-    temp_.temp.timestamp = utils::Timer::getTimeMicros();
-    temp_.operational = true;
-  }
+  // i2c_.write(...)
 }
 
-// TODO(Anyone): scale data correctly
-int Temperature::scaleData(uint16_t raw_value)
+void Temperature::checkSensor()
 {
-  // convert to C temperature
-  double temp = static_cast<double>(raw_value) / 4095;
-  temp = (temp*175) - 50;
-  return static_cast<int>(temp);
+  // temp_.temp = 0;
+  // uint16_t raw_value = thepin.read();
+  // log_.DBG1("Temperature", "Raw Data: %d", raw_value);
+  // temp_.temp = scaleData(raw_value);
+  // log_.DBG1("Temperature", "Scaled Data: %d", raw_value);
+  // temp_.operational = true;
 }
 
-TemperatureData Temperature::getAnalogRead()
-{
-  return temp_;
+
+int Temperature::getTemperature() {
+  return temp_.temp;
 }
+
 }}  // namespace hyped::sensors

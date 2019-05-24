@@ -26,18 +26,20 @@
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/concurrent/thread.hpp"
+#include "utils/io/i2c.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 
 namespace hyped {
 
+using utils::io::I2C;
 using utils::Logger;
 using utils::concurrent::Thread;
 using utils::System;
 
 namespace sensors {
 
-class Temperature: public AdcInterface, public Thread {
+class Temperature {
  public:
   /**
    * @brief Construct a new Temperature object
@@ -45,31 +47,25 @@ class Temperature: public AdcInterface, public Thread {
    * @param log from main thread, for debugging purposes
    * @param pin for specific ADC pin
    */
-  Temperature(utils::Logger& log, int pin);
+  Temperature(utils::Logger& log);
   ~Temperature() {}
-
-  /**
-   * @brief returns TemperatreData object, from interface
-   *
-   * @return data::TemperatureData
-   */
-  data::TemperatureData getAnalogRead() override;
 
   /**
    * @brief individual thread for Temperature
    *
    */
-  void run() override;
+  void checkSensor();
+
+  /**
+   * @brief return temperature in degrees C
+   * 
+   * @return int 
+   */
+  int getTemperature();
 
  private:
-  /**
-   * @brief scale raw digital data to output in degrees C
-   *
-   * @param voltage
-   * @return int
-   */
-  int scaleData(uint16_t voltage);
-  int pin_;
+  
+  I2C& i2c_;
   System& sys_;
   utils::Logger& log_;
 

@@ -61,8 +61,7 @@ class Main: public Thread {
     GpioInterface*                         keyences_[data::Sensors::kNumKeyence];  // 0 L and 1 R
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
-    std::unique_ptr<TempManagerInterface>  temp_manager_;
-
+    // pointer to Temperature sensor
     array<data::StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter_arr_;
     array<data::StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count_arr_;
 };

@@ -64,35 +64,10 @@ class ADC {
   ADC() = delete;
 
   /**
-   * @brief remaps each address for each ADC pin from kADCAddrBase
-   * using mmap
-   *
-   */
-  static void initialise();
-
-  /**
-   * @brief releases exported ADC pins
-   *
-   */
-  static void uninitialise();
-
-  /**
    * @brief enables ADC pin for analog input through file system
    *
    */
-  void exportADC();
-
-  /**
-   * @brief configure device register pointers for memory mapping
-   *
-   */
-  void attachADC();
-
-  /**
-   * @brief enables ADC data buffer, sets length to 100 for continuous reading
-   *
-   */
-  void setupBuffer();
+  void enableADC();
 
   /**
    * @brief if specific pin is initialised
@@ -109,13 +84,9 @@ class ADC {
    * @brief keeps track of exported pins
    *
    */
-  static std::vector<uint32_t> exported_pins;
 
   uint32_t      pin_;
   Logger&       log_;
-
-  uint32_t      pin_mask_;
-  volatile      uint32_t* data_;       // data register
   int           fd_;
 };
 }}}

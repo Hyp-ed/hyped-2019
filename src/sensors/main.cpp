@@ -48,8 +48,8 @@ Main::Main(uint8_t id, utils::Logger& log)
     log_(log),
     pins_ {kKeyencePinLeft, kKeyencePinRight},
     imu_manager_(new ImuManager(log)),
-    battery_manager_(new BmsManager(log)),
-    temp_manager_(new TempManager(log))
+    battery_manager_(new BmsManager(log))
+    // include Temperature sensor
 {
   if (!sys_.fake_keyence) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
@@ -78,7 +78,6 @@ void Main::run()
 // start all managers
   imu_manager_->start();
   battery_manager_->start();
-  temp_manager_->start();
 
   // Initalise the keyence arrays
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
@@ -95,11 +94,16 @@ void Main::run()
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
       prev_keyence_stripe_count_arr_[i] = keyences_[i]->getStripeCounter();
     }
+
+    // temperature loop
+    // check range of single sensor and throw critical failure if out of nominal range
+    // set to data struct
+
+
     Thread::sleep(10);  // Sleep for 10ms
   }
 
   imu_manager_->join();
   battery_manager_->join();
-  temp_manager_->join();
 }
 }}
