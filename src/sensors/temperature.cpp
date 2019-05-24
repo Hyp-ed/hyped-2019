@@ -126,13 +126,34 @@ void Temperature::checkSensor()
     log_.ERR("TEMPERATURE", "Cannot access data yet, waiting.");
     Thread::sleep(200);
   }
-  // average data
+  // wait for 5 measurements and average data;
 }
 
 // average multiple readings to account for noise
-int16_t Temperature::averageData(int16_t data[5])
+int Temperature::averageData(int data[kAverageSet])
 {
-  return 0;
+  double mean = 0;
+  for (int i=0; i<kAverageSet; i++) {
+    mean += data[i];
+  }
+  mean = mean/kAverageSet;
+  double sq_sum = 0;
+  for (int i=0; i<kAverageSet; i++) {
+    sq_sum += pow((data[i]-mean),2);
+  }
+  double st_dev = sqrt((sq_sum/kAverageSet));
+
+  int accuracy_factor = 2;      // change if needed
+
+  int final_sum = 0;
+  int count = 0;
+  for (int i=0; i<kAverageSet; i++) {
+    if (abs(data[i] - mean) < (st_dev*accuracy_factor)) {
+      final_sum += data[i];
+      count++;
+    }
+  }
+  return round(final_sum/count);
 }
 
 int Temperature::getTemperature()
