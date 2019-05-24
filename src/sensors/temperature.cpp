@@ -54,7 +54,7 @@ Temperature::Temperature(utils::Logger& log)
 
 /**
  * @brief configure for overtemperature and undertemperature interrupts
- * 
+ *
  */
 void Temperature::configure()
 {
@@ -72,7 +72,6 @@ void Temperature::writeByte(uint8_t write_reg, uint8_t write_data)
   uint8_t buffer[2];
   buffer[0] = write_reg;
   buffer[1] = write_data;
-  
   i2c_.write(i2c_addr, buffer, 2);
 }
 
@@ -91,7 +90,7 @@ void Temperature::readBytes(uint8_t read_reg, uint8_t *read_data, uint8_t length
 
 /**
  * @brief get just the two byte temperature data, no interrupts
- * 
+ *
  */
 void Temperature::checkSensor()
 {
@@ -102,7 +101,6 @@ void Temperature::checkSensor()
   uint8_t data_mask = 0x7FFF;
   uint8_t sign_mask = 0x8000;
   int sign_bit = 15;
-  
   int16_t temp, sign;
 
   readByte(kStatus, &response);
@@ -110,15 +108,15 @@ void Temperature::checkSensor()
   if (response == kTempStatus) {
     readBytes(kTempMSB, reinterpret_cast<uint8_t*>(buffer), 2);    // from count MSB/LSB registers
     // TODO(Greg): convert to little endian?
-    // uint16_t temp = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1])); 
+    // uint16_t temp = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
 
-    // convert from twos complement format
+    // convert from twos complement format, TODO(anyone): check syntax
     uint16_t raw_temp = reinterpret_cast<uint16_t>(buffer);
     sign = (int16_t)((raw_temp & sign_mask) >> sign_bit);
 
     if (sign) {
       temp = (~raw_temp) & data_mask;
-      temp_.temp = (short)(temp * -1);    // set data type
+      temp_.temp = (short)(temp * -1);    // [NOLINT] set data type
     } else {
       temp = (raw_temp & data_mask);
       temp_.temp = temp;
@@ -132,12 +130,13 @@ void Temperature::checkSensor()
 }
 
 // average multiple readings to account for noise
-int16_t Temperature::averageData(int16_t data[5]) {
-
+int16_t Temperature::averageData(int16_t data[5])
+{
   return 0;
 }
 
-int Temperature::getTemperature() {
+int Temperature::getTemperature()
+{
   return temp_.temp;
 }
 

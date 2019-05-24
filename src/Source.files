@@ -30,7 +30,6 @@ SRCS := \
   sensors/bms.cpp \
   sensors/bms_manager.cpp \
   sensors/temperature.cpp \
-  sensors/temp_manager.cpp \
   state_machine/main.cpp \
   state_machine/hyped-machine.cpp \
   state_machine/states.cpp \
@@ -41,7 +40,7 @@ SRCS := \
   utils/io/can.cpp \
   utils/io/gpio.cpp \
   utils/io/spi.cpp \
-  utils/io/adc.cpp \
+  utils/io/i2c.cpp \
   utils/config.cpp \
   utils/logger.cpp \
   utils/system.cpp \

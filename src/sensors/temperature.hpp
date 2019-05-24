@@ -47,7 +47,7 @@ class Temperature {
    * @param log from main thread, for debugging purposes
    * @param pin for specific ADC pin
    */
-  Temperature(utils::Logger& log);
+  explicit Temperature(utils::Logger& log);
   ~Temperature() {}
 
   /**
@@ -58,13 +58,12 @@ class Temperature {
 
   /**
    * @brief return temperature in degrees C
-   * 
-   * @return int 
+   *
+   * @return int
    */
   int getTemperature();
 
  private:
-
   void configure();
   void writeByte(uint8_t write_reg, uint8_t write_data);
   void readByte(uint8_t read_reg, uint8_t *read_data);

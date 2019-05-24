@@ -2,7 +2,7 @@
  * Author:
  * Organisation: HYPED
  * Date:
- * Description: Demo for LM35 Thermistor using temp_manager
+ * Description: Demo for ADT7410 temperature sensor
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,32 +18,29 @@
  *    limitations under the License.
  */
 
-#include "sensors/temp_manager.hpp"
+#include "sensors/temperature.hpp"
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
-using namespace hyped::data;
 using namespace std;
-using hyped::sensors::TempManager;
+using hyped::sensors::Temperature;
 
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, -1);
 
-  Data& data_ = Data::getInstance();    // read from data struct
-  TempManager temp_manager_(log);
-  temp_manager_.start();
+  Temperature temp_(log);
   Thread::sleep(500);
   
   log.INFO("TEST-Temp", "Temp instance successfully created");
   for (int i = 0; i < 50; i++) {
-    int temperature = data_.getTemperature().temp.value;
-    log.INFO("TEST-Temp", "Thermistor reading: %d degrees C", temperature);
+    temp_.checkSensor();
+    int temperature = temp_.getTemperature();
+    log.INFO("TEST-Temp", "Sensor reading: %d degrees C", temperature);
     Thread::sleep(100);
   }
  	return 0;
