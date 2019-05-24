@@ -21,7 +21,7 @@ $ sudo apt-get install autoconf automake libtool curl make g++ unzip
 
 On Mac's they will also likely be installed (xcode command line tools are also required, but this will almost certainly be already installed as it's a requirement for `g++` anyways).
 
-Now, download the source files for protobufs from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v3.6.1). Make sure you choose **protobuf-java-3.6.1.zip** (the java parts of the library are only necessary if you want to run the telemetry base-station and you could install the pure c++ version if you wanted, but I'd recommend downloading it anyways). Place these files where you want.
+Now, download the source files for protobufs from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v3.6.1). Make sure you choose **protobuf-java-3.6.1.zip** (the java parts of the library are only necessary if you want to work on the telemetry base-station and you could install the pure c++ version if you wanted, but I'd recommend downloading it anyways). Place these files where you want.
 
 **Warning: the following will likely take around an hour (sad reaccs), so only proceed when you have the time for it**
 
