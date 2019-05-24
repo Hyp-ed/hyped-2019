@@ -24,6 +24,16 @@
 #include "utils/timer.hpp"
 #include "sensors/temperature.hpp"
 
+constexpr uint8_t i2c_addr = 0x48;      // for A0, A1 pins low
+
+constexpr uint8_t kConfig = 0x03;      // assume big endian
+constexpr uint8_t kReset  = 0x2F;
+constexpr uint8_t kStatus = 0x02;
+constexpr uint8_t kTempStatus = 0x1;
+
+constexpr uint8_t kTempMSB = 0x00;
+constexpr uint8_t kTempLSB = 0x01;
+
 namespace hyped {
 
 using data::Data;
@@ -39,19 +49,93 @@ Temperature::Temperature(utils::Logger& log)
        log_(log),
        i2c_(I2C::getInstance())
 {
-  // i2c_.write(...)
+  configure();
 }
 
+/**
+ * @brief configure for overtemperature and undertemperature interrupts
+ * 
+ */
+void Temperature::configure()
+{
+  // software reset
+  writeByte(kReset, 0x2F);
+  // set CT and INT pins to active high, set interrupt mode and 16-bit resolution
+  // left in continuous mode, DO NOT SET IN ONE-SHOT MODE
+  writeByte(kConfig, 0x39);       // set high bits 2,3,4,7
+}
+
+void Temperature::writeByte(uint8_t write_reg, uint8_t write_data)
+{
+  // i2c_.write(write_reg, &write_data, 1);
+
+  uint8_t buffer[2];
+  buffer[0] = write_reg;
+  buffer[1] = write_data;
+  
+  i2c_.write(i2c_addr, buffer, 2);
+}
+
+void Temperature::readByte(uint8_t read_reg, uint8_t *read_data)
+{
+  i2c_.write(i2c_addr, read_data, 1);
+  i2c_.read(i2c_addr, &read_reg, 1);
+  // i2c_.read(read_reg, read_data, 1);
+}
+
+void Temperature::readBytes(uint8_t read_reg, uint8_t *read_data, uint8_t length)
+{
+  i2c_.write(i2c_addr, read_data, 1);
+  i2c_.read(i2c_addr, &read_reg, length);
+}
+
+/**
+ * @brief get just the two byte temperature data, no interrupts
+ * 
+ */
 void Temperature::checkSensor()
 {
-  // temp_.temp = 0;
-  // uint16_t raw_value = thepin.read();
-  // log_.DBG1("Temperature", "Raw Data: %d", raw_value);
-  // temp_.temp = scaleData(raw_value);
-  // log_.DBG1("Temperature", "Scaled Data: %d", raw_value);
-  // temp_.operational = true;
+  // bit 7 to low when temperature converted and sent to register, back to 1 when read
+  uint8_t response;
+  uint8_t buffer[2];
+
+  uint8_t data_mask = 0x7FFF;
+  uint8_t sign_mask = 0x8000;
+  int sign_bit = 15;
+  
+  int16_t temp, sign;
+
+  readByte(kStatus, &response);
+
+  if (response == kTempStatus) {
+    readBytes(kTempMSB, reinterpret_cast<uint8_t*>(buffer), 2);    // from count MSB/LSB registers
+    // TODO(Greg): convert to little endian?
+    // uint16_t temp = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1])); 
+
+    // convert from twos complement format
+    uint16_t raw_temp = reinterpret_cast<uint16_t>(buffer);
+    sign = (int16_t)((raw_temp & sign_mask) >> sign_bit);
+
+    if (sign) {
+      temp = (~raw_temp) & data_mask;
+      temp_.temp = (short)(temp * -1);    // set data type
+    } else {
+      temp = (raw_temp & data_mask);
+      temp_.temp = temp;
+    }
+    temp_.operational = true;
+  } else {
+    log_.ERR("TEMPERATURE", "Cannot access data yet, waiting.");
+    Thread::sleep(200);
+  }
+  // average data
 }
 
+// average multiple readings to account for noise
+int16_t Temperature::averageData(int16_t data[5]) {
+
+  return 0;
+}
 
 int Temperature::getTemperature() {
   return temp_.temp;

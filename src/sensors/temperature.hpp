@@ -64,7 +64,12 @@ class Temperature {
   int getTemperature();
 
  private:
-  
+
+  void configure();
+  void writeByte(uint8_t write_reg, uint8_t write_data);
+  void readByte(uint8_t read_reg, uint8_t *read_data);
+  void readBytes(uint8_t read_reg, uint8_t *read_data, uint8_t length);
+  int16_t averageData(int16_t data[5]);
   I2C& i2c_;
   System& sys_;
   utils::Logger& log_;

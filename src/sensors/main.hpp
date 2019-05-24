@@ -30,6 +30,7 @@
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "sensors/manager_interface.hpp"
+#include "sensors/temperature.hpp"
 #include "utils/system.hpp"
 
 namespace hyped {
@@ -47,6 +48,7 @@ class Main: public Thread {
 
   private:
     bool keyencesUpdated();
+    bool temperatureInRange();
 
     data::Data&     data_;
     utils::System&  sys_;
@@ -56,12 +58,13 @@ class Main: public Thread {
     data::Sensors   sensors_;
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
+    data::TemperatureData temperature_data_;
 
     uint8_t                                pins_[data::Sensors::kNumImus];
     GpioInterface*                         keyences_[data::Sensors::kNumKeyence];  // 0 L and 1 R
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
-    // pointer to Temperature sensor
+    Temperature*                           temperature_;
     array<data::StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter_arr_;
     array<data::StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count_arr_;
 };

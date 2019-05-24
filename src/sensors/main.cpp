@@ -21,7 +21,7 @@
 #include "sensors/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "sensors/bms_manager.hpp"
-#include "sensors/temp_manager.hpp"
+#include "sensors/temperature.hpp"
 #include "sensors/gpio_counter.hpp"
 #include "sensors/fake_gpio_counter.hpp"
 
@@ -48,8 +48,8 @@ Main::Main(uint8_t id, utils::Logger& log)
     log_(log),
     pins_ {kKeyencePinLeft, kKeyencePinRight},
     imu_manager_(new ImuManager(log)),
-    battery_manager_(new BmsManager(log))
-    // include Temperature sensor
+    battery_manager_(new BmsManager(log)),
+    temperature_(new Temperature(log))
 {
   if (!sys_.fake_keyence) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
@@ -73,6 +73,17 @@ bool Main::keyencesUpdated()
   return false;
 }
 
+bool Main::temperatureInRange()    // TODO(Anyone): add true temperature range
+{
+  auto& temperature = temperature_data_.temp;
+  log_.DBG1("SENSORS-MAIN", "Temperature from data struct: %d", temperature);
+  if (temperature < -10 || temperature > 50) {  // temperature in -10C to 50C
+    log_.ERR("SENSORS-MAIN", "Temperature out of range: %d", temperature);
+    return false;
+  }
+  return true;
+}
+
 void Main::run()
 {
 // start all managers
@@ -82,6 +93,9 @@ void Main::run()
   // Initalise the keyence arrays
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
   prev_keyence_stripe_count_arr_ = keyence_stripe_counter_arr_;
+
+  // Initialise temperature data
+  temperature_data_ = data_.getTemperature();
 
   while (sys_.running_) {
     // We need to read the gpio counters and write to the data structure
@@ -95,9 +109,12 @@ void Main::run()
       prev_keyence_stripe_count_arr_[i] = keyences_[i]->getStripeCounter();
     }
 
-    // temperature loop
-    // check range of single sensor and throw critical failure if out of nominal range
-    // set to data struct
+    temperature_data_.temp = temperature_->getTemperature();
+    data_.setTemperature(temperature_data_);
+    if (!temperatureInRange()) {
+      log_.ERR("SENSORS-MAIN", "Temperature out of range, call the fire brigade!");
+    }
+    Thread::sleep(200);
 
 
     Thread::sleep(10);  // Sleep for 10ms

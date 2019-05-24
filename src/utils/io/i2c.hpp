@@ -19,8 +19,8 @@
  *    limitations under the License.
 */
 
-#ifndef BEAGLEBONE_BLACK_UTILS_IO_I2C_HPP_
-#define BEAGLEBONE_BLACK_UTILS_IO_I2C_HPP_
+#ifndef UTILS_IO_I2C_HPP_
+#define UTILS_IO_I2C_HPP_
 
 
 #include <cstdint>
@@ -80,4 +80,4 @@ class I2C {
 
 }}}   // namespace hyped::utils::io
 
-#endif  // BEAGLEBONE_BLACK_UTILS_IO_I2C_HPP_
+#endif  // UTILS_IO_I2C_HPP_
