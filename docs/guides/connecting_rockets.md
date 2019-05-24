@@ -6,6 +6,9 @@
 ## Building Protobufs
 ***Refer to [this readme file](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md) from the protobufs library***
 
+**Note for Windows users:**
+Unfortunately I haven't tried building the library on Windows, and the process seems to be quite different (unless you are using cygwin or similar) so I suggest following the instructions [here](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md#c-installation---windows). Just make sure you download **protoc-3.6.1-win32.zip** from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v3.6.1) (pretty sure using a later release is fine since they're backwards-compatible, but use 3.6.1 just to avoid any potential conflicts).
+
 On Linux machines, make sure the following are installed:
 - autoconf
 - automake
