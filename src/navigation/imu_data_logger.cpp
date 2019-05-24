@@ -20,62 +20,57 @@
 
 namespace hyped {
 namespace navigation {
-ImuDataLogger::ImuDataLogger(std::ofstream* outfile_)
-  : outfile(outfile_)
+
+ImuDataLogger::ImuDataLogger()
+    : file_path_(),
+      outfile_(new std::ofstream())
 {}
+
+ImuDataLogger::~ImuDataLogger()
+{
+  outfile_->close();
+}
 
 void ImuDataLogger::setup(int imu_id, int run_id)
 {
-  char fname[100];
-  snprintf(fname, sizeof(fname), "test_data/imu%d_run%d_data.csv", imu_id, run_id);
-  outfile->open(fname);
-  *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,t\n";
+  char buff[100];
+  snprintf(buff, sizeof(buff), "test_data/run%d/imu%d/data.csv", run_id, imu_id);
+  file_path_ = buff;
+  outfile_->open(file_path_);
+  *outfile_ << "arx,ary,arz,acx,acy,acz,t\n";
 }
 
 void ImuDataLogger::setupKalman(int imu_id, int run_id)
 {
-  char fname[100];
-  snprintf(fname, sizeof(fname), "test_data/imu%d_run%d_data.csv", imu_id, run_id);
-  outfile->open(fname);
-  *outfile << "arx,ary,arz,acx,acy,acz,vx,vy,vz,sx,sy,sz,sfx,sfy,sfz,vfx,vfy,vfz,"
-        "afx,afy,afz,t\n";
+  char buff[100];
+  snprintf(buff, sizeof(buff), "test_data/run%d/imu%d/data.csv", run_id, imu_id);
+  file_path_ = buff;
+  outfile_->open(file_path_);
+  *outfile_ << "arx,ary,arz,acx,acy,acz,afx,afy,afz,t\n";
 }
 
-void ImuDataLogger::dataToFileSimulation(DataPoint<NavigationVector>* acc,
-                     DataPoint<NavigationVector>* vel,
-                     DataPoint<NavigationVector>* pos)
+void ImuDataLogger::dataToFileSimulation(NavigationVector& acc, uint32_t timestamp)
 {
-  *outfile << acc->value[0] << "," << acc->value[1] << "," << acc->value[2] << ","
-           << vel->value[0] << "," << vel->value[1] << "," << vel->value[2] << ","
-           << pos->value[0] << "," << pos->value[1] << "," << pos->value[2] << ","
-           << acc->timestamp << "\n";
+  *outfile_ << acc[0] << "," << acc[1] << "," << acc[2] << ","
+            << timestamp << "\n";
 }
 
-void ImuDataLogger::dataToFile(DataPoint<NavigationVector>* accR,
-                 DataPoint<NavigationVector>* accC,
-                 DataPoint<NavigationVector>*  vel,
-                 DataPoint<NavigationVector>*  pos)
+void ImuDataLogger::dataToFile(NavigationVector& accR, NavigationVector& accC,
+                   uint32_t timestamp)
 {
-  *outfile << accR->value[0] << "," << accR->value[1] << "," << accR->value[2] << ","
-           << accC->value[0] << "," << accC->value[1] << "," << accC->value[2] << ","
-           <<  vel->value[0] << "," <<  vel->value[1] << "," <<  vel->value[2] << ","
-           <<  pos->value[0] << "," <<  pos->value[1] << "," <<  pos->value[2] << ","
-           << accR->timestamp << "\n";
+  *outfile_ << accR[0] << "," << accR[1] << "," << accR[2] << ","
+            << accC[0] << "," << accC[1] << "," << accC[2] << ","
+            << timestamp << "\n";
 }
 
-void ImuDataLogger::dataToFileKalman(DataPoint<NavigationVector>* accR,
-                   DataPoint<NavigationVector>* accC,
-                   DataPoint<NavigationVector>*  vel,
-                   DataPoint<NavigationVector>*  pos,
-                   NavigationEstimate& x)
+void ImuDataLogger::dataToFileKalman(NavigationVector& accR,
+                   NavigationVector& accC, NavigationVector& x,
+                   uint32_t timestamp)
 {
-  *outfile << accR->value[0] << "," << accR->value[1] << "," << accR->value[2] << ","
-           << accC->value[0] << "," << accC->value[1] << "," << accC->value[2] << ","
-           <<  vel->value[0] << "," <<  vel->value[1] << "," <<  vel->value[2] << ","
-           <<  pos->value[0] << "," <<  pos->value[1] << "," <<  pos->value[2] << ","
-           <<  x[0][0]       << "," <<  x[0][1]       << "," <<  x[0][2]       << ","
-           <<  x[1][0]       << "," <<  x[1][1]       << "," <<  x[1][2]       << ","
-           <<  x[2][0]       << "," <<  x[2][1]       << "," <<  x[2][2]       << ","
-           << accR->timestamp << "\n";
+  *outfile_ << accR[0] << "," << accR[1] << "," << accR[2] << ","
+            << accC[0] << "," << accC[1] << "," << accC[2] << ","
+            << x[0]    << "," << x[1]    << "," << x[2]    << ","
+            << timestamp << "\n";
 }
+
 }}  // namespace hyped navigation
