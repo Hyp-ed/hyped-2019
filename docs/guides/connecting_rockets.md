@@ -23,7 +23,7 @@ Now run:
 ```
 $ make protoc
 ```
-This just compiles the generated protobuf files (shouldn't actually be necessary since the generated files are tracked in the repo, but run it just in case). This also will say `mkdir` ran into an error, this is expected and you can ignore this (if anyone knows how to not only ignore errors in make commands but also silence them let me know).
+This just generates the protobuf files (shouldn't actually be necessary since the generated files are tracked in the repo, but run it just in case). This also will say `mkdir` ran into an error, this is expected and you can ignore this (if anyone knows how to not only ignore errors in make commands but also silence them let me know).
 
 Now whenever you want to compile a program that uses the telemetry module, make sure to use the `PROTOBUF=1` flag. For example:
 ```
@@ -34,12 +34,12 @@ The linker will run into errors if this is not specified.
 Now you can run `./hyped` and it should work!
 
 ## Building Protobufs
-***Refer to [this readme file](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md) from the protobufs library***
+***Refer to [this readme file](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md) from the protobufs library***.
 
 **Note for Windows users:**
 Unfortunately I haven't tried building the library on Windows, and the process seems to be quite different (unless you are using cygwin or similar) so I suggest following the instructions [here](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md#c-installation---windows). Just make sure you download **protoc-3.6.1-win32.zip** from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v3.6.1) (pretty sure using a later release is fine since they're backwards-compatible, but use 3.6.1 just to avoid any potential conflicts).
 
-On Linux machines, make sure the following are installed:
+On Unix machines, make sure the following are installed:
 - autoconf
 - automake
 - libtool
@@ -74,7 +74,7 @@ $ protoc --version
 libprotoc 3.6.1
 ```
 
-Now if you want to run code that uses the telemetry module refer to [this guide](#running-the-telemetry-system)
+Now if you want to run code that uses the telemetry module refer to [this guide](#running-the-telemetry-module).
 
 ## Connecting the Rockets
 ***Read instructions below sequentially***
