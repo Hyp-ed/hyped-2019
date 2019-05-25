@@ -32,10 +32,13 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            axis_(axis),
            acceleration_(0., 0.),
            velocity_(0., 0.),
-           distance_(0., 0.)
+           distance_(0., 0.),
+           acceleration_integrator_(&velocity_),
+           velocity_integrator_(&distance_),
+           counter_(0)
 {
   for (unsigned int i = 0; i < data::Sensors::kNumImus; i++) {
-    filters_[i] = KalmanFilter(3, 1);
+    filters_[i] = KalmanFilter(1, 1);
     filters_[i].setup();
   }
   calibrateGravity();
@@ -116,45 +119,34 @@ void Navigation::calibrateGravity()
   for (int j = 0; j < data::Sensors::kNumImus; ++j) {
     gravity_calibration_[j] = online_array[j].getMean();
     log_.INFO("NAV",
-      "Update: g=%.5f", gravity_calibration_[j]);
+      "Update: g=%.5f, var=%.5f", gravity_calibration_[j],
+      online_array[j].getVariance());
   }
 }
 
 void Navigation::queryImus()
 {
-  OnlineStatistics<NavigationType> pos_avg_filter;
-  OnlineStatistics<NavigationType> vel_avg_filter;
   OnlineStatistics<NavigationType> acc_avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
   uint32_t t = sensor_readings_.timestamp;
-  // passed time in second
-  double dt = (t - acceleration_.timestamp)/1e6;
-
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    filters_[i].updateStateTransitionMatrix(dt);
     // Apply calibrated correction
     NavigationType acc = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
-    NavigationVector estimate = filters_[i].filter(acc);
-
-    // avg over all estimates
-    pos_avg_filter.update(estimate[0]);
-    vel_avg_filter.update(estimate[1]);
-    acc_avg_filter.update(estimate[2]);
+    NavigationType estimate = filters_[i].filter(acc);
+    acc_avg_filter.update(estimate);
   }
-
-  // get average over all filtered estimates
-  distance_.value = pos_avg_filter.getMean();
-  distance_.timestamp = t;
-  velocity_.value = vel_avg_filter.getMean();
-  velocity_.timestamp = t;
   acceleration_.value = acc_avg_filter.getMean();
   acceleration_.timestamp = t;
+
+  acceleration_integrator_.update(acceleration_);
+  velocity_integrator_.update(velocity_);
 }
 
 void Navigation::updateData()
 {
   // Take new readings first
   queryImus();
+  counter_ += 1;
 
   data::Navigation nav_data;
   nav_data.distance                   = getDistance();
@@ -168,10 +160,13 @@ void Navigation::updateData()
   // Crude test of data writing
   nav_data = data_.getNavigationData();
 
-  log_.INFO("NAV",
-      "Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
-      nav_data.acceleration, nav_data.velocity, nav_data.distance);
+  if (counter_ % 1000 == 0) {
+      log_.INFO("NAV",
+          "%d: Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
+          counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
+      // NavigationType var = filter_.getEstimateVariance();
+      // log_.INFO("NAV", "Estimate acc variance: %.5f", var);
+  }
 }
-
 
 }}  // namespace hyped::navigation
