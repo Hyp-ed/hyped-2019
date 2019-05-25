@@ -50,7 +50,7 @@ namespace navigation {
     public:
       typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
       typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
-      typedef std::array<NavigationType, data::Sensors::kNumImus> NavigationArray;
+      typedef std::array<NavigationVector, data::Sensors::kNumImus> NavigationArray;
 
       /**
        * @brief Construct a new Navigation object

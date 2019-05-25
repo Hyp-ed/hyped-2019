@@ -19,6 +19,7 @@
 #include "navigation/navigation.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/timer.hpp"
+#include "iostream"
 
 namespace hyped {
 
@@ -105,22 +106,24 @@ NavigationType Navigation::getBrakingDistance() const
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
-  std::array<OnlineStatistics<NavigationType>, data::Sensors::kNumImus> online_array;
+  std::array<OnlineStatistics<NavigationVector>, data::Sensors::kNumImus> online_array;
   // Average each sensor over specified number of readings
   for (int i = 0; i < kNumCalibrationQueries; ++i) {
     sensor_readings_ = data_.getSensorsImuData();
     for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-      online_array[j].update(sensor_readings_.value[j].acc[axis_]);
+      online_array[j].update(sensor_readings_.value[j].acc);
     }
     Thread::sleep(1);
   }
   OnlineStatistics<NavigationType> var_statistics;
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     gravity_calibration_[i] = online_array[i].getMean();
-    double var = online_array[i].getVariance();
+    double var = online_array[i].getVariance()[axis_];
     var_statistics.update(var);
-    log_.INFO("NAV",
-      "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
+    for (int j = 0; j < 3; j++) {
+      log_.INFO("NAV",
+        "Update %d: g=%.5f, var=%.5f", j + 1, gravity_calibration_[i][j], var);
+    }
   }
   filter_.updateMeasurementCovarianceMatrix(var_statistics.getMean());
 }
@@ -142,13 +145,10 @@ void Navigation::queryImus()
   sensor_readings_ = data_.getSensorsImuData();
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
-    NavigationVector acc = sensor_readings_.value[i].acc;
-    avg_filter.update((accNorm(acc) - gravity_calibration_[i]) * (1 - 2 * (acc[axis_] < 0)));
+    NavigationVector acc = sensor_readings_.value[i].acc - gravity_calibration_[i];
+    avg_filter.update(accNorm(acc) * (1 - 2 * (acc[axis_] < 0)));
   }
   uint32_t t = sensor_readings_.timestamp;
-  // passed time in second
-  double dt = (t - acceleration_.timestamp)/1e6;
-  filter_.updateStateTransitionMatrix(dt);
   measurement_ = avg_filter.getMean();
   NavigationType estimate = filter_.filter(measurement_);
 
