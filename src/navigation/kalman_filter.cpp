@@ -134,7 +134,6 @@ const MatrixXf KalmanFilter::createStateTransitionCovarianceMatrix()
 
 const MatrixXf KalmanFilter::createTubeMeasurementCovarianceMatrix()
 {
-    // TODO(Lukas): implement proper covariance setup for tube based on simulation
     MatrixXf R = MatrixXf::Constant(m, m, 0.04);
     return R;
 }
