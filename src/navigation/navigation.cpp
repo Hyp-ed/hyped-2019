@@ -116,11 +116,12 @@ void Navigation::calibrateGravity()
     }
     Thread::sleep(1);
   }
-  for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-    gravity_calibration_[j] = online_array[j].getMean();
+  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+    gravity_calibration_[i] = online_array[i].getMean();
+    double var = online_array[i].getVariance();
     log_.INFO("NAV",
-      "Update: g=%.5f, var=%.5f", gravity_calibration_[j],
-      online_array[j].getVariance());
+      "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
+    filters_[i].updateMeasurementCovarianceMatrix(var);
   }
 }
 

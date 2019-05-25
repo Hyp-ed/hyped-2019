@@ -43,6 +43,7 @@ class KalmanFilter
     KalmanFilter(unsigned int n_ = 3, unsigned int m_ = 1, unsigned int k_ = 0);
     void setup();
     void updateStateTransitionMatrix(double dt);
+    void updateMeasurementCovarianceMatrix(double var);
     const NavigationType filter(NavigationType z_);
     const NavigationType filter(NavigationType u_, NavigationType z_);
     // transfer estimate to NavigationVector
