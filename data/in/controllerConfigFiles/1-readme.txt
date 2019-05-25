@@ -8,7 +8,7 @@
 # readObject:       0x40
 # writeOneByte:     0x2F
 # writeTwoBytes:    0x2B
-# writeThreeBytes:  0x27 unused
+# writeThreeBytes:  0x27 (unused)
 # writeFourBytes:   0x23
 #
 # The next 3 bytes are the index and sub-index of the register
