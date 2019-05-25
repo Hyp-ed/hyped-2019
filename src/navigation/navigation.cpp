@@ -30,10 +30,13 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
            axis_(axis),
-           filter_(3, 1),
+           filter_(1, 1),
            acceleration_(0., 0.),
            velocity_(0., 0.),
-           distance_(0., 0.)
+           distance_(0., 0.),
+           acceleration_integrator_(&velocity_),
+           velocity_integrator_(&distance_),
+           counter_(0)
 {
   filter_.setup();
   calibrateGravity();
@@ -114,7 +117,8 @@ void Navigation::calibrateGravity()
   for (int j = 0; j < data::Sensors::kNumImus; ++j) {
     gravity_calibration_[j] = online_array[j].getMean();
     log_.INFO("NAV",
-      "Update: g=%.5f", gravity_calibration_[j]);
+      "Update: g=%.5f, var=%.5f", gravity_calibration_[j],
+      online_array[j].getVariance());
   }
 }
 
@@ -142,20 +146,21 @@ void Navigation::queryImus()
   // passed time in second
   double dt = (t - acceleration_.timestamp)/1e6;
   filter_.updateStateTransitionMatrix(dt);
-  NavigationVector estimate = filter_.filter(avg_filter.getMean());
+  measurement_ = avg_filter.getMean();
+  NavigationType estimate = filter_.filter(measurement_);
 
-  distance_.value = estimate[0];
-  distance_.timestamp = t;
-  velocity_.value = estimate[1];
-  velocity_.timestamp = t;
-  acceleration_.value = estimate[2];
+  acceleration_.value = estimate;
   acceleration_.timestamp = t;
+
+  acceleration_integrator_.update(acceleration_);
+  velocity_integrator_.update(velocity_);
 }
 
 void Navigation::updateData()
 {
   // Take new readings first
   queryImus();
+  counter_ += 1;
 
   data::Navigation nav_data;
   nav_data.distance                   = getDistance();
@@ -169,10 +174,13 @@ void Navigation::updateData()
   // Crude test of data writing
   nav_data = data_.getNavigationData();
 
-  log_.INFO("NAV",
-      "Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
-      nav_data.acceleration, nav_data.velocity, nav_data.distance);
+  if (counter_ % 1 == 0) {
+      log_.INFO("NAV",
+          "%d: Update: a=%.3f, z=%.3f, v=%.3f, d=%.3f", //NOLINT
+          counter_, nav_data.acceleration, measurement_, nav_data.velocity, nav_data.distance);
+      // NavigationType var = filter_.getEstimateVariance();
+      // log_.INFO("NAV", "Estimate acc variance: %.5f", var);
+  }
 }
-
 
 }}  // namespace hyped::navigation
