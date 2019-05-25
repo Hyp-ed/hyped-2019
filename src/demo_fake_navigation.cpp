@@ -43,6 +43,14 @@ int main(int argc, char* argv[])
   sys.fake_imu = 1;
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
 
+  if (sys.tube_run) {
+    log_nav->INFO("NAV", "TUBE RUN INITIALISED");
+  } else if (sys.elevator_run) {
+    log_nav->INFO("NAV", "ELEVATOR RUN INITIALISED");
+  } else if (sys.stationary_run) {
+    log_nav->INFO("NAV", "STATIONARY RUN INITIALISED");
+  }
+
   log_nav->INFO("MAIN", "Set state to CALIBRATING");
   static Data& d = Data::getInstance();
   StateMachine state_machine = d.getStateMachineData();
@@ -61,7 +69,7 @@ int main(int argc, char* argv[])
 
   main->start();
 
-  // Accelerating for 20s
+  // Accelerating for 20.25s
   Thread::sleep(20250);
 
   log_nav->INFO("MAIN", "Set state to NOMINAL BREAKING");
