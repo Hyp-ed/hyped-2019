@@ -114,13 +114,15 @@ void Navigation::calibrateGravity()
     }
     Thread::sleep(1);
   }
+  OnlineStatistics<NavigationType> var_statistics;
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     gravity_calibration_[i] = online_array[i].getMean();
     double var = online_array[i].getVariance();
+    var_statistics.update(var);
     log_.INFO("NAV",
       "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
-    filters_[i].updateMeasurementCovarianceMatrix(var);
   }
+  filter_.updateMeasurementCovarianceMatrix(var_statistics.getMean());
 }
 
 void Navigation::queryImus()
@@ -163,7 +165,7 @@ void Navigation::updateData()
   // Crude test of data writing
   nav_data = data_.getNavigationData();
 
-  if (counter_ % 1 == 0) {
+  if (counter_ % 1000 == 0) {
       log_.INFO("NAV",
           "%d: Update: a=%.3f, z=%.3f, v=%.3f, d=%.3f", //NOLINT
           counter_, nav_data.acceleration, measurement_, nav_data.velocity, nav_data.distance);
