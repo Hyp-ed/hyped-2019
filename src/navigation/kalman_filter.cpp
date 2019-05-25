@@ -53,7 +53,13 @@ void KalmanFilter::setup()
 void KalmanFilter::updateStateTransitionMatrix(double dt)
 {
   MatrixXf A = createStateTransitionMatrix(dt);
-  kalmanFilter.update(A);
+  kalmanFilter.updateA(A);
+}
+
+void KalmanFilter::updateMeasurementCovarianceMatrix(double var)
+{
+  MatrixXf R = MatrixXf::Constant(m, m, var);
+  kalmanFilter.updateR(R);
 }
 
 const NavigationType KalmanFilter::filter(NavigationType z_)
@@ -123,13 +129,6 @@ const MatrixXf KalmanFilter::createMeasurementMatrix()
 const MatrixXf KalmanFilter::createStateTransitionCovarianceMatrix()
 {
   MatrixXf Q = MatrixXf::Constant(n, n, 0.02);
-
-  /*
-  Q << 0.2, 0.02, 0.002,
-       0.02, 1, 0.1,
-       0.002, 0.1, 5;
-  */
-
   return Q;
 }
 
