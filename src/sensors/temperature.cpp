@@ -52,10 +52,6 @@ Temperature::Temperature(utils::Logger& log)
   configure();
 }
 
-/**
- * @brief configure for overtemperature and undertemperature interrupts
- *
- */
 void Temperature::configure()
 {
   // software reset
@@ -67,8 +63,6 @@ void Temperature::configure()
 
 void Temperature::writeByte(uint8_t write_reg, uint8_t write_data)
 {
-  // i2c_.write(write_reg, &write_data, 1);
-
   uint8_t buffer[2];
   buffer[0] = write_reg;
   buffer[1] = write_data;
@@ -79,7 +73,6 @@ void Temperature::readByte(uint8_t read_reg, uint8_t *read_data)
 {
   i2c_.write(i2c_addr, read_data, 1);
   i2c_.read(i2c_addr, &read_reg, 1);
-  // i2c_.read(read_reg, read_data, 1);
 }
 
 void Temperature::readBytes(uint8_t read_reg, uint8_t *read_data, uint8_t length)
@@ -88,10 +81,6 @@ void Temperature::readBytes(uint8_t read_reg, uint8_t *read_data, uint8_t length
   i2c_.read(i2c_addr, &read_reg, length);
 }
 
-/**
- * @brief get just the two byte temperature data, no interrupts
- *
- */
 void Temperature::checkSensor()
 {
   // bit 7 to low when temperature converted and sent to register, back to 1 when read
@@ -103,52 +92,55 @@ void Temperature::checkSensor()
   int sign_bit = 15;
   int16_t temp, sign;
 
-  readByte(kStatus, &response);
+  int temp_data[kAverageSet];
+  for (int i = 0; i < kAverageSet; i++) {
+    readByte(kStatus, &response);
 
-  if (response == kTempStatus) {
-    readBytes(kTempMSB, reinterpret_cast<uint8_t*>(buffer), 2);    // from count MSB/LSB registers
-    // TODO(Greg): convert to little endian?
-    // uint16_t temp = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
+    if (response == kTempStatus) {
+      readBytes(kTempMSB, reinterpret_cast<uint8_t*>(buffer), 2);    // from count MSB/LSB registers
+      // TODO(Greg): convert to little endian?
+      // uint16_t temp = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
 
-    // convert from twos complement format, TODO(anyone): check syntax
-    uint16_t raw_temp = reinterpret_cast<uint16_t>(buffer);
-    sign = (int16_t)((raw_temp & sign_mask) >> sign_bit);
+      // convert from twos complement format, TODO(anyone): check syntax
+      uint16_t raw_temp = reinterpret_cast<uint16_t>(buffer);
+      sign = (int16_t)((raw_temp & sign_mask) >> sign_bit);
 
-    if (sign) {
-      temp = (~raw_temp) & data_mask;
-      temp_.temp = (short)(temp * -1);    // [NOLINT] set data type
+      if (sign) {
+        temp = (~raw_temp) & data_mask;
+        // temp_.temp = (short)(temp * -1);
+        temp_data[i] = (short)(temp * -1);     // [NOLINT]
+      } else {
+        temp = (raw_temp & data_mask);
+        // temp_.temp = temp;
+        temp_data[i] = temp;
+      }
+      // temp_.operational = true;
+      Thread::sleep(100);         // wait in between each reading average
     } else {
-      temp = (raw_temp & data_mask);
-      temp_.temp = temp;
+      log_.ERR("TEMPERATURE", "Cannot access data yet, waiting.");
+      Thread::sleep(200);
     }
-    temp_.operational = true;
-  } else {
-    log_.ERR("TEMPERATURE", "Cannot access data yet, waiting.");
-    Thread::sleep(200);
   }
-  // wait for 5 measurements and average data;
+  temp_.temp = averageData(temp_data);
+  temp_.operational = true;
 }
 
-// average multiple readings to account for noise
 int Temperature::averageData(int data[kAverageSet])
 {
   double mean = 0;
-  for (int i=0; i<kAverageSet; i++) {
+  for (int i = 0; i < kAverageSet; i++) {
     mean += data[i];
   }
   mean = mean/kAverageSet;
   double sq_sum = 0;
-  for (int i=0; i<kAverageSet; i++) {
-    sq_sum += pow((data[i]-mean),2);
+  for (int i = 0; i < kAverageSet; i++) {
+    sq_sum += pow((data[i]-mean), 2);
   }
   double st_dev = sqrt((sq_sum/kAverageSet));
-
-  int accuracy_factor = 2;      // change if needed
-
   int final_sum = 0;
   int count = 0;
-  for (int i=0; i<kAverageSet; i++) {
-    if (abs(data[i] - mean) < (st_dev*accuracy_factor)) {
+  for (int i = 0; i < kAverageSet; i++) {
+    if (abs(data[i] - mean) < (st_dev*kAccuracyFactor)) {
       final_sum += data[i];
       count++;
     }
