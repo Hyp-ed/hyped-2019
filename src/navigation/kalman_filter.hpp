@@ -43,16 +43,17 @@ class KalmanFilter
     KalmanFilter(unsigned int n_ = 3, unsigned int m_ = 1, unsigned int k_ = 0);
     void setup();
     void updateStateTransitionMatrix(double dt);
-    const NavigationVector filter(NavigationType z_);
-    const NavigationVector filter(NavigationType u_, NavigationType z_);
+    const NavigationType filter(NavigationType z_);
+    const NavigationType filter(NavigationType u_, NavigationType z_);
+    // transfer estimate to NavigationVector
+    const NavigationType getEstimate();
+    // transfer estimate variances to NavigationVector
+    const NavigationType getEstimateVariance();
   private:
     unsigned int    n;
     unsigned int    m;
     unsigned int    k;
     KalmanMultivariate  kalmanFilter;
-
-    // set initial estimate x and error covariance P
-    void setInitialEstimate();
 
     // create initial error covariance matrix P
     const MatrixXf createInitialErrorCovarianceMatrix();
@@ -70,9 +71,6 @@ class KalmanFilter
     const MatrixXf createTubeMeasurementCovarianceMatrix();
     const MatrixXf createElevatorMeasurementCovarianceMatrix();
     const MatrixXf createStationaryMeasurementCovarianceMatrix();
-
-    // transfer estimate to NavigationVector
-    const NavigationVector getNavigationVector();
 };
 }}  // namespace hyped navigation
 

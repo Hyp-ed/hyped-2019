@@ -121,6 +121,13 @@ namespace navigation {
       DataPoint<NavigationType> distance_;
       NavigationArray gravity_calibration_;
 
+      // To convert acceleration -> velocity -> distance
+      Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
+      Integrator<NavigationType> velocity_integrator_;      // velocity to distance
+
+      // counter for outputs
+      unsigned int counter_;
+
       /**
        * @brief Determine the value of gravitational acceleration measured by sensors at rest
        */
