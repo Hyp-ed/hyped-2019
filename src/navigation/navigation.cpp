@@ -19,6 +19,7 @@
 #include "navigation/navigation.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/timer.hpp"
+#include "iostream"
 
 namespace hyped {
 
@@ -107,20 +108,22 @@ NavigationType Navigation::getBrakingDistance() const
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
-  std::array<OnlineStatistics<NavigationType>, data::Sensors::kNumImus> online_array;
+  std::array<OnlineStatistics<NavigationVector>, data::Sensors::kNumImus> online_array;
   // Average each sensor over specified number of readings
   for (int i = 0; i < kNumCalibrationQueries; ++i) {
     sensor_readings_ = data_.getSensorsImuData();
     for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-      online_array[j].update(sensor_readings_.value[j].acc[axis_]);
+      online_array[j].update(sensor_readings_.value[j].acc);
     }
     Thread::sleep(1);
   }
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     gravity_calibration_[i] = online_array[i].getMean();
-    double var = online_array[i].getVariance();
-    log_.INFO("NAV",
-      "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
+    double var = online_array[i].getVariance()[axis_];
+    for (int j = 0; j < 3; j++) {
+      log_.INFO("NAV",
+        "Update %d: g=%.5f, var=%.5f", j + 1, gravity_calibration_[i][j], var);
+    }
     filters_[i].updateMeasurementCovarianceMatrix(var);
   }
 }
@@ -140,18 +143,14 @@ void Navigation::queryImus()
 {
   OnlineStatistics<NavigationType> acc_avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
-  uint32_t t = sensor_readings_.timestamp;
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
-    NavigationVector acc = sensor_readings_.value[i].acc;
-    NavigationType acc_norm = (accNorm(acc) - gravity_calibration_[i]) * (1 - 2 * (acc[axis_] < 0));
-    NavigationVector estimate = filters_[i].filter(acc_norm);
-
-    // avg over all estimates
-    pos_avg_filter.update(estimate[0]);
-    vel_avg_filter.update(estimate[1]);
-    acc_avg_filter.update(estimate[2]);
+    NavigationVector acc = sensor_readings_.value[i].acc - gravity_calibration_[i];
+    NavigationType acc_norm = accNorm(acc);
+    NavigationType estimate = filters_[i].filter(acc_norm * (1 - 2 * (acc[axis_] < 0)));
+    acc_avg_filter.update(estimate);
   }
+  uint32_t t = sensor_readings_.timestamp;
   acceleration_.value = acc_avg_filter.getMean();
   acceleration_.timestamp = t;
 
@@ -181,8 +180,6 @@ void Navigation::updateData()
       log_.INFO("NAV",
           "%d: Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
           counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
-      // NavigationType var = filter_.getEstimateVariance();
-      // log_.INFO("NAV", "Estimate acc variance: %.5f", var);
   }
 }
 
