@@ -108,6 +108,9 @@ namespace navigation {
       Logger& log_;
       Data& data_;
 
+      // counter for outputs
+      unsigned int counter_;
+
       // movement axis
       unsigned int axis_;
 
@@ -124,9 +127,6 @@ namespace navigation {
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
       Integrator<NavigationType> velocity_integrator_;      // velocity to distance
-
-      // counter for outputs
-      unsigned int counter_;
 
       /**
        * @brief Determine the value of gravitational acceleration measured by sensors at rest
