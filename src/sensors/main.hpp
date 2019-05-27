@@ -57,7 +57,7 @@ class Main: public Thread {
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
 
-    uint8_t                                pins_[data::Sensors::kNumImus];
+    uint8_t                                pins_[data::Sensors::kNumKeyence];
     GpioInterface*                         keyences_[data::Sensors::kNumKeyence];  // 0 L and 1 R
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
