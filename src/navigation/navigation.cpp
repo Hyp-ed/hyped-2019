@@ -29,13 +29,13 @@ namespace navigation {
 Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
+           counter_(0),
            axis_(axis),
            acceleration_(0., 0.),
            velocity_(0., 0.),
            distance_(0., 0.),
            acceleration_integrator_(&velocity_),
-           velocity_integrator_(&distance_),
-           counter_(0)
+           velocity_integrator_(&distance_)
 {
   for (unsigned int i = 0; i < data::Sensors::kNumImus; i++) {
     filters_[i] = KalmanFilter(1, 1);
@@ -161,7 +161,7 @@ void Navigation::updateData()
   // Crude test of data writing
   nav_data = data_.getNavigationData();
 
-  if (counter_ % 1000 == 0) {
+  if (counter_ % 1 == 0) {
       log_.INFO("NAV",
           "%d: Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
           counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
