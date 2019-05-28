@@ -41,7 +41,7 @@ namespace hyped {
                * @param[in] n                       state dimensionality
                * @param[in] m                       measurement dimensionality
                */
-              KalmanMultivariate(unsigned int _n, unsigned int _m);
+              KalmanMultivariate(unsigned int n, unsigned int m);
 
               /**
                * @brief    Construct a new Kalman object with respective dimensions (with control)
@@ -50,7 +50,7 @@ namespace hyped {
                * @param[in] m                       measurement dimensionality
                * @param[in] k                       control dimensionality
                */
-              KalmanMultivariate(unsigned int _n, unsigned int _m, unsigned int _k);
+              KalmanMultivariate(unsigned int n, unsigned int m, unsigned int k);
 
               /**
                * @brief    Set dynamics model matrices (without control)
@@ -58,7 +58,7 @@ namespace hyped {
                * @param[in] A                       state transition matrix
                * @param[in] Q                       process noise covariance
                */
-              void setDynamicsModel(MatrixXf& _A, MatrixXf& _Q);
+              void setDynamicsModel(MatrixXf& A, MatrixXf& Q);
 
               /**
                * @brief    Set dynamics model matrices (with control)
@@ -67,7 +67,7 @@ namespace hyped {
                * @param[in] B                       control matrix
                * @param[in] Q                       process noise covariance
                */
-              void setDynamicsModel(MatrixXf& _A, MatrixXf& _B, MatrixXf& _Q);
+              void setDynamicsModel(MatrixXf& A, MatrixXf& B, MatrixXf& Q);
 
               /**
                * @brief    Set measurement model matrices
@@ -75,7 +75,7 @@ namespace hyped {
                * @param[in] H                       measurement matrix
                * @param[in] R                       measurement noise covariance
                */
-              void setMeasurementModel(MatrixXf& _H, MatrixXf& _R);
+              void setMeasurementModel(MatrixXf& H, MatrixXf& R);
 
               /**
                * @brief    Set model matrices (without control)
@@ -85,8 +85,8 @@ namespace hyped {
                * @param[in] H                       measurement matrix
                * @param[in] R                       measurement noise covariance
                */
-              void setModels(MatrixXf& _A, MatrixXf& _Q, MatrixXf& _H,
-                             MatrixXf& _R);
+              void setModels(MatrixXf& A, MatrixXf& Q, MatrixXf& H,
+                             MatrixXf& R);
 
               /**
                * @brief    Set model matrices (with control)
@@ -97,15 +97,15 @@ namespace hyped {
                * @param[in] H                       measurement matrix
                * @param[in] R                       measurement noise covariance
                */
-              void setModels(MatrixXf& _A, MatrixXf& _B, MatrixXf& _Q,
-                             MatrixXf& _H, MatrixXf& _R);
+              void setModels(MatrixXf& A, MatrixXf& B, MatrixXf& Q,
+                             MatrixXf& H, MatrixXf& R);
 
               /**
                * @brief    Update state transition matrix
                *
                * @param[in] A                       state transition matrix
                */
-              void update(MatrixXf& _A);
+              void update(MatrixXf& A);
 
               /**
                * @brief    Set initial beliefs
@@ -146,23 +146,23 @@ namespace hyped {
 
              private:
               /* problem dimensions */
-              unsigned int n;                 // state dimension
-              unsigned int m;                 // measurement dimension
-              unsigned int k;                 // control dimension (0 if not set)
+              unsigned int n_;                 // state dimension
+              unsigned int m_;                 // measurement dimension
+              unsigned int k_;                 // control dimension (0 if not set)
 
               /* dynamics model matrices */
-              MatrixXf A;                    // state transition matrix: n x n
-              MatrixXf B;                    // control matrix: n x k
-              MatrixXf Q;                    // process noise covariance: n x n
+              MatrixXf A_;                    // state transition matrix: n x n
+              MatrixXf B_;                    // control matrix: n x k
+              MatrixXf Q_;                    // process noise covariance: n x n
 
               /* measurement model matrices */
-              MatrixXf H;                    // measurement matrix: m x n
-              MatrixXf R;                    // measurement noise covariance: m x m
+              MatrixXf H_;                    // measurement matrix: m x n
+              MatrixXf R_;                    // measurement noise covariance: m x m
 
               /* state estimates */
-              VectorXf x;                    // state vector: n x 1
-              MatrixXf P;                    // state covariance: n x n
-              MatrixXf I;                    // identity matrix: n x n
+              VectorXf x_;                    // state vector: n x 1
+              MatrixXf P_;                    // state covariance: n x n
+              MatrixXf I_;                    // identity matrix: n x n
 
               /**
                * @brief    Predict state belief with covariance based on dynamics (without control)
