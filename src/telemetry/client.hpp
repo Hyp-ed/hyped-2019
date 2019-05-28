@@ -21,7 +21,7 @@
 #ifndef TELEMETRY_CLIENT_HPP_
 #define TELEMETRY_CLIENT_HPP_
 
-#include <google/protobuf/io/zero_copy_stream.h>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <string>
 #include "telemetry/signalhandler.hpp"
 #include "telemetry/telemetrydata/message.pb.h"
@@ -30,8 +30,8 @@
 namespace hyped {
 
 using utils::Logger;
-using google::protobuf::io::ZeroCopyInputStream;
-using google::protobuf::io::ZeroCopyOutputStream;
+using google::protobuf::io::FileInputStream;
+using google::protobuf::io::FileOutputStream;
 
 namespace telemetry {
 
@@ -51,9 +51,9 @@ class Client {
     int sockfd_;
     Logger& log_;
     // socket_stream_in_ is member var bc need to keep reading from same stream
-    ZeroCopyInputStream* socket_stream_in_;
+    FileInputStream* socket_stream_in_;
     // socket_stream_out_ is member var to avoid constructing and flushing streams all the time
-    ZeroCopyOutputStream* socket_stream_out_;
+    FileOutputStream* socket_stream_out_;
     SignalHandler signal_handler_;
 };
 
