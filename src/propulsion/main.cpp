@@ -40,6 +40,7 @@ void Main::run()
   System &sys = System::getSystem();
 
   Data stateMachineData = Data::getInstance();
+  Motors motorData = stateMachineData.getMotorData();
 
   while (isRunning && sys.running_) {
     // Get the current state of the system from the state machine's data
@@ -49,6 +50,10 @@ void Main::run()
     if (currentState == State::kIdle) {  // Initialize motors
       log_.INFO("Motor", "State idle");
 
+      if (motorData.module_status != ModuleStatus::kInit) {
+        motorData.module_status = ModuleStatus::kInit;
+      }
+
       yield();
       } else if (currentState == State::kCalibrating) {
         // Calculate slip values
@@ -57,11 +62,14 @@ void Main::run()
         if (!stateProcessor->isInitialized()) {
           stateProcessor->initMotors();
           if (stateProcessor->isCriticalFailure()) {
-            // TODO(gregor): Set data error flag to critical
+            motorData.module_status = ModuleStatus::kCriticalFailure;
             isRunning = false;
           }
         }
-
+        if (stateProcessor->isInitialized() &&
+              motorData.module_status != ModuleStatus::kReady) {
+          motorData.module_status = ModuleStatus::kReady;
+        }
         yield();
         } else if (currentState == State::kReady) {
           // Standby and wait
@@ -69,7 +77,6 @@ void Main::run()
           yield();
         } else if (currentState == State::kAccelerating) {
           // Accelerate the motors
-          // TODO(gregor): Controller should handle the communication with the SpeedCalculator
           log_.INFO("Motor", "State Accelerating");
           stateProcessor->accelerate();
         } else if (currentState == State::kNominalBraking) {

@@ -33,6 +33,8 @@ namespace hyped
 {
 using data::Data;
 using data::State;
+using data::ModuleStatus;
+using data::Motors;
 using utils::Logger;
 using utils::System;
 using utils::concurrent::Thread;
