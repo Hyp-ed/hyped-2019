@@ -19,7 +19,6 @@
  */
 
 #include <google/protobuf/util/delimited_message_util.h>
-#include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -96,6 +95,10 @@ bool Client::sendData(telemetry_data::ClientToServer message)
     log_.ERR("Telemetry", "Error sending message");
     return false;  // probs change to throwing exception
   }
+
+  // we have to call Flush() here otherwise protobufs will buffer the file output stream
+  // and the message will not be sent immediately like we would like
+  socket_stream_out_->Flush();
 
   log_.DBG3("Telemetry", "Finished sending message to server");
 
