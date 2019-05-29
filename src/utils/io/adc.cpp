@@ -20,23 +20,8 @@
 
 #include "utils/io/adc.hpp"
 
-
-#include <sys/ioctl.h>
-//
-#include <poll.h>
-#include <errno.h>
 #include <fcntl.h>      // define O_WONLY and O_RDONLY
 #include <unistd.h>     // close()
-#include <sys/mman.h>
-//
-#include <stdio.h>
-#include <string>
-#include <iostream>
-#include <fstream>
-//
-#include <cstdlib>
-#include <cstring>
-
 
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
@@ -45,10 +30,6 @@ namespace hyped {
 namespace utils {
 namespace io {
 namespace adc {
-
-constexpr uint32_t kADCAddrBase = 0x44E0D000;
-constexpr uint32_t kMmapSize = 0x2000;          // (8 KB)
-constexpr int kBufSize  = 100;
 
 uint16_t readHelper(int fd)
 {
@@ -67,44 +48,11 @@ ADC::ADC(uint32_t pin)
 ADC::ADC(uint32_t pin, Logger& log)
     : pin_(pin),
       log_(log),
-      initialised_(false),
       fd_(0)
-{
-  enableADC();
-}
-
-void ADC::enableADC()
-{
-  // int fd;                       // file descriptor
-  char buf[adc::kBufSize];      // file buffer
-  uint32_t len;
-
-  snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%i_en", pin_);          // NOLINT [whitespace/line_length]
-  fd_ = open(buf, O_WRONLY);
-  if (fd_ < 0) {
-    log_.ERR("ADC", "could not enable pin %d", pin_);
-  }
-  char pinbuf[100];
-  snprintf(pinbuf, sizeof(pinbuf), "%i", pin_);
-  len = write(fd_, pinbuf, strlen(pinbuf) + 1);
-  // close(fd_);
-  if (len != strlen(pinbuf) +1) {
-    log_.INFO("ADC", "could not enable ADC %d, might be already be enabled", pin_);
-    // return;
-  } else {
-    log_.INFO("ADC", "pin %d was successfully exported", pin_);
-    initialised_ = true;
-  }
-  return;
-}
+{}
 
 uint16_t ADC::read()
 {
-  if (!initialised_) {
-    log_.ERR("ADC", "ADC not enabled via file system");
-    return 0;
-  }
-  // int fd;
   char buf[100];
   snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/in_voltage%i_raw", pin_);
   fd_ = open(buf, O_RDONLY);

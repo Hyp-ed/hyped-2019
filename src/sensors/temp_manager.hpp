@@ -25,6 +25,7 @@
 
 #include "data/data.hpp"
 #include "utils/system.hpp"
+#include "temperature.hpp"
 
 namespace hyped {
 

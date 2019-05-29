@@ -78,7 +78,7 @@ void Main::run()
 // start all managers
   imu_manager_->start();
   battery_manager_->start();
-  temp_manager_->start();
+  // temp_manager_->start();
 
   // Initalise the keyence arrays
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
@@ -100,6 +100,6 @@ void Main::run()
 
   imu_manager_->join();
   battery_manager_->join();
-  temp_manager_->join();
+  // temp_manager_->join();
 }
 }}
