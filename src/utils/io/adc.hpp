@@ -61,16 +61,8 @@ class ADC {
   uint16_t read();
 
  private:
-  /**
-   * @brief enables ADC pin for analog input through file system
-   *
-   */
-  void enableADC();
-
   uint32_t      pin_;
   Logger&       log_;
-
-  bool          initialised_;
   int           fd_;
 };
 }}}
