@@ -19,16 +19,13 @@
  */
 
 #include <stdio.h>
-#include "utils/concurrent/thread.hpp"
 #include "utils/io/adc.hpp"
-#include "utils/timer.hpp"
 #include "sensors/temperature.hpp"
 
 namespace hyped {
 
 using data::Data;
 using data::TemperatureData;
-using utils::concurrent::Thread;
 using utils::io::ADC;
 using hyped::utils::Logger;
 
@@ -40,18 +37,15 @@ Temperature::Temperature(utils::Logger& log, int pin)
        log_(log)
 {}
 
-void Temperature::run()
+void Temperature::checkSensor()
 {
   ADC thepin(pin_);
-  temp_.temp.value = 0;
-  temp_.temp.timestamp = utils::Timer::getTimeMicros();
-
+  temp_.temp = 0;
   while (sys_.running_) {
     uint16_t raw_value = thepin.read();
     log_.DBG1("Temperature", "Raw Data: %d", raw_value);
-    temp_.temp.value = scaleData(raw_value);
+    temp_.temp = scaleData(raw_value);
     log_.DBG1("Temperature", "Scaled Data: %d", raw_value);
-    temp_.temp.timestamp = utils::Timer::getTimeMicros();
     temp_.operational = true;
   }
 }

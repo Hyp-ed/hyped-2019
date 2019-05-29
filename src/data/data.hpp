@@ -79,15 +79,14 @@ struct StripeCounter : public Sensor {
   DataPoint<uint32_t> count;
 };
 
-struct TemperatureData : public Module, public Sensor {
-  DataPoint<int> temp;
+struct TemperatureData : public Sensor {
+  static constexpr int kNumThermistors = 1;
+  int temp;
 };
 
 struct Sensors : public Module {
   static constexpr int kNumImus = 6;            // TODO(Greg): change back to final cte for PCB
   static constexpr int kNumKeyence = 2;
-  static constexpr int kNumThermistors = 1;
-
 
   DataPoint<array<ImuData, kNumImus>> imu;
   array<StripeCounter, kNumKeyence>  keyence_stripe_counter;

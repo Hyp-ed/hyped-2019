@@ -31,32 +31,32 @@ using utils::System;
 
 namespace sensors {
 TempManager::TempManager(Logger& log)
-    : TempManagerInterface(log),
+    : log_(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
       analog_pins_ {1}
 {
-  for (int i = 0; i < data::Sensors::kNumThermistors; i++) {    // creates new real objects
-    Temperature* temp = new Temperature(log, analog_pins_[i]);
-    temp->start();
-    temp_[i] = temp;
+  for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {    // creates new real objects
+    temp_[i] = new Temperature(log, analog_pins_[i]);
   }
   log_.INFO("TEMP-MANAGER", "temp data has been initialised");
 }
 
-void TempManager::run()
+void TempManager::runTemperature()
 {
   while (sys_.running_) {
-    int average = 0;
-    for (int i = 0; i < data::Sensors::kNumThermistors; i++) {
-      average += temp_[i]->getAnalogRead().temp.value;      // TODO(anyone): average correctly
-      log_.DBG1("TEMP-MANAGER", "Sum: %d", average);
+    // int average = 0;
+    for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {
+      int value = temp_[i]->getAnalogRead().temp;
+      log_.DBG1("TEMP-MANAGER", "Thermistor %d: %d", i, value);
     }
-    average = round(average/data::Sensors::kNumThermistors);
-    log_.DBG1("TEMP-MANAGER", "Average after rounding: %d", average);
-    pod_temp_.temp.value = average;
-    pod_temp_.temp.timestamp = utils::Timer::getTimeMicros();
-    log_.DBG1("TEMP-MANAGER", "pod_temp_: %d", pod_temp_.temp.value);
+
+
+    // average = round(average/data::TemperatureData::kNumThermistors);
+    // log_.DBG1("TEMP-MANAGER", "Average after rounding: %d", average);
+    // pod_temp_.temp.value = average;
+    // pod_temp_.temp.timestamp = utils::Timer::getTimeMicros();
+    // log_.DBG1("TEMP-MANAGER", "pod_temp_: %d", pod_temp_.temp.value);
 
     // check ambient temperature
     // if (pod_temp_.module_status != data::ModuleStatus::kCriticalFailure) {
@@ -65,16 +65,39 @@ void TempManager::run()
     //     pod_temp_.module_status = data::ModuleStatus::kCriticalFailure;
     //   }
     // }
-    data_.setTemperature(pod_temp_);
+    // data_.setTemperature(pod_temp_);
   }
+}
+
+int Temperature::averageData(int data[kAverageSet])
+{
+  double mean = 0;
+  for (int i = 0; i < kAverageSet; i++) {
+    mean += data[i];
+  }
+  mean = mean/kAverageSet;
+  double sq_sum = 0;
+  for (int i = 0; i < kAverageSet; i++) {
+    sq_sum += pow((data[i]-mean), 2);
+  }
+  double st_dev = sqrt((sq_sum/kAverageSet));
+  int final_sum = 0;
+  int count = 0;
+  for (int i = 0; i < kAverageSet; i++) {
+    if (abs(data[i] - mean) < (st_dev*kAccuracyFactor)) {
+      final_sum += data[i];
+      count++;
+    }
+  }
+  return round(final_sum/count);
 }
 
 bool TempManager::temperatureInRange()    // TODO(Anyone): add true temperature range
 {
   auto& temperature = pod_temp_.temp;
   log_.DBG1("TEMP-MANAGER", "Temperature from data struct: %d", temperature);
-  if (temperature.value < -10 || temperature.value > 90) {  // temperature in -10C to 50C
-    log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature.value);
+  if (temperature < -10 || temperature > 90) {  // temperature in -10C to 50C
+    log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature);
     return false;
   }
 }

@@ -23,32 +23,30 @@
 
 #include <cstdint>
 
-#include "sensors/manager_interface.hpp"
-#include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
-#include "sensors/interface.hpp"
 #include "utils/system.hpp"
 
 namespace hyped {
 
-using utils::concurrent::Thread;
 using utils::Logger;
 
 namespace sensors {
 
-class TempManager: public TempManagerInterface {
+class TempManager {
   // typedef data::DataPoint<array<TemperatureData, data::Sensors::kNumThermistors>>  DataArray;
 
  public:
   explicit TempManager(Logger& log);
-  void run()            override;
+  void runTemperature();
  private:
   bool temperatureInRange();
+
+  Logger&                       log_;
   utils::System&                sys_;
   data::TemperatureData         pod_temp_;
   data::Data&                   data_;
-  uint8_t                       analog_pins_[data::Sensors::kNumThermistors];
-  AdcInterface*                 temp_[data::Sensors::kNumThermistors];
+  uint8_t                       analog_pins_[data::TemperatureData::kNumThermistors];
+  Temperature*                  temp_[data::TemperatureData::kNumThermistors];
 };
 
 }}    // namespace hyped::sensors
