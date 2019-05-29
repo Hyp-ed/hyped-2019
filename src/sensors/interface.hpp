@@ -60,15 +60,6 @@ class GpioInterface {
   virtual data::StripeCounter getStripeCounter() = 0;
 };
 
-class AdcInterface {
- public:
-  /**
-   * @brief Get ADC data
-   * @param
-   */
-  virtual TemperatureData getAnalogRead() = 0;
-};
-
 class BMSInterface: public SensorInterface {
  public:
   /**

@@ -24,20 +24,20 @@
 #include <cstdint>
 
 #include "data/data.hpp"
-#include "sensors/interface.hpp"
-#include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
+
+constexpr int kAverageSet = 5;
+constexpr int kAccuracyFactor = 2;
 
 namespace hyped {
 
 using utils::Logger;
-using utils::concurrent::Thread;
 using utils::System;
 
 namespace sensors {
 
-class Temperature: public AdcInterface, public Thread {
+class Temperature {
  public:
   /**
    * @brief Construct a new Temperature object
@@ -53,13 +53,13 @@ class Temperature: public AdcInterface, public Thread {
    *
    * @return data::TemperatureData
    */
-  data::TemperatureData getAnalogRead() override;
+  data::TemperatureData getAnalogRead();
 
   /**
    * @brief individual thread for Temperature
    *
    */
-  void run() override;
+  void checkSensor();
 
  private:
   /**
@@ -69,6 +69,8 @@ class Temperature: public AdcInterface, public Thread {
    * @return int
    */
   int scaleData(uint16_t voltage);
+
+  int averageData(int data[kAverageSet]);
   int pin_;
   System& sys_;
   utils::Logger& log_;
