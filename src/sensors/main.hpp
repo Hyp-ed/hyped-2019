@@ -48,6 +48,7 @@ class Main: public Thread {
 
   private:
     bool keyencesUpdated();
+    bool temperatureInRange();
 
     data::Data&     data_;
     utils::System&  sys_;

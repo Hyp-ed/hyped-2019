@@ -45,61 +45,38 @@ TempManager::TempManager(Logger& log)
 void TempManager::runTemperature()
 {
   while (sys_.running_) {
-    // int average = 0;
     for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {
-      int value = temp_[i]->getAnalogRead().temp;
-      log_.DBG1("TEMP-MANAGER", "Thermistor %d: %d", i, value);
+      temp_data_[i].temp = temp_[i]->getAnalogRead().temp;
+      log_.DBG1("TEMP-MANAGER", "Thermistor %d: %d", i, temp_data_[i]);
     }
-
-
-    // average = round(average/data::TemperatureData::kNumThermistors);
-    // log_.DBG1("TEMP-MANAGER", "Average after rounding: %d", average);
-    // pod_temp_.temp.value = average;
-    // pod_temp_.temp.timestamp = utils::Timer::getTimeMicros();
-    // log_.DBG1("TEMP-MANAGER", "pod_temp_: %d", pod_temp_.temp.value);
-
-    // check ambient temperature
-    // if (pod_temp_.module_status != data::ModuleStatus::kCriticalFailure) {
-    //   if (!temperatureInRange()) {
-    //     log_.ERR("TEMP-MANAGER", "temperature spike detected");
-    //     pod_temp_.module_status = data::ModuleStatus::kCriticalFailure;
-    //   }
-    // }
-    // data_.setTemperature(pod_temp_);
+    pod_temp_ = averageData();
   }
 }
 
-int Temperature::averageData(int data[kAverageSet])
+int TempManager::averageData()
 {
   double mean = 0;
   for (int i = 0; i < kAverageSet; i++) {
-    mean += data[i];
+    mean += temp_data_[i].temp;
   }
   mean = mean/kAverageSet;
   double sq_sum = 0;
   for (int i = 0; i < kAverageSet; i++) {
-    sq_sum += pow((data[i]-mean), 2);
+    sq_sum += pow((temp_data_[i].temp-mean), 2);
   }
   double st_dev = sqrt((sq_sum/kAverageSet));
   int final_sum = 0;
   int count = 0;
   for (int i = 0; i < kAverageSet; i++) {
-    if (abs(data[i] - mean) < (st_dev*kAccuracyFactor)) {
-      final_sum += data[i];
+    if (abs(temp_data_[i].temp - mean) < (st_dev*kAccuracyFactor)) {
+      final_sum += temp_data_[i].temp;
       count++;
+    }
+    else {
+      temp_data_[i].operational = false;          // invalid output turns inoperational
     }
   }
   return round(final_sum/count);
-}
-
-bool TempManager::temperatureInRange()    // TODO(Anyone): add true temperature range
-{
-  auto& temperature = pod_temp_.temp;
-  log_.DBG1("TEMP-MANAGER", "Temperature from data struct: %d", temperature);
-  if (temperature < -10 || temperature > 90) {  // temperature in -10C to 50C
-    log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature);
-    return false;
-  }
 }
 
 }}  // namespace hyped::sensors
