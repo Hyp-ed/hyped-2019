@@ -34,20 +34,19 @@ using utils::Logger;
 namespace sensors {
 
 class TempManager {
-  // typedef data::DataPoint<array<TemperatureData, data::Sensors::kNumThermistors>>  DataArray;
-
  public:
   explicit TempManager(Logger& log);
   void runTemperature();
  private:
-  bool temperatureInRange();
+  int averageData();
 
   Logger&                       log_;
   utils::System&                sys_;
-  data::TemperatureData         pod_temp_;
+  int                           pod_temp_;
   data::Data&                   data_;
   uint8_t                       analog_pins_[data::TemperatureData::kNumThermistors];
   Temperature*                  temp_[data::TemperatureData::kNumThermistors];
+  data::TemperatureData         temp_data_[data::TemperatureData::kNumThermistors];
 };
 
 }}    // namespace hyped::sensors

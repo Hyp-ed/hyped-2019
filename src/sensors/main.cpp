@@ -73,12 +73,24 @@ bool Main::keyencesUpdated()
   return false;
 }
 
+bool Main::temperatureInRange()    // TODO(Anyone): add true temperature range
+{
+  auto temperature = data_.getTemperature();
+  log_.DBG1("TEMP-MANAGER", "Temperature from data struct: %d", temperature);
+  if (temperature.temp < -10 || temperature.temp > 50) {  // temperature in -10C to 50C
+    log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature);
+    return false;
+  }
+}
+
 void Main::run()
 {
 // start all managers
   imu_manager_->start();
   battery_manager_->start();
-  // temp_manager_->start();
+
+  // TODO(Greg): implement temp_manager_
+  // temp_manager_->start();  
 
   // Initalise the keyence arrays
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
