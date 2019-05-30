@@ -79,7 +79,7 @@ void Main::run()
         break;
       case data::State::kNominalBraking:
         if (checkCriticalFailure())      break;
-        if (checkVelocityZeroReached())  break;
+        if (checkAtRest())  break;
         break;
       case data::State::kRunComplete:
         if (checkCriticalFailure())      break;
@@ -90,7 +90,7 @@ void Main::run()
         if (checkFinish())               break;
         break;
       case data::State::kEmergencyBraking:
-        if (checkVelocityZeroReached())  break;
+        if (checkAtRest())  break;
         break;
       // we cannot recover from these states
       case data::State::kInvalid:
@@ -201,19 +201,6 @@ bool Main::checkCriticalFailure()
     hypedMachine.handleEvent(kCriticalFailure);
     return true;
   }
-
-
-  // also check if emergency braking distance has been reached
-  if (nav_data_.distance +
-      nav_data_.emergency_braking_distance +
-      20 >= telemetry_data_.run_length) {
-    log_.ERR("STATE", "Critical failure, emergency braking distance reached");
-    log_.ERR("STATE", "current distance, emergency distance: %f %f"
-      , nav_data_.distance
-      , telemetry_data_.run_length - nav_data_.emergency_braking_distance);
-    hypedMachine.handleEvent(kCriticalFailure);
-    return true;
-  }
   return false;
 }
 
@@ -245,8 +232,7 @@ bool Main::checkOnExit()
 bool Main::checkFinish()
 {
   // not moving and at end of tube, leniency of 20m
-  if (motor_data_.velocity_1 == 0 && motor_data_.velocity_2 == 0
-      && motor_data_.velocity_3 == 0 && motor_data_.velocity_4 == 0
+  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1
       && (nav_data_.distance + 20 >= telemetry_data_.run_length))
       {
         log_.INFO("STATE", "ready for collection");
@@ -256,12 +242,11 @@ bool Main::checkFinish()
   return false ;
 }
 
-bool Main::checkVelocityZeroReached()
+bool Main::checkAtRest()
 {
-  if (motor_data_.velocity_1 == 0 && motor_data_.velocity_2 == 0
-      && motor_data_.velocity_3 == 0 && motor_data_.velocity_4 == 0) {
+  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1) {
     log_.INFO("STATE", "RPM reached zero.");
-    hypedMachine.handleEvent(kVelocityZeroReached);
+    hypedMachine.handleEvent(kAtRest);
     return true;
   }
   return false;
