@@ -48,6 +48,13 @@ class Main: public Thread {
 
   private:
     bool keyencesUpdated();
+
+    /**
+     * @brief checks range of pod temperature
+     *
+     * @return true if status is valid
+     * @return false if kCriticalFailure
+     */
     bool temperatureInRange();
 
     data::Data&     data_;

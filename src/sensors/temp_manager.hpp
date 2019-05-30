@@ -36,16 +36,47 @@ namespace sensors {
 class TempManager {
  public:
   explicit TempManager(Logger& log);
+
+  /**
+   * @brief get temperature from each thermistor and average data, set to pod_temp_
+   *
+   */
   void runTemperature();
+  /**
+   * @brief
+   *
+   * @return int to be set to data struct in main
+   */
+  int getPodTemp();
  private:
+  /**
+   * @brief take standard deviation, remove values outside kAccuracyFactorx the stdev
+   *
+   * @return int to be set as pod_temp_
+   */
   int averageData();
 
   Logger&                       log_;
   utils::System&                sys_;
+
+  /**
+   * @brief int representation of data, to set to data struct
+   *
+   */
   int                           pod_temp_;
   data::Data&                   data_;
   uint8_t                       analog_pins_[data::TemperatureData::kNumThermistors];
+
+  /**
+   * @brief points to Temperature objects for each thermistor
+   *
+   */
   Temperature*                  temp_[data::TemperatureData::kNumThermistors];
+
+  /**
+   * @brief hold TemperatureData for each Temperature object
+   *
+   */
   data::TemperatureData         temp_data_[data::TemperatureData::kNumThermistors];
 };
 
