@@ -24,10 +24,13 @@
 
 namespace hyped {
 
+using data::ModuleStatus;
+
 namespace telemetry {
 
 Main::Main(uint8_t id, Logger& log)
   : Thread {id, log},
+    data_ {data::Data::getInstance()},
     client_ {log}
 {
   log_.DBG("Telemetry", "Telemetry Main thread object created");
@@ -36,6 +39,10 @@ Main::Main(uint8_t id, Logger& log)
 void Main::run()
 {
   log_.DBG("Telemetry", "Telemetry Main thread started");
+  data::Telemetry telem_data_struct = data_.getTelemetryData();
+  telem_data_struct.module_status = ModuleStatus::kInit;
+  data_.setTelemetryData(telem_data_struct);
+
 
   if (!client_.connect()) {
     // idk throw exception or something
