@@ -207,14 +207,14 @@ class Data {
    *
    * @return TemperatureData temperature in degrees C
    */
-  TemperatureData getTemperature();
+  int getTemperature();
 
   /**
    * @brief Set the Temperature from the IMU
    *
    * @param temp - temp in degrees C
    */
-  void setTemperature(const TemperatureData& temp);
+  void setTemperature(const int& temp);
 
   /**
    * @brief      Retrieves data from all sensors
@@ -302,7 +302,7 @@ class Data {
   Telemetry telemetry_;
   SensorCalibration calibration_data_;
   EmergencyBrakes emergency_brakes_;
-  TemperatureData temperature_;  // In degrees C
+  int temperature_;  // In degrees C
 
 
   // locks for data substructures

@@ -43,14 +43,12 @@ TempManager::TempManager(Logger& log)
 }
 
 void TempManager::runTemperature()
-{
-  while (sys_.running_) {
-    for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {
-      temp_data_[i].temp = temp_[i]->getAnalogRead().temp;
-      log_.DBG1("TEMP-MANAGER", "Thermistor %d: %d", i, temp_data_[i]);
-    }
-    pod_temp_ = averageData();
+{   
+  for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {
+    temp_data_[i].temp = temp_[i]->getAnalogRead().temp;
+    log_.DBG1("TEMP-MANAGER", "Thermistor %d: %d", i, temp_data_[i]);
   }
+  pod_temp_ = averageData();
 }
 
 int TempManager::averageData()
@@ -77,6 +75,11 @@ int TempManager::averageData()
     }
   }
   return round(final_sum/count);
+}
+
+int TempManager::getPodTemp()
+{
+  return pod_temp_;
 }
 
 }}  // namespace hyped::sensors

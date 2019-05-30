@@ -77,7 +77,7 @@ bool Main::temperatureInRange()    // TODO(Anyone): add true temperature range
 {
   auto temperature = data_.getTemperature();
   log_.DBG1("TEMP-MANAGER", "Temperature from data struct: %d", temperature);
-  if (temperature.temp < -10 || temperature.temp > 50) {  // temperature in -10C to 50C
+  if (temperature < -10 || temperature > 50) {  // temperature in -10C to 50C
     log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature);
     return false;
   }
@@ -88,9 +88,6 @@ void Main::run()
 // start all managers
   imu_manager_->start();
   battery_manager_->start();
-
-  // TODO(Greg): implement temp_manager_
-  // temp_manager_->start();  
 
   // Initalise the keyence arrays
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
@@ -108,10 +105,17 @@ void Main::run()
       prev_keyence_stripe_count_arr_[i] = keyences_[i]->getStripeCounter();
     }
     Thread::sleep(10);  // Sleep for 10ms
+
+    // TODO(Greg): implement temp_manager_
+    temp_manager_->runTemperature();
+    data_.setTemperature(temp_manager_->getPodTemp());
+    if (temperatureInRange()) {
+      // throw error to kCriticalFailure
+    }
+    Thread::sleep(200);
   }
 
   imu_manager_->join();
   battery_manager_->join();
-  // temp_manager_->join();
 }
 }}
