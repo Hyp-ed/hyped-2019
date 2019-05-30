@@ -131,10 +131,11 @@ struct Motors : public Module {
 // -------------------------------------------------------------------------------------------------
 
 struct Telemetry : public Module {
+  bool calibrate_command;
   bool launch_command;
   bool reset_command;
-  float run_length;  // m
   bool service_propulsion_go;
+  float run_length;  // m
 };
 
 // -------------------------------------------------------------------------------------------------

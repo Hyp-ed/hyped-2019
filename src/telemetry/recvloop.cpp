@@ -52,6 +52,10 @@ void RecvLoop::run()
         log_.DBG1("Telemetry", "FROM SERVER: STOP");
         telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
         break;
+      case telemetry_data::ServerToClient::CALIBRATE:
+        log_.DBG1("Telemetry", "FROM SERVER: CALIBRATE");
+        telem_data_struct.calibrate_command = true;
+        break;
       case telemetry_data::ServerToClient::LAUNCH:
         log_.DBG1("Telemetry", "FROM SERVER: LAUNCH");
         telem_data_struct.launch_command = true;
@@ -64,9 +68,13 @@ void RecvLoop::run()
         log_.DBG1("Telemetry", "FROM SERVER: RUN_LENGTH %f", msg.run_length());
         telem_data_struct.run_length = msg.run_length();
         break;
-      case telemetry_data::ServerToClient::SERVICE_PROPULSION:
-        log_.DBG1("Telemetry", "FROM SERVER: SERVICE_PROPULSION %s", msg.service_propulsion() ? "true" : "false");  // NOLINT
-        telem_data_struct.service_propulsion_go = msg.service_propulsion();
+      case telemetry_data::ServerToClient::SERVICE_PROPULSION_GO:
+        log_.DBG1("Telemetry", "FROM SERVER: SERVICE_PROPULSION_GO");
+        telem_data_struct.service_propulsion_go = true;
+        break;
+      case telemetry_data::ServerToClient::SERVICE_PROPULSION_STOP:
+        log_.DBG1("Telemetry", "FROM SERVER: SERVICE_PROPULSION_STOP");
+        telem_data_struct.service_propulsion_go = false;
         break;
       default:
         log_.ERR("Telemetry", "Unrecognized input from server, ENTERING CRITICAL FAILURE");
