@@ -24,10 +24,10 @@
 namespace hyped {
 namespace telemetry {
 
-SendLoop::SendLoop(Logger& log, Main* main_pointer)
+SendLoop::SendLoop(Logger& log, data::Data& data, Main* main_pointer)
   : Thread {log},
     main_ref_ {*main_pointer},
-    data_ {data::Data::getInstance()}
+    data_ {data}
 {
   log_.DBG("Telemetry", "Telemetry SendLoop thread object created");
 }

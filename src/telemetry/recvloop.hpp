@@ -31,7 +31,7 @@ namespace telemetry {
 
 class RecvLoop: public Thread {
   public:
-    explicit RecvLoop(Logger &log, Main* main_pointer);
+    explicit RecvLoop(Logger &log, data::Data& data, Main* main_pointer);
     void run() override;
 
   private:
