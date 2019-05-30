@@ -49,8 +49,8 @@ void Main::run()
     log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
   }
 
-  SendLoop sendloop_thread {log_, this};  // NOLINT
-  RecvLoop recvloop_thread {log_, this};  // NOLINT
+  SendLoop sendloop_thread {log_, data_, this};  // NOLINT
+  RecvLoop recvloop_thread {log_, data_, this};  // NOLINT
 
   sendloop_thread.start();
   recvloop_thread.start();
