@@ -232,7 +232,7 @@ bool Main::checkOnExit()
 bool Main::checkFinish()
 {
   // not moving and at end of tube, leniency of 20m
-  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1 
+  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1
       && (nav_data_.distance + 20 >= telemetry_data_.run_length))
       {
         log_.INFO("STATE", "ready for collection");
