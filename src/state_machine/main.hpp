@@ -54,7 +54,7 @@ class Main: public Thread {
   bool checkMaxDistanceReached();
   bool checkOnExit();
   bool checkFinish();
-  bool checkVelocityZeroReached();
+  bool checkAtRest();
   bool checkTimer();
 
   uint64_t time_start_;
