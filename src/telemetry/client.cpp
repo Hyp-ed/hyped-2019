@@ -52,24 +52,21 @@ bool Client::connect()
   int return_val;
   if ((return_val = getaddrinfo(kServerIP, kPort, &hints, &server_info)) != 0) {
     log_.ERR("Telemetry", "%s", gai_strerror(return_val));
-    return false;
-    // TODO(neil): probably throw exception here or something
+    throw std::runtime_error{"Failed getting possible addresses"};  // NOLINT
   }
 
   // get a socket file descriptor
   sockfd_ = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
   if (sockfd_ == -1) {
     log_.ERR("Telemetry", "%s", strerror(errno));
-    return false;
-    // TODO(neil): probably throw exception here or something
+    throw std::runtime_error{"Failed getting socket file descriptor"};  // NOLINT
   }
 
   // connect socket to server
   if (::connect(sockfd_, server_info->ai_addr, server_info->ai_addrlen) == -1) {
     close(sockfd_);
     log_.ERR("Telemetry", "%s", strerror(errno));
-    return false;
-    // TODO(neil): probably throw exception here or something
+    throw std::runtime_error{"Failed connecting to socket (couldn't connect to server)"};  // NOLINT
   }
 
   log_.INFO("Telemetry", "Connected to server");

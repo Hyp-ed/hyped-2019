@@ -39,14 +39,22 @@ Main::Main(uint8_t id, Logger& log)
 void Main::run()
 {
   log_.DBG("Telemetry", "Telemetry Main thread started");
+
   data::Telemetry telem_data_struct = data_.getTelemetryData();
   telem_data_struct.module_status = ModuleStatus::kInit;
   data_.setTelemetryData(telem_data_struct);
 
+  try {
+    client_.connect();
+  }
+  catch (std::exception& e) {  // NOLINT
+    log_.ERR("Telemetry", e.what());
+    log_.ERR("Telemetry", "Exiting Telemetry Main thread (due to error connecting)");
 
-  if (!client_.connect()) {
-    // idk throw exception or something
-    log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
+    telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
+    data_.setTelemetryData(telem_data_struct);
+
+    return;
   }
 
   SendLoop sendloop_thread {log_, data_, this};  // NOLINT
