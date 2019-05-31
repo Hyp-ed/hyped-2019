@@ -57,6 +57,9 @@ void Main::run()
     return;
   }
 
+  telem_data_struct.module_status = ModuleStatus::kReady;
+  data_.setTelemetryData(telem_data_struct);
+
   SendLoop sendloop_thread {log_, data_, this};  // NOLINT
   RecvLoop recvloop_thread {log_, data_, this};  // NOLINT
 
