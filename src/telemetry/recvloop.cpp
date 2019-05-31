@@ -37,12 +37,23 @@ RecvLoop::RecvLoop(Logger &log, data::Data& data, Main* main_pointer)
 
 void RecvLoop::run()
 {
+  log_.DBG("Telemetry", "Telemetry RecvLoop thread started");
   telemetry_data::ServerToClient msg;
   // not sure whether to put this in or ouside of loop
   data::Telemetry telem_data_struct = data_.getTelemetryData();
 
   while (true) {
-    msg = main_ref_.client_.receiveData();
+    try {
+      msg = main_ref_.client_.receiveData();
+    }
+    catch (std::exception& e) {  // NOLINT
+      log_.ERR("Telemetry", "%s", e.what());
+
+      telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
+      data_.setTelemetryData(telem_data_struct);
+
+      break;
+    }
 
     switch (msg.command()) {
       case telemetry_data::ServerToClient::ACK:
@@ -84,6 +95,8 @@ void RecvLoop::run()
 
     data_.setTelemetryData(telem_data_struct);
   }
+
+  log_.DBG("Telemetry", "Exiting Telemetry RecvLoop thread");
 }
 
 }  // namespace telemetry
