@@ -46,11 +46,25 @@ void SendLoop::run()
     packSensorsMessage(msg);
     packEmergencyBrakesMessage(msg);
 
-    main_ref_.client_.sendData(msg);
+    try {
+      main_ref_.client_.sendData(msg);
+    }
+    catch (std::exception& err) {  // NOLINT
+      log_.ERR("Telemetry", "%s", err.what());
+
+      data::Telemetry telem_data_struct = data_.getTelemetryData();
+      telem_data_struct.module_status = data::ModuleStatus::kCriticalFailure;
+      data_.setTelemetryData(telem_data_struct);
+
+      break;
+    }
+
     msg.Clear();
 
     Thread::sleep(100);
   }
+
+  log_.DBG("Telemetry", "Exiting Telemetry SendLoop thread");
 }
 
 void SendLoop::packNavigationMessage(telemetry_data::ClientToServer& msg)

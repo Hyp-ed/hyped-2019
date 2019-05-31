@@ -57,6 +57,8 @@ void Main::run()
 
   sendloop_thread.join();
   recvloop_thread.join();
+
+  log_.DBG("Telemetry", "Exiting Telemetry Main thread");
 }
 
 }  // namespace telemetry

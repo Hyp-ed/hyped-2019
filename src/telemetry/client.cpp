@@ -92,8 +92,7 @@ bool Client::sendData(telemetry_data::ClientToServer message)
   log_.DBG3("Telemetry", "Starting to send message to server");
 
   if (!SerializeDelimitedToZeroCopyStream(message, socket_stream_out_) || signal_handler_.gotSigPipeSignal()) {  // NOLINT
-    log_.ERR("Telemetry", "Error sending message");
-    return false;  // probs change to throwing exception
+    throw std::runtime_error{"Error sending message"};  // NOLINT
   }
 
   // we have to call Flush() here otherwise protobufs will buffer the file output stream
@@ -113,8 +112,7 @@ telemetry_data::ServerToClient Client::receiveData()
   log_.DBG1("Telemetry", "Waiting to receive from server");
 
   if (!ParseDelimitedFromZeroCopyStream(&messageFromServer, socket_stream_in_, NULL) || signal_handler_.gotSigPipeSignal()) {  // NOLINT
-    log_.ERR("Telemetry", "Error receiving message");
-    // TODO(neil): probably throw exception here or something
+    throw std::runtime_error{"Error receiving message"};  // NOLINT
   }
 
   log_.DBG1("Telemetry", "Finished receiving from server");
