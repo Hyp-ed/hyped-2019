@@ -30,13 +30,6 @@ SRCS := \
   sensors/main.cpp \
   sensors/bms.cpp \
   sensors/bms_manager.cpp \
-  telemetry/main.cpp \
-  telemetry/client.cpp \
-  telemetry/recvloop.cpp \
-  telemetry/sendloop.cpp \
-  telemetry/utils.cpp \
-  telemetry/signalhandler.cpp \
-  telemetry/telemetrydata/message.pb.cpp \
   state_machine/main.cpp \
   state_machine/hyped-machine.cpp \
   state_machine/states.cpp \

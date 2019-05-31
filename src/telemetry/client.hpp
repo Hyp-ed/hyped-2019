@@ -36,8 +36,8 @@ using google::protobuf::io::FileOutputStream;
 namespace telemetry {
 
 constexpr auto kPort = "9090";
-constexpr auto kServerIP = "localhost";
-// constexpr auto kServerIP = "192.168.1.50";
+// constexpr auto kServerIP = "localhost";
+constexpr auto kServerIP = "192.168.1.50";
 
 class Client {
   public:
