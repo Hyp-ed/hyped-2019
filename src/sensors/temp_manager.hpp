@@ -28,7 +28,6 @@
 #include "utils/system.hpp"
 #include "temperature.hpp"
 
-constexpr int kAverageSet = 5;
 constexpr int kAccuracyFactor = 2;
 
 namespace hyped {
@@ -69,6 +68,7 @@ class TempManager {
    * @brief int representation of data, to set to data struct
    */
   int                           pod_temp_;
+  int                           online_sensors_;
   data::Data&                   data_;
   uint8_t                       analog_pins_[data::TemperatureData::kNumThermistors];
 

@@ -26,7 +26,6 @@
 namespace hyped {
 
 using data::Data;
-// using data::Sensors;
 using utils::System;
 
 namespace sensors {
@@ -34,38 +33,47 @@ TempManager::TempManager(Logger& log)
     : log_(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
+      online_sensors_(data::TemperatureData::kNumThermistors),
       analog_pins_ {0, 1, 2, 3}
 {
   for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {    // creates new real objects
     temp_[i] = new Temperature(log, analog_pins_[i]);
+    temp_data_[i].operational = true;
   }
   log_.INFO("TEMP-MANAGER", "temp data has been initialised");
 }
 
 void TempManager::runTemperature()
 {
+  int count = 0;
   for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {
-    temp_data_[i].temp = temp_[i]->getAnalogRead().temp;
-    log_.DBG1("TEMP-MANAGER", "Thermistor %d: %d", i, temp_data_[i]);
+    if (temp_data_[i].operational) {
+      count++;
+      temp_data_[i].temp = temp_[i]->getAnalogRead().temp;
+      log_.DBG1("TEMP-MANAGER", "Thermistor %d: %d", i, temp_data_[i]);
+    } else {
+      log_.ERR("TEMP-MANAGER", "Thermistor %d faulty: set offline", i);
+    }
   }
+  online_sensors_ = count;      // omit offline sensors for averageData()
   pod_temp_ = averageData();
 }
 
 int TempManager::averageData()
 {
   double mean = 0;
-  for (int i = 0; i < kAverageSet; i++) {
+  for (int i = 0; i < online_sensors_; i++) {
     mean += temp_data_[i].temp;
   }
-  mean = mean/kAverageSet;
+  mean = mean/online_sensors_;
   double sq_sum = 0;
-  for (int i = 0; i < kAverageSet; i++) {
+  for (int i = 0; i < online_sensors_; i++) {
     sq_sum += pow((temp_data_[i].temp-mean), 2);
   }
-  double st_dev = sqrt((sq_sum/kAverageSet));
+  double st_dev = sqrt((sq_sum/online_sensors_));
   int final_sum = 0;
   int count = 0;
-  for (int i = 0; i < kAverageSet; i++) {
+  for (int i = 0; i < online_sensors_; i++) {
     if (abs(temp_data_[i].temp - mean) < (st_dev*kAccuracyFactor)) {
       final_sum += temp_data_[i].temp;
       count++;
