@@ -203,14 +203,14 @@ class Data {
 
 
   /**
-   * @brief Get the Temperature from the IMU
+   * @brief Get the Temperature from averaged thermistor values
    *
-   * @return TemperatureData temperature in degrees C
+   * @return int temperature in degrees C
    */
   int getTemperature();
 
   /**
-   * @brief Set the Temperature from the IMU
+   * @brief Set the Temperature from averaged thermistor values
    *
    * @param temp - temp in degrees C
    */

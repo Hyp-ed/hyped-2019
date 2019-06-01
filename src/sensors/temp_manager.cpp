@@ -1,7 +1,7 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
- * Date:
+ * Date: 1/6/19
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -26,7 +26,7 @@
 namespace hyped {
 
 using data::Data;
-using data::Sensors;
+// using data::Sensors;
 using utils::System;
 
 namespace sensors {
@@ -43,7 +43,7 @@ TempManager::TempManager(Logger& log)
 }
 
 void TempManager::runTemperature()
-{   
+{
   for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {
     temp_data_[i].temp = temp_[i]->getAnalogRead().temp;
     log_.DBG1("TEMP-MANAGER", "Thermistor %d: %d", i, temp_data_[i]);
@@ -69,12 +69,11 @@ int TempManager::averageData()
     if (abs(temp_data_[i].temp - mean) < (st_dev*kAccuracyFactor)) {
       final_sum += temp_data_[i].temp;
       count++;
-    }
-    else {
+    } else {
       temp_data_[i].operational = false;          // invalid output turns inoperational
     }
   }
-  return round(final_sum/count);
+  return round(final_sum/count);      // remove outliers
 }
 
 int TempManager::getPodTemp()

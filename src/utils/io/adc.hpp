@@ -1,8 +1,8 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
- * Date:
- * Description:
+ * Date: 1/6/19
+ * Description: analog read from ADC pins on BBB via file system
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,8 +1,8 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
- * Date:
- * Description:
+ * Date: 1/6/19
+ * Description: scales thermistor voltage reading from ADC pin and creates TemperatureData instance
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,16 +24,11 @@
 #include <cstdint>
 
 #include "data/data.hpp"
-#include "utils/system.hpp"
 #include "utils/logger.hpp"
-
-constexpr int kAverageSet = 5;
-constexpr int kAccuracyFactor = 2;
 
 namespace hyped {
 
 using utils::Logger;
-using utils::System;
 
 namespace sensors {
 
@@ -49,9 +44,9 @@ class Temperature {
   ~Temperature() {}
 
   /**
-   * @brief returns TemperatreData object, from interface
+   * @brief returns TemperatureData object, used by TempManager
    *
-   * @return data::TemperatureData
+   * @return data::TemperatureData to handle isOnline param as well
    */
   data::TemperatureData getAnalogRead();
 
@@ -65,19 +60,19 @@ class Temperature {
   /**
    * @brief scale raw digital data to output in degrees C
    *
-   * @param voltage
-   * @return int
+   * @param raw_value input voltage
+   * @return int representation of temperature
    */
-  int scaleData(uint16_t voltage);
+  int scaleData(uint16_t raw_value);
 
-  int averageData(int data[kAverageSet]);
+  /**
+   * @brief ADC pin
+   */
   int pin_;
-  System& sys_;
   utils::Logger& log_;
 
   /**
-   * @brief DataPoint of type int
-   *
+   * @brief int from data structs
    */
   data::TemperatureData temp_;
 };

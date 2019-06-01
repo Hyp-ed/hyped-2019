@@ -4,7 +4,7 @@
  * Date:
  * Description:
  * Main initialises and manages sensor drivers. Main is not responsible for initialisation
- * of supporting io drivers (i2c, spi, can). This should be done by the sensor
+ * of supporting io drivers (i2c, spi, can, adc). This should be done by the sensor
  * drivers themselves.
  *
  *    Copyright 2019 HYPED
@@ -56,6 +56,12 @@ class Main: public Thread {
      * @return false if kCriticalFailure
      */
     bool temperatureInRange();
+
+    /**
+     * @brief used to check the temperature infrequently in main loop,
+     *        unnecessary to constantly check temperature;
+     */
+    void checkTemperature();
 
     data::Data&     data_;
     utils::System&  sys_;
