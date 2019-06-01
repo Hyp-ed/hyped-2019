@@ -1,8 +1,8 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
- * Date:
- * Description: Demo for LM35 Thermistor using temp_manager
+ * Date: 1/6/19
+ * Description: Demo for TMP35 Thermistor using temp_manager
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +22,9 @@
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
-using namespace hyped::data;
-using namespace std;
 using hyped::sensors::TempManager;
 
 int main(int argc, char* argv[])
@@ -35,14 +32,12 @@ int main(int argc, char* argv[])
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, -1);
 
-  Data& data_ = Data::getInstance();    // read from data struct
   TempManager temp_manager_(log);
-  temp_manager_.start();
   Thread::sleep(500);
-  
   log.INFO("TEST-Temp", "Temp instance successfully created");
   for (int i = 0; i < 50; i++) {
-    int temperature = data_.getTemperature().temp.value;
+    temp_manager_.runTemperature();
+    int temperature = temp_manager_.getPodTemp();
     log.INFO("TEST-Temp", "Thermistor reading: %d degrees C", temperature);
     Thread::sleep(100);
   }

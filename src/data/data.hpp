@@ -79,7 +79,7 @@ struct StripeCounter : public Sensor {
 };
 
 struct TemperatureData : public Sensor {
-  static constexpr int kNumThermistors = 1;
+  static constexpr int kNumThermistors = 4;
   int temp;
 };
 
