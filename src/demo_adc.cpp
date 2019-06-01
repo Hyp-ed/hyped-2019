@@ -34,13 +34,12 @@ namespace io = hyped::utils::io;
 int main(int argc, char* argv[]) { 
   System::parseArgs(argc, argv);
   Logger log(true, -1);
-  
+
   ADC analog(1, log);
   Thread::sleep(100);
 
   while(1) {
-    log.INFO("DEMO-ADC", "Analog in value: %d", analog.read());   // digital range [0,255]
+    log.INFO("DEMO-ADC", "Analog in value: %d", analog.read());   // digital range [0,4095]
     Thread::sleep(100);
   }
-  
 }

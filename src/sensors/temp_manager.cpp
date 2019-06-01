@@ -34,7 +34,7 @@ TempManager::TempManager(Logger& log)
     : log_(log),
       sys_(System::getSystem()),
       data_(Data::getInstance()),
-      analog_pins_ {1}
+      analog_pins_ {0, 1, 2, 3}
 {
   for (int i = 0; i < data::TemperatureData::kNumThermistors; i++) {    // creates new real objects
     temp_[i] = new Temperature(log, analog_pins_[i]);
