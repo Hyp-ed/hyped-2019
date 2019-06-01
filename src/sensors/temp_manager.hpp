@@ -1,8 +1,9 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
- * Date:
- * Description:
+ * Date: 1/6/19
+ * Description: Handles readings from all thermistors on PCB, averages readings and
+ *    sets faulty sensors offline, used in sensors main for cleaner implementation
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +28,9 @@
 #include "utils/system.hpp"
 #include "temperature.hpp"
 
+constexpr int kAverageSet = 5;
+constexpr int kAccuracyFactor = 2;
+
 namespace hyped {
 
 using utils::Logger;
@@ -48,9 +52,11 @@ class TempManager {
    * @return int to be set to data struct in main
    */
   int getPodTemp();
+
  private:
   /**
    * @brief take standard deviation, remove values outside kAccuracyFactorx the stdev
+   * need to handle type TemperatureData to set thermistor sensor isOnline = false if faulty
    *
    * @return int to be set as pod_temp_
    */
@@ -61,7 +67,6 @@ class TempManager {
 
   /**
    * @brief int representation of data, to set to data struct
-   *
    */
   int                           pod_temp_;
   data::Data&                   data_;
@@ -69,13 +74,11 @@ class TempManager {
 
   /**
    * @brief points to Temperature objects for each thermistor
-   *
    */
   Temperature*                  temp_[data::TemperatureData::kNumThermistors];
 
   /**
    * @brief hold TemperatureData for each Temperature object
-   *
    */
   data::TemperatureData         temp_data_[data::TemperatureData::kNumThermistors];
 };

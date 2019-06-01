@@ -1,7 +1,7 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
- * Date:
+ * Date: 1/6/19
  * Description:
  *
  *    Copyright 2019 HYPED

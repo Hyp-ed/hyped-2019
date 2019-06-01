@@ -1,7 +1,7 @@
 /*
- * Author:
+ * Author: Gregory Dayao
  * Organisation: HYPED
- * Date:
+ * Date: 1/6/19
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -33,7 +33,6 @@ namespace sensors {
 
 Temperature::Temperature(utils::Logger& log, int pin)
      : pin_(pin),
-       sys_(utils::System::getSystem()),
        log_(log)
 {}
 
@@ -41,21 +40,19 @@ void Temperature::checkSensor()
 {
   ADC thepin(pin_);
   temp_.temp = 0;
-  while (sys_.running_) {
-    uint16_t raw_value = thepin.read();
-    log_.DBG1("Temperature", "Raw Data: %d", raw_value);
-    temp_.temp = scaleData(raw_value);
-    log_.DBG1("Temperature", "Scaled Data: %d", raw_value);
-    temp_.operational = true;
-  }
+  uint16_t raw_value = thepin.read();
+  log_.DBG1("Temperature", "Raw Data: %d", raw_value);
+  temp_.temp = scaleData(raw_value);
+  log_.DBG1("Temperature", "Scaled Data: %d", temp_.temp);
+  temp_.operational = true;
 }
 
-// TODO(Anyone): scale data correctly
+// TODO(Anyone): scale data correctly for TMP35
 int Temperature::scaleData(uint16_t raw_value)
 {
   // convert to C temperature
   double temp = static_cast<double>(raw_value) / 4095;
-  temp = (temp*175) - 50;
+  temp = (temp*165) - 40;
   return static_cast<int>(temp);
 }
 

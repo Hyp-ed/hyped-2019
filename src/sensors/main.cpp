@@ -73,13 +73,23 @@ bool Main::keyencesUpdated()
   return false;
 }
 
-bool Main::temperatureInRange()    // TODO(Anyone): add true temperature range
+bool Main::temperatureInRange()    // TODO(anyone): add true temperature range
 {
   auto temperature = data_.getTemperature();
   log_.DBG1("TEMP-MANAGER", "Temperature from data struct: %d", temperature);
   if (temperature < -10 || temperature > 50) {  // temperature in -10C to 50C
     log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature);
     return false;
+  }
+  return true;
+}
+
+void Main::checkTemperature()
+{
+  temp_manager_->runTemperature();
+  data_.setTemperature(temp_manager_->getPodTemp());
+  if (temperatureInRange()) {
+    // throw error to kCriticalFailure
   }
 }
 
@@ -93,6 +103,7 @@ void Main::run()
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
   prev_keyence_stripe_count_arr_ = keyence_stripe_counter_arr_;
 
+  int temp_count = 0;
   while (sys_.running_) {
     // We need to read the gpio counters and write to the data structure
     // If previous is not equal to the new data then update
@@ -105,14 +116,10 @@ void Main::run()
       prev_keyence_stripe_count_arr_[i] = keyences_[i]->getStripeCounter();
     }
     Thread::sleep(10);  // Sleep for 10ms
-
-    // TODO(Greg): implement temp_manager_
-    temp_manager_->runTemperature();
-    data_.setTemperature(temp_manager_->getPodTemp());
-    if (temperatureInRange()) {
-      // throw error to kCriticalFailure
+    temp_count++;
+    if (temp_count % 20 == 0) {       // check every 20 cycles of main
+      checkTemperature();
     }
-    Thread::sleep(200);
   }
 
   imu_manager_->join();
