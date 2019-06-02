@@ -21,13 +21,14 @@
 #include "sensors/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "sensors/bms_manager.hpp"
-#include "sensors/temp_manager.hpp"
+#include "sensors/temperature.hpp"
 #include "sensors/gpio_counter.hpp"
 #include "sensors/fake_gpio_counter.hpp"
 
 
 constexpr int kKeyencePinLeft = 36;
 constexpr int kKeyencePinRight = 33;
+constexpr int kThermistorPin = 3;
 
 namespace hyped {
 
@@ -49,7 +50,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     pins_ {kKeyencePinLeft, kKeyencePinRight},
     imu_manager_(new ImuManager(log)),
     battery_manager_(new BmsManager(log)),
-    temp_manager_(new TempManager(log))
+    temperature_(new Temperature(log, kThermistorPin))
 {
   if (!sys_.fake_keyence) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
@@ -77,7 +78,7 @@ bool Main::temperatureInRange()    // TODO(anyone): add true temperature range
 {
   auto temperature = data_.getTemperature();
   log_.DBG1("TEMP-MANAGER", "Temperature from data struct: %d", temperature);
-  if (temperature < -10 || temperature > 50) {  // temperature in -10C to 50C
+  if (temperature < -10 || temperature > 60) {  // temperature in -10C to 60C
     log_.ERR("TEMP-MANAGER", "Temperature out of range: %d", temperature);
     return false;
   }
@@ -86,9 +87,9 @@ bool Main::temperatureInRange()    // TODO(anyone): add true temperature range
 
 void Main::checkTemperature()
 {
-  temp_manager_->runTemperature();
-  data_.setTemperature(temp_manager_->getPodTemp());
-  if (temperatureInRange()) {
+  temperature_->checkSensor();
+  data_.setTemperature(temperature_->getAnalogRead());
+  if (!temperatureInRange()) {
     // throw error to kCriticalFailure
   }
 }

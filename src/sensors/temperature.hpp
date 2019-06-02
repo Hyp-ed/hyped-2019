@@ -44,11 +44,11 @@ class Temperature {
   ~Temperature() {}
 
   /**
-   * @brief returns TemperatureData object, used by TempManager
+   * @brief
    *
-   * @return data::TemperatureData to handle isOnline param as well
+   * @return int to set to data struct in sensors main
    */
-  data::TemperatureData getAnalogRead();
+  int getAnalogRead();
 
   /**
    * @brief individual thread for Temperature
