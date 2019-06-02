@@ -95,7 +95,7 @@ void NominalBraking::entry()
 
 void NominalBraking::react(HypedMachine &machine, Event event)
 {
-  if (event == kVelocityZeroReached) {
+  if (event == kAtRest) {
     machine.transition(new(alloc_) RunComplete());
   } else if (event == kCriticalFailure) {
     machine.transition(new(alloc_) EmergencyBraking());
@@ -110,7 +110,7 @@ void EmergencyBraking::entry()
 
 void EmergencyBraking::react(HypedMachine &machine, Event event)
 {
-  if (event == kVelocityZeroReached) {
+  if (event == kAtRest) {
     machine.transition(new(alloc_) FailureStopped());
   }
 }

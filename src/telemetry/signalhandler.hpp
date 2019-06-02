@@ -1,7 +1,7 @@
 /*
  * Author: Neil Weidinger
  * Organisation: HYPED
- * Date: March 2019
+ * Date: May 2019
  * Description:
  *
  *    Copyright 2019 HYPED
@@ -18,33 +18,29 @@
  *    limitations under the License.
  */
 
-#ifndef TELEMETRY_MAIN_HPP_
-#define TELEMETRY_MAIN_HPP_
+#ifndef TELEMETRY_SIGNALHANDLER_HPP_
+#define TELEMETRY_SIGNALHANDLER_HPP_
 
-#include "telemetry/client.hpp"
-#include "data/data.hpp"
-#include "utils/concurrent/thread.hpp"
+#include "utils/logger.hpp"
 
 namespace hyped {
 
-using utils::concurrent::Thread;
 using utils::Logger;
 
 namespace telemetry {
 
-class Main: public Thread {
+class SignalHandler {
   public:
-    Main(uint8_t id, Logger& log);
-    void run() override;
+    SignalHandler();
+    static bool gotSigPipeSignal();
 
   private:
-    friend class SendLoop;
-    friend class RecvLoop;
-    data::Data& data_;
-    Client client_;
+    static void sigPipeHandler(int signum);
+    static bool receivedSigPipeSignal;
+    static Logger log_;
 };
 
 }  // namespace telemetry
 }  // namespace hyped
 
-#endif  // TELEMETRY_MAIN_HPP_
+#endif  // TELEMETRY_SIGNALHANDLER_HPP_

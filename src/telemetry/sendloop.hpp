@@ -36,7 +36,7 @@ namespace telemetry {
 
 class SendLoop: public Thread {
   public:
-    explicit SendLoop(Logger &log, Main* main_pointer);
+    explicit SendLoop(Logger &log, data::Data& data, Main* main_pointer);
     void run() override;
 
   private:

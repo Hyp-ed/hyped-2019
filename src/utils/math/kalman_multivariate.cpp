@@ -24,49 +24,55 @@ namespace hyped {
     namespace utils {
         namespace math {
 
-            KalmanMultivariate::KalmanMultivariate(unsigned int _n, unsigned int _m,
-                                                   unsigned int _k)
-                : n(_n),
-                  m(_m),
-                  k(_k)
+            KalmanMultivariate::KalmanMultivariate(unsigned int n, unsigned int m)
+                : n_(n),
+                  m_(m),
+                  k_(0)
             {}
 
-            void KalmanMultivariate::setDynamicsModel(MatrixXf& _A, MatrixXf& _Q)
+            KalmanMultivariate::KalmanMultivariate(unsigned int n, unsigned int m,
+                                                   unsigned int k)
+                : n_(n),
+                  m_(m),
+                  k_(k)
+            {}
+
+            void KalmanMultivariate::setDynamicsModel(MatrixXf& A, MatrixXf& Q)
             {
-                A = _A;
-                Q = _Q;
+                A_ = A;
+                Q_ = Q;
             }
 
-            void KalmanMultivariate::setDynamicsModel(MatrixXf& _A, MatrixXf& _B, MatrixXf& _Q)
+            void KalmanMultivariate::setDynamicsModel(MatrixXf& A, MatrixXf& B, MatrixXf& Q)
             {
-                A = _A;
-                B = _B;
-                Q = _Q;
+                A_ = A;
+                B_ = B;
+                Q_ = Q;
             }
 
-            void KalmanMultivariate::setMeasurementModel(MatrixXf& _H, MatrixXf& _R)
+            void KalmanMultivariate::setMeasurementModel(MatrixXf& H, MatrixXf& R)
             {
-                H = _H;
-                R = _R;
+                H_ = H;
+                R_ = R;
             }
 
-            void KalmanMultivariate::setModels(MatrixXf& _A, MatrixXf& _Q, MatrixXf& _H,
-                                       MatrixXf& _R)
+            void KalmanMultivariate::setModels(MatrixXf& A, MatrixXf& Q, MatrixXf& H,
+                                       MatrixXf& R)
             {
-                setDynamicsModel(_A, _Q);
-                setMeasurementModel(_H, _R);
+                setDynamicsModel(A, Q);
+                setMeasurementModel(H, R);
             }
 
-            void KalmanMultivariate::setModels(MatrixXf& _A, MatrixXf& _B, MatrixXf& _Q,
-                                       MatrixXf& _H, MatrixXf& _R)
+            void KalmanMultivariate::setModels(MatrixXf& A, MatrixXf& B, MatrixXf& Q,
+                                       MatrixXf& H, MatrixXf& R)
             {
-                setDynamicsModel(_A, _B, _Q);
-                setMeasurementModel(_H, _R);
+                setDynamicsModel(A, B, Q);
+                setMeasurementModel(H, R);
             }
 
             void KalmanMultivariate::updateA(MatrixXf& _A)
             {
-                A = _A;
+                A_ = A;
             }
 
             void KalmanMultivariate::updateR(MatrixXf& _R)
@@ -76,28 +82,28 @@ namespace hyped {
 
             void KalmanMultivariate::setInitial(VectorXf& x0, MatrixXf& P0)
             {
-                x = x0;
-                P = P0;
-                I = MatrixXf::Identity(n, n);
+                x_ = x0;
+                P_ = P0;
+                I_ = MatrixXf::Identity(n_, n_);
             }
 
             void KalmanMultivariate::predict()
             {
-                x = A * x;
-                P = A * P * A.transpose() + Q;
+                x_ = A_ * x_;
+                P_ = A_ * P_ * A_.transpose() + Q_;
             }
 
             void KalmanMultivariate::predict(VectorXf& u)
             {
-                x = A * x + B * u;
-                P = (A * P * A.transpose()) + Q;
+                x_ = A_ * x_ + B_ * u;
+                P_ = (A_ * P_ * A_.transpose()) + Q_;
             }
 
             void KalmanMultivariate::correct(VectorXf& z)
             {
-                MatrixXf K = (P * H.transpose()) * (H * P * H.transpose() + R).inverse();
-                x = x + K * (z - H * x);
-                P = (I - K * H) * P;
+                MatrixXf K = (P_ * H_.transpose()) * (H_ * P_ * H_.transpose() + R_).inverse();
+                x_ = x_ + K * (z - H_ * x_);
+                P_ = (I_ - K * H_) * P_;
             }
 
             void KalmanMultivariate::filter(VectorXf& z)
@@ -114,12 +120,12 @@ namespace hyped {
 
             VectorXf& KalmanMultivariate::getStateEstimate()
             {
-                return x;
+                return x_;
             }
 
             MatrixXf& KalmanMultivariate::getStateCovariance()
             {
-                return P;
+                return P_;
             }
 
         }

@@ -24,10 +24,13 @@
 
 namespace hyped {
 
+using data::ModuleStatus;
+
 namespace telemetry {
 
 Main::Main(uint8_t id, Logger& log)
   : Thread {id, log},
+    data_ {data::Data::getInstance()},
     client_ {log}
 {
   log_.DBG("Telemetry", "Telemetry Main thread object created");
@@ -37,19 +40,36 @@ void Main::run()
 {
   log_.DBG("Telemetry", "Telemetry Main thread started");
 
-  if (!client_.connect()) {
-    // idk throw exception or something
-    log_.ERR("Telemetry", "ERROR CONNECTING TO SERVER");
+  data::Telemetry telem_data_struct = data_.getTelemetryData();
+  telem_data_struct.module_status = ModuleStatus::kInit;
+  data_.setTelemetryData(telem_data_struct);
+
+  try {
+    client_.connect();
+  }
+  catch (std::exception& e) {  // NOLINT
+    log_.ERR("Telemetry", e.what());
+    log_.ERR("Telemetry", "Exiting Telemetry Main thread (due to error connecting)");
+
+    telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
+    data_.setTelemetryData(telem_data_struct);
+
+    return;
   }
 
-  SendLoop sendloop_thread {log_, this};  // NOLINT
-  RecvLoop recvloop_thread {log_, this};  // NOLINT
+  telem_data_struct.module_status = ModuleStatus::kReady;
+  data_.setTelemetryData(telem_data_struct);
+
+  SendLoop sendloop_thread {log_, data_, this};  // NOLINT
+  RecvLoop recvloop_thread {log_, data_, this};  // NOLINT
 
   sendloop_thread.start();
   recvloop_thread.start();
 
   sendloop_thread.join();
   recvloop_thread.join();
+
+  log_.DBG("Telemetry", "Exiting Telemetry Main thread");
 }
 
 }  // namespace telemetry

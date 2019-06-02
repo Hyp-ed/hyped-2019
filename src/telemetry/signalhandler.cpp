@@ -18,28 +18,34 @@
  *    limitations under the License.
  */
 
-#ifndef TELEMETRY_RECVLOOP_HPP_
-#define TELEMETRY_RECVLOOP_HPP_
-
-#include "telemetry/main.hpp"
-#include "data/data.hpp"
-#include "utils/concurrent/thread.hpp"
+#include <csignal>
+#include "telemetry/signalhandler.hpp"
 
 namespace hyped {
-
 namespace telemetry {
 
-class RecvLoop: public Thread {
-  public:
-    explicit RecvLoop(Logger &log, data::Data& data, Main* main_pointer);
-    void run() override;
+bool SignalHandler::receivedSigPipeSignal = false;
 
-  private:
-    Main& main_ref_;
-    data::Data& data_;
-};
+// didn't really want to set this as a static variable and hardcode logger values
+// but don't really see any other way (sys.verbose_tlm gets set at runtime)
+Logger SignalHandler::log_(true, 2);
+
+SignalHandler::SignalHandler()
+{
+  std::signal(SIGPIPE, SignalHandler::sigPipeHandler);  // maybe throw excptn if std::signal fails??
+  log_.DBG("Telemetry", "Initialized SignalHandler and set SIGPIPE handler");
+}
+
+bool SignalHandler::gotSigPipeSignal()
+{
+  return receivedSigPipeSignal;
+}
+
+void SignalHandler::sigPipeHandler(int signum)
+{
+  receivedSigPipeSignal = true;
+  log_.ERR("Telemetry", "Received SIGPIPE");
+}
 
 }  // namespace telemetry
 }  // namespace hyped
-
-#endif  // TELEMETRY_RECVLOOP_HPP_

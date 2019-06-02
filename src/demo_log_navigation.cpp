@@ -19,13 +19,17 @@
  *    limitations under the License.
  */
 
-#include "navigation/main.hpp"
+#include <iostream>
+
+#include "data/data.hpp"
+#include "navigation/main_log.hpp"
 #include "sensors/imu_manager.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 
-using hyped::navigation::Main;
+using hyped::data::Data;
+using hyped::navigation::MainLog;
 using hyped::sensors::ImuManager;
 using hyped::utils::concurrent::Thread;
 using hyped::utils::System;
@@ -35,34 +39,21 @@ int main(int argc, char* argv[])
 {
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
-
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
-
-  if (sys.tube_run) {
-    log_nav->INFO("NAV", "TUBE RUN INITIALISED");
-  } else if (sys.elevator_run) {
-    log_nav->INFO("NAV", "ELEVATOR RUN INITIALISED");
-  } else if (sys.stationary_run) {
-    log_nav->INFO("NAV", "STATIONARY RUN INITIALISED");
-  }
-
-  static Data& d = Data::getInstance();
-  StateMachine state_machine = d.getStateMachineData();
-  state_machine.current_state = State::kCalibrating;
-  d.setStateMachineData(state_machine);
 
   // Initialise sensors
   ImuManager imu_manager(*log_nav);
   imu_manager.start();
 
-  Main* main = new Main(1, *log_nav);
+  MainLog* main = new MainLog(1, *log_nav);
   main->start();
 
-  // Run for 24s
-  Thread::sleep(24000);
+  Thread::sleep(40000);
 
   // Exit gracefully
   sys.running_ = false;
+
+  Thread::sleep(100);
   main->join();
 
   return 0;

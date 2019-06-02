@@ -21,17 +21,19 @@
 #ifndef TELEMETRY_CLIENT_HPP_
 #define TELEMETRY_CLIENT_HPP_
 
-#include <google/protobuf/io/zero_copy_stream.h>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <string>
+#include "telemetry/signalhandler.hpp"
 #include "telemetry/telemetrydata/message.pb.h"
 #include "utils/logger.hpp"
 
 namespace hyped {
 
 using utils::Logger;
-using google::protobuf::io::ZeroCopyInputStream;
+using google::protobuf::io::FileInputStream;
+using google::protobuf::io::FileOutputStream;
 
-namespace client {
+namespace telemetry {
 
 constexpr auto kPort = "9090";
 // constexpr auto kServerIP = "localhost";
@@ -48,8 +50,11 @@ class Client {
   private:
     int sockfd_;
     Logger& log_;
-    // socket_stream_ is member var bc need to keep reading from same stream
-    ZeroCopyInputStream* socket_stream_;
+    // socket_stream_in_ is member var bc need to keep reading from same stream
+    FileInputStream* socket_stream_in_;
+    // socket_stream_out_ is member var to avoid constructing and flushing streams all the time
+    FileOutputStream* socket_stream_out_;
+    SignalHandler signal_handler_;
 };
 
 }  // namespace client

@@ -71,7 +71,7 @@ default: lint $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(Echo) "Linking executable $(MAIN) into $@"
-	$(Verb) $(LL) $(LFLAGS) -o $@ $(OBJS)
+	$(Verb) $(LL)  -o $@ $(OBJS) $(LFLAGS)
 
 
 $(OBJS): $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
@@ -103,7 +103,7 @@ doc:
 	$(Verb) doxygen Doxyfile
 
 protoc:
-	-$(Verb) mkdir src/telemetry/telemetrydata
+	-$(Verb) mkdir -p src/telemetry/telemetrydata
 	$(Verb) protoc -I=src/telemetry --cpp_out=src/telemetry/telemetrydata message.proto
 	$(Verb) mv src/telemetry/telemetrydata/message.pb.cc src/telemetry/telemetrydata/message.pb.cpp
 
