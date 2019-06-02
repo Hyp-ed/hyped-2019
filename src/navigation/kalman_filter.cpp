@@ -21,11 +21,11 @@
 namespace hyped {
 namespace navigation {
 
-KalmanFilter::KalmanFilter(unsigned int n_/*=3*/, unsigned int m_/*=1*/, unsigned int k_/*=0*/)
-  : n(n_),
-    m(m_),
-    k(k_),
-    kalmanFilter(KalmanMultivariate(n_, m_, k_))
+KalmanFilter::KalmanFilter(unsigned int n/*=3*/, unsigned int m/*=1*/, unsigned int k/*=0*/)
+  : n_(n),
+    m_(m),
+    k_(k),
+    kalmanFilter_(KalmanMultivariate(n, m, k))
 {}
 
 void KalmanFilter::setup()
@@ -37,50 +37,50 @@ void KalmanFilter::setup()
 
   // check system navigation run for R setup
   System &sys = System::getSystem();
-  MatrixXf R = MatrixXf::Zero(m, m);;
+  MatrixXf R = MatrixXf::Zero(m_, m_);;
   if (sys.tube_run) R = createTubeMeasurementCovarianceMatrix();
   else if (sys.elevator_run) R = createElevatorMeasurementCovarianceMatrix();
   else if (sys.stationary_run) R = createStationaryMeasurementCovarianceMatrix();
 
-  kalmanFilter.setModels(A, Q, H, R);
+  kalmanFilter_.setModels(A, Q, H, R);
 
   // setup initial estimates
-  VectorXf x = VectorXf::Zero(n);
+  VectorXf x = VectorXf::Zero(n_);
   MatrixXf P = createInitialErrorCovarianceMatrix();
-  kalmanFilter.setInitial(x, P);
+  kalmanFilter_.setInitial(x, P);
 }
 
 void KalmanFilter::updateStateTransitionMatrix(double dt)
 {
   MatrixXf A = createStateTransitionMatrix(dt);
-  kalmanFilter.updateA(A);
+  kalmanFilter_.updateA(A);
 }
 
 void KalmanFilter::updateMeasurementCovarianceMatrix(double var)
 {
-  MatrixXf R = MatrixXf::Constant(m, m, var);
-  kalmanFilter.updateR(R);
+  MatrixXf R = MatrixXf::Constant(m_, m_, var);
+  kalmanFilter_.updateR(R);
 }
 
-const NavigationType KalmanFilter::filter(NavigationType z_)
+const NavigationType KalmanFilter::filter(NavigationType z)
 {
-  VectorXf z(m);
-  z(0) = z_;
-  kalmanFilter.filter(z);
+  VectorXf vz(m_);
+  vz(0) = z;
+  kalmanFilter_.filter(vz);
 
   NavigationType estimate = getEstimate();
   return estimate;
 }
 
-const NavigationType KalmanFilter::filter(NavigationType u_, NavigationType z_)
+const NavigationType KalmanFilter::filter(NavigationType u, NavigationType z)
 {
-  VectorXf u(k);
-  u(0) = u_;
+  VectorXf vu(k_);
+  vu(0) = u;
 
-  VectorXf z(m);
-  z(0) = z_;
+  VectorXf vz(m_);
+  vz(0) = z;
 
-  kalmanFilter.filter(u, z);
+  kalmanFilter_.filter(vu, vz);
 
   NavigationType estimate = getEstimate();
   return estimate;
@@ -88,16 +88,16 @@ const NavigationType KalmanFilter::filter(NavigationType u_, NavigationType z_)
 
 const MatrixXf KalmanFilter::createInitialErrorCovarianceMatrix()
 {
-  MatrixXf P = MatrixXf::Constant(n, n, 0.5);
+  MatrixXf P = MatrixXf::Constant(n_, n_, 0.5);
   return P;
 }
 
 const MatrixXf KalmanFilter::createStateTransitionMatrix(double dt)
 {
-  MatrixXf A = MatrixXf::Zero(n, n);
+  MatrixXf A = MatrixXf::Zero(n_, n_);
   double acc_ddt = 0.5 * dt * dt;
   //  number of values for each acc, vel, pos: usually 1 or 3
-  unsigned int n_val = n / 3;
+  unsigned int n_val = n_ / 3;
 
   for (unsigned int i = 0; i < n_val; i++) {
       // compute acc rows
@@ -119,8 +119,8 @@ const MatrixXf KalmanFilter::createStateTransitionMatrix(double dt)
 
 const MatrixXf KalmanFilter::createMeasurementMatrix()
 {
-  MatrixXf H = MatrixXf::Zero(m, n);
-  for (unsigned int i = 0; i < m; i++) {
+  MatrixXf H = MatrixXf::Zero(m_, n_);
+  for (unsigned int i = 0; i < m_; i++) {
     H(i, i) = 1.;
   }
   return H;
@@ -128,38 +128,37 @@ const MatrixXf KalmanFilter::createMeasurementMatrix()
 
 const MatrixXf KalmanFilter::createStateTransitionCovarianceMatrix()
 {
-  MatrixXf Q = MatrixXf::Constant(n, n, 0.02);
+  MatrixXf Q = MatrixXf::Constant(n_, n_, 0.02);
   return Q;
 }
 
 const MatrixXf KalmanFilter::createTubeMeasurementCovarianceMatrix()
 {
-    // TODO(Lukas): implement proper covariance setup for tube based on simulation
-    MatrixXf R = MatrixXf::Constant(m, m, 0.04);
+    MatrixXf R = MatrixXf::Constant(m_, m_, 0.04);
     return R;
 }
 const MatrixXf KalmanFilter::createElevatorMeasurementCovarianceMatrix()
 {
-  MatrixXf R = MatrixXf::Constant(m, m, 0.12);
+  MatrixXf R = MatrixXf::Constant(m_, m_, 0.12);
   return R;
 }
 
 const MatrixXf KalmanFilter::createStationaryMeasurementCovarianceMatrix()
 {
-  MatrixXf R = MatrixXf::Constant(m, m, 0.04);
+  MatrixXf R = MatrixXf::Constant(m_, m_, 0.04);
   return R;
 }
 
 const NavigationType KalmanFilter::getEstimate()
 {
-  VectorXf x = kalmanFilter.getStateEstimate();
+  VectorXf x = kalmanFilter_.getStateEstimate();
   NavigationType est = x(0);
   return est;
 }
 
 const NavigationType KalmanFilter::getEstimateVariance()
 {
-  MatrixXf P = kalmanFilter.getStateCovariance();
+  MatrixXf P = kalmanFilter_.getStateCovariance();
   NavigationType var = P(0, 0);
   return var;
 }

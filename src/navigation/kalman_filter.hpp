@@ -40,21 +40,21 @@ namespace navigation {
 class KalmanFilter
 {
   public:
-    KalmanFilter(unsigned int n_ = 3, unsigned int m_ = 1, unsigned int k_ = 0);
+    KalmanFilter(unsigned int n = 3, unsigned int m = 1, unsigned int k = 0);
     void setup();
     void updateStateTransitionMatrix(double dt);
     void updateMeasurementCovarianceMatrix(double var);
-    const NavigationType filter(NavigationType z_);
-    const NavigationType filter(NavigationType u_, NavigationType z_);
+    const NavigationType filter(NavigationType z);
+    const NavigationType filter(NavigationType u, NavigationType z);
     // transfer estimate to NavigationVector
     const NavigationType getEstimate();
     // transfer estimate variances to NavigationVector
     const NavigationType getEstimateVariance();
   private:
-    unsigned int    n;
-    unsigned int    m;
-    unsigned int    k;
-    KalmanMultivariate  kalmanFilter;
+    unsigned int    n_;
+    unsigned int    m_;
+    unsigned int    k_;
+    KalmanMultivariate  kalmanFilter_;
 
     // create initial error covariance matrix P
     const MatrixXf createInitialErrorCovarianceMatrix();
