@@ -56,8 +56,8 @@ int Temperature::scaleData(uint16_t raw_value)
   return static_cast<int>(temp);
 }
 
-TemperatureData Temperature::getAnalogRead()
+int Temperature::getAnalogRead()
 {
-  return temp_;
+  return temp_.temp;
 }
 }}  // namespace hyped::sensors
