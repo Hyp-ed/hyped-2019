@@ -106,14 +106,14 @@ namespace hyped {
                *
                * @param[in] A                       state transition matrix
                */
-              void updateA(MatrixXf& _A);
+              void updateA(MatrixXf& A);
 
               /**
                * @brief    Update measurement covariance matrix
                *
                * @param[in] R                       measurement covariance matrix
                */
-              void updateR(MatrixXf& _R);
+              void updateR(MatrixXf& R);
 
               /**
                * @brief    Set initial beliefs

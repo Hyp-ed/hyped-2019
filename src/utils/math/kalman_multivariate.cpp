@@ -70,14 +70,14 @@ namespace hyped {
                 setMeasurementModel(H, R);
             }
 
-            void KalmanMultivariate::updateA(MatrixXf& _A)
+            void KalmanMultivariate::updateA(MatrixXf& A)
             {
                 A_ = A;
             }
 
-            void KalmanMultivariate::updateR(MatrixXf& _R)
+            void KalmanMultivariate::updateR(MatrixXf& R)
             {
-                R = _R;
+                R_ = R;
             }
 
             void KalmanMultivariate::setInitial(VectorXf& x0, MatrixXf& P0)
