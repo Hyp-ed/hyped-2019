@@ -48,13 +48,13 @@ class Temperature {
    *
    * @return int to set to data struct in sensors main
    */
-  int getAnalogRead();
+  int getData();
 
   /**
-   * @brief individual thread for Temperature
+   * @brief one interation of checking sensors
    *
    */
-  void checkSensor();
+  void run();
 
  private:
   /**
