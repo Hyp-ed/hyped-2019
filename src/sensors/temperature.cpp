@@ -36,14 +36,14 @@ Temperature::Temperature(utils::Logger& log, int pin)
        log_(log)
 {}
 
-void Temperature::checkSensor()
+void Temperature::run()
 {
   ADC thepin(pin_);
   temp_.temp = 0;
   uint16_t raw_value = thepin.read();
-  log_.DBG1("Temperature", "Raw Data: %d", raw_value);
+  log_.DBG1("TEMPERATURE", "Raw Data: %d", raw_value);
   temp_.temp = scaleData(raw_value);
-  log_.DBG1("Temperature", "Scaled Data: %d", temp_.temp);
+  log_.DBG1("TEMPERATURE", "Scaled Data: %d", temp_.temp);
   temp_.operational = true;
 }
 
@@ -56,7 +56,7 @@ int Temperature::scaleData(uint16_t raw_value)
   return static_cast<int>(temp);
 }
 
-int Temperature::getAnalogRead()
+int Temperature::getData()
 {
   return temp_.temp;
 }
