@@ -31,7 +31,7 @@ ifeq ($(CROSS), 0)
 else
 	CC:=hyped-cross-g++
 	CFLAGS:=$(CFLAGS) -DARCH_32
-	LFLAGS:= -static
+	LFLAGS:= $(LFLAGS) -static
 $(info cross-compiling)
 endif
 
