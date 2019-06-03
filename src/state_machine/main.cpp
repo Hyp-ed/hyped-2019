@@ -114,7 +114,7 @@ bool Main::checkInitialised()
       motor_data_.module_status     == data::ModuleStatus::kInit &&
       sensors_data_.module_status   == data::ModuleStatus::kInit &&
       batteries_data_.module_status == data::ModuleStatus::kInit &&
-      telemetry_data_.calibrate_command == true) {
+      telemetry_data_.calibrate_command) {
     log_.INFO("STATE", "all modules are initialised and Start Calibrating command was received");
     hypedMachine.handleEvent(kInitialised);
     telemetry_data_.calibrate_command = false;
@@ -244,10 +244,8 @@ bool Main::checkOnExit()
 
 bool Main::checkFinish()
 {
-  // not moving and at end of tube, leniency of 20m
-  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1
-      && (nav_data_.distance + 20 >= telemetry_data_.run_length))
-      {
+  // Check if end of tube was reached (leniency of 20m)
+  if (nav_data_.distance + 20 >= telemetry_data_.run_length) {
         log_.INFO("STATE", "ready for collection");
         hypedMachine.handleEvent(kFinish);
         return true;
@@ -257,7 +255,8 @@ bool Main::checkFinish()
 
 bool Main::checkAtRest()
 {
-  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1) {
+  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1 &&
+      emergency_brakes_data_.front_brakes && emergency_brakes_data_.rear_brakes) {
     log_.INFO("STATE", "RPM reached zero.");
     hypedMachine.handleEvent(kAtRest);
     return true;
