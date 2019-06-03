@@ -25,13 +25,20 @@
 #include <unistd.h>
 #include <cstring>
 #include "telemetry/client.hpp"
+#include "utils/system.hpp"
 
 namespace hyped {
 namespace telemetry {
 
 Client::Client(Logger& log)
+  : Client {log, *utils::System::getSystem().config}
+{}
+
+Client::Client(Logger& log, const utils::Config& config)
   : log_ {log},
-    signal_handler_ {}
+    signal_handler_ {},
+    kPort {config.telemetry.Port},
+    kServerIP {config.telemetry.IP}
 {
   log_.DBG("Telemetry", "Client object created");
 }

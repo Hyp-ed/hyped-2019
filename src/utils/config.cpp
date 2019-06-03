@@ -80,10 +80,18 @@ void Config::ParseTelemetry(char* line)
 
   // get TOKEN
   char* token = strtok(line, " ");
+
   if (strcmp(token, "IP") == 0) {
     char* value = strtok(NULL, " ");
     if (value) {
       strncpy(telemetry.IP, value, 16);
+    }
+  }
+
+  if (strcmp(token, "Port") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      strncpy(telemetry.Port, value, 4);
     }
   }
 }
