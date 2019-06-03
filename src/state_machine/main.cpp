@@ -38,7 +38,7 @@ namespace state_machine {
 Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
       hypedMachine(log),
-      timeout_(60000000),     // 60 seconds
+      timeout_(23000000),     // 60 seconds
       data_(data::Data::getInstance())
 { /* EMPTY */ }
 
@@ -56,7 +56,7 @@ void Main::run()
     sm_data_        = data_.getStateMachineData();
     motor_data_     = data_.getMotorData();
     batteries_data_ = data_.getBatteriesData();
-    // sensors_data_   = data_.getSensorsData();
+    sensors_data_   = data_.getSensorsData();
     emergency_brakes_data_  = data_.getEmergencyBrakesData();
 
     switch (sm_data_.current_state) {
@@ -98,7 +98,6 @@ void Main::run()
       case data::State::kFinished:
         if (checkReset())                break;
       case data::State::kFailureStopped:
-        if (checkReset())                break;
       default:
         break;
     }
@@ -113,10 +112,12 @@ bool Main::checkInitialised()
   if (telemetry_data_.module_status == data::ModuleStatus::kInit &&
       nav_data_.module_status       == data::ModuleStatus::kInit &&
       motor_data_.module_status     == data::ModuleStatus::kInit &&
-      // sensors_data_.module_status   == data::ModuleStatus::kInit &&
-      batteries_data_.module_status == data::ModuleStatus::kInit) {
-    log_.INFO("STATE", "all modules are initialised");
+      sensors_data_.module_status   == data::ModuleStatus::kInit &&
+      batteries_data_.module_status == data::ModuleStatus::kInit &&
+      telemetry_data_.calibrate_command) {
+    log_.INFO("STATE", "all modules are initialised and Start Calibrating command was received");
     hypedMachine.handleEvent(kInitialised);
+    telemetry_data_.calibrate_command = false;
     return true;
   }
   return false;
@@ -145,12 +146,13 @@ bool Main::checkReset()
   }
   return false;
 }
+
 bool Main::checkOnStart()
 {
   if (telemetry_data_.launch_command) {
     log_.INFO("STATE", "launch command received");
     hypedMachine.handleEvent(kOnStart);
-
+    telemetry_data_.launch_command = false;
     // also setup timer for going to emergency braking state
     time_start_ = utils::Timer::getTimeMicros();
     return true;
@@ -163,6 +165,11 @@ bool Main::checkTelemetryCriticalFailure()
   if (telemetry_data_.module_status == data::ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by telemetry ");
     hypedMachine.handleEvent(kCriticalFailure);
+    return true;
+  }
+  // Also check if emergency stop command was received
+  if (telemetry_data_.emergency_stop_command) {
+    log_.ERR("STATE", "STOP command received");
     return true;
   }
   return false;
@@ -194,6 +201,12 @@ bool Main::checkCriticalFailure()
   }
   if (emergency_brakes_data_.module_status == data::ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by emergency brakes ");
+    criticalFailureFound = true;
+    // return true;
+  }
+  // Also check if emergency stop command was received
+  if (telemetry_data_.emergency_stop_command) {
+    log_.ERR("STATE", "STOP command received");
     criticalFailureFound = true;
     // return true;
   }
@@ -231,10 +244,8 @@ bool Main::checkOnExit()
 
 bool Main::checkFinish()
 {
-  // not moving and at end of tube, leniency of 20m
-  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1
-      && (nav_data_.distance + 20 >= telemetry_data_.run_length))
-      {
+  // Check if end of tube was reached (leniency of 20m)
+  if (nav_data_.distance + 20 >= telemetry_data_.run_length) {
         log_.INFO("STATE", "ready for collection");
         hypedMachine.handleEvent(kFinish);
         return true;
@@ -244,7 +255,8 @@ bool Main::checkFinish()
 
 bool Main::checkAtRest()
 {
-  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1) {
+  if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1 &&
+      emergency_brakes_data_.front_brakes && emergency_brakes_data_.rear_brakes) {
     log_.INFO("STATE", "RPM reached zero.");
     hypedMachine.handleEvent(kAtRest);
     return true;
