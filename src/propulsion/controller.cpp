@@ -1,5 +1,6 @@
 /*
  * Author: Iain Macpherson
+ * Co-Author: George Karabassis
  * Organisation: HYPED
  * Date: 11/03/2019
  * Description: Main class for the Motor Controller
@@ -91,8 +92,6 @@ void Controller::configure()
 
 void Controller::enterOperational()
 {
-  // TODO(Iain): Check that this is still valid:
-
   // Send NMT Operational message to transition from state 0 (Not ready to switch on)
   // to state 1 (Switch on disabled)
   nmt_message_.data[0] = kNmtOperational;
@@ -227,7 +226,7 @@ void Controller::throwCriticalFailure()
 
 void Controller::requestStateTransition(utils::io::can::Frame& message, ControllerState state)
 {
-  uint8_t state_count;  // any reason that this is out here?
+  uint8_t state_count;
   // Wait for max of 3 seconds, checking if the state has changed every second
   // If it hasn't changed by the end then throw critical failure.
   for (state_count = 0; state_count < 3; state_count++) {
@@ -247,7 +246,6 @@ void Controller::requestStateTransition(utils::io::can::Frame& message, Controll
 
 void Controller::processEmergencyMessage(utils::io::can::Frame& message)
 {
-  // note currently this data is all out of date
   log_.ERR("MOTOR", "Controller %d: CAN Emergency", node_id_);
   throwCriticalFailure();
   uint8_t index_1   = message.data[0];
@@ -437,7 +435,6 @@ void Controller::processEmergencyMessage(utils::io::can::Frame& message)
 
 void Controller::processErrorMessage(uint16_t error_message)
 {
-  // note currently this data is all out of date
   switch (error_message) {
     case 0x1000:
       log_.ERR("MOTOR", "Controller %d error: Unspecified error", node_id_);
@@ -501,7 +498,6 @@ void Controller::processErrorMessage(uint16_t error_message)
 
 void Controller::processSdoMessage(utils::io::can::Frame& message)
 {
-  // note currently this data is all out of date
   uint8_t index_1   = message.data[1];
   uint8_t index_2   = message.data[2];
   uint8_t sub_index = message.data[3];
