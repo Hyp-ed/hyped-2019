@@ -36,6 +36,7 @@ namespace hyped {
             class KalmanMultivariate {
              public:
               /**
+
                * @brief    Construct a new Kalman object with respective dimensions (without control)
                *
                * @param[in] n                       state dimensionality
@@ -48,9 +49,9 @@ namespace hyped {
                *
                * @param[in] n                       state dimensionality
                * @param[in] m                       measurement dimensionality
-               * @param[in] k                       control dimensionality
+               * @param[in] k                       control dimensionality (default 0)
                */
-              KalmanMultivariate(unsigned int n, unsigned int m, unsigned int k);
+              KalmanMultivariate(unsigned int n, unsigned int m, unsigned int k = 0);
 
               /**
                * @brief    Set dynamics model matrices (without control)
@@ -105,7 +106,14 @@ namespace hyped {
                *
                * @param[in] A                       state transition matrix
                */
-              void update(MatrixXf& A);
+              void updateA(MatrixXf& A);
+
+              /**
+               * @brief    Update measurement covariance matrix
+               *
+               * @param[in] R                       measurement covariance matrix
+               */
+              void updateR(MatrixXf& R);
 
               /**
                * @brief    Set initial beliefs

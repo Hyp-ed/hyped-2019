@@ -35,7 +35,21 @@ int main(int argc, char* argv[])
 {
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
+
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
+
+  if (sys.tube_run) {
+    log_nav->INFO("NAV", "TUBE RUN INITIALISED");
+  } else if (sys.elevator_run) {
+    log_nav->INFO("NAV", "ELEVATOR RUN INITIALISED");
+  } else if (sys.stationary_run) {
+    log_nav->INFO("NAV", "STATIONARY RUN INITIALISED");
+  }
+
+  static Data& d = Data::getInstance();
+  StateMachine state_machine = d.getStateMachineData();
+  state_machine.current_state = State::kCalibrating;
+  d.setStateMachineData(state_machine);
 
   // Initialise sensors
   ImuManager imu_manager(*log_nav);

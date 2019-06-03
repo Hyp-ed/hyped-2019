@@ -18,6 +18,7 @@
 
 #include "navigation/navigation.hpp"
 #include "utils/concurrent/thread.hpp"
+#include "utils/timer.hpp"
 
 namespace hyped {
 
@@ -25,34 +26,44 @@ using hyped::utils::concurrent::Thread;
 
 namespace navigation {
 
-Navigation::Navigation(Logger& log)
+Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
-           acceleration_(0., NavigationVector(0)),
-           velocity_(0., NavigationVector(0)),
-           distance_(0., NavigationVector(0)),
+           counter_(0),
+           axis_(axis),
+           acceleration_(0., 0.),
+           velocity_(0., 0.),
+           distance_(0., 0.),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
+  for (unsigned int i = 0; i < data::Sensors::kNumImus; i++) {
+    filters_[i] = KalmanFilter(1, 1);
+    filters_[i].setup();
+  }
   calibrateGravity();
+
+  acceleration_.timestamp = utils::Timer::getTimeMicros();
+  velocity_.timestamp = utils::Timer::getTimeMicros();
+  distance_.timestamp = utils::Timer::getTimeMicros();
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getAcceleration() const
 {
-  return acceleration_.value[0];
+  return acceleration_.value;
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getVelocity() const
 {
-  return velocity_.value[0];
+  return velocity_.value;
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
 NavigationType Navigation::getDistance() const
 {
-  return distance_.value[0];
+  return distance_.value;
 }
 
 NavigationType Navigation::getEmergencyBrakingDistance() const
@@ -96,36 +107,37 @@ NavigationType Navigation::getBrakingDistance() const
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
-  std::array<OnlineStatistics<NavigationVector>, data::Sensors::kNumImus> online_array;
+  std::array<OnlineStatistics<NavigationType>, data::Sensors::kNumImus> online_array;
   // Average each sensor over specified number of readings
   for (int i = 0; i < kNumCalibrationQueries; ++i) {
     sensor_readings_ = data_.getSensorsImuData();
     for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-      online_array[j].update(sensor_readings_.value[j].acc);
+      online_array[j].update(sensor_readings_.value[j].acc[axis_]);
     }
     Thread::sleep(1);
   }
-  for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-    gravity_calibration_[j] = online_array[j].getMean();
+  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+    gravity_calibration_[i] = online_array[i].getMean();
+    double var = online_array[i].getVariance();
     log_.INFO("NAV",
-      "Update: g=(%.5f, %.5f, %.5f)", //NOLINT
-                  gravity_calibration_[j][0],
-                  gravity_calibration_[j][1],
-                  gravity_calibration_[j][2]);
+      "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
+    filters_[i].updateMeasurementCovarianceMatrix(var);
   }
 }
 
-// TODO(Lukas): Kalman filter goes here
 void Navigation::queryImus()
 {
-  OnlineStatistics<NavigationVector> filter;
+  OnlineStatistics<NavigationType> acc_avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
+  uint32_t t = sensor_readings_.timestamp;
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
-    filter.update(sensor_readings_.value[i].acc - gravity_calibration_[i]);
+    NavigationType acc = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
+    NavigationType estimate = filters_[i].filter(acc);
+    acc_avg_filter.update(estimate);
   }
-  acceleration_.value = filter.getMean();
-  acceleration_.timestamp = sensor_readings_.timestamp;
+  acceleration_.value = acc_avg_filter.getMean();
+  acceleration_.timestamp = t;
 
   acceleration_integrator_.update(acceleration_);
   velocity_integrator_.update(velocity_);
@@ -135,6 +147,7 @@ void Navigation::updateData()
 {
   // Take new readings first
   queryImus();
+  counter_ += 1;
 
   data::Navigation nav_data;
   nav_data.distance                   = getDistance();
@@ -148,10 +161,13 @@ void Navigation::updateData()
   // Crude test of data writing
   nav_data = data_.getNavigationData();
 
-  log_.INFO("NAV",
-      "Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
-      nav_data.acceleration, nav_data.velocity, nav_data.distance);
+  if (counter_ % 1 == 0) {
+      log_.INFO("NAV",
+          "%d: Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
+          counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
+      // NavigationType var = filter_.getEstimateVariance();
+      // log_.INFO("NAV", "Estimate acc variance: %.5f", var);
+  }
 }
-
 
 }}  // namespace hyped::navigation

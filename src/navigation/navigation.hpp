@@ -20,10 +20,12 @@
 #define NAVIGATION_NAVIGATION_HPP_
 
 #include <array>
+#include <cstdint>
 
 #include "data/data.hpp"
 #include "data/data_point.hpp"
 #include "sensors/imu.hpp"
+#include "navigation/kalman_filter.hpp"
 #include "utils/logger.hpp"
 #include "utils/math/integrator.hpp"
 #include "utils/math/statistics.hpp"
@@ -35,6 +37,7 @@ using data::DataPoint;
 using data::ImuData;
 using data::NavigationType;
 using data::NavigationVector;
+using navigation::KalmanFilter;
 using utils::Logger;
 using utils::math::Integrator;
 using utils::math::OnlineStatistics;
@@ -45,14 +48,16 @@ namespace navigation {
     public:
       typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
       typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
-      typedef std::array<NavigationVector, data::Sensors::kNumImus> NavigationArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus> NavigationArray;
+      typedef std::array<KalmanFilter, data::Sensors::kNumImus> FilterArray;
 
       /**
        * @brief Construct a new Navigation object
        *
        * @param log System logger
+       * @param axis Axis used of acceleration measurements
        */
-      explicit Navigation(Logger& log);
+      explicit Navigation(Logger& log, unsigned int axis = 0);
       /**
        * @brief Get the measured acceleration [m/s^2]
        *
@@ -103,16 +108,25 @@ namespace navigation {
       Logger& log_;
       Data& data_;
 
+      // counter for outputs
+      unsigned int counter_;
+
+      // movement axis
+      unsigned int axis_;
+
+      // Kalman filters to filter each IMU measurement individually
+      FilterArray filters_;
+
       // To store estimated values
       ImuDataPointArray sensor_readings_;
-      DataPoint<NavigationVector> acceleration_;
-      DataPoint<NavigationVector> velocity_;
-      DataPoint<NavigationVector> distance_;
+      DataPoint<NavigationType> acceleration_;
+      DataPoint<NavigationType> velocity_;
+      DataPoint<NavigationType> distance_;
       NavigationArray gravity_calibration_;
 
       // To convert acceleration -> velocity -> distance
-      Integrator<NavigationVector> acceleration_integrator_;  // acceleration to velocity
-      Integrator<NavigationVector> velocity_integrator_;      // velocity to distance
+      Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
+      Integrator<NavigationType> velocity_integrator_;      // velocity to distance
 
       /**
        * @brief Determine the value of gravitational acceleration measured by sensors at rest
