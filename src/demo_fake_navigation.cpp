@@ -51,23 +51,26 @@ int main(int argc, char* argv[])
     log_nav->INFO("NAV", "STATIONARY RUN INITIALISED");
   }
 
+  // Initialise sensors
+  ImuManager imu_manager(*log_nav);
+  imu_manager.start();
+
+  Main* main = new Main(1, *log_nav);
+  main->start();
+
   log_nav->INFO("MAIN", "Set state to CALIBRATING");
   static Data& d = Data::getInstance();
   StateMachine state_machine = d.getStateMachineData();
   state_machine.current_state = State::kCalibrating;
   d.setStateMachineData(state_machine);
 
-  // Initialise sensors
-  ImuManager imu_manager(*log_nav);
-  imu_manager.start();
-
-  Main* main = new Main(1, *log_nav);
+  while (!main->isCalibrated()) {
+    Thread::sleep(1000);
+  }
 
   log_nav->INFO("MAIN", "Set state to ACCELERATING");
   state_machine.current_state = State::kAccelerating;
   d.setStateMachineData(state_machine);
-
-  main->start();
 
   // Accelerating for 20.25s
   Thread::sleep(20250);

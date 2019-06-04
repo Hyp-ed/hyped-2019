@@ -34,11 +34,39 @@ namespace navigation {
 
   void Main::run()
   {
-    log_.INFO("NAV", "Navigation starting");
+    log_.INFO("NAV", "Navigation waiting for calibration");
 
+    Data& data = Data::getInstance();
+    // wait for calibration state for calibration
+    StateMachine state_machine = data.getStateMachineData();
+    while (state_machine.current_state != State::kCalibrating) {
+      // wait 100ms
+      Thread::sleep(100);
+      state_machine = data.getStateMachineData();
+    }
+
+    log_.INFO("NAV", "Navigation module is calibrating");
+    nav_.calibrateGravity();
+    log_.INFO("NAV", "Navigation module is ready");
+
+    // wait for accelerating state
+    state_machine = data.getStateMachineData();
+    while (state_machine.current_state != State::kAccelerating) {
+      // wait 1ms
+      Thread::sleep(1);
+      state_machine = data.getStateMachineData();
+    }
+
+    log_.INFO("NAV", "Navigation starting");
+    nav_.init_timestamps();
     while (sys_.running_) {
       nav_.updateData();
     }
+  }
+
+  bool Main::isCalibrated()
+  {
+    return nav_.isCalibrated();
   }
 
 }}  // namespace hyped::navigation

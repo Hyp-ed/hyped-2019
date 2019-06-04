@@ -96,9 +96,21 @@ namespace navigation {
        */
       NavigationArray getGravityCalibration() const;
       /**
+       * @brief Determine the value of gravitational acceleration measured by sensors at rest
+       */
+      void calibrateGravity();
+      /**
        * @brief Update central data structure
        */
       void updateData();
+      /**
+       * @brief Initialise timestamps for integration
+       */
+      void init_timestamps();
+      /**
+       * @brief Indicate if system is already calibrated
+       */
+      bool isCalibrated();
 
     private:
       static constexpr int kNumCalibrationQueries = 10000;
@@ -107,6 +119,9 @@ namespace navigation {
       // System communication
       Logger& log_;
       Data& data_;
+
+      // flag if system is already calibarted
+      bool calibrated_;
 
       // counter for outputs
       unsigned int counter_;
@@ -128,10 +143,6 @@ namespace navigation {
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
       Integrator<NavigationType> velocity_integrator_;      // velocity to distance
 
-      /**
-       * @brief Determine the value of gravitational acceleration measured by sensors at rest
-       */
-      void calibrateGravity();
       /**
        * @brief Query sensors to determine acceleration, velocity and distance
        */

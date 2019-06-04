@@ -29,6 +29,7 @@ namespace navigation {
 Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
+           calibrated_(false),
            counter_(0),
            axis_(axis),
            acceleration_(0., 0.),
@@ -41,11 +42,6 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
     filters_[i] = KalmanFilter(1, 1);
     filters_[i].setup();
   }
-  calibrateGravity();
-
-  acceleration_.timestamp = utils::Timer::getTimeMicros();
-  velocity_.timestamp = utils::Timer::getTimeMicros();
-  distance_.timestamp = utils::Timer::getTimeMicros();
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
@@ -123,6 +119,7 @@ void Navigation::calibrateGravity()
       "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
     filters_[i].updateMeasurementCovarianceMatrix(var);
   }
+  calibrated_ = true;
 }
 
 void Navigation::queryImus()
@@ -168,6 +165,19 @@ void Navigation::updateData()
       // NavigationType var = filter_.getEstimateVariance();
       // log_.INFO("NAV", "Estimate acc variance: %.5f", var);
   }
+}
+
+void Navigation::init_timestamps()
+{
+  // First iteration --> set timestamps
+  acceleration_.timestamp = utils::Timer::getTimeMicros();
+  velocity_.timestamp = utils::Timer::getTimeMicros();
+  distance_.timestamp = utils::Timer::getTimeMicros();
+}
+
+bool Navigation::isCalibrated()
+{
+  return calibrated_;
 }
 
 }}  // namespace hyped::navigation
