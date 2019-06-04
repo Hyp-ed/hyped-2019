@@ -48,7 +48,7 @@ void Main::run()
     currentState = stateMachineData.getStateMachineData().current_state;
 
     if (currentState == State::kIdle) {  // Initialize motors
-      log_.INFO("Motor", "State idle");
+      log_.DBG1("Motor", "State idle");
 
       if (motorData.module_status != ModuleStatus::kInit) {
         motorData.module_status = ModuleStatus::kInit;
@@ -57,7 +57,7 @@ void Main::run()
       yield();
       } else if (currentState == State::kCalibrating) {
         // Calculate slip values
-        log_.INFO("Motor", "State Calibrating");
+        log_.DBG1("Motor", "State Calibrating");
 
         if (!stateProcessor->isInitialized()) {
           stateProcessor->initMotors();
@@ -73,38 +73,38 @@ void Main::run()
         yield();
         } else if (currentState == State::kReady) {
           // Standby and wait
-          log_.INFO("Motor", "State Ready");
+          log_.DBG1("Motor", "State Ready");
           yield();
         } else if (currentState == State::kAccelerating) {
           // Accelerate the motors
-          log_.INFO("Motor", "State Accelerating");
+          log_.DBG1("Motor", "State Accelerating");
           stateProcessor->accelerate();
         } else if (currentState == State::kNominalBraking) {
           // Stop all motors
-          log_.INFO("Motor", "State NominalBraking");
+          log_.DBG1("Motor", "State NominalBraking");
           stateProcessor->quickStopAll();
         } else if (currentState == State::kEmergencyBraking) {
           // Stop all motors
-          log_.INFO("Motor", "State EmergencyBraking");
+          log_.DBG1("Motor", "State EmergencyBraking");
           stateProcessor->quickStopAll();
         } else if (currentState == State::kExiting) {
           // Move very slowly out of tube
-          log_.INFO("Motor", "State Exiting");
+          log_.DBG1("Motor", "State Exiting");
           stateProcessor->servicePropulsion();
         } else if (currentState == State::kFailureStopped) {
           // Enter preoperational
-          log_.INFO("Motor", "State FailureStopped");
+          log_.DBG1("Motor", "State FailureStopped");
           stateProcessor->enterPreOperational();
         } else if (currentState == State::kFinished) {
-          log_.INFO("Motor", "State Finished");
+          log_.DBG1("Motor", "State Finished");
           stateProcessor->enterPreOperational();
         } else if (currentState == State::kRunComplete) {
           // Run complete
-          log_.INFO("Motor", "State RunComplete");
+          log_.DBG1("Motor", "State RunComplete");
           stateProcessor->quickStopAll();
         } else {
           // Unknown State
-          log_.INFO("Motor", "State Unknown");
+          log_.DBG1("Motor", "State Unknown");
           isRunning = false;
           stateProcessor->quickStopAll();
         }
