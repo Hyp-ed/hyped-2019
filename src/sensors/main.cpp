@@ -26,8 +26,8 @@
 #include "sensors/fake_gpio_counter.hpp"
 
 
-constexpr int kKeyencePinLeft = 36;
-constexpr int kKeyencePinRight = 33;
+constexpr int kKeyencePinLeft = 72;
+constexpr int kKeyencePinRight = 74;
 constexpr int kThermistorPin = 3;
 
 namespace hyped {
