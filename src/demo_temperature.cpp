@@ -18,26 +18,26 @@
  *    limitations under the License.
  */
 
-#include "sensors/temp_manager.hpp"
+#include "sensors/temperature.hpp"
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
-using hyped::sensors::TempManager;
+using hyped::sensors::Temperature;
 
 int main(int argc, char* argv[])
 {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, -1);
 
-  TempManager temp_manager_(log);
+  Temperature temp_(log, 3);
   Thread::sleep(500);
   log.INFO("TEST-Temp", "Temp instance successfully created");
   for (int i = 0; i < 50; i++) {
-    temp_manager_.runTemperature();
-    int temperature = temp_manager_.getPodTemp();
+    temp_.run();
+    int temperature = temp_.getData();
     log.INFO("TEST-Temp", "Thermistor reading: %d degrees C", temperature);
     Thread::sleep(100);
   }

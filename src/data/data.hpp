@@ -83,7 +83,7 @@ struct TemperatureData : public Sensor {
 };
 
 struct Sensors : public Module {
-  static constexpr int kNumImus = 6;            // TODO(Greg): change back to final cte for PCB
+  static constexpr int kNumImus = 4;
   static constexpr int kNumKeyence = 2;
 
   DataPoint<array<ImuData, kNumImus>> imu;
