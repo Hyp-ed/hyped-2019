@@ -26,6 +26,7 @@
 #include "telemetry/signalhandler.hpp"
 #include "telemetry/telemetrydata/message.pb.h"
 #include "utils/logger.hpp"
+#include "utils/config.hpp"
 
 namespace hyped {
 
@@ -34,10 +35,6 @@ using google::protobuf::io::FileInputStream;
 using google::protobuf::io::FileOutputStream;
 
 namespace telemetry {
-
-constexpr auto kPort = "9090";
-// constexpr auto kServerIP = "localhost";
-constexpr auto kServerIP = "192.168.1.50";
 
 class Client {
   public:
@@ -48,6 +45,8 @@ class Client {
     telemetry_data::ServerToClient receiveData();
 
   private:
+    Client(Logger& log, const utils::Config& config);
+
     int sockfd_;
     Logger& log_;
     // socket_stream_in_ is member var bc need to keep reading from same stream
@@ -55,6 +54,8 @@ class Client {
     // socket_stream_out_ is member var to avoid constructing and flushing streams all the time
     FileOutputStream* socket_stream_out_;
     SignalHandler signal_handler_;
+    const char* kPort;
+    const char* kServerIP;
 };
 
 }  // namespace client

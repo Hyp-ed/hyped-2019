@@ -31,7 +31,7 @@ namespace utils {
 
 // forward declaration
 class System;
-class ModuleEntry;
+struct ModuleEntry;
 
 enum Submodule {
   kNone,

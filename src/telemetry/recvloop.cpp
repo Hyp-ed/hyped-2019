@@ -57,34 +57,34 @@ void RecvLoop::run()
 
     switch (msg.command()) {
       case telemetry_data::ServerToClient::ACK:
-        log_.DBG1("Telemetry", "FROM SERVER: ACK");
+        log_.INFO("Telemetry", "FROM SERVER: ACK");
         break;
       case telemetry_data::ServerToClient::STOP:
-        log_.DBG1("Telemetry", "FROM SERVER: STOP");
-        telem_data_struct.module_status = ModuleStatus::kCriticalFailure;
+        log_.INFO("Telemetry", "FROM SERVER: STOP");
+        telem_data_struct.emergency_stop_command = true;
         break;
       case telemetry_data::ServerToClient::CALIBRATE:
-        log_.DBG1("Telemetry", "FROM SERVER: CALIBRATE");
+        log_.INFO("Telemetry", "FROM SERVER: CALIBRATE");
         telem_data_struct.calibrate_command = true;
         break;
       case telemetry_data::ServerToClient::LAUNCH:
-        log_.DBG1("Telemetry", "FROM SERVER: LAUNCH");
+        log_.INFO("Telemetry", "FROM SERVER: LAUNCH");
         telem_data_struct.launch_command = true;
         break;
       case telemetry_data::ServerToClient::RESET:
-        log_.DBG1("Telemetry", "FROM SERVER: RESET");
+        log_.INFO("Telemetry", "FROM SERVER: RESET");
         telem_data_struct.reset_command = true;
         break;
       case telemetry_data::ServerToClient::RUN_LENGTH:
-        log_.DBG1("Telemetry", "FROM SERVER: RUN_LENGTH %f", msg.run_length());
+        log_.INFO("Telemetry", "FROM SERVER: RUN_LENGTH %f", msg.run_length());
         telem_data_struct.run_length = msg.run_length();
         break;
       case telemetry_data::ServerToClient::SERVICE_PROPULSION_GO:
-        log_.DBG1("Telemetry", "FROM SERVER: SERVICE_PROPULSION_GO");
+        log_.INFO("Telemetry", "FROM SERVER: SERVICE_PROPULSION_GO");
         telem_data_struct.service_propulsion_go = true;
         break;
       case telemetry_data::ServerToClient::SERVICE_PROPULSION_STOP:
-        log_.DBG1("Telemetry", "FROM SERVER: SERVICE_PROPULSION_STOP");
+        log_.INFO("Telemetry", "FROM SERVER: SERVICE_PROPULSION_STOP");
         telem_data_struct.service_propulsion_go = false;
         break;
       default:
