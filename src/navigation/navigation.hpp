@@ -111,12 +111,18 @@ namespace navigation {
        */
       void updateData();
       /**
+       * @brief Take acceleration readings from IMU, filter, integrate and then update central data
+       * structure with new values (i.e. the meat'n'potatoes of navigation).
+       */
+      void navigate();
+      /**
        * @brief Initialise timestamps for integration
        */
       void initTimestamps();
 
     private:
       static constexpr int kNumCalibrationQueries = 10000;
+      static constexpr int kPrintFreq = 1;
       static constexpr NavigationType kEmergencyDeceleration = 24;
 
       // System communication

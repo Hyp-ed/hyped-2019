@@ -154,10 +154,6 @@ void Navigation::queryImus()
 
 void Navigation::updateData()
 {
-  // Take new readings first
-  queryImus();
-  counter_ += 1;
-
   data::Navigation nav_data;
   nav_data.module_status              = getModuleStatus();
   nav_data.distance                   = getDistance();
@@ -168,24 +164,25 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  // Crude test of data writing
-  nav_data = data_.getNavigationData();
-
-  if (counter_ % 1 == 0) {
-      log_.INFO("NAV",
-          "%d: Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
-          counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
-      // NavigationType var = filter_.getEstimateVariance();
-      // log_.INFO("NAV", "Estimate acc variance: %.5f", var);
+  if (counter_ % kPrintFreq == 0) {
+    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
+                     counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
   }
+  counter_++;
+}
+
+void Navigation::navigate()
+{
+  queryImus();
+  updateData();
 }
 
 void Navigation::initTimestamps()
 {
   // First iteration --> set timestamps
   acceleration_.timestamp = utils::Timer::getTimeMicros();
-  velocity_.timestamp = utils::Timer::getTimeMicros();
-  distance_.timestamp = utils::Timer::getTimeMicros();
+  velocity_    .timestamp = utils::Timer::getTimeMicros();
+  distance_    .timestamp = utils::Timer::getTimeMicros();
 }
 
 }}  // namespace hyped::navigation

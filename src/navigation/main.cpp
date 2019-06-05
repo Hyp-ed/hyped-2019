@@ -56,7 +56,7 @@ namespace navigation {
     log_.INFO("NAV", "Navigation starting");
     nav_.initTimestamps();
     while (sys_.running_) {
-      nav_.updateData();
+      nav_.navigate();
     }
   }
 
