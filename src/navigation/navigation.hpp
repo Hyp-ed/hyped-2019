@@ -46,10 +46,11 @@ namespace navigation {
 
   class Navigation {
     public:
-      typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
-      typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
-      typedef std::array<NavigationType, data::Sensors::kNumImus> NavigationArray;
-      typedef std::array<KalmanFilter, data::Sensors::kNumImus> FilterArray;
+      typedef std::array<ImuData, data::Sensors::kNumImus> 			ImuDataArray;
+      typedef DataPoint<ImuDataArray>                      			ImuDataPointArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus> 		NavigationArray;
+      typedef std::array<KalmanFilter, data::Sensors::kNumImus> 		FilterArray;
+      typedef std::array<data::StripeCounter, data::Sensors::kNumKeyence>	KeyenceDataArray;
 
       /**
        * @brief Construct a new Navigation object
@@ -114,8 +115,17 @@ namespace navigation {
       // movement axis
       unsigned int axis_;
 
+
       // Kalman filters to filter each IMU measurement individually
       FilterArray filters_;
+
+      // Stripe counter (rolling values)
+      DataPoint<uint32_t> stripe_counter_;
+      // Keyence data read
+      KeyenceDataArray keyence_readings_;
+      // Previous keyence data for comparison
+      KeyenceDataArray prev_keyence_readings_;
+
 
       // To store estimated values
       ImuDataPointArray sensor_readings_;
@@ -136,6 +146,10 @@ namespace navigation {
        * @brief Query sensors to determine acceleration, velocity and distance
        */
       void queryImus();
+      /**
+       * @brief Query Keyence sensors to determine whether a stripe is found, update stripe_counter_ accordingly
+       */
+      void queryKeyence();
   };
 
 

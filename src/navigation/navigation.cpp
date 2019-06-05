@@ -31,6 +31,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            data_(Data::getInstance()),
            counter_(0),
            axis_(axis),
+	   stripe_counter_(0),
            acceleration_(0., 0.),
            velocity_(0., 0.),
            distance_(0., 0.),
@@ -142,6 +143,19 @@ void Navigation::queryImus()
   acceleration_integrator_.update(acceleration_);
   velocity_integrator_.update(velocity_);
 }
+
+void Navigation::queryKeyence()
+{
+	//initialise the keyence readings with the data from the central data struct
+	keyence_readings_ = data::getSensorsKeyenceData();
+	for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
+		if (prev_keyence_readings_[i].count.value != keyence_readings_[i].count.value) {
+			stripe_counter_ = 
+
+	
+	prev_keyence_readings_ = keyence_readings_;
+		
+
 
 void Navigation::updateData()
 {
