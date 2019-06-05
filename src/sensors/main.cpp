@@ -68,7 +68,6 @@ Main::Main(uint8_t id, utils::Logger& log)
   sensors_.module_status = data::ModuleStatus::kInit;
   data_.setSensorsData(sensors_);
   log_.INFO("SENSORS-MAIN", "Sensors have been initialised");
-
 }
 
 bool Main::keyencesUpdated()
