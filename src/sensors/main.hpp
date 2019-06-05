@@ -47,6 +47,12 @@ class Main: public Thread {
     void run() override;    // from thread
 
   private:
+    /**
+     * @brief as long as at least one keyence value is updated
+     *
+     * @return true
+     * @return false
+     */
     bool keyencesUpdated();
 
     /**
@@ -78,7 +84,15 @@ class Main: public Thread {
     std::unique_ptr<ManagerInterface>      battery_manager_;
     Temperature*                           temperature_;
 
+    /**
+     * @brief update this from GpioCounter::getStripeCounter();
+     */
     array<data::StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter_arr_;
+
+    /**
+     * @brief use this to compare with keyence_stripe_counter_arr_
+     *        update when keyenceUpdated() == true
+     */
     array<data::StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count_arr_;
 };
 
