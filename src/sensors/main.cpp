@@ -63,6 +63,11 @@ Main::Main(uint8_t id, utils::Logger& log)
       keyences_[i] = new FakeGpioCounter(log_, false, false, "data/in/gpio_counter_normal_run.txt");
     }
   }
+  // kInit for SM transition
+  sensors_ = data_.getSensorsData();
+  sensors_.module_status = data::ModuleStatus::kInit;
+  data_.setSensorsData(sensors_);
+  log_.INFO("SENSORS-MAIN", "Sensors have been initialised");
 }
 
 bool Main::keyencesUpdated()

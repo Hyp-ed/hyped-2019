@@ -57,7 +57,10 @@ BmsManager::BmsManager(Logger& log)
       bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log_, false, false);
     }
   }
-
+  // kInit for SM transition
+  batteries_ = data_.getBatteriesData();
+  batteries_.module_status = data::ModuleStatus::kInit;
+  data_.setBatteriesData(batteries_);
   Thread::yield();
   log_.INFO("BMS-MANAGER", "batteries data has been initialised");
 }
