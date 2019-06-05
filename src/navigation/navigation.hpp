@@ -35,6 +35,7 @@ namespace hyped {
 using data::Data;
 using data::DataPoint;
 using data::ImuData;
+using data::ModuleStatus;
 using data::NavigationType;
 using data::NavigationVector;
 using navigation::KalmanFilter;
@@ -58,6 +59,12 @@ namespace navigation {
        * @param axis Axis used of acceleration measurements
        */
       explicit Navigation(Logger& log, unsigned int axis = 0);
+      /**
+       * @brief Get the current state of the navigation module
+       *
+       * @return ModuleStatus the current state of the navigation module
+       */
+      ModuleStatus getModuleStatus() const;
       /**
        * @brief Get the measured acceleration [m/s^2]
        *
@@ -106,11 +113,7 @@ namespace navigation {
       /**
        * @brief Initialise timestamps for integration
        */
-      void init_timestamps();
-      /**
-       * @brief Indicate if system is already calibrated
-       */
-      bool isCalibrated();
+      void initTimestamps();
 
     private:
       static constexpr int kNumCalibrationQueries = 10000;
@@ -119,9 +122,7 @@ namespace navigation {
       // System communication
       Logger& log_;
       Data& data_;
-
-      // flag if system is already calibarted
-      bool calibrated_;
+      ModuleStatus status_;
 
       // counter for outputs
       unsigned int counter_;

@@ -27,10 +27,7 @@ namespace navigation {
     : Thread(id, log),
       log_(log),
       sys_(System::getSystem()),
-      nav_(log)
-  {
-    log_.INFO("NAV", "Navigation initialising");
-  }
+      nav_(log) {}
 
   void Main::run()
   {
@@ -45,11 +42,10 @@ namespace navigation {
       state_machine = data.getStateMachineData();
     }
 
-    log_.INFO("NAV", "Navigation module is calibrating");
     nav_.calibrateGravity();
-    log_.INFO("NAV", "Navigation module is ready");
 
     // wait for accelerating state
+    log_.INFO("NAV", "Navigation waiting for acceleration");
     state_machine = data.getStateMachineData();
     while (state_machine.current_state != State::kAccelerating) {
       // wait 1ms
@@ -58,15 +54,12 @@ namespace navigation {
     }
 
     log_.INFO("NAV", "Navigation starting");
-    nav_.init_timestamps();
+    nav_.initTimestamps();
     while (sys_.running_) {
       nav_.updateData();
     }
   }
 
-  bool Main::isCalibrated()
-  {
-    return nav_.isCalibrated();
-  }
+
 
 }}  // namespace hyped::navigation

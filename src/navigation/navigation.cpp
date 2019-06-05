@@ -29,7 +29,7 @@ namespace navigation {
 Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
-           calibrated_(false),
+           status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
            acceleration_(0., 0.),
@@ -38,10 +38,19 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
+  log_.INFO("NAV", "Navigation module started");
   for (unsigned int i = 0; i < data::Sensors::kNumImus; i++) {
     filters_[i] = KalmanFilter(1, 1);
     filters_[i].setup();
   }
+  status_ = ModuleStatus::kInit;
+  updateData();
+  log_.INFO("NAV", "Navigation module initialised");
+}
+
+ModuleStatus Navigation::getModuleStatus() const
+{
+  return status_;
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
@@ -119,7 +128,10 @@ void Navigation::calibrateGravity()
       "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
     filters_[i].updateMeasurementCovarianceMatrix(var);
   }
-  calibrated_ = true;
+  // After calibration is complete we are ready to measure
+  status_ = ModuleStatus::kReady;
+  updateData();
+  log_.INFO("NAV", "Navigation module ready");
 }
 
 void Navigation::queryImus()
@@ -147,6 +159,7 @@ void Navigation::updateData()
   counter_ += 1;
 
   data::Navigation nav_data;
+  nav_data.module_status              = getModuleStatus();
   nav_data.distance                   = getDistance();
   nav_data.velocity                   = getVelocity();
   nav_data.acceleration               = getAcceleration();
@@ -167,17 +180,12 @@ void Navigation::updateData()
   }
 }
 
-void Navigation::init_timestamps()
+void Navigation::initTimestamps()
 {
   // First iteration --> set timestamps
   acceleration_.timestamp = utils::Timer::getTimeMicros();
   velocity_.timestamp = utils::Timer::getTimeMicros();
   distance_.timestamp = utils::Timer::getTimeMicros();
-}
-
-bool Navigation::isCalibrated()
-{
-  return calibrated_;
 }
 
 }}  // namespace hyped::navigation
