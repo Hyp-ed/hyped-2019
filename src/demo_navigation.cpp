@@ -27,6 +27,7 @@
 #include "utils/logger.hpp"
 
 using hyped::data::Data;
+using hyped::data::ModuleStatus;
 using hyped::data::State;
 using hyped::data::StateMachine;
 using hyped::navigation::Main;
@@ -57,21 +58,25 @@ int main(int argc, char* argv[])
   Main* main = new Main(1, *log_nav);
   main->start();
 
-  // set calibration state
-  static Data& d = Data::getInstance();
-  StateMachine state_machine = d.getStateMachineData();
+  log_nav->INFO("MAIN", "Set state to CALIBRATING");
+  static Data& data = Data::getInstance();
+  StateMachine state_machine = data.getStateMachineData();
   state_machine.current_state = State::kCalibrating;
-  d.setStateMachineData(state_machine);
+  data.setStateMachineData(state_machine);
 
-  while (!main->isCalibrated()) {
-    Thread::sleep(1000);
+  ModuleStatus nav_state = data.getNavigationData().module_status;
+  while (nav_state != ModuleStatus::kReady) 
+  {
+    nav_state = data.getNavigationData().module_status;
+    Thread::sleep(100);
   }
 
+  log_nav->INFO("MAIN", "Set state to ACCELERATING");
   state_machine.current_state = State::kAccelerating;
-  d.setStateMachineData(state_machine);
+  data.setStateMachineData(state_machine);
 
-  // Run for 60s
-  Thread::sleep(60000);
+  // Accelerating (i.e. measuring) for 45s
+  Thread::sleep(45000);
 
   // Exit gracefully
   sys.running_ = false;
