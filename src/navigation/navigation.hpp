@@ -35,6 +35,7 @@ namespace hyped {
 using data::Data;
 using data::DataPoint;
 using data::ImuData;
+using data::ModuleStatus;
 using data::NavigationType;
 using data::NavigationVector;
 using navigation::KalmanFilter;
@@ -58,6 +59,12 @@ namespace navigation {
        * @param axis Axis used of acceleration measurements
        */
       explicit Navigation(Logger& log, unsigned int axis = 0);
+      /**
+       * @brief Get the current state of the navigation module
+       *
+       * @return ModuleStatus the current state of the navigation module
+       */
+      ModuleStatus getModuleStatus() const;
       /**
        * @brief Get the measured acceleration [m/s^2]
        *
@@ -96,17 +103,32 @@ namespace navigation {
        */
       NavigationArray getGravityCalibration() const;
       /**
+       * @brief Determine the value of gravitational acceleration measured by sensors at rest
+       */
+      void calibrateGravity();
+      /**
        * @brief Update central data structure
        */
       void updateData();
+      /**
+       * @brief Take acceleration readings from IMU, filter, integrate and then update central data
+       * structure with new values (i.e. the meat'n'potatoes of navigation).
+       */
+      void navigate();
+      /**
+       * @brief Initialise timestamps for integration
+       */
+      void initTimestamps();
 
     private:
       static constexpr int kNumCalibrationQueries = 10000;
+      static constexpr int kPrintFreq = 1;
       static constexpr NavigationType kEmergencyDeceleration = 24;
 
       // System communication
       Logger& log_;
       Data& data_;
+      ModuleStatus status_;
 
       // counter for outputs
       unsigned int counter_;
@@ -128,10 +150,6 @@ namespace navigation {
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
       Integrator<NavigationType> velocity_integrator_;      // velocity to distance
 
-      /**
-       * @brief Determine the value of gravitational acceleration measured by sensors at rest
-       */
-      void calibrateGravity();
       /**
        * @brief Query sensors to determine acceleration, velocity and distance
        */
