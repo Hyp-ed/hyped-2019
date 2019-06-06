@@ -122,23 +122,23 @@ inline bool ServerToClient_Command_Parse(
     ServerToClient_Command_descriptor(), name, value);
 }
 enum ClientToServer_StateMachine_State {
-  ClientToServer_StateMachine_State_IDLE = 0,
-  ClientToServer_StateMachine_State_CALIBRATING = 1,
-  ClientToServer_StateMachine_State_READY = 2,
-  ClientToServer_StateMachine_State_ACCELERATING = 3,
-  ClientToServer_StateMachine_State_NOMINAL_BRAKING = 4,
-  ClientToServer_StateMachine_State_EMERGENCY_BRAKING = 5,
-  ClientToServer_StateMachine_State_RUN_COMPLETE = 6,
-  ClientToServer_StateMachine_State_FAILURE_STOPPED = 7,
-  ClientToServer_StateMachine_State_EXITING = 8,
-  ClientToServer_StateMachine_State_FINISHED = 9,
-  ClientToServer_StateMachine_State_INVALID = 10,
+  ClientToServer_StateMachine_State_INVALID = 0,
+  ClientToServer_StateMachine_State_IDLE = 1,
+  ClientToServer_StateMachine_State_CALIBRATING = 2,
+  ClientToServer_StateMachine_State_READY = 3,
+  ClientToServer_StateMachine_State_ACCELERATING = 4,
+  ClientToServer_StateMachine_State_NOMINAL_BRAKING = 5,
+  ClientToServer_StateMachine_State_EMERGENCY_BRAKING = 6,
+  ClientToServer_StateMachine_State_RUN_COMPLETE = 7,
+  ClientToServer_StateMachine_State_FAILURE_STOPPED = 8,
+  ClientToServer_StateMachine_State_EXITING = 9,
+  ClientToServer_StateMachine_State_FINISHED = 10,
   ClientToServer_StateMachine_State_ClientToServer_StateMachine_State_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   ClientToServer_StateMachine_State_ClientToServer_StateMachine_State_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool ClientToServer_StateMachine_State_IsValid(int value);
-const ClientToServer_StateMachine_State ClientToServer_StateMachine_State_State_MIN = ClientToServer_StateMachine_State_IDLE;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine_State_State_MAX = ClientToServer_StateMachine_State_INVALID;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine_State_State_MIN = ClientToServer_StateMachine_State_INVALID;
+const ClientToServer_StateMachine_State ClientToServer_StateMachine_State_State_MAX = ClientToServer_StateMachine_State_FINISHED;
 const int ClientToServer_StateMachine_State_State_ARRAYSIZE = ClientToServer_StateMachine_State_State_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* ClientToServer_StateMachine_State_descriptor();
@@ -534,6 +534,8 @@ class ClientToServer_StateMachine : public ::google::protobuf::Message /* @@prot
   // nested types ----------------------------------------------------
 
   typedef ClientToServer_StateMachine_State State;
+  static const State INVALID =
+    ClientToServer_StateMachine_State_INVALID;
   static const State IDLE =
     ClientToServer_StateMachine_State_IDLE;
   static const State CALIBRATING =
@@ -554,8 +556,6 @@ class ClientToServer_StateMachine : public ::google::protobuf::Message /* @@prot
     ClientToServer_StateMachine_State_EXITING;
   static const State FINISHED =
     ClientToServer_StateMachine_State_FINISHED;
-  static const State INVALID =
-    ClientToServer_StateMachine_State_INVALID;
   static inline bool State_IsValid(int value) {
     return ClientToServer_StateMachine_State_IsValid(value);
   }
