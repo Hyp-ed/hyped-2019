@@ -41,8 +41,6 @@ void Main::run()
   log_.DBG("Telemetry", "Telemetry Main thread started");
 
   data::Telemetry telem_data_struct = data_.getTelemetryData();
-  telem_data_struct.module_status = ModuleStatus::kInit;
-  data_.setTelemetryData(telem_data_struct);
 
   try {
     client_.connect();
@@ -57,7 +55,7 @@ void Main::run()
     return;
   }
 
-  telem_data_struct.module_status = ModuleStatus::kReady;
+  telem_data_struct.module_status = ModuleStatus::kInit;
   data_.setTelemetryData(telem_data_struct);
 
   SendLoop sendloop_thread {log_, data_, this};  // NOLINT
