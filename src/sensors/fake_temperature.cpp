@@ -40,11 +40,6 @@ FakeTemperature::FakeTemperature(Logger& log, bool is_fail)
       failure_time_(0),
       failure_happened_(false)
 {
-  if (!is_fail_) {
-    temp_.temp = success_;
-  } else {
-    temp_.temp = failure_;
-  }
   log_.DBG("FakeTemperature", "Fake Temperature initialised");
 }
 
