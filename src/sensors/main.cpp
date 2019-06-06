@@ -24,6 +24,7 @@
 #include "sensors/temperature.hpp"
 #include "sensors/gpio_counter.hpp"
 #include "sensors/fake_gpio_counter.hpp"
+#include "sensors/fake_temperature.hpp"
 
 
 constexpr int kKeyencePinLeft = 72;
@@ -49,8 +50,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     log_(log),
     pins_ {kKeyencePinLeft, kKeyencePinRight},
     imu_manager_(new ImuManager(log)),
-    battery_manager_(new BmsManager(log)),
-    temperature_(new Temperature(log, kThermistorPin))
+    battery_manager_(new BmsManager(log))
 {
   if (!sys_.fake_keyence) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
@@ -62,6 +62,11 @@ Main::Main(uint8_t id, utils::Logger& log)
     for (int i =0; i < data::Sensors::kNumKeyence; i++) {
       keyences_[i] = new FakeGpioCounter(log_, false, false, "data/in/gpio_counter_normal_run.txt");
     }
+  }
+  if (!sys_.fake_temperature) {
+    temperature_ = new Temperature(log_, kThermistorPin);
+  } else {
+    temperature_ = new FakeTemperature(log_, false);
   }
   // kInit for SM transition
   sensors_ = data_.getSensorsData();
