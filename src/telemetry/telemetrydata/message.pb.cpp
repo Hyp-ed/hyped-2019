@@ -402,12 +402,12 @@ void AddDescriptorsImpl() {
       "\030\002 \001(\002\022\020\n\010velocity\030\003 \001(\002\022\024\n\014acceleration"
       "\030\004 \001(\002\032\225\002\n\014StateMachine\022H\n\rcurrent_state"
       "\030\002 \001(\01621.telemetry_data.ClientToServer.S"
-      "tateMachine.State\"\272\001\n\005State\022\010\n\004IDLE\020\000\022\017\n"
-      "\013CALIBRATING\020\001\022\t\n\005READY\020\002\022\020\n\014ACCELERATIN"
-      "G\020\003\022\023\n\017NOMINAL_BRAKING\020\004\022\025\n\021EMERGENCY_BR"
-      "AKING\020\005\022\020\n\014RUN_COMPLETE\020\006\022\023\n\017FAILURE_STO"
-      "PPED\020\007\022\013\n\007EXITING\020\010\022\014\n\010FINISHED\020\t\022\013\n\007INV"
-      "ALID\020\n\032\304\001\n\006Motors\022B\n\rmodule_status\030\001 \001(\016"
+      "tateMachine.State\"\272\001\n\005State\022\013\n\007INVALID\020\000"
+      "\022\010\n\004IDLE\020\001\022\017\n\013CALIBRATING\020\002\022\t\n\005READY\020\003\022\020"
+      "\n\014ACCELERATING\020\004\022\023\n\017NOMINAL_BRAKING\020\005\022\025\n"
+      "\021EMERGENCY_BRAKING\020\006\022\020\n\014RUN_COMPLETE\020\007\022\023"
+      "\n\017FAILURE_STOPPED\020\010\022\013\n\007EXITING\020\t\022\014\n\010FINI"
+      "SHED\020\n\032\304\001\n\006Motors\022B\n\rmodule_status\030\001 \001(\016"
       "2+.telemetry_data.ClientToServer.ModuleS"
       "tatus\022\022\n\nvelocity_1\030\002 \001(\021\022\022\n\nvelocity_2\030"
       "\003 \001(\021\022\022\n\nvelocity_3\030\004 \001(\021\022\022\n\nvelocity_4\030"
@@ -507,6 +507,7 @@ bool ClientToServer_StateMachine_State_IsValid(int value) {
 }
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+const ClientToServer_StateMachine_State ClientToServer_StateMachine::INVALID;
 const ClientToServer_StateMachine_State ClientToServer_StateMachine::IDLE;
 const ClientToServer_StateMachine_State ClientToServer_StateMachine::CALIBRATING;
 const ClientToServer_StateMachine_State ClientToServer_StateMachine::READY;
@@ -517,7 +518,6 @@ const ClientToServer_StateMachine_State ClientToServer_StateMachine::RUN_COMPLET
 const ClientToServer_StateMachine_State ClientToServer_StateMachine::FAILURE_STOPPED;
 const ClientToServer_StateMachine_State ClientToServer_StateMachine::EXITING;
 const ClientToServer_StateMachine_State ClientToServer_StateMachine::FINISHED;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::INVALID;
 const ClientToServer_StateMachine_State ClientToServer_StateMachine::State_MIN;
 const ClientToServer_StateMachine_State ClientToServer_StateMachine::State_MAX;
 const int ClientToServer_StateMachine::State_ARRAYSIZE;
