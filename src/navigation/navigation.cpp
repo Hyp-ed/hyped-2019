@@ -147,20 +147,28 @@ void Navigation::queryImus()
 void Navigation::queryKeyence()
 {
 	//initialise the keyence readings with the data from the central data struct
-	keyence_readings_ = data::getSensorsKeyenceData();
+	//temporarily with prev_keyence readings.
+	prev_keyence_readings_ = data_.getSensorsKeyenceData();
+	keyence_readings_ = data_.getSensorsKeyenceData();
 	for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
-		if (prev_keyence_readings_[i].count.value != keyence_readings_[i].count.value) {
-			stripe_counter_ = 
-
-	
+		//Checks whether the stripe count has been updated and if it has not been
+		//double-counted with the time constraint (100ms atm, subject to change).
+		if (prev_keyence_readings_[i].count.value != keyence_readings_[i].count.value &&
+				keyence_readings_[i].count.timestamp - prev_keyence_readings_[i].count.timestamp > 100) {
+			stripe_counter_.value += 1;
+			stripe_counter_.timestamp = keyence_readings_[i].count.timestamp;
+			break;
+		}
+	}
 	prev_keyence_readings_ = keyence_readings_;
-		
+}	
 
 
 void Navigation::updateData()
 {
   // Take new readings first
   queryImus();
+  queryKeyence();
   counter_ += 1;
 
   data::Navigation nav_data;
@@ -175,10 +183,14 @@ void Navigation::updateData()
   // Crude test of data writing
   nav_data = data_.getNavigationData();
 
+  //Distance given by keyence: (100ft is about 30.48m)
+
+  double keyence_distance = stripe_counter_.value * 30.48;
+
   if (counter_ % 1 == 0) {
       log_.INFO("NAV",
-          "%d: Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
-          counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
+          "%d: Update: a=%.3f, v=%.3f, d=%.3f, d(keyence)=%.3f", //NOLINT
+          counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance, keyence_distance);
       // NavigationType var = filter_.getEstimateVariance();
       // log_.INFO("NAV", "Estimate acc variance: %.5f", var);
   }
