@@ -25,6 +25,7 @@
 
 #include "data/data.hpp"
 #include "utils/logger.hpp"
+#include "sensors/interface.hpp"
 
 namespace hyped {
 
@@ -32,7 +33,7 @@ using utils::Logger;
 
 namespace sensors {
 
-class Temperature {
+class Temperature: public TemperatureInterface {
  public:
   /**
    * @brief Construct a new Temperature object
@@ -48,13 +49,13 @@ class Temperature {
    *
    * @return int to set to data struct in sensors main
    */
-  int getData();
+  int getData() override;
 
   /**
    * @brief one interation of checking sensors
    *
    */
-  void run();
+  void run() override;
 
  private:
   /**

@@ -30,7 +30,6 @@
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "sensors/manager_interface.hpp"
-#include "sensors/temperature.hpp"
 #include "utils/system.hpp"
 
 namespace hyped {
@@ -82,7 +81,7 @@ class Main: public Thread {
     GpioInterface*                         keyences_[data::Sensors::kNumKeyence];  // 0 L and 1 R
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
-    Temperature*                           temperature_;
+    TemperatureInterface*                  temperature_;      // need interface for fake
 
     /**
      * @brief update this from GpioCounter::getStripeCounter();
