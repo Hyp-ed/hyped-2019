@@ -38,7 +38,7 @@ namespace state_machine {
 Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
       hypedMachine(log),
-      timeout_(23000000),     // 60 seconds
+      timeout_(23000000),     // 23 seconds
       data_(data::Data::getInstance())
 { /* EMPTY */ }
 
@@ -118,6 +118,7 @@ bool Main::checkInitialised()
     log_.INFO("STATE", "all modules are initialised and Start Calibrating command was received");
     hypedMachine.handleEvent(kInitialised);
     telemetry_data_.calibrate_command = false;
+    data_.setTelemetryData(telemetry_data_);
     return true;
   }
   return false;
@@ -142,6 +143,7 @@ bool Main::checkReset()
     log_.INFO("STATE", "reset command received");
     hypedMachine.handleEvent(kReset);
     telemetry_data_.reset_command = false;  // reset the command to false
+    data_.setTelemetryData(telemetry_data_);
     return true;
   }
   return false;
@@ -153,6 +155,7 @@ bool Main::checkOnStart()
     log_.INFO("STATE", "launch command received");
     hypedMachine.handleEvent(kOnStart);
     telemetry_data_.launch_command = false;
+    data_.setTelemetryData(telemetry_data_);
     // also setup timer for going to emergency braking state
     time_start_ = utils::Timer::getTimeMicros();
     return true;
@@ -170,6 +173,9 @@ bool Main::checkTelemetryCriticalFailure()
   // Also check if emergency stop command was received
   if (telemetry_data_.emergency_stop_command) {
     log_.ERR("STATE", "STOP command received");
+    telemetry_data_.emergency_stop_command = false;
+    data_.setTelemetryData(telemetry_data_);
+    hypedMachine.handleEvent(kCriticalFailure);
     return true;
   }
   return false;
@@ -208,6 +214,7 @@ bool Main::checkCriticalFailure()
   if (telemetry_data_.emergency_stop_command) {
     log_.ERR("STATE", "STOP command received");
     telemetry_data_.emergency_stop_command = false;
+    data_.setTelemetryData(telemetry_data_);
     criticalFailureFound = true;
     // return true;
   }
