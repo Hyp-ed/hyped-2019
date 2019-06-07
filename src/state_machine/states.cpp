@@ -90,6 +90,7 @@ void Accelerating::react(HypedMachine &machine, Event event)
 
 void NominalBraking::entry()
 {
+  HypedMachine::engageEmbrakes();
   state_ = state::kNominalBraking;
 }
 
@@ -117,7 +118,6 @@ void EmergencyBraking::react(HypedMachine &machine, Event event)
 
 void FailureStopped::entry()
 {
-  HypedMachine::engageEmbrakes();
   state_ = state::kFailureStopped;
 }
 

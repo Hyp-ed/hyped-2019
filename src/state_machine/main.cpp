@@ -207,6 +207,7 @@ bool Main::checkCriticalFailure()
   // Also check if emergency stop command was received
   if (telemetry_data_.emergency_stop_command) {
     log_.ERR("STATE", "STOP command received");
+    telemetry_data_.emergency_stop_command = false;
     criticalFailureFound = true;
     // return true;
   }
