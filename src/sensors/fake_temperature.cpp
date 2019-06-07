@@ -34,7 +34,7 @@ FakeTemperature::FakeTemperature(Logger& log, bool is_fail)
       log_(log),
       failure_(300),
       success_(30),
-      is_fail_(is_fail),      // false for main implementation
+      is_fail_(is_fail),
       acc_start_time_(0),
       acc_started_(false),
       failure_time_(0),

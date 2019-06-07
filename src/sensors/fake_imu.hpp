@@ -63,6 +63,7 @@ class FakeImuFromFile : public ImuInterface {
           std::string acc_file_path,
           std::string dec_file_path,
           std::string em_file_path,
+          bool is_fail,
           float noise = 0.2);
 
   bool isOnline() override { return true; }
@@ -133,6 +134,7 @@ class FakeImuFromFile : public ImuInterface {
   bool acc_started_;
   bool dec_started_;
   bool em_started_;
+  bool is_fail_;
   float noise_;
   data::Data&  data_;
 };

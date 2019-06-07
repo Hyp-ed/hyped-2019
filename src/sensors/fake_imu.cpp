@@ -43,6 +43,7 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
                 std::string acc_file_path,
                 std::string dec_file_path,
                 std::string em_file_path,
+                bool is_fail,
                 float noise)
     : log_(log),
       acc_noise_(1),
@@ -53,6 +54,7 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
       acc_started_(false),
       dec_started_(false),
       em_started_(false),
+      is_fail_(is_fail),
       noise_(noise),
       data_(data::Data::getInstance())
 {
@@ -234,8 +236,11 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
       value[1] = 0.0;
       value[2] = 9.8;
 
-      val_read->push_back(addNoiseToData(value, noise_));
       // TODO(jack): Add random point of failure in run for now everything works
+      if (is_fail_ && i == 0) {     // fail during acceleration
+        value[0] = -37.3942;       // error acc value
+      }
+      val_read->push_back(addNoiseToData(value, noise_));
       bool_read->push_back(1);
 
       counter++;
