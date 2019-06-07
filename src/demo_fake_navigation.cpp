@@ -22,6 +22,7 @@
 #include "data/data.hpp"
 #include "navigation/main.hpp"
 #include "sensors/imu_manager.hpp"
+#include "sensors/fake_gpio_counter.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
@@ -30,8 +31,11 @@ using hyped::data::Data;
 using hyped::data::State;
 using hyped::data::StateMachine;
 using hyped::data::ModuleStatus;
+using hyped::data::Sensors;
 using hyped::navigation::Main;
 using hyped::sensors::ImuManager;
+using hyped::sensors::GpioInterface;
+using hyped::sensors::FakeGpioCounter;
 using hyped::utils::concurrent::Thread;
 using hyped::utils::System;
 using hyped::utils::Logger;
@@ -55,6 +59,11 @@ int main(int argc, char* argv[])
   // Initialise sensors
   ImuManager imu_manager(*log_nav);
   imu_manager.start();
+ 
+  GpioInterface* keyences_[2];  // Temporarily instead of data::Sensors::kNumKeyence
+  for (int i =0; i < 2; i++) {
+    keyences_[i] = new FakeGpioCounter(log_nav, false, false, "data/in/gpio_counter_normal_run.txt");
+  }
 
   Main* main = new Main(1, *log_nav);
   main->start();

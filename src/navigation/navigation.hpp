@@ -21,6 +21,7 @@
 
 #include <array>
 #include <cstdint>
+#include <math.h>
 
 #include "data/data.hpp"
 #include "data/data_point.hpp"
@@ -168,6 +169,12 @@ namespace navigation {
        * @brief Query Keyence sensors to determine whether a stripe is found, update stripe_counter_ accordingly
        */
       void queryKeyence();
+      /**
+       * @brief Get uncertainty in distance obtained through IMU measurements.
+       *
+       * @return uncertainty in type double
+       */
+      double estimateDistanceUncertainty();
   };
 
 

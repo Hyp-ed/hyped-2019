@@ -32,10 +32,10 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
-	   stripe_counter_(0),
-           acceleration_(0., 0.),
-           velocity_(0., 0.),
-           distance_(0., 0.),
+           stripe_counter_(0, 0),
+           acceleration_(0, 0.),
+           velocity_(0, 0.),
+           distance_(0, 0.),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -152,25 +152,55 @@ void Navigation::queryImus()
   acceleration_integrator_.update(acceleration_);
   velocity_integrator_.update(velocity_);
 }
-
+double Navigation::estimateDistanceUncertainty()
+{
+  /* The function to get the uncertainty simply based on the uncertainty in time and
+  acceleration is obtained from s = 1/2*at², such that due to partial derivatives, the
+  uncertainty is given by: */
+  /* a is the current acceleration, t the current time, dadt the derivative of a with respect to
+  t at the current time, deltaA is the uncertainty in acceleration at the current time. The derivation
+  of this can be uploaded at request. */
+  double deltaA = 0.0;  // Temporary value
+  double dadt = 0.0;    // Temporary value
+  double a = acceleration_.value;
+  double t = (utils::Timer::getTimeMicros())/100000.0;
+  double uncertainty = sqrt((4*a*a*t*t + 2*a*t*t*t*(dadt) + t*t*t*t*(dadt)*(dadt)/4)*0.000001 +
+                                  t*t*t*t*deltaA*deltaA/4);
+  // TODO(Justus) add practical uncertainty to this.
+  return uncertainty;
+}
 void Navigation::queryKeyence()
 {
-	//initialise the keyence readings with the data from the central data struct
-	//temporarily with prev_keyence readings.
-	prev_keyence_readings_ = data_.getSensorsKeyenceData();
-	keyence_readings_ = data_.getSensorsKeyenceData();
-	for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
-		//Checks whether the stripe count has been updated and if it has not been
-		//double-counted with the time constraint (100ms atm, subject to change).
-		if (prev_keyence_readings_[i].count.value != keyence_readings_[i].count.value &&
-				keyence_readings_[i].count.timestamp - prev_keyence_readings_[i].count.timestamp > 100) {
-			stripe_counter_.value += 1;
-			stripe_counter_.timestamp = keyence_readings_[i].count.timestamp;
-			break;
-		}
-	}
-	prev_keyence_readings_ = keyence_readings_;
-}	
+  // initialise the keyence readings with the data from the central data struct
+  keyence_readings_ = data_.getSensorsKeyenceData();
+  for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
+    // Checks whether the stripe count has been updated and if it has not been
+    // double-counted with the time constraint (100000micros atm, aka 0.1s, subject to change).
+    if (prev_keyence_readings_[i].count.value != keyence_readings_[i].count.value &&
+         keyence_readings_[i].count.timestamp -
+         prev_keyence_readings_[i].count.timestamp > 100000) {
+      stripe_counter_.value++;
+      stripe_counter_.timestamp = keyence_readings_[i].count.timestamp;
+
+      // Allow up to one missed stripe.
+      // There must be some uncertainty in distance around the missed 30.48m.
+      double allowed_uncertainty = 10.0;  // Temporary value, estimateDistanceUncertainty()
+      if (distance_.value - stripe_counter_.value*30.48 > 30.48 - allowed_uncertainty &&
+          distance_.value - stripe_counter_.value*30.48 < 30.48 + allowed_uncertainty) {
+        stripe_counter_.value++;
+      }
+      /* Error handling: If distance from keyence still deviates more than the allowed
+      uncertainty, then the measurements are no longer believable. Important that this
+      is only checked in an update, otherwise we might throw an error in between stripes. */
+      if (distance_.value - stripe_counter_.value*30.48 > 0.0 - allowed_uncertainty &&
+          distance_.value - stripe_counter_.value*30.48 < allowed_uncertainty) {
+        // TODO(Justus) what happens in case of keyence failure?
+      }
+      break;
+    }
+  }
+  prev_keyence_readings_ = keyence_readings_;
+}
 
 
 void Navigation::updateData()
@@ -186,8 +216,9 @@ void Navigation::updateData()
   data_.setNavigationData(nav_data);
 
   if (counter_ % kPrintFreq == 0) {
-    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
-                     counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
+    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(keyence)=%.3f", //NOLINT
+                     counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
+                     stripe_counter_.value*30.48);
   }
   counter_++;
 }
@@ -205,6 +236,9 @@ void Navigation::initTimestamps()
   acceleration_.timestamp = utils::Timer::getTimeMicros();
   velocity_    .timestamp = utils::Timer::getTimeMicros();
   distance_    .timestamp = utils::Timer::getTimeMicros();
+  // First iteration --> get initial keyence data
+  // (should be zero counters and corresponding timestamp)
+  prev_keyence_readings_ = data_.getSensorsKeyenceData();
 }
 
 }}  // namespace hyped::navigation
