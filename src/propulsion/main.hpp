@@ -56,6 +56,7 @@ class Main : public Thread
     Logger &log_;
     StateProcessor *stateProcessor;
     State currentState;
+    Data& data_;
 };
 
 }  // namespace motor_control
