@@ -44,7 +44,7 @@ class FakeGpioCounter : public GpioInterface {
    * @param miss_stripe
    * @param double_stripe
    */
-  FakeGpioCounter(utils::Logger& log, bool miss_stripe, bool double_stripe);
+  FakeGpioCounter(utils::Logger& log, bool miss_stripe);
 
   /**
    * @brief Construct a new Fake Gpio Counter object from file
@@ -54,7 +54,7 @@ class FakeGpioCounter : public GpioInterface {
    * @param double_stripe
    * @param file_path
    */
-  FakeGpioCounter(utils::Logger& log, bool miss_stripe, bool double_stripe, std::string file_path);
+  FakeGpioCounter(utils::Logger& log, bool miss_stripe, std::string file_path);
 
   /**
    * @brief Returns the current count of stripes
@@ -112,7 +112,7 @@ class FakeGpioCounter : public GpioInterface {
    * @brief if counted extra stripe, set true if does not match navigation data
    *
    */
-  bool double_stripe_;
+  // bool double_stripe_;
 
   std::string file_path_;
 

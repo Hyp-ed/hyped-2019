@@ -44,13 +44,13 @@ using utils::Logger;
 
 namespace sensors {
 
-FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stripe)
+FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
     : log_(log),
     data_(Data::getInstance()),
     start_time_(0),
     check_time_(kCheckTime),
     miss_stripe_(miss_stripe),
-    double_stripe_(double_stripe),
+    // double_stripe_(double_stripe),
     is_from_file_(false),
     acc_ref_init_(false)
 {
@@ -59,13 +59,13 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stri
 }
 
 FakeGpioCounter::FakeGpioCounter(Logger& log,
-  bool miss_stripe, bool double_stripe, std::string file_path)
+  bool miss_stripe, std::string file_path)
     : log_(log),
     data_(Data::getInstance()),
     start_time_(0),
     check_time_(kCheckTime),
     miss_stripe_(miss_stripe),
-    double_stripe_(double_stripe),
+    // double_stripe_(double_stripe),
     file_path_(file_path),
     is_from_file_(true),
     acc_ref_init_(false)
@@ -97,7 +97,7 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
     }
     checkData();
   } else {
-    data::Navigation nav   = data_.getNavigationData();
+    data::Navigation nav   = data_.getNavigationData();     // TODO(Greg): throw failure from nav data (fake_imu)
     uint32_t current_count = stripe_count_.count.value;
 
     uint16_t nav_count = std::floor(nav.distance/kStripeDistance);      // cast floor int;
@@ -111,19 +111,26 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
   return stripe_count_;
 }
 
-// TODO(Jack): Need to implement stripe missing or counting 2 stripes
 void FakeGpioCounter::checkData()
 {
-  // let pod wait at first...then start comparing data
-  if (((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) > 8000) {
-    if (miss_stripe_) {
-      log_.INFO("fake_gpio_counter", "missed stripe, changing now");
-      stripe_count_.count.value++;
-    } else if (double_stripe_) {
-      log_.INFO("fake_gpio_counter", "double stripe count, changing now");
-      stripe_count_.count.value--;
+  if (is_from_file_) {
+    uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000)-stripe_count_.count.timestamp; // NOLINT
+    if (time_after > 1500 && miss_stripe_) {    // TODO(Jack,Greg): Change max time between stripes  
+      log_.INFO("FakeGpioCounter", "missed stripe!");
+      // throw failure to keyence, override with nav data
     }
   }
+  // let pod wait at first...then start comparing data
+  // if (((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) > 8000) {
+  //   if (miss_stripe_) {
+  //     log_.INFO("FakeGpioCounter", "missed stripe, changing now");
+  //     stripe_count_.count.value++;
+  //   }
+    // else if (double_stripe_) {
+    //   log_.INFO("FakeGpioCounter", "double stripe count, changing now");
+    //   stripe_count_.count.value--;
+    // }
+  // }
 }
 
 void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
@@ -140,7 +147,7 @@ void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
         stripe_data_.push_back(this_line);
       }
     } else {
-      log_.ERR("fake_gpio_counter", "cannot open file");
+      log_.ERR("FakeGpioCounter", "cannot open file");
     }
     data_file.close();
   }

@@ -115,7 +115,7 @@ System::System(int argc, char* argv[])
       {"verbose_nav", optional_argument, 0, 'A'},
       {"verbose_sensor", optional_argument, 0, 'b'},
       {"verbose_state", optional_argument, 0, 'B'},
-      {"verbose_embrakes", optional_argument, 0, 'n'},
+      {"verbose_embrakes", optional_argument, 0, 'o'},
       {"verbose_tlm", optional_argument, 0, 'c'},
       {"config", required_argument, 0, 'C'},
       {"debug", optional_argument, 0, 'd'},
@@ -124,14 +124,20 @@ System::System(int argc, char* argv[])
       {"debug_sensor", optional_argument, 0, 'f'},
       {"debug_state", optional_argument, 0, 'F'},
       {"debug_tlm", optional_argument, 0, 'g'},
-      {"debug_embrakes", optional_argument, 0, 'N'},
+      {"debug_embrakes", optional_argument, 0, 'O'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
       {"fake_batteries", no_argument, 0, 'j'},
       {"fake_keyence", no_argument, 0, 'k'},
       {"fake_temperature", no_argument, 0, 'l'},
       {"fake_motors", no_argument, 0, 'm'},
-      {"fake_embrakes", no_argument, 0, 'M'},
+      {"fake_embrakes", no_argument, 0, 'n'},
+      {"fake_imu_fail", no_argument, 0, 'I'},
+      {"fake_batteries_fail", no_argument, 0, 'J'},
+      {"fake_keyence_fail", no_argument, 0, 'K'},
+      {"fake_temperature_fail", no_argument, 0, 'L'},
+      {"fake_motors_fail", no_argument, 0, 'M'},
+      {"fake_embrakes_fail", no_argument, 0, 'N'},
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'q'},
       {"tube_run", no_argument, 0, 'r'},
@@ -180,7 +186,7 @@ System::System(int argc, char* argv[])
         if (optarg) verbose_tlm = atoi(optarg);
         else        verbose_tlm = true;
         break;
-      case 'n':   // verbose_embrakes
+      case 'o':   // verbose_embrakes
         if (optarg) verbose_embrakes = atoi(optarg);
         else        verbose_embrakes = true;
         break;
@@ -207,7 +213,7 @@ System::System(int argc, char* argv[])
         if (optarg) debug_tlm = atoi(optarg);
         else        debug_tlm = 0;
         break;
-      case 'N':   // debug_embrakes
+      case 'O':   // debug_embrakes
         if (optarg) debug_embrakes = atoi(optarg);
         else        debug_embrakes = 0;
         break;
@@ -234,7 +240,31 @@ System::System(int argc, char* argv[])
         if (optarg) fake_motors = atoi(optarg);
         else        fake_motors = 1;
         break;
-      case 'M':   // fake_embrakes
+      case 'n':   // fake_embrakes
+        if (optarg) fake_embrakes = atoi(optarg);
+        else        fake_embrakes = 1;
+        break;
+      case 'I':   // fake_imu_fail
+        if (optarg) fake_imu = atoi(optarg);
+        else        fake_imu = 1;
+        break;
+      case 'J':   // fake batteries_fail
+        if (optarg) fake_batteries = atoi(optarg);
+        else        fake_batteries = 1;
+        break;
+      case 'K':   // fake_keyence_fail
+        if (optarg) fake_keyence = atoi(optarg);
+        else        fake_keyence = 1;
+        break;
+      case 'L':   // fake_temeperature_fail
+        if (optarg) fake_temperature = atoi(optarg);
+        else        fake_temperature = 1;
+        break;
+      case 'M':   // fake_motors_fail
+        if (optarg) fake_motors = atoi(optarg);
+        else        fake_motors = 1;
+        break;
+      case 'N':   // fake_embrakes_fail
         if (optarg) fake_embrakes = atoi(optarg);
         else        fake_embrakes = 1;
         break;
