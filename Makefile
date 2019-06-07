@@ -35,11 +35,6 @@ else
 $(info cross-compiling)
 endif
 
-ifeq ($(PROTOBUF), 1)
-	CFLAGS:=$(CFLAGS) $(shell pkg-config --cflags protobuf)
-	LFLAGS:=$(LFLAGS) $(shell pkg-config --libs protobuf)
-endif
-
 # test if compiler is installed
 ifeq ($(shell which $(CC)), )
 $(error compiler $(CC) is not installed)
@@ -47,8 +42,14 @@ endif
 LL:=$(CC)
 
 
-
 include $(SRCS_DIR)/Source.files
+
+ifeq ($(PROTOBUF), 1)
+	CFLAGS:=$(CFLAGS) $(shell pkg-config --cflags protobuf)
+	LFLAGS:=$(LFLAGS) $(shell pkg-config --libs protobuf)
+	SRCS:=$(SRCS) $(shell find src/telemetry -type f -name '*.cpp' | sed 's|^src/||')
+endif
+
 SRCS := $(SRCS) $(MAIN)
 OBJS := $(SRCS:.cpp=.o)
 
