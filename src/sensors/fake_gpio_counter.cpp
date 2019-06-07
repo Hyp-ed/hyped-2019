@@ -97,7 +97,7 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
     }
     checkData();
   } else {
-    data::Navigation nav   = data_.getNavigationData();     // TODO(Greg): throw failure from nav data (fake_imu)
+    data::Navigation nav   = data_.getNavigationData();     // throw failure from fake_imu
     uint32_t current_count = stripe_count_.count.value;
 
     uint16_t nav_count = std::floor(nav.distance/kStripeDistance);      // cast floor int;
@@ -114,8 +114,8 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
 void FakeGpioCounter::checkData()
 {
   if (is_from_file_) {
-    uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000)-stripe_count_.count.timestamp; // NOLINT
-    if (time_after > 1500 && miss_stripe_) {    // TODO(Jack,Greg): Change max time between stripes  
+    uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
+    if (time_after > 1500 && miss_stripe_) {    // TODO(Jack,Greg): Change max time between stripes
       log_.INFO("FakeGpioCounter", "missed stripe!");
       // throw failure to keyence, override with nav data
     }
