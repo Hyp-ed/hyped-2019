@@ -63,6 +63,7 @@ void printUsage()
     "    --fake_imu\n"
     "    --fake_batteries\n"
     "    --fake_keyence\n"
+    "    --fake_temperature\n"
     "    --fake_embrakes --fake_motors\n"
     "    To set navigation IDs.\n"
     "    --imu_id, --run_id\n"
@@ -94,6 +95,7 @@ System::System(int argc, char* argv[])
       fake_keyence(false),
       fake_embrakes(false),
       fake_motors(false),
+      fake_temperature(false),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
       tube_run(true),
@@ -125,10 +127,11 @@ System::System(int argc, char* argv[])
       {"debug_embrakes", optional_argument, 0, 'N'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
+      {"fake_batteries", no_argument, 0, 'j'},
       {"fake_keyence", no_argument, 0, 'k'},
+      {"fake_temperature", no_argument, 0, 'l'},
       {"fake_motors", no_argument, 0, 'm'},
       {"fake_embrakes", no_argument, 0, 'M'},
-      {"fake_batteries", no_argument, 0, 'j'},
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'q'},
       {"tube_run", no_argument, 0, 'r'},
@@ -215,7 +218,7 @@ System::System(int argc, char* argv[])
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
         break;
-      case 'j':
+      case 'j':   // fake batteries
         if (optarg) fake_batteries = atoi(optarg);
         else        fake_batteries = 1;
         break;
@@ -223,11 +226,15 @@ System::System(int argc, char* argv[])
         if (optarg) fake_keyence = atoi(optarg);
         else        fake_keyence = 1;
         break;
-      case 'm':
+      case 'l':   // fake_temeperature
+        if (optarg) fake_temperature = atoi(optarg);
+        else        fake_temperature = 1;
+        break;
+      case 'm':   // fake_motors
         if (optarg) fake_motors = atoi(optarg);
         else        fake_motors = 1;
         break;
-      case 'M':
+      case 'M':   // fake_embrakes
         if (optarg) fake_embrakes = atoi(optarg);
         else        fake_embrakes = 1;
         break;

@@ -38,17 +38,17 @@ message ClientToServer {
 
     message StateMachine {
         enum State {
-            IDLE = 0;
-            CALIBRATING = 1;
-            READY = 2;
-            ACCELERATING = 3;
-            NOMINAL_BRAKING = 4;
-            EMERGENCY_BRAKING = 5;
-            RUN_COMPLETE = 6;
-            FAILURE_STOPPED = 7;
-            EXITING = 8;
-            FINISHED = 9;
-            INVALID = 10;
+            INVALID = 0;
+            IDLE = 1;
+            CALIBRATING = 2;
+            READY = 3;
+            ACCELERATING = 4;
+            NOMINAL_BRAKING = 5;
+            EMERGENCY_BRAKING = 6;
+            RUN_COMPLETE = 7;
+            FAILURE_STOPPED = 8;
+            EXITING = 9;
+            FINISHED = 10;
         }
 
         State current_state = 2;

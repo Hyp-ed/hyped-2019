@@ -68,6 +68,7 @@ class System {
   bool fake_imu;
   bool fake_batteries;
   bool fake_keyence;
+  bool fake_temperature;
   bool fake_embrakes;
   bool fake_motors;
 

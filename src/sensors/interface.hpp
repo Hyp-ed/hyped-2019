@@ -68,6 +68,20 @@ class BMSInterface: public SensorInterface {
    */
   virtual void getData(BatteryData* battery) = 0;
 };
+
+class TemperatureInterface {
+ public:
+  /**
+   * @brief not a thread, checks temperature
+   */
+  virtual void run() = 0;
+
+  /**
+   * @brief returns int representation of temperature
+   * @return int temperature degrees C
+   */
+  virtual int getData() = 0;
+};
 }}  // namespace hyped::sensors
 
 

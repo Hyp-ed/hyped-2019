@@ -19,12 +19,17 @@
  *    limitations under the License.
  */
 
+#include "data/data.hpp"
 #include "navigation/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 
+using hyped::data::Data;
+using hyped::data::ModuleStatus;
+using hyped::data::State;
+using hyped::data::StateMachine;
 using hyped::navigation::Main;
 using hyped::sensors::ImuManager;
 using hyped::utils::concurrent::Thread;
@@ -46,11 +51,6 @@ int main(int argc, char* argv[])
     log_nav->INFO("NAV", "STATIONARY RUN INITIALISED");
   }
 
-  static Data& d = Data::getInstance();
-  StateMachine state_machine = d.getStateMachineData();
-  state_machine.current_state = State::kCalibrating;
-  d.setStateMachineData(state_machine);
-
   // Initialise sensors
   ImuManager imu_manager(*log_nav);
   imu_manager.start();
@@ -58,8 +58,25 @@ int main(int argc, char* argv[])
   Main* main = new Main(1, *log_nav);
   main->start();
 
-  // Run for 24s
-  Thread::sleep(24000);
+  log_nav->INFO("MAIN", "Set state to CALIBRATING");
+  static Data& data = Data::getInstance();
+  StateMachine state_machine = data.getStateMachineData();
+  state_machine.current_state = State::kCalibrating;
+  data.setStateMachineData(state_machine);
+
+  ModuleStatus nav_state = data.getNavigationData().module_status;
+  while (nav_state != ModuleStatus::kReady) 
+  {
+    nav_state = data.getNavigationData().module_status;
+    Thread::sleep(100);
+  }
+
+  log_nav->INFO("MAIN", "Set state to ACCELERATING");
+  state_machine.current_state = State::kAccelerating;
+  data.setStateMachineData(state_machine);
+
+  // Accelerating (i.e. measuring) for 45s
+  Thread::sleep(45000);
 
   // Exit gracefully
   sys.running_ = false;

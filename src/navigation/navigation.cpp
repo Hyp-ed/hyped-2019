@@ -29,6 +29,7 @@ namespace navigation {
 Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
          : log_(log),
            data_(Data::getInstance()),
+           status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
 	   stripe_counter_(0),
@@ -38,15 +39,19 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
+  log_.INFO("NAV", "Navigation module started");
   for (unsigned int i = 0; i < data::Sensors::kNumImus; i++) {
     filters_[i] = KalmanFilter(1, 1);
     filters_[i].setup();
   }
-  calibrateGravity();
+  status_ = ModuleStatus::kInit;
+  updateData();
+  log_.INFO("NAV", "Navigation module initialised");
+}
 
-  acceleration_.timestamp = utils::Timer::getTimeMicros();
-  velocity_.timestamp = utils::Timer::getTimeMicros();
-  distance_.timestamp = utils::Timer::getTimeMicros();
+ModuleStatus Navigation::getModuleStatus() const
+{
+  return status_;
 }
 
 // TODO(Neil/Lukas/Justus): do this more smartly?
@@ -124,6 +129,10 @@ void Navigation::calibrateGravity()
       "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
     filters_[i].updateMeasurementCovarianceMatrix(var);
   }
+  // After calibration is complete we are ready to measure
+  status_ = ModuleStatus::kReady;
+  updateData();
+  log_.INFO("NAV", "Navigation module ready");
 }
 
 void Navigation::queryImus()
@@ -166,12 +175,8 @@ void Navigation::queryKeyence()
 
 void Navigation::updateData()
 {
-  // Take new readings first
-  queryImus();
-  queryKeyence();
-  counter_ += 1;
-
   data::Navigation nav_data;
+  nav_data.module_status              = getModuleStatus();
   nav_data.distance                   = getDistance();
   nav_data.velocity                   = getVelocity();
   nav_data.acceleration               = getAcceleration();
@@ -180,20 +185,26 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  // Crude test of data writing
-  nav_data = data_.getNavigationData();
-
-  //Distance given by keyence: (100ft is about 30.48m)
-
-  double keyence_distance = stripe_counter_.value * 30.48;
-
-  if (counter_ % 1 == 0) {
-      log_.INFO("NAV",
-          "%d: Update: a=%.3f, v=%.3f, d=%.3f, d(keyence)=%.3f", //NOLINT
-          counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance, keyence_distance);
-      // NavigationType var = filter_.getEstimateVariance();
-      // log_.INFO("NAV", "Estimate acc variance: %.5f", var);
+  if (counter_ % kPrintFreq == 0) {
+    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f", //NOLINT
+                     counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance);
   }
+  counter_++;
+}
+
+void Navigation::navigate()
+{
+  queryImus();
+  queryKeyence();
+  updateData();
+}
+
+void Navigation::initTimestamps()
+{
+  // First iteration --> set timestamps
+  acceleration_.timestamp = utils::Timer::getTimeMicros();
+  velocity_    .timestamp = utils::Timer::getTimeMicros();
+  distance_    .timestamp = utils::Timer::getTimeMicros();
 }
 
 }}  // namespace hyped::navigation

@@ -29,6 +29,7 @@
 using hyped::data::Data;
 using hyped::data::State;
 using hyped::data::StateMachine;
+using hyped::data::ModuleStatus;
 using hyped::navigation::Main;
 using hyped::sensors::ImuManager;
 using hyped::utils::concurrent::Thread;
@@ -51,30 +52,36 @@ int main(int argc, char* argv[])
     log_nav->INFO("NAV", "STATIONARY RUN INITIALISED");
   }
 
-  log_nav->INFO("MAIN", "Set state to CALIBRATING");
-  static Data& d = Data::getInstance();
-  StateMachine state_machine = d.getStateMachineData();
-  state_machine.current_state = State::kCalibrating;
-  d.setStateMachineData(state_machine);
-
   // Initialise sensors
   ImuManager imu_manager(*log_nav);
   imu_manager.start();
 
   Main* main = new Main(1, *log_nav);
+  main->start();
+
+  log_nav->INFO("MAIN", "Set state to CALIBRATING");
+  static Data& data = Data::getInstance();
+  StateMachine state_machine = data.getStateMachineData();
+  state_machine.current_state = State::kCalibrating;
+  data.setStateMachineData(state_machine);
+
+  ModuleStatus nav_state = data.getNavigationData().module_status;
+  while (nav_state != ModuleStatus::kReady) 
+  {
+    nav_state = data.getNavigationData().module_status;
+    Thread::sleep(100);
+  }
 
   log_nav->INFO("MAIN", "Set state to ACCELERATING");
   state_machine.current_state = State::kAccelerating;
-  d.setStateMachineData(state_machine);
-
-  main->start();
+  data.setStateMachineData(state_machine);
 
   // Accelerating for 20.25s
   Thread::sleep(20250);
 
-  log_nav->INFO("MAIN", "Set state to NOMINAL BREAKING");
+  log_nav->INFO("MAIN", "Set state to NOMINAL BRAKING");
   state_machine.current_state = State::kNominalBraking;
-  d.setStateMachineData(state_machine);
+  data.setStateMachineData(state_machine);
 
   // Breaking for 4s
   Thread::sleep(4000);
