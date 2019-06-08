@@ -1324,24 +1324,24 @@ class ClientToServer_EmergencyBrakes : public ::google::protobuf::Message /* @@p
 
   // accessors -------------------------------------------------------
 
-  // bool front_brakes = 1;
-  void clear_front_brakes();
-  static const int kFrontBrakesFieldNumber = 1;
-  bool front_brakes() const;
-  void set_front_brakes(bool value);
-
-  // bool rear_brakes = 2;
-  void clear_rear_brakes();
-  static const int kRearBrakesFieldNumber = 2;
-  bool rear_brakes() const;
-  void set_rear_brakes(bool value);
+  // repeated bool brakes = 1;
+  int brakes_size() const;
+  void clear_brakes();
+  static const int kBrakesFieldNumber = 1;
+  bool brakes(int index) const;
+  void set_brakes(int index, bool value);
+  void add_brakes(bool value);
+  const ::google::protobuf::RepeatedField< bool >&
+      brakes() const;
+  ::google::protobuf::RepeatedField< bool >*
+      mutable_brakes();
 
   // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.EmergencyBrakes)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  bool front_brakes_;
-  bool rear_brakes_;
+  ::google::protobuf::RepeatedField< bool > brakes_;
+  mutable int _brakes_cached_byte_size_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
 };
@@ -2027,32 +2027,34 @@ ClientToServer_Sensors::imu() const {
 
 // ClientToServer_EmergencyBrakes
 
-// bool front_brakes = 1;
-inline void ClientToServer_EmergencyBrakes::clear_front_brakes() {
-  front_brakes_ = false;
+// repeated bool brakes = 1;
+inline int ClientToServer_EmergencyBrakes::brakes_size() const {
+  return brakes_.size();
 }
-inline bool ClientToServer_EmergencyBrakes::front_brakes() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.EmergencyBrakes.front_brakes)
-  return front_brakes_;
+inline void ClientToServer_EmergencyBrakes::clear_brakes() {
+  brakes_.Clear();
 }
-inline void ClientToServer_EmergencyBrakes::set_front_brakes(bool value) {
-  
-  front_brakes_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.EmergencyBrakes.front_brakes)
+inline bool ClientToServer_EmergencyBrakes::brakes(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.EmergencyBrakes.brakes)
+  return brakes_.Get(index);
 }
-
-// bool rear_brakes = 2;
-inline void ClientToServer_EmergencyBrakes::clear_rear_brakes() {
-  rear_brakes_ = false;
+inline void ClientToServer_EmergencyBrakes::set_brakes(int index, bool value) {
+  brakes_.Set(index, value);
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.EmergencyBrakes.brakes)
 }
-inline bool ClientToServer_EmergencyBrakes::rear_brakes() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.EmergencyBrakes.rear_brakes)
-  return rear_brakes_;
+inline void ClientToServer_EmergencyBrakes::add_brakes(bool value) {
+  brakes_.Add(value);
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.EmergencyBrakes.brakes)
 }
-inline void ClientToServer_EmergencyBrakes::set_rear_brakes(bool value) {
-  
-  rear_brakes_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.EmergencyBrakes.rear_brakes)
+inline const ::google::protobuf::RepeatedField< bool >&
+ClientToServer_EmergencyBrakes::brakes() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.EmergencyBrakes.brakes)
+  return brakes_;
+}
+inline ::google::protobuf::RepeatedField< bool >*
+ClientToServer_EmergencyBrakes::mutable_brakes() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.EmergencyBrakes.brakes)
+  return &brakes_;
 }
 
 // -------------------------------------------------------------------

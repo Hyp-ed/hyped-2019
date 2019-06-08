@@ -134,7 +134,7 @@ void SendLoop::packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_d
   battery_data_msg.set_voltage(battery_data.voltage);
   battery_data_msg.set_current(battery_data.current);
   battery_data_msg.set_charge(battery_data.charge);
-  battery_data_msg.set_temperature(battery_data.temperature);
+  battery_data_msg.set_temperature(battery_data.average_temperature);
   battery_data_msg.set_low_voltage_cell(battery_data.low_voltage_cell);
   battery_data_msg.set_high_voltage_cell(battery_data.high_voltage_cell);
 }
@@ -164,8 +164,9 @@ void SendLoop::packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg)
   emergency_brakes_data_ = data_.getEmergencyBrakesData();
   telemetry_data::ClientToServer::EmergencyBrakes* emergency_brakes_msg = msg.mutable_emergency_brakes(); // NOLINT
 
-  emergency_brakes_msg->set_front_brakes(emergency_brakes_data_.front_brakes);
-  emergency_brakes_msg->set_rear_brakes(emergency_brakes_data_.rear_brakes);
+  for (bool brake_retracted : emergency_brakes_data_.brakes_retracted) {
+    emergency_brakes_msg->add_brakes(brake_retracted);
+  }
 }
 
 }  // namespace telemetry

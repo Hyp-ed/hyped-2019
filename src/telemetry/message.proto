@@ -89,8 +89,7 @@ message ClientToServer {
     }
 
     message EmergencyBrakes {
-        bool front_brakes = 1;
-        bool rear_brakes = 2;
+        repeated bool brakes = 1;
     }
 
     Navigation navigation = 1;
