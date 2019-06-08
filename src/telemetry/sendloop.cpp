@@ -47,6 +47,18 @@ void SendLoop::run()
     packTemperatureMessage(msg);
     packEmergencyBrakesMessage(msg);
 
+    /* data::Telemetry telem_data_struct = data_.getTelemetryData(); */
+    /* log_.INFO("Telemetry", "SHARED module_status: %d", telem_data_struct.module_status); */
+    /* log_.INFO("Telemetry", "SHARED launch_command: %s", telem_data_struct.launch_command ? "true" : "false"); // NOLINT */
+    /* log_.INFO("Telemetry", "SHARED calibrate_command: %s", telem_data_struct.calibrate_command ? "true" : "false"); // NOLINT */
+    /* log_.INFO("Telemetry", "SHARED reset_command: %s", telem_data_struct.reset_command ? "true" : "false"); // NOLINT */
+    /* log_.INFO("Telemetry", "SHARED service_propulsion_go: %s", telem_data_struct.service_propulsion_go ? "true" : "false"); // NOLINT */
+    /* log_.INFO("Telemetry", "SHARED emergency_stop_command: %s", telem_data_struct.emergency_stop_command ? "true" : "false"); // NOLINT */
+    /* log_.INFO("Telemetry", "SHARED nominal_braking_command: %s", telem_data_struct.nominal_braking_command ? "true" : "false"); // NOLINT */
+
+    /* data::StateMachine sm_data_struct = data_.getStateMachineData(); */
+    /* log_.INFO("STM", "SHARED current_state: %d", sm_data_struct.current_state); */
+
     try {
       main_ref_.client_.sendData(msg);
     }
