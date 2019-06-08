@@ -34,6 +34,7 @@ uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
 double kStripeDistance = 30.48;     // metres
 uint64_t kCheckTime = 358588;
+uint64_t kMaxTime = 1500;     // between stripe readings before throw failure
 
 
 namespace hyped {
@@ -48,7 +49,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
     : log_(log),
     data_(Data::getInstance()),
     start_time_(0),
-    check_time_(kCheckTime),
     miss_stripe_(miss_stripe),
     // double_stripe_(double_stripe),
     is_from_file_(false),
@@ -56,6 +56,11 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
+  if (miss_stripe_) {
+    log_.INFO("Fake-GpioCounter", "Fake Keyence Fail initialised");
+  } else {
+    log_.INFO("Fake-GpioCounter", "Fake Keyence initialised");
+  }
 }
 
 FakeGpioCounter::FakeGpioCounter(Logger& log,
@@ -63,7 +68,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
     : log_(log),
     data_(Data::getInstance()),
     start_time_(0),
-    check_time_(kCheckTime),
     miss_stripe_(miss_stripe),
     // double_stripe_(double_stripe),
     file_path_(file_path),
@@ -115,9 +119,10 @@ void FakeGpioCounter::checkData()
 {
   if (is_from_file_) {
     uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
-    if (time_after > 1500 && miss_stripe_) {    // TODO(Jack,Greg): Change max time between stripes
+    if (time_after > kMaxTime && miss_stripe_) {  // TODO(Jack,Greg): Change max time bw stripes
       log_.INFO("FakeGpioCounter", "missed stripe!");
       // throw failure to keyence, override with nav data
+      stripe_count_.operational = false;
     }
   }
   // let pod wait at first...then start comparing data

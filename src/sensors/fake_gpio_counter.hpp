@@ -42,7 +42,6 @@ class FakeGpioCounter : public GpioInterface {
    *
    * @param log
    * @param miss_stripe
-   * @param double_stripe
    */
   FakeGpioCounter(utils::Logger& log, bool miss_stripe);
 
@@ -51,7 +50,6 @@ class FakeGpioCounter : public GpioInterface {
    *
    * @param log
    * @param miss_stripe
-   * @param double_stripe
    * @param file_path
    */
   FakeGpioCounter(utils::Logger& log, bool miss_stripe, std::string file_path);
@@ -65,13 +63,10 @@ class FakeGpioCounter : public GpioInterface {
 
   /**
    * @brief call this function when you want to read first entry of stripe_data_ from the main
-   *
    */
-  void readData();
+  // void readData();
 
  private:
-  bool timeCheck();         // return if check_time_ exceeded
-
    /**
    * @brief based on flags from getData(), overrides stripe_count_ if not correct
    * continues after first 5 seconds of run, call this after getData()
@@ -98,19 +93,16 @@ class FakeGpioCounter : public GpioInterface {
 
   /**
    * @brief current stripe data
-   *
    */
   StripeCounter stripe_count_;
 
   /**
    * @brief if missed single stripe, set true if does not match navigation data
-   *
    */
   bool miss_stripe_;
 
   /**
    * @brief if counted extra stripe, set true if does not match navigation data
-   *
    */
   // bool double_stripe_;
 
@@ -118,7 +110,6 @@ class FakeGpioCounter : public GpioInterface {
 
   /**
    * @brief vector of StripeCounter data read from file
-   *
    */
   std::vector<StripeCounter> stripe_data_;
   bool is_from_file_;

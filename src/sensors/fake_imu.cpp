@@ -64,7 +64,11 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
   acc[2] = 9.8;
   acc_val_ = acc;
   readDataFromFile(acc_file_path_, dec_file_path_, em_file_path_);
-  log_.INFO("Fake-IMU", "Fake IMU initialised");
+  if (is_fail_) {
+    log_.INFO("Fake-IMU", "Fake IMU Fail initialised");
+  } else {
+    log_.INFO("Fake-IMU", "Fake IMU initialised");
+  }
 }
 
 void FakeImuFromFile::startCal()

@@ -18,7 +18,7 @@ uint8_t kStripeNum = 30;
 int main(int argc, char* argv[]) {
     hyped::utils::System::parseArgs(argc, argv);
     Logger log(true, 0);
-    FakeGpioCounter fake_gpio(log, false, true, "data/in/gpio_counter_normal_run.txt");
+    FakeGpioCounter fake_gpio(log, false, "data/in/gpio_counter_normal_run.txt");
     
     Data& data = Data::getInstance();
     uint32_t stripe_count = 0;

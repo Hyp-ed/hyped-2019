@@ -60,10 +60,10 @@ void printUsage()
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm, --debug_embrakes\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
-    "    --fake_imu\n"
-    "    --fake_batteries\n"
-    "    --fake_keyence\n"
-    "    --fake_temperature\n"
+    "    --fake_imu --fake_imu_fail\n"
+    "    --fake_batteries --fake_batteries_fail\n"
+    "    --fake_keyence --fake_keyence_fail\n"
+    "    --fake_temperature --fake_temperature_fail\n"
     "    --fake_embrakes --fake_motors\n"
     "    To set navigation IDs.\n"
     "    --imu_id, --run_id\n"
@@ -93,9 +93,9 @@ System::System(int argc, char* argv[])
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
       fake_keyence(false),
+      fake_temperature(false),
       fake_embrakes(false),
       fake_motors(false),
-      fake_temperature(false),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
       tube_run(true),
