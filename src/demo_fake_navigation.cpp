@@ -22,6 +22,7 @@
 #include "data/data.hpp"
 #include "navigation/main.hpp"
 #include "sensors/imu_manager.hpp"
+#include "sensors/main.hpp"
 #include "sensors/fake_gpio_counter.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"
@@ -33,9 +34,6 @@ using hyped::data::StateMachine;
 using hyped::data::ModuleStatus;
 using hyped::data::Sensors;
 using hyped::navigation::Main;
-using hyped::sensors::ImuManager;
-using hyped::sensors::GpioInterface;
-using hyped::sensors::FakeGpioCounter;
 using hyped::utils::concurrent::Thread;
 using hyped::utils::System;
 using hyped::utils::Logger;
@@ -44,8 +42,7 @@ int main(int argc, char* argv[])
 {
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
-
-  sys.fake_imu = 1;
+  static Data& data = Data::getInstance();
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
 
   if (sys.tube_run) {
@@ -56,20 +53,19 @@ int main(int argc, char* argv[])
     log_nav->INFO("NAV", "STATIONARY RUN INITIALISED");
   }
 
-  // Initialise sensors
-  ImuManager imu_manager(*log_nav);
-  imu_manager.start();
- 
-  GpioInterface* keyences_[2];  // Temporarily instead of data::Sensors::kNumKeyence
-  for (int i =0; i < 2; i++) {
-    keyences_[i] = new FakeGpioCounter(log_nav, false, false, "data/in/gpio_counter_normal_run.txt");
-  }
+  // use all fake sensors
+  sys.fake_imu = 1;
+  sys.fake_keyence = 1;
+  sys.fake_temperature = 1;
 
+  // Initialise sensors
+  hyped::sensors::Main* sensors_main = new hyped::sensors::Main(1, *log_nav);
+  sensors_main->start();
+ 
   Main* main = new Main(1, *log_nav);
   main->start();
 
   log_nav->INFO("MAIN", "Set state to CALIBRATING");
-  static Data& data = Data::getInstance();
   StateMachine state_machine = data.getStateMachineData();
   state_machine.current_state = State::kCalibrating;
   data.setStateMachineData(state_machine);
