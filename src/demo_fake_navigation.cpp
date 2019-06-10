@@ -55,6 +55,7 @@ int main(int argc, char* argv[])
 
   // use all fake sensors
   sys.fake_imu = 1;
+  sys.fake_batteries = 1;
   sys.fake_keyence = 1;
   sys.fake_temperature = 1;
 
