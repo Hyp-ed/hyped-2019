@@ -9,7 +9,12 @@ If you're running this on your laptop, make sure you've followed the [guide on b
 
 *In the past telemetry files had to manually be added to `Source.files`, this is now automated!*
 
-Whenever you want to compile a program that uses the telemetry module, make sure to use the `PROTOBUF=1` flag. For example:
+First, generate the protobuf files (only necessary if your version of protobufs is different from v3.6.1 which is what the generated files saved in `src/telemetry/telemetrydata` are for):
+```
+$ make protoc
+```
+
+Now, whenever you want to compile a program that uses the telemetry module, make sure to use the `PROTOBUF=1` flag. For example:
 ```
 $ make MAIN=demo_telem.cpp PROTOBUF=1
 ```
