@@ -157,6 +157,11 @@ namespace navigation {
       DataPoint<NavigationType> distance_;
       NavigationArray gravity_calibration_;
 
+      // Previous timestamp
+      uint32_t prev_timestamp;
+      // Uncertainty in distance
+      NavigationType distance_uncertainty;
+
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
       Integrator<NavigationType> velocity_integrator_;      // velocity to distance
@@ -170,11 +175,9 @@ namespace navigation {
        */
       void queryKeyence();
       /**
-       * @brief Get uncertainty in distance obtained through IMU measurements.
-       *
-       * @return uncertainty in type double
+       * @brief Update uncertainty in distance obtained through IMU measurements.
        */
-      double estimateDistanceUncertainty();
+      void updateUncertainty();
   };
 
 

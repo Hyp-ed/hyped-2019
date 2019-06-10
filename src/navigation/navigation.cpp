@@ -36,6 +36,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            acceleration_(0, 0.),
            velocity_(0, 0.),
            distance_(0, 0.),
+           distance_uncertainty(0.),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -152,22 +153,17 @@ void Navigation::queryImus()
   acceleration_integrator_.update(acceleration_);
   velocity_integrator_.update(velocity_);
 }
-double Navigation::estimateDistanceUncertainty()
+void Navigation::updateUncertainty()
 {
-  /* The function to get the uncertainty simply based on the uncertainty in time and
-  acceleration is obtained from s = 1/2*at², such that due to partial derivatives, the
-  uncertainty is given by: */
-  /* a is the current acceleration, t the current time, dadt the derivative of a with respect to
-  t at the current time, deltaA is the uncertainty in acceleration at the current time. The derivation
-  of this can be uploaded at request. */
-  double deltaA = 0.0;  // Temporary value
-  double dadt = 0.0;    // Temporary value
-  double a = acceleration_.value;
-  double t = (utils::Timer::getTimeMicros())/100000.0;
-  double uncertainty = sqrt((4*a*a*t*t + 2*a*t*t*t*(dadt) + t*t*t*t*(dadt)*(dadt)/4)*0.000001 +
-                                  t*t*t*t*deltaA*deltaA/4);
-  // TODO(Justus) add practical uncertainty to this.
-  return uncertainty;
+  /* Uncertainty from measuring is the timestamp between two measurements times velocity.
+   * Furthermore, the velocity has an uncertainty due to acceleration and timestamp. */
+  double delta_a = 0.01;
+  double delta_t = (distance_.timestamp - prev_timestamp)/1000000.0;
+  NavigationType abs_acceleration = acceleration_.value;
+  if (acceleration_.value < 0.0) abs_acceleration = (-1)*acceleration_.value;
+  distance_uncertainty += 0.5*abs_acceleration*delta_t*delta_t;
+  distance_uncertainty += 0.5*delta_a*(distance_.timestamp*distance_.timestamp -
+    prev_timestamp*prev_timestamp)/1000000000000.0;
 }
 void Navigation::queryKeyence()
 {
@@ -192,8 +188,8 @@ void Navigation::queryKeyence()
       /* Error handling: If distance from keyence still deviates more than the allowed
       uncertainty, then the measurements are no longer believable. Important that this
       is only checked in an update, otherwise we might throw an error in between stripes. */
-      if (distance_.value - stripe_counter_.value*30.48 > 0.0 - allowed_uncertainty &&
-          distance_.value - stripe_counter_.value*30.48 < allowed_uncertainty) {
+      if (distance_.value - stripe_counter_.value*30.48 < 0.0 - allowed_uncertainty ||
+          distance_.value - stripe_counter_.value*30.48 > allowed_uncertainty) {
         // TODO(Justus) what happens in case of keyence failure?
       }
       velocity_.value -= (distance_.value - stripe_counter_.value*30.48)
@@ -218,18 +214,21 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  if (counter_ % 1000 == 0) {  // kPrintFreq
-    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(keyence)=%.3f", //NOLINT
+  if (counter_ % 1 == 0) {  // kPrintFreq
+    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f, d(unc)=%.3f", //NOLINT
                      counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
-                     stripe_counter_.value*30.48);
+                     stripe_counter_.value*30.48, distance_uncertainty);
+    // log_.INFO("NAV", "\t distance_.time=%d, prev_time=%d", distance_.timestamp, prev_timestamp);
   }
   counter_++;
+  prev_timestamp = distance_.timestamp;
 }
 
 void Navigation::navigate()
 {
   queryImus();
   queryKeyence();
+  updateUncertainty();
   updateData();
 }
 
@@ -239,6 +238,7 @@ void Navigation::initTimestamps()
   acceleration_.timestamp = utils::Timer::getTimeMicros();
   velocity_    .timestamp = utils::Timer::getTimeMicros();
   distance_    .timestamp = utils::Timer::getTimeMicros();
+  prev_timestamp = utils::Timer::getTimeMicros();
   // First iteration --> get initial keyence data
   // (should be zero counters and corresponding timestamp)
   prev_keyence_readings_ = data_.getSensorsKeyenceData();
