@@ -196,6 +196,9 @@ void Navigation::queryKeyence()
           distance_.value - stripe_counter_.value*30.48 < allowed_uncertainty) {
         // TODO(Justus) what happens in case of keyence failure?
       }
+      velocity_.value -= (distance_.value - stripe_counter_.value*30.48)
+        *1000000/stripe_counter_.timestamp;
+      distance_.value = stripe_counter_.value*30.48;
       break;
     }
   }
@@ -215,7 +218,7 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  if (counter_ % kPrintFreq == 0) {
+  if (counter_ % 1000 == 0) {  // kPrintFreq
     log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(keyence)=%.3f", //NOLINT
                      counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                      stripe_counter_.value*30.48);
