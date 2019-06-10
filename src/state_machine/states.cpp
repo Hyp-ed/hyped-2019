@@ -24,7 +24,6 @@
 namespace hyped {
 
 using state = data::State;
-using utils::io::GPIO;
 using utils::System;
 
 namespace state_machine {
@@ -90,7 +89,6 @@ void Accelerating::react(HypedMachine &machine, Event event)
 
 void NominalBraking::entry()
 {
-  HypedMachine::engageEmbrakes();
   state_ = state::kNominalBraking;
 }
 
@@ -105,7 +103,6 @@ void NominalBraking::react(HypedMachine &machine, Event event)
 
 void EmergencyBraking::entry()
 {
-  HypedMachine::engageEmbrakes();
   state_ = state::kEmergencyBraking;
 }
 

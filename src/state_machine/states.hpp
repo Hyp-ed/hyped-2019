@@ -36,8 +36,6 @@
 
 namespace hyped {
 
-using utils::io::GPIO;
-
 namespace state_machine {
 
 class HypedMachine;
