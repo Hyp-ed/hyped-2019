@@ -46,7 +46,6 @@ void Temperature::run()
   temp_.operational = true;
 }
 
-// TODO(Anyone): scale data correctly for TMP35
 int Temperature::scaleData(uint16_t raw_value)
 {
   // convert to C temperature
