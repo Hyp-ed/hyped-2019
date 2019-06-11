@@ -194,6 +194,7 @@ void Navigation::queryKeyence()
       }
       velocity_.value -= (distance_.value - stripe_counter_.value*30.48)
         *1000000/stripe_counter_.timestamp;
+      distance_uncertainty += sqrt(abs(distance_.value - stripe_counter_.value*30.48)/2);
       distance_.value = stripe_counter_.value*30.48;
       break;
     }
@@ -218,6 +219,8 @@ void Navigation::updateData()
     log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f, d(unc)=%.3f", //NOLINT
                      counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                      stripe_counter_.value*30.48, distance_uncertainty);
+    //                 sqrt(filters_[0].KalmanFilter::getEstimateVariance()/
+    //                   (data::Sensors::kNumImus)));
     // log_.INFO("NAV", "\t distance_.time=%d, prev_time=%d", distance_.timestamp, prev_timestamp);
   }
   counter_++;
