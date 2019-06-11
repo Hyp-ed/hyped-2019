@@ -51,7 +51,7 @@ int Temperature::scaleData(uint16_t raw_value)
 {
   // convert to C temperature
   double temp = static_cast<double>(raw_value) / 4095;
-  temp = (temp*165) - 40;
+  temp = (temp*230) - 50;
   return static_cast<int>(temp);
 }
 
