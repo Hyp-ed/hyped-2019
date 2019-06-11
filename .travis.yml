@@ -6,7 +6,10 @@ language: bash
 # install: true
 
 git:
-  depth: 1
+  depth: 
+    
+before_install:
+- ./install-protobuf.sh
 
 # before_script:
 # - docker run --rm --privileged multiarch/qemu-user-static:register --reset
