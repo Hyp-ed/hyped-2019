@@ -31,12 +31,16 @@
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/system.hpp"
+#include "utils/io/gpio.hpp"
+
+constexpr int kSSRKill = 70;
 
 namespace hyped {
 
 using utils::concurrent::Thread;
 using utils::Logger;
 using hyped::data::BatteryData;
+using utils::io::GPIO;
 
 namespace sensors {
 
