@@ -24,9 +24,9 @@ namespace hyped
 namespace embrakes
 {
     Main::Main(uint8_t id, Logger &log)
-	: Thread(id, log),
-	  log_(log),
-	  finishedRetracting_(false)
+  : Thread(id, log),
+    log_(log),
+    finishedRetracting_(false)
 {
 }
 
@@ -34,47 +34,58 @@ void Main::run()
 {
   log_.INFO("Embrakes", "Thread started");
 
-	System &sys = System::getSystem();
+  System &sys = System::getSystem();
 
-	Data stateMachineData = Data::getInstance();
+  Data stateMachineData = Data::getInstance();
 
-	EmergencyBrakes emBrakesState = stateMachineData.getEmergencyBrakesData();
+  EmergencyBrakes emBrakesState = stateMachineData.getEmergencyBrakesData();
 
-	// activate, step, push
-	Pins pins[BREAKAMOUNT]={
-		{8,9,11}
-	};
+  // activate, step, push
+  Pins pins[BREAKAMOUNT]={
+    {8,9,11}
+  };
 
-	retractorManager = new RetractorManager(BREAKAMOUNT, pins,log_);
+  retractorManager = new RetractorManager(BREAKAMOUNT, pins,log_);
 
-	while (sys.running_)
-	{
+  while (sys.running_)
+  {
     // Get the current state of the system from the state machine's data
-		
-		currentState = stateMachineData.getStateMachineData().current_state;
-		
-		if (currentState == State::kCalibrating) // Retract screw
-		{
-			if (retractorManager->getStatus() == StatusCodes::IDLE) {
-					log_.INFO("Embrakes", "Start Retracting");
-					retractorManager->retract();
-			} else if (retractorManager->getStatus() == StatusCodes::ERROR) {
-				log_.ERR("Embrakes", "An error occured");
-				emBrakesState.module_status = ModuleStatus::kCriticalFailure;
-				stateMachineData.setEmergencyBrakesData(emBrakesState);
+    
+    currentState = stateMachineData.getStateMachineData().current_state;
+    
+  if (currentState == State::kCalibrating) { // Retract screw
+    if (retractorManager->getStatus() == StatusCodes::IDLE) {
+          log_.INFO("Embrakes", "Start Retracting");
+          retractorManager->retract();
+      } else if (retractorManager->getStatus() == StatusCodes::ERROR) {
+        log_.ERR("Embrakes", "An error occured");
+        emBrakesState.module_status = ModuleStatus::kCriticalFailure;
+        stateMachineData.setEmergencyBrakesData(emBrakesState);
 
-				finishedRetracting_ = true;
-			} else if (retractorManager->getStatus() == StatusCodes::FINISHED && !finishedRetracting_) {
-				log_.INFO("Embrakes", "Brakes are retracted");
-				emBrakesState.module_status = ModuleStatus::kReady;
-				stateMachineData.setEmergencyBrakesData(emBrakesState);
-				
-				finishedRetracting_ = true;
-			}
-		}
+        finishedRetracting_ = true;
+      } else if (retractorManager->getStatus() == StatusCodes::FINISHED && !finishedRetracting_) {
+        log_.INFO("Embrakes", "Brakes are retracted");
+        emBrakesState.module_status = ModuleStatus::kReady;
+        stateMachineData.setEmergencyBrakesData(emBrakesState);
+        
+        finishedRetracting_ = true;
+      }
+    } else if (currentState == State::kNominalBraking) {
+	  log_.INFO("Embrakes", "Starting Nominal Braking");
+      emBrakesState.front_brakes = true;
+	  emBrakesState.rear_brakes = true;
+	  stateMachineData.setEmergencyBrakesData(emBrakesState);
+
+    } else if (currentState == State::kEmergencyBraking) {
+	  log_.INFO("Embrakes", "Starting Emergency Braking");
+	  emBrakesState.front_brakes = true;
+	  emBrakesState.rear_brakes = true;
+	  stateMachineData.setEmergencyBrakesData(emBrakesState);
+	  
 	}
+  }
 
-	log_.INFO("Embrakes", "Thread shutting down");
+  log_.INFO("Embrakes", "Thread shutting down");
 }
 
 }} // hyped::motor_control
