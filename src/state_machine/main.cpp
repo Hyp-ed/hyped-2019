@@ -233,7 +233,7 @@ bool Main::checkMaxDistanceReached()
     log_.INFO("STATE", "max distance reached");
     log_.INFO("STATE", "current distance, braking distance: %f %f"
       , nav_data_.distance
-      , telemetry_data_.run_length - nav_data_.braking_distance);
+      , nav_data_.braking_distance);
     hypedMachine.handleEvent(kMaxDistanceReached);
     return true;
   }
