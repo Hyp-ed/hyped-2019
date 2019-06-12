@@ -26,7 +26,8 @@ namespace embrakes
     Main::Main(uint8_t id, Logger &log)
   : Thread(id, log),
     log_(log),
-    finishedRetracting_(false)
+    finishedRetracting_(false),
+    data_(data::Data::getInstance())
 {
 }
 
@@ -35,10 +36,6 @@ void Main::run()
   log_.INFO("Embrakes", "Thread started");
 
   System &sys = System::getSystem();
-
-  Data stateMachineData = Data::getInstance();
-
-  EmergencyBrakes emBrakesState = stateMachineData.getEmergencyBrakesData();
 
   // activate, step, push
   Pins pins[BREAKAMOUNT]={
@@ -49,9 +46,11 @@ void Main::run()
 
   while (sys.running_)
   {
-    // Get the current state of the system from the state machine's data
+    // Get the current state of embrakes and state machine modules from data
+    em_brakes_ = data_.getEmergencyBrakesData();
+    sm_data_ = data_.getStateMachineData();
     
-    currentState = stateMachineData.getStateMachineData().current_state;
+    currentState = sm_data_.current_state;
     
   if (currentState == State::kCalibrating) { // Retract screw
     if (retractorManager->getStatus() == StatusCodes::IDLE) {
@@ -59,28 +58,28 @@ void Main::run()
           retractorManager->retract();
       } else if (retractorManager->getStatus() == StatusCodes::ERROR) {
         log_.ERR("Embrakes", "An error occured");
-        emBrakesState.module_status = ModuleStatus::kCriticalFailure;
-        stateMachineData.setEmergencyBrakesData(emBrakesState);
+        em_brakes_.module_status = ModuleStatus::kCriticalFailure;
+        data_.setEmergencyBrakesData(em_brakes_);
 
         finishedRetracting_ = true;
       } else if (retractorManager->getStatus() == StatusCodes::FINISHED && !finishedRetracting_) {
         log_.INFO("Embrakes", "Brakes are retracted");
-        emBrakesState.module_status = ModuleStatus::kReady;
-        stateMachineData.setEmergencyBrakesData(emBrakesState);
+        em_brakes_.module_status = ModuleStatus::kReady;
+        data_.setEmergencyBrakesData(em_brakes_);
         
         finishedRetracting_ = true;
       }
     } else if (currentState == State::kNominalBraking) {
-	  log_.INFO("Embrakes", "Starting Nominal Braking");
-      emBrakesState.front_brakes = true;
-	  emBrakesState.rear_brakes = true;
-	  stateMachineData.setEmergencyBrakesData(emBrakesState);
+	    log_.INFO("Embrakes", "Starting Nominal Braking");
+      em_brakes_.front_brakes = true;
+	    em_brakes_.rear_brakes = true;
+	    data_.setEmergencyBrakesData(em_brakes_);
 
     } else if (currentState == State::kEmergencyBraking) {
-	  log_.INFO("Embrakes", "Starting Emergency Braking");
-	  emBrakesState.front_brakes = true;
-	  emBrakesState.rear_brakes = true;
-	  stateMachineData.setEmergencyBrakesData(emBrakesState);
+	    log_.INFO("Embrakes", "Starting Emergency Braking");
+	    em_brakes_.front_brakes = true;
+	    em_brakes_.rear_brakes = true;
+	    data_.setEmergencyBrakesData(em_brakes_);
 	  
 	}
   }
