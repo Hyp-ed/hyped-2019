@@ -316,6 +316,14 @@ class Data {
   Lock lock_batteries_;
   Lock lock_emergency_brakes_;
   Lock lock_calibration_data_;
+
+  Data() {}
+
+ public:
+  Data(const Data&) = delete;
+  Data& operator=(const Data &) = delete;
+  Data(Data &&) = delete;
+  Data & operator=(Data &&) = delete;
 };
 
 }}  // namespace hyped::data
