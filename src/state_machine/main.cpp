@@ -17,12 +17,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
-#include <cstdint>
-
-#include "state_machine/hyped-machine.hpp"
-#include "state_machine/main.hpp"
-
 #include <cstdint>
 
 #include "state_machine/hyped-machine.hpp"
