@@ -7,8 +7,6 @@
 #include "utils/io/can.hpp"
 #include <iostream>
 
-#include "./embrakes/retractor_manager.hpp"
-
 using hyped::System;
 using hyped::utils::Logger;
 using hyped::embrakes::Main;

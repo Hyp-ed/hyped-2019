@@ -23,7 +23,6 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "data/data.hpp"
-#include "retractor_manager.hpp"
 
 #define BREAKAMOUNT 1
 
@@ -41,11 +40,6 @@ namespace embrakes {
 
 /*
  * @description This module handles the interaction with the embrakes. 
- * If the current state of the state machine is kCalibrating, the Main class calls the retract function of the RetractorManager
- * class to start the retracting process. This includes the initialization of the GPIO pins and the actual retracting process,
- * which is done in it's own thread in the Retractor class for every embrake (There are 4)
- * After the brakes are fully retracted by the Retractor class the Main class is setting the module_status to kReady. If the brakes could not be fully retracted,
- * the module_status is set to kCriticalFailure.
 */
 class Main : public Thread 
 {
@@ -62,9 +56,7 @@ class Main : public Thread
 
   private:
     State currentState;
-    RetractorManager *retractorManager;
     Logger &log_;
-    bool finishedRetracting_;
 
     data::Data& data_;
     data::StateMachine sm_data_;
