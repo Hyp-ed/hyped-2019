@@ -121,6 +121,10 @@ namespace navigation {
        * @brief Initialise timestamps for integration
        */
       void initTimestamps();
+      /**
+       * @brief Disable keyence readings to have any impact on the run.
+       */
+      void disableKeyenceUsage();
 
     private:
       static constexpr int kNumCalibrationQueries = 10000;
@@ -148,6 +152,8 @@ namespace navigation {
       KeyenceDataArray keyence_readings_;
       // Previous keyence data for comparison
       KeyenceDataArray prev_keyence_readings_;
+      // Are the keyence sensors used or ignored?
+      bool keyence_used;
 
 
       // To store estimated values

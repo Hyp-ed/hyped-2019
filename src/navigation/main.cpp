@@ -42,6 +42,7 @@ namespace navigation {
       state_machine = data.getStateMachineData();
     }
 
+    if (!sys_.tube_run) nav_.Navigation::disableKeyenceUsage();
     nav_.calibrateGravity();
 
     // wait for accelerating state
