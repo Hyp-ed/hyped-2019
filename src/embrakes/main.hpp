@@ -65,6 +65,10 @@ class Main : public Thread
     RetractorManager *retractorManager;
     Logger &log_;
     bool finishedRetracting_;
+
+    data::Data& data_;
+    data::StateMachine sm_data_;
+    data::EmergencyBrakes em_brakes_;
 };
 
 }}
