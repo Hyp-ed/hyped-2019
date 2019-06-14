@@ -58,6 +58,7 @@ Controller::Controller(Logger& log, uint8_t id)
   FileReader::readFileData(healthCheckMsgs, 2, kHealthCheckMsgFile);
   FileReader::readFileData(updateMotorTempMsg, 1, kUpdateMotorTempFile);
   FileReader::readFileData(updateContrTempMsg, 1, kUpdateContrTempFile);
+  FileReader::readFileData(autoAlignMsg, 1, kAutoAlignMsgFile);
 }
 
 bool Controller::sendControllerMessage(ControllerMessage message_template)
@@ -242,6 +243,10 @@ void Controller::requestStateTransition(utils::io::can::Frame& message, Controll
     log_.ERR("MOTOR", "Controller %d, Could not transition to state %d", node_id_, state);
     return;
   }
+}
+
+void Controller::autoAlignMotorPosition() {
+  if (sendControllerMessage(autoAlignMsg[0])) return;
 }
 
 void Controller::processEmergencyMessage(utils::io::can::Frame& message)
