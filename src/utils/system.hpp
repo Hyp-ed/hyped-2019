@@ -75,6 +75,8 @@ class System {
   // Navigation System IDs
   int8_t imu_id;
   int8_t run_id;
+  // Navigation IMU axis
+  int8_t axis;
   // Navigation kind of run
   bool tube_run;
   bool elevator_run;
