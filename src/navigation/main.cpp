@@ -61,6 +61,4 @@ namespace navigation {
     }
   }
 
-
-
 }}  // namespace hyped::navigation

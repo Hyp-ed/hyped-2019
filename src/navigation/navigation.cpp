@@ -15,6 +15,7 @@
  *    either express or implied. See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+#include <algorithm>
 
 #include "navigation/navigation.hpp"
 #include "utils/concurrent/thread.hpp"
@@ -135,14 +136,18 @@ void Navigation::calibrateGravity()
 
 void Navigation::queryImus()
 {
+  NavigationArray acc_raw;
   OnlineStatistics<NavigationType> acc_avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
   uint32_t t = sensor_readings_.timestamp;
-  
+  // process raw values
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    // Apply calibrated correction
-    NavigationType acc = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
-    NavigationType estimate = filters_[i].filter(acc);
+    acc_raw[i] = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
+  }
+  tukeyFences(acc_raw, kTukeyThreshold);
+  // Kalman filter the readings
+  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+    NavigationType estimate = filters_[i].filter(acc_raw[i]);
     acc_avg_filter.update(estimate);
   }
   acceleration_.value = acc_avg_filter.getMean();
@@ -150,6 +155,30 @@ void Navigation::queryImus()
 
   acceleration_integrator_.update(acceleration_);
   velocity_integrator_.update(velocity_);
+}
+
+// TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
+void Navigation::tukeyFences(NavigationArray data_array, float threshold)
+{
+  // copy the original array for sorting
+  NavigationArray data_array_copy = data_array;
+  // find the quartiles
+  std::sort(data_array_copy.begin(), data_array_copy.end());
+  float q1 = (data_array_copy[0]+data_array_copy[1]) / 2.;
+  float q2 = (data_array_copy[1]+data_array_copy[2]) / 2.;
+  float q3 = (data_array_copy[2]+data_array_copy[3]) / 2.;
+  float iqr = q3 - q1;
+  // find the thresholds
+  float upper_limit = q3 + threshold*iqr;
+  float lower_limit = q1 - threshold*iqr;
+  // replace any outliers with the median
+  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+    if (data_array[i] < lower_limit or data_array[i] > upper_limit) {
+      log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f. Updated to %.3f", //NOLINT
+                       i, data_array[i], q2);
+      data_array[i] = q2;
+    }
+  }
 }
 
 void Navigation::updateData()

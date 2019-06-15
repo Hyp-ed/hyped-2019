@@ -48,7 +48,7 @@ namespace navigation {
   class Navigation {
     public:
       typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
-      typedef DataPoint<ImuDataArray>                      ImuDataPointArray;
+      typedef DataPoint<ImuDataArray> ImuDataPointArray;
       typedef std::array<NavigationType, data::Sensors::kNumImus> NavigationArray;
       typedef std::array<KalmanFilter, data::Sensors::kNumImus> FilterArray;
 
@@ -107,6 +107,13 @@ namespace navigation {
        */
       void calibrateGravity();
       /**
+       * @brief Apply Tukey's fences to an array of readings
+       *
+       * @param pointer to array of original acceleration readings
+       * @param threshold value
+       */
+      void tukeyFences(NavigationArray data_array, float threshold);
+      /**
        * @brief Update central data structure
        */
       void updateData();
@@ -124,6 +131,7 @@ namespace navigation {
       static constexpr int kNumCalibrationQueries = 10000;
       static constexpr int kPrintFreq = 1;
       static constexpr NavigationType kEmergencyDeceleration = 24;
+      static constexpr float kTukeyThreshold = 0.75;
 
       // System communication
       Logger& log_;
