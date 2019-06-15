@@ -27,10 +27,11 @@ namespace navigation {
     : Thread(id, log),
       log_(log),
       sys_(System::getSystem()),
-      nav_(log) {}
+      nav_(log, sys_.axis) {}
 
   void Main::run()
   {
+    log_.INFO("NAV", "Axis: %d", sys_.axis);
     log_.INFO("NAV", "Navigation waiting for calibration");
 
     Data& data = Data::getInstance();
