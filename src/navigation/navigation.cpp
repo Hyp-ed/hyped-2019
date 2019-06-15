@@ -108,7 +108,6 @@ NavigationType Navigation::getBrakingDistance() const
   return braking_distance;
 }
 
-// TODO(Neil): add delay between samples?
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
@@ -139,6 +138,7 @@ void Navigation::queryImus()
   OnlineStatistics<NavigationType> acc_avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
   uint32_t t = sensor_readings_.timestamp;
+  
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     // Apply calibrated correction
     NavigationType acc = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];

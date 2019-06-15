@@ -77,6 +77,8 @@ int main(int argc, char* argv[])
 
   // Accelerating (i.e. measuring) for 45s
   Thread::sleep(45000);
+  // Accelerating (i.e. measuring) for 0.1s
+  //Thread::sleep(100);
 
   // Exit gracefully
   sys.running_ = false;

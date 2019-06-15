@@ -27,7 +27,7 @@ namespace navigation {
     : Thread(id, log),
       log_(log),
       sys_(System::getSystem()),
-      nav_(log) {}
+      nav_(log, 1) {}
 
   void Main::run()
   {

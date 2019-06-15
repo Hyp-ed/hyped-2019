@@ -56,6 +56,13 @@ class KalmanFilter
     unsigned int    k_;
     KalmanMultivariate  kalmanFilter_;
 
+    // covariance matrix variances
+    static constexpr float kInitialErrorVar = 0.5;
+    static constexpr float kStateTransitionVar = 0.02;
+    static constexpr float kTubeMeasurementVar = 0.001;
+    static constexpr float kElevatorMeasurementVar = 0.12;
+    static constexpr float kStationaryMeasurementVar = 0.04;
+
     // create initial error covariance matrix P
     const MatrixXf createInitialErrorCovarianceMatrix();
 
