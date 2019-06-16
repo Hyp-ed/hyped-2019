@@ -67,6 +67,7 @@ BmsManager::BmsManager(Logger& log)
 
 void BmsManager::run()
 {
+  GPIO kill_switch(kSSRKill, utils::io::gpio::kOut);
   while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -91,7 +92,6 @@ void BmsManager::run()
 
     // set high to kSSRKill if LP or HP is kCriticalFailure
     if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
-      GPIO kill_switch(kSSRKill, utils::io::gpio::kOut);
       kill_switch.set();
       log_.INFO("BMS-MANAGER", "SSR Kill Switch has been set");
     }
