@@ -48,7 +48,7 @@ BmsManager::BmsManager(Logger& log)
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
-  } else if (sys_.fake_temperature_fail) {
+  } else if (sys_.fake_batteries_fail) {
     // fake batteries fail here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
       bms_[i] = new FakeBatteries(log_, true, true);

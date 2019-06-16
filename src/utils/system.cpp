@@ -245,28 +245,28 @@ System::System(int argc, char* argv[])
         else        fake_embrakes = 1;
         break;
       case 'I':   // fake_imu_fail
-        if (optarg) fake_imu = atoi(optarg);
-        else        fake_imu = 1;
+        if (optarg) fake_imu_fail = atoi(optarg);
+        else        fake_imu_fail = 1;
         break;
       case 'J':   // fake batteries_fail
-        if (optarg) fake_batteries = atoi(optarg);
-        else        fake_batteries = 1;
+        if (optarg) fake_batteries_fail = atoi(optarg);
+        else        fake_batteries_fail = 1;
         break;
       case 'K':   // fake_keyence_fail
-        if (optarg) fake_keyence = atoi(optarg);
-        else        fake_keyence = 1;
+        if (optarg) fake_keyence_fail = atoi(optarg);
+        else        fake_keyence_fail = 1;
         break;
       case 'L':   // fake_temeperature_fail
-        if (optarg) fake_temperature = atoi(optarg);
-        else        fake_temperature = 1;
+        if (optarg) fake_temperature_fail = atoi(optarg);
+        else        fake_temperature_fail = 1;
         break;
       case 'M':   // fake_motors_fail
-        if (optarg) fake_motors = atoi(optarg);
-        else        fake_motors = 1;
+        if (optarg) fake_motors_fail = atoi(optarg);
+        else        fake_motors_fail = 1;
         break;
       case 'N':   // fake_embrakes_fail
-        if (optarg) fake_embrakes = atoi(optarg);
-        else        fake_embrakes = 1;
+        if (optarg) fake_embrakes_fail = atoi(optarg);
+        else        fake_embrakes_fail = 1;
         break;
       case 'p':   // imu_id
         if (optarg) imu_id = atoi(optarg);
