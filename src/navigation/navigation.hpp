@@ -42,6 +42,7 @@ using navigation::KalmanFilter;
 using utils::Logger;
 using utils::math::Integrator;
 using utils::math::OnlineStatistics;
+using utils::math::RollingStatistics;
 
 namespace navigation {
 
@@ -112,7 +113,7 @@ namespace navigation {
        * @param pointer to array of original acceleration readings
        * @param threshold value
        */
-      void tukeyFences(NavigationArray data_array, float threshold);
+      void tukeyFences(NavigationArray& data_array, float threshold);
       /**
        * @brief Update central data structure
        */
@@ -128,7 +129,9 @@ namespace navigation {
       void initTimestamps();
 
     private:
-      static constexpr int kNumCalibrationQueries = 10000;
+      static constexpr int kCalibrationAttempts = 3;
+      static constexpr int kCalibrationQueries = 10000;
+
       static constexpr int kPrintFreq = 1;
       static constexpr NavigationType kEmergencyDeceleration = 24;
       static constexpr float kTukeyThreshold = 0.75;
@@ -143,6 +146,9 @@ namespace navigation {
 
       // movement axis
       unsigned int axis_;
+
+      // acceptable variances for calibration measurements: {x, y, z}
+      std::array<float, 3> calibration_limits_;
 
       // Kalman filters to filter each IMU measurement individually
       FilterArray filters_;

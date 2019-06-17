@@ -33,6 +33,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
+           calibration_limits_({0.001, 0.001, 0.05}),
            acceleration_(0., 0.),
            velocity_(0., 0.),
            distance_(0., 0.),
@@ -112,26 +113,59 @@ NavigationType Navigation::getBrakingDistance() const
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
-  std::array<OnlineStatistics<NavigationType>, data::Sensors::kNumImus> online_array;
-  // Average each sensor over specified number of readings
-  for (int i = 0; i < kNumCalibrationQueries; ++i) {
-    sensor_readings_ = data_.getSensorsImuData();
-    for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-      online_array[j].update(sensor_readings_.value[j].acc[axis_]);
+  std::array<RollingStatistics<NavigationType>, data::Sensors::kNumImus> online_array =
+    {RollingStatistics<NavigationType>(kCalibrationQueries),
+     RollingStatistics<NavigationType>(kCalibrationQueries),
+     RollingStatistics<NavigationType>(kCalibrationQueries),
+     RollingStatistics<NavigationType>(kCalibrationQueries)};
+  bool calibration_successful = false;
+  int calibration_attempts = 0;
+
+  while (!calibration_successful && calibration_attempts < kCalibrationAttempts) {
+    log_.INFO("NAV", "Calibration attempt %d", calibration_attempts+1);
+
+    // Average each sensor over specified number of readings
+    for (int i = 0; i < kCalibrationQueries; ++i) {
+      sensor_readings_ = data_.getSensorsImuData();
+      for (int j = 0; j < data::Sensors::kNumImus; ++j) {
+        online_array[j].update(sensor_readings_.value[j].acc[axis_]);
+      }
+      Thread::sleep(1);
     }
-    Thread::sleep(1);
+    // Check if each calibration's varaince is acceptable
+    calibration_successful = true;
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      bool var_within_lim = online_array[i].getVariance() < calibration_limits_[axis_];
+      calibration_successful = calibration_successful && var_within_lim;
+    }
+    calibration_attempts++;
   }
-  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    gravity_calibration_[i] = online_array[i].getMean();
-    double var = online_array[i].getVariance();
-    log_.INFO("NAV",
-      "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
-    filters_[i].updateMeasurementCovarianceMatrix(var);
+
+  // Store calibration and update filters if successful
+  if (calibration_successful) {
+    log_.INFO("NAV", "Calibration of IMU acceleration succeeded with final readings:");
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      gravity_calibration_[i] = online_array[i].getMean();
+      double var = online_array[i].getVariance();
+      filters_[i].updateMeasurementCovarianceMatrix(var);
+
+      log_.INFO("NAV", "\tIMU %d: g=%.5f, var=%.5f", i, gravity_calibration_[i], var);
+    }
+    status_ = ModuleStatus::kReady;
+    updateData();
+    log_.INFO("NAV", "Navigation module ready");
+  } else {
+    log_.INFO("NAV", "Calibration of IMU acceleration failed with final readings:");
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      double acc = online_array[i].getMean();
+      double var = online_array[i].getVariance();
+
+      log_.INFO("NAV", "\tIMU %d: g=%.5f, var=%.5f", i, acc, var);
+    }
+    status_ = ModuleStatus::kCriticalFailure;
+    updateData();
+    log_.INFO("NAV", "Navigation module failed on calibration");
   }
-  // After calibration is complete we are ready to measure
-  status_ = ModuleStatus::kReady;
-  updateData();
-  log_.INFO("NAV", "Navigation module ready");
 }
 
 void Navigation::queryImus()
@@ -158,7 +192,7 @@ void Navigation::queryImus()
 }
 
 // TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
-void Navigation::tukeyFences(NavigationArray data_array, float threshold)
+void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
 {
   // copy the original array for sorting
   NavigationArray data_array_copy = data_array;

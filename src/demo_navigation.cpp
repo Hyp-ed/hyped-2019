@@ -40,8 +40,9 @@ int main(int argc, char* argv[])
 {
   System::parseArgs(argc, argv);
   System &sys = System::getSystem();
-
   Logger* log_nav = new Logger(sys.verbose_nav, sys.debug_nav);
+  static Data& data = Data::getInstance();
+  StateMachine state_machine = data.getStateMachineData();
 
   if (sys.tube_run) {
     log_nav->INFO("NAV", "TUBE RUN INITIALISED");
@@ -58,28 +59,37 @@ int main(int argc, char* argv[])
   Main* main = new Main(1, *log_nav);
   main->start();
 
+  log_nav->INFO("MAIN", "Set state to IDLE");
+  state_machine.current_state = State::kIdle;
+  data.setStateMachineData(state_machine);
+  Thread::sleep(5000);
+
   log_nav->INFO("MAIN", "Set state to CALIBRATING");
-  static Data& data = Data::getInstance();
-  StateMachine state_machine = data.getStateMachineData();
   state_machine.current_state = State::kCalibrating;
   data.setStateMachineData(state_machine);
 
   ModuleStatus nav_state = data.getNavigationData().module_status;
-  while (nav_state != ModuleStatus::kReady) 
-  {
+  /*
+  log_nav->INFO("MAIN", "Nav state: %s", nav_state);
+  */
+
+  while ((nav_state == ModuleStatus::kStart) || (nav_state == ModuleStatus::kInit)) {
     nav_state = data.getNavigationData().module_status;
-    Thread::sleep(100);
+    Thread::sleep(100);  
   }
 
-  log_nav->INFO("MAIN", "Set state to ACCELERATING");
-  state_machine.current_state = State::kAccelerating;
-  data.setStateMachineData(state_machine);
-
-  // Accelerating (i.e. measuring) for 45s
-  Thread::sleep(45000);
-  // Accelerating (i.e. measuring) for 0.1s
-  //Thread::sleep(100);
-
+  if (nav_state == ModuleStatus::kReady) {
+    log_nav->INFO("MAIN", "Set state to ACCELERATING");
+    state_machine.current_state = State::kAccelerating;
+    data.setStateMachineData(state_machine);
+    // Accelerating (i.e. measuring) for 45s
+    Thread::sleep(45000);
+  } else if (nav_state == ModuleStatus::kCriticalFailure) {
+    log_nav->INFO("MAIN", "Set state to FAILURESTOPPED");
+    state_machine.current_state = State::kFailureStopped;
+    data.setStateMachineData(state_machine);
+  }
+    
   // Exit gracefully
   sys.running_ = false;
   main->join();
