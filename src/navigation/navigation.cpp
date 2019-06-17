@@ -38,6 +38,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            velocity_(0, 0.),
            distance_(0, 0.),
            distance_uncertainty(0.),
+           velocity_uncertainty(0.),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -154,19 +155,15 @@ void Navigation::queryImus()
   acceleration_integrator_.update(acceleration_);
   velocity_integrator_.update(velocity_);
 }
+
 void Navigation::updateUncertainty()
 {
   /* Uncertainty from measuring is the timestamp between two measurements times velocity.
    * Furthermore, the velocity has an uncertainty due to acceleration and timestamp. */
-  double delta_a = 0.01;
   double delta_t = (distance_.timestamp - prev_timestamp)/1000000.0;
-  NavigationType abs_acceleration = acceleration_.value;
-  if (acceleration_.value < 0.0) abs_acceleration = (-1)*acceleration_.value;
+  NavigationType abs_delta_acc = abs(getAcceleration() - prev_accs[1]);
   // Adds uncertainty from the possible shift in both directions in the timestamp
-  distance_uncertainty += 0.5*abs_acceleration*delta_t*delta_t;
-  // Adds uncertainty from each point in time (since delta_a is uncertainty in acceleration)
-  distance_uncertainty += 0.5*delta_a*(distance_.timestamp*distance_.timestamp -
-    prev_timestamp*prev_timestamp)/1000000000000.0;
+  velocity_uncertainty += abs_delta_acc*delta_t;
   // Adds uncertainty from the variance in acceleration from measurements
   NavigationType acc_variance = 0.0;
   for (int i = 0; i < data::Sensors::kNumImus; i++) {
@@ -174,10 +171,14 @@ void Navigation::updateUncertainty()
   }
   // Average variance
   acc_variance = acc_variance/data::Sensors::kNumImus;
-  // Standard error on the mean
-  NavigationType acc_stdDev = sqrt(acc_variance/data::Sensors::kNumImus);
-  // distance_uncertainty += 0.5*acc_stdDev*delta_t*delta_t;
+  // Standard deviation
+  NavigationType acc_stdDev = sqrt(acc_variance);
+  // uncertainty is the std deviation integrated to give velocity
+  velocity_uncertainty += acc_stdDev*delta_t;
+  // Hence uncertainty in distance becomes updated with:
+  distance_uncertainty += velocity_uncertainty*delta_t;
 }
+
 void Navigation::queryKeyence()
 {
   // initialise the keyence readings with the data from the central data struct
@@ -187,7 +188,7 @@ void Navigation::queryKeyence()
     // double-counted with the time constraint (100000micros atm, aka 0.1s, subject to change).
     if (prev_keyence_readings_[i].count.value != keyence_readings_[i].count.value &&
          keyence_readings_[i].count.timestamp -
-         prev_keyence_readings_[i].count.timestamp > 100000) {
+         prev_keyence_readings_[i].count.timestamp > 1e5) {
       stripe_counter_.value++;
       stripe_counter_.timestamp = keyence_readings_[i].count.timestamp;
 
@@ -205,19 +206,27 @@ void Navigation::queryKeyence()
           distance_.value - stripe_counter_.value*30.48 > allowed_uncertainty) {
         // TODO(Justus) what happens in case of keyence failure?
       }
-      velocity_.value -= (distance_.value - stripe_counter_.value*30.48)
-        *1000000/stripe_counter_.timestamp;
-      // distance_uncertainty += sqrt(abs(distance_.value - stripe_counter_.value*30.48)/2);
+      // Lower the uncertainty in velocity, but don't in distance since that has
+      // a too large impact:
+      // TODO(Justus) Uncertainty for distance maybe? Can't just subtract right away, or?
+      velocity_uncertainty -= abs((distance_.value - stripe_counter_.value*30.48)
+        *1e6/stripe_counter_.timestamp);
+      // Update velocity value
+      velocity_.value -= abs((distance_.value - stripe_counter_.value*30.48)
+        *1e6/stripe_counter_.timestamp);
+      // Update distance value
       distance_.value = stripe_counter_.value*30.48;
       break;
     }
   }
   prev_keyence_readings_ = keyence_readings_;
 }
+
 void Navigation::disableKeyenceUsage()
 {
   keyence_used = false;
 }
+
 void Navigation::updateData()
 {
   data::Navigation nav_data;
@@ -231,26 +240,21 @@ void Navigation::updateData()
   data_.setNavigationData(nav_data);
 
   // TEMPORARY!!!!
-  double delta_t = (distance_.timestamp - prev_timestamp)/1000000.0;
+  // double delta_t = (distance_.timestamp - prev_timestamp)/1000000.0;
   NavigationType acc_variance = filters_[0].KalmanFilter::getEstimateVariance();
-  // for (int i = 0; i < data::Sensors::kNumImus; i++) {
-  //   acc_variance += filters_[i].KalmanFilter::getEstimateVariance();
-  // }
-  // Average variance
-  // acc_variance = acc_variance/data::Sensors::kNumImus;
-  // Standard error on the mean
-  NavigationType acc_stdDev = sqrt(acc_variance/data::Sensors::kNumImus);
+  NavigationType acc_stdDev = sqrt(acc_variance);
 
-  if (counter_ % 1 == 0) {  // kPrintFreq
+  if (counter_ % 1000 == 0) {  // kPrintFreq
     log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f, d(unc)=%.3f", //NOLINT
                      counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                      stripe_counter_.value*30.48, distance_uncertainty);
-    //                 sqrt(filters_[0].KalmanFilter::getEstimateVariance()/
-    //                   (data::Sensors::kNumImus)));
-    log_.INFO("NAV", "\tVariance: %.9f", 0.5*acc_stdDev*delta_t*delta_t);
+    log_.INFO("NAV", "Standard Deviation (acceleration): %.9f", acc_stdDev);
   }
   counter_++;
+  // Update all prev measurements
   prev_timestamp = distance_.timestamp;
+  prev_accs[1] = prev_accs[0];
+  prev_accs[0] = getAcceleration();
 }
 
 void Navigation::navigate()

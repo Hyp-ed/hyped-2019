@@ -167,6 +167,12 @@ namespace navigation {
       uint32_t prev_timestamp;
       // Uncertainty in distance
       NavigationType distance_uncertainty;
+      // Uncertainty in velocity
+      NavigationType velocity_uncertainty;
+      /* Previous two acceleration measurements, necessary for uncertainty determination
+       * The [0]th index stands for the previous measurement, [1] to the one before that.
+       */
+      std::array<NavigationType, 2> prev_accs;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
