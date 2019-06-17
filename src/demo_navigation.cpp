@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 
   while ((nav_state == ModuleStatus::kStart) || (nav_state == ModuleStatus::kInit)) {
     nav_state = data.getNavigationData().module_status;
-    Thread::sleep(100);  
+    Thread::sleep(100);
   }
 
   if (nav_state == ModuleStatus::kReady) {

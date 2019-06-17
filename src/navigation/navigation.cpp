@@ -132,7 +132,7 @@ void Navigation::calibrateGravity()
       }
       Thread::sleep(1);
     }
-    // Check if each calibration's varaince is acceptable
+    // Check if each calibration's variance is acceptable
     calibration_successful = true;
     for (int i = 0; i < data::Sensors::kNumImus; ++i) {
       bool var_within_lim = online_array[i].getVariance() < calibration_limits_[axis_];
