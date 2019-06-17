@@ -35,32 +35,37 @@ namespace navigation {
     log_.INFO("NAV", "Navigation waiting for calibration");
 
     Data& data = Data::getInstance();
+    bool navigation_complete = false;
+
     // wait for calibration state for calibration
-    StateMachine state_machine = data.getStateMachineData();
-    while (state_machine.current_state != State::kCalibrating) {
-      // wait 100ms
-      Thread::sleep(100);
-      state_machine = data.getStateMachineData();
-    }
+    while (sys_.running_ && !navigation_complete) {
+      State current_state = data.getStateMachineData().current_state;
 
-    nav_.calibrateGravity();
+      switch (current_state) {
+        case State::kIdle :
+        case State::kReady :
+          break;
 
-    // wait for accelerating state
-    log_.INFO("NAV", "Navigation waiting for acceleration");
-    state_machine = data.getStateMachineData();
-    while (state_machine.current_state != State::kAccelerating) {
-      // wait 1ms
-      Thread::sleep(1);
-      state_machine = data.getStateMachineData();
-    }
+        case State::kCalibrating :
+          if (nav_.getModuleStatus() == ModuleStatus::kInit) {
+            nav_.calibrateGravity();
+            nav_.initTimestamps();
+          }
+          break;
 
-    log_.INFO("NAV", "Navigation starting");
-    nav_.initTimestamps();
-    while (sys_.running_) {
-      nav_.navigate();
+        case State::kAccelerating :
+        case State::kNominalBraking :
+        case State::kEmergencyBraking :
+        case State::kExiting :
+        case State::kRunComplete :
+          nav_.navigate();
+          break;
+
+        default :
+          navigation_complete = true;
+          break;
+      }
     }
   }
-
-
 
 }}  // namespace hyped::navigation
