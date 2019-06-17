@@ -35,29 +35,34 @@ namespace navigation {
     log_.INFO("NAV", "Navigation waiting for calibration");
 
     Data& data = Data::getInstance();
+    bool navigation_complete = false;
+
     // wait for calibration state for calibration
-    while (sys_.running_) {
+    while (sys_.running_ && !navigation_complete) {
       State current_state = data.getStateMachineData().current_state;
 
       switch (current_state) {
         case State::kIdle :
         case State::kReady :
-          continue;
+          break;
 
         case State::kCalibrating :
           if (nav_.getModuleStatus() == ModuleStatus::kInit) {
             nav_.calibrateGravity();
             nav_.initTimestamps();
           }
-          continue;
+          break;
 
         case State::kAccelerating :
         case State::kNominalBraking :
         case State::kEmergencyBraking :
+        case State::kExiting :
+        case State::kRunComplete :
           nav_.navigate();
-          continue;
+          break;
 
         default :
+          navigation_complete = true;
           break;
       }
     }
