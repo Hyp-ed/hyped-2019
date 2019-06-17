@@ -7,9 +7,9 @@
 
 #-------------------------------------------------------------------------------------#
 
-# Set the motor poles 5
+# Set the motor poles 1
 >Controller %d: Configuring motor poles
-0x2F 0x33 0x20 0x00 0x05 0x00 0x00 0x00
+0x2F 0x33 0x20 0x00 0x01 0x00 0x00 0x00
 
 # Set feedback type to Hall sensor
 >Controller %d: Configuring feedback type
