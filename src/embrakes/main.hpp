@@ -24,8 +24,6 @@
 #include "utils/logger.hpp"
 #include "data/data.hpp"
 
-#define BREAKAMOUNT 1
-
 namespace hyped {
 
 using utils::concurrent::Thread;
