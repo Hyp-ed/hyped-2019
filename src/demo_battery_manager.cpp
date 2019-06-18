@@ -2,11 +2,7 @@
  * Author: Gregory Dayao
  * Organisation: HYPED
  * Date: 3/4/19
- * Description: Demo for MPU9250 sensor using imu_manager
- * Troubleshooting:
- * If a single sensor does not initialise, try reconfiguring the chip_select_ pin.
- *  The GPIO pin may be faulty, so attempt with another pin and change
- *  chip_select_ pin list in imu_manager.cpp accordingly.
+ * Description:
  *
  *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");

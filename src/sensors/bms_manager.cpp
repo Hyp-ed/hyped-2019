@@ -125,7 +125,7 @@ bool BmsManager::batteriesInRange()
 
   // check HP
   for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-    auto& battery = batteries_.high_power_batteries[i];     // reference battereis individually
+    auto& battery = batteries_.high_power_batteries[i];     // reference batteries individually
     if (battery.voltage < 1100 || battery.voltage > 1188) {   // voltage in 110V to 118.8V
       log_.ERR("BMS-MANAGER", "BMS HP %d voltage out of range: %d", i, battery.voltage);
       return false;

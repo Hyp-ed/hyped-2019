@@ -38,15 +38,14 @@ constexpr uint32_t kStripeNum = 500;          // change value depending on confi
 int main(int argc, char* argv[]) {
     hyped::utils::System::parseArgs(argc, argv);
     Logger log(true, 1);
-    GPIO pin(66, hyped::utils::io::gpio::kOut);
     GpioCounter keyence(log, 69);
 
     Thread::sleep(500);
 
+    // keyence.run();
     keyence.start();
-    keyence.sleep(50);
+    // keyence.sleep(50);
     StripeCounter stripe_data = keyence.getStripeCounter();
-    stripe_data.operational = true;
     log.INFO("TEST-KEYENCE", "Start time: %d", stripe_data.count.timestamp);
     log.INFO("TEST-KEYENCE", "Start count: %d", stripe_data.count.value);
     uint32_t stripe_count = 0;
@@ -58,7 +57,7 @@ int main(int argc, char* argv[]) {
       }
       Thread::sleep(50);                       // remove if want to see output quickly
     }
-    int time = stripe_data.count.timestamp;
+    int64_t time = stripe_data.count.timestamp;
 
     log.INFO("KEYENCE-TEST", "Final stripe count = %d. Final timestamp = %d", stripe_count, time);
 }

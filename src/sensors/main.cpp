@@ -72,7 +72,7 @@ Main::Main(uint8_t id, utils::Logger& log)
   sensors_ = data_.getSensorsData();
   sensors_.module_status = data::ModuleStatus::kInit;
   data_.setSensorsData(sensors_);
-  log_.INFO("SENSORS-MAIN", "Sensors have been initialised");
+  log_.INFO("Sensors", "Sensors have been initialised");
 }
 
 bool Main::keyencesUpdated()
@@ -87,9 +87,9 @@ bool Main::keyencesUpdated()
 bool Main::temperatureInRange()    // TODO(anyone): add true temperature range
 {
   auto temperature = data_.getTemperature();
-  log_.DBG1("SENSORS-MAIN", "Temperature from data struct: %d", temperature);
+  log_.DBG1("Sensors", "Temperature from data struct: %d", temperature);
   if (temperature < -10 || temperature > 60) {  // temperature in -10C to 60C
-    log_.ERR("SENSORS-MAIN", "Temperature out of range: %d", temperature);
+    log_.ERR("Sensors", "Temperature out of range: %d", temperature);
     return false;
   }
   return true;
@@ -100,7 +100,7 @@ void Main::checkTemperature()
   temperature_->run();               // not a thread
   data_.setTemperature(temperature_->getData());
   if (!temperatureInRange()) {
-    log_.ERR("SENSORS-MAIN", "Temperature out of range: Critical Failure!");
+    log_.ERR("Sensors", "Temperature out of range: Critical Failure!");
     auto status = data_.getSensorsData();
     status.module_status = data::ModuleStatus::kCriticalFailure;
     data_.setSensorsData(status);    // TemperatureData not part of Sensors
