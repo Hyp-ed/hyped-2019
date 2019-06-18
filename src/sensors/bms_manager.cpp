@@ -27,8 +27,14 @@
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "sensors/fake_batteries.hpp"
+#include "utils/io/gpio.hpp"
+
+constexpr int kSSRKill = 70;
 
 namespace hyped {
+
+using utils::io::GPIO;
+
 namespace sensors {
 
 BmsManager::BmsManager(Logger& log)
