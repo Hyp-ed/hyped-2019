@@ -43,7 +43,8 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
                 std::string acc_file_path,
                 std::string dec_file_path,
                 std::string em_file_path,
-                bool is_fail,
+                bool is_fail_acc,
+                bool is_fail_dec,
                 float noise)
     : log_(log),
       acc_noise_(1),
@@ -54,7 +55,10 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
       acc_started_(false),
       dec_started_(false),
       em_started_(false),
-      is_fail_(is_fail),
+      is_fail_acc_(is_fail_acc),
+      is_fail_dec_(is_fail_dec),
+      failure_time_acc_(0),
+      failure_time_dec_(0),
       noise_(noise),
       data_(data::Data::getInstance())
 {
@@ -63,9 +67,15 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
   acc[1] = 0.0;
   acc[2] = 9.8;
   acc_val_ = acc;
+
+  acc_fail_[0] = -37.3942;
+  acc_fail_[1] = 0;
+  acc_fail_[2] = 9.8;
   readDataFromFile(acc_file_path_, dec_file_path_, em_file_path_);
-  if (is_fail_) {
-    log_.INFO("Fake-IMU", "Fake IMU Fail initialised");
+  if (is_fail_acc_) {
+    log_.INFO("Fake-IMU", "Fake IMU Fail_Acc initialised");
+  } else if (is_fail_dec_) {
+    log_.INFO("Fake-IMU", "Fake IMU Fail_Dec initialised");
   } else {
     log_.INFO("Fake-IMU", "Fake IMU initialised");
   }
@@ -99,6 +109,16 @@ void FakeImuFromFile::getData(ImuData* imu)
 {
   data::State state = data_.getStateMachineData().current_state;
   bool operational = true;
+  // Random point of failure after acc from 0 to 20 seconds
+  if (state == data::State::kAccelerating && is_fail_acc_) {
+    // Generate a random time for a failure
+    failure_time_acc_ = (rand() % 20 + 1) * 1000000;
+  }
+  // Random point of failure after dec from 0 to 10 seconds
+  if (state == data::State::kNominalBraking && is_fail_dec_) {
+    // Generate a random time for a failure
+    failure_time_dec_ = (rand() % 10 + 1) * 1000000;
+  }
 
   if (state == data::State::kCalibrating) {
     // start cal
@@ -124,13 +144,20 @@ void FakeImuFromFile::getData(ImuData* imu)
 
     if (accCheckTime()) {
       acc_count_ = std::min(acc_count_, (int64_t) acc_val_read_.size());
-      // Check so you don't go out of bounds
-      if (acc_count_ == (int64_t) acc_val_read_.size()) {
-        prev_acc_ = acc_val_read_[acc_count_- 1];
-        operational = acc_val_operational_[acc_count_ - 1];
+      if (is_fail_acc_) {
+        if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_acc_) {
+          prev_acc_ = acc_fail_;
+          operational = false;
+        }
       } else {
-        prev_acc_ = acc_val_read_[acc_count_];
-        operational = acc_val_operational_[acc_count_];
+        // Check so you don't go out of bounds
+        if (acc_count_ == (int64_t) acc_val_read_.size()) {
+          prev_acc_ = acc_val_read_[acc_count_- 1];
+          operational = acc_val_operational_[acc_count_ - 1];
+        } else {
+          prev_acc_ = acc_val_read_[acc_count_];
+          operational = acc_val_operational_[acc_count_];
+        }
       }
     }
 
@@ -143,13 +170,20 @@ void FakeImuFromFile::getData(ImuData* imu)
 
     if (accCheckTime()) {
       acc_count_ = std::min(acc_count_, (int64_t) dec_val_read_.size());
-      // Check so you don't go out of bounds
-      if (acc_count_ == (int64_t) dec_val_read_.size()) {
-        prev_acc_ = dec_val_read_[acc_count_-1];
-        operational = dec_val_operational_[acc_count_-1];
+      if (is_fail_dec_) {
+        if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_dec_) {
+          prev_acc_ = acc_fail_;
+          operational = false;
+        }
       } else {
-        prev_acc_ = dec_val_read_[acc_count_];
-        operational = dec_val_operational_[acc_count_];
+        // Check so you don't go out of bounds
+        if (acc_count_ == (int64_t) dec_val_read_.size()) {
+          prev_acc_ = dec_val_read_[acc_count_-1];
+          operational = dec_val_operational_[acc_count_-1];
+        } else {
+          prev_acc_ = dec_val_read_[acc_count_];
+          operational = dec_val_operational_[acc_count_];
+        }
       }
     }
 
@@ -232,6 +266,7 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
       std::stringstream input(line);
       input >> temp_time;
 
+      // checks whether timestamp format matches refresh rate
       if (temp_time != timestamp*counter) {
         log_.ERR("Fake-IMU", "Timestamp format invalid %d", temp_time);
       }
@@ -240,12 +275,8 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
       value[1] = 0.0;
       value[2] = 9.8;
 
-      // TODO(jack): Add random point of failure in run for now everything works
-      if (is_fail_ && i == 0) {     // fail during acceleration
-        value[0] = -37.3942;       // error acc value
-      }
       val_read->push_back(addNoiseToData(value, noise_));
-      bool_read->push_back(1);
+      bool_read->push_back(1);      // always true
 
       counter++;
     }

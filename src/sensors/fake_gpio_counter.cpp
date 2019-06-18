@@ -33,8 +33,7 @@
 uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
 double kStripeDistance = 30.48;     // metres
-uint64_t kCheckTime = 358588;
-uint64_t kMaxTime = 1500;     // between stripe readings before throw failure
+uint64_t kMaxTime = 1500;     // between stripe readings before throw failure micros
 
 
 namespace hyped {
@@ -50,7 +49,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
     data_(Data::getInstance()),
     start_time_(0),
     miss_stripe_(miss_stripe),
-    // double_stripe_(double_stripe),
     is_from_file_(false),
     acc_ref_init_(false)
 {
@@ -69,7 +67,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
     data_(Data::getInstance()),
     start_time_(0),
     miss_stripe_(miss_stripe),
-    // double_stripe_(double_stripe),
     file_path_(file_path),
     is_from_file_(true),
     acc_ref_init_(false)
@@ -111,7 +108,6 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
       stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
     }
   }
-
   return stripe_count_;
 }
 
@@ -119,23 +115,11 @@ void FakeGpioCounter::checkData()
 {
   if (is_from_file_) {
     uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
-    if (time_after > kMaxTime && miss_stripe_) {  // TODO(Jack,Greg): Change max time bw stripes
+    if (time_after > kMaxTime && miss_stripe_) {
       log_.INFO("FakeGpioCounter", "missed stripe!");
-      // throw failure to keyence, override with nav data
       stripe_count_.operational = false;
     }
   }
-  // let pod wait at first...then start comparing data
-  // if (((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) > 8000) {
-  //   if (miss_stripe_) {
-  //     log_.INFO("FakeGpioCounter", "missed stripe, changing now");
-  //     stripe_count_.count.value++;
-  //   }
-    // else if (double_stripe_) {
-    //   log_.INFO("FakeGpioCounter", "double stripe count, changing now");
-    //   stripe_count_.count.value--;
-    // }
-  // }
 }
 
 void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
