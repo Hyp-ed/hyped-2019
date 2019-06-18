@@ -99,14 +99,11 @@ System::System(int argc, char* argv[])
       fake_temperature(false),
       fake_embrakes(false),
       fake_motors(false),
-<<<<<<< HEAD
       fake_imu_fail(false),
       fake_keyence_fail(false),
       fake_temperature_fail(false),
       fake_embrakes_fail(false),
       fake_motors_fail(false),
-=======
->>>>>>> develop
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
       axis(0),
@@ -142,7 +139,6 @@ System::System(int argc, char* argv[])
       {"fake_batteries", no_argument, 0, 'j'},
       {"fake_keyence", no_argument, 0, 'k'},
       {"fake_temperature", no_argument, 0, 'l'},
-<<<<<<< HEAD
       {"fake_motors", no_argument, 0, 'm'},
       {"fake_embrakes", no_argument, 0, 'n'},
       {"fake_imu_fail", no_argument, 0, 'I'},
@@ -151,10 +147,6 @@ System::System(int argc, char* argv[])
       {"fake_temperature_fail", no_argument, 0, 'L'},
       {"fake_motors_fail", no_argument, 0, 'M'},
       {"fake_embrakes_fail", no_argument, 0, 'N'},
-=======
-      {"fake_embrakes", no_argument, 0, 'M'},
-      {"fake_motors", no_argument, 0, 'm'},
->>>>>>> develop
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'q'},
       {"axis", required_argument, 0, 'u'},
