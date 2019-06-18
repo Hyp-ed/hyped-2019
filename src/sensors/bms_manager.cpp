@@ -73,7 +73,7 @@ BmsManager::BmsManager(Logger& log)
 
 void BmsManager::run()
 {
-  GPIO kill_switch(kSSRKill, utils::io::gpio::kOut);
+  GPIO kill_switch(kSSRKill, utils::io::gpio::kOut);    // HP SSR only
   while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -97,9 +97,10 @@ void BmsManager::run()
     data_.setBatteriesData(batteries_);
 
     // set high to kSSRKill if LP or HP is kCriticalFailure
+    // batteries module status forces kEmergencyBraking, which actuates embrakes
     if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
       kill_switch.set();
-      log_.INFO("BMS-MANAGER", "SSR Kill Switch has been set");
+      log_.INFO("BMS-MANAGER", "SSR Kill Switch has been set: HP shut off...LP still running");
     }
     sleep(100);
   }
@@ -107,9 +108,6 @@ void BmsManager::run()
 
 bool BmsManager::batteriesInRange()
 {
-  // TODO(Greg): Check these values with power team
-  // check all LP and HP battery values are in expected range
-
   // check LP
   for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
     auto& battery = batteries_.low_power_batteries[i];      // reference batteries individually
