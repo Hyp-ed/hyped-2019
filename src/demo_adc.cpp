@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
   System::parseArgs(argc, argv);
   Logger log(true, -1);
 
-  ADC analog(1, log);
+  ADC analog(0, log);
   Thread::sleep(100);
 
   while(1) {

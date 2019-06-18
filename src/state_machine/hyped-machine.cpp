@@ -24,9 +24,6 @@
 namespace hyped {
 namespace state_machine {
 
-GPIO* HypedMachine::pin_embrake_ = nullptr;
-GPIO* HypedMachine::pin_water_   = nullptr;
-
 HypedMachine::HypedMachine(utils::Logger& log)
     : current_state_(State::alloc_)
     , log_(log)
@@ -53,25 +50,6 @@ void HypedMachine::transition(State *state)
   // update shared data structure
   static data::Data& d = data::Data::getInstance();
   d.setStateMachineData(state_machine_);
-}
-
-void HypedMachine::setupEmbrakes()
-{
-  pin_embrake_ = new GPIO(46, utils::io::gpio::Direction::kOut);
-  pin_water_   = new GPIO(47, utils::io::gpio::Direction::kOut);
-  pin_embrake_->set();
-  pin_water_->set();
-}
-
-void HypedMachine::engageEmbrakes()
-{
-  utils::Logger log(true, 0);
-  if (pin_embrake_) {
-    pin_embrake_->clear();
-    log.INFO("STATE", "Emergency brakes engaged");
-  } else {
-    log.INFO("STATE", "Emergency brakes not initialised, we are going to die");
-  }
 }
 
 }}   // namespace hyped::state_machine

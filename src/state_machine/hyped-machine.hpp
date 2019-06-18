@@ -32,7 +32,6 @@
 #include "utils/logger.hpp"
 #include "utils/io/gpio.hpp"
 namespace hyped {
-using utils::io::GPIO;
 namespace state_machine {
 
 class State;
@@ -41,18 +40,11 @@ class HypedMachine {
   explicit HypedMachine(utils::Logger& log);
   void handleEvent(Event event);
   void transition(State *state);
-  void reset();
-
-  static void setupEmbrakes();
-  static void engageEmbrakes();
 
  private:
   State*             current_state_;
   utils::Logger&     log_;
   data::StateMachine state_machine_;
-
-  static GPIO* pin_embrake_;
-  static GPIO* pin_water_;
 };
 
 }}   // namespace hyped::state_machine

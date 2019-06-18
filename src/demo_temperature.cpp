@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
   hyped::utils::System::parseArgs(argc, argv);
   Logger log(true, -1);
 
-  Temperature temp_(log, 3);
+  Temperature temp_(log, 0);
   Thread::sleep(500);
   log.INFO("TEST-Temp", "Temp instance successfully created");
   for (int i = 0; i < 50; i++) {

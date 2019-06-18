@@ -5,31 +5,22 @@
 <br>
 
 ## Running the telemetry module
-Make sure you've followed the [guide on building the protobufs library](#building-protobufs). Programs that use the telemetry module will not work unless protobufs is installed.
+If you're running this on your laptop, make sure you've followed the [guide on building the protobufs library](#building-protobufs). Programs that use the telemetry module will not work unless protobufs is installed. If running on a beaglebone however, protobufs should already be installed.
 
-In `Source.files`, manually add all `.cpp` files in the telemetry folder as well as `telemetry/telemetrydata/message.pb.cpp`, for example:
-```
-  telemetry/main.cpp \
-  telemetry/client.cpp \
-  telemetry/recvloop.cpp \
-  telemetry/sendloop.cpp \
-  telemetry/utils.cpp \
-  telemetry/signalhandler.cpp \
-  telemetry/telemetrydata/message.pb.cpp \
-```
-The files in the telemetry folder **might differ from what's written here at time of writing**, so please make sure you double check what is actually contained in the folder. I realize this is a pretty cumbersome process and am looking into automating it.
+*In the past telemetry files had to manually be added to `Source.files`, this is now automated!*
 
-Now run:
+First, generate the protobuf files (only necessary if your version of protobufs is different from v3.6.1 which is what the generated files saved in `src/telemetry/telemetrydata` are for):
 ```
 $ make protoc
 ```
-This just generates the protobuf files (shouldn't actually be necessary since the generated files are tracked in the repo, but run it just in case). This also will say `mkdir` ran into an error, this is expected and you can ignore this (if anyone knows how to not only ignore errors in make commands but also silence them let me know).
 
-Now whenever you want to compile a program that uses the telemetry module, make sure to use the `PROTOBUF=1` flag. For example:
+Now, whenever you want to compile a program that uses the telemetry module, make sure to use the `PROTOBUF=1` flag. For example:
 ```
 $ make MAIN=demo_telem.cpp PROTOBUF=1
 ```
 The linker will run into errors if this is not specified.
+
+If you're running this locally on your laptop, make sure `config.txt` has the `IP` specified as `localhost` and `Port` as `9090`. If using the Rockets, `Port` will be the same but `IP` will now be the static ip address of the access point computer (if you've followed the guide below word for word it should be `192.168.1.40`).
 
 Now you can run `./hyped` and it should work!
 

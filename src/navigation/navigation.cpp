@@ -15,6 +15,7 @@
  *    either express or implied. See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+#include <algorithm>
 
 #include "navigation/navigation.hpp"
 #include "utils/concurrent/thread.hpp"
@@ -32,6 +33,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
+           calibration_limits_({0.001, 0.001, 0.05}),
            acceleration_(0., 0.),
            velocity_(0., 0.),
            distance_(0., 0.),
@@ -108,41 +110,78 @@ NavigationType Navigation::getBrakingDistance() const
   return braking_distance;
 }
 
-// TODO(Neil): add delay between samples?
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
-  std::array<OnlineStatistics<NavigationType>, data::Sensors::kNumImus> online_array;
-  // Average each sensor over specified number of readings
-  for (int i = 0; i < kNumCalibrationQueries; ++i) {
-    sensor_readings_ = data_.getSensorsImuData();
-    for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-      online_array[j].update(sensor_readings_.value[j].acc[axis_]);
+  std::array<RollingStatistics<NavigationType>, data::Sensors::kNumImus> online_array =
+    {RollingStatistics<NavigationType>(kCalibrationQueries),
+     RollingStatistics<NavigationType>(kCalibrationQueries),
+     RollingStatistics<NavigationType>(kCalibrationQueries),
+     RollingStatistics<NavigationType>(kCalibrationQueries)};
+  bool calibration_successful = false;
+  int calibration_attempts = 0;
+
+  while (!calibration_successful && calibration_attempts < kCalibrationAttempts) {
+    log_.INFO("NAV", "Calibration attempt %d", calibration_attempts+1);
+
+    // Average each sensor over specified number of readings
+    for (int i = 0; i < kCalibrationQueries; ++i) {
+      sensor_readings_ = data_.getSensorsImuData();
+      for (int j = 0; j < data::Sensors::kNumImus; ++j) {
+        online_array[j].update(sensor_readings_.value[j].acc[axis_]);
+      }
+      Thread::sleep(1);
     }
-    Thread::sleep(1);
+    // Check if each calibration's variance is acceptable
+    calibration_successful = true;
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      bool var_within_lim = online_array[i].getVariance() < calibration_limits_[axis_];
+      calibration_successful = calibration_successful && var_within_lim;
+    }
+    calibration_attempts++;
   }
-  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    gravity_calibration_[i] = online_array[i].getMean();
-    double var = online_array[i].getVariance();
-    log_.INFO("NAV",
-      "Update: g=%.5f, var=%.5f", gravity_calibration_[i], var);
-    filters_[i].updateMeasurementCovarianceMatrix(var);
+
+  // Store calibration and update filters if successful
+  if (calibration_successful) {
+    log_.INFO("NAV", "Calibration of IMU acceleration succeeded with final readings:");
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      gravity_calibration_[i] = online_array[i].getMean();
+      double var = online_array[i].getVariance();
+      filters_[i].updateMeasurementCovarianceMatrix(var);
+
+      log_.INFO("NAV", "\tIMU %d: g=%.5f, var=%.5f", i, gravity_calibration_[i], var);
+    }
+    status_ = ModuleStatus::kReady;
+    updateData();
+    log_.INFO("NAV", "Navigation module ready");
+  } else {
+    log_.INFO("NAV", "Calibration of IMU acceleration failed with final readings:");
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      double acc = online_array[i].getMean();
+      double var = online_array[i].getVariance();
+
+      log_.INFO("NAV", "\tIMU %d: g=%.5f, var=%.5f", i, acc, var);
+    }
+    status_ = ModuleStatus::kCriticalFailure;
+    updateData();
+    log_.INFO("NAV", "Navigation module failed on calibration");
   }
-  // After calibration is complete we are ready to measure
-  status_ = ModuleStatus::kReady;
-  updateData();
-  log_.INFO("NAV", "Navigation module ready");
 }
 
 void Navigation::queryImus()
 {
+  NavigationArray acc_raw;
   OnlineStatistics<NavigationType> acc_avg_filter;
   sensor_readings_ = data_.getSensorsImuData();
   uint32_t t = sensor_readings_.timestamp;
+  // process raw values
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    // Apply calibrated correction
-    NavigationType acc = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
-    NavigationType estimate = filters_[i].filter(acc);
+    acc_raw[i] = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
+  }
+  tukeyFences(acc_raw, kTukeyThreshold);
+  // Kalman filter the readings
+  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+    NavigationType estimate = filters_[i].filter(acc_raw[i]);
     acc_avg_filter.update(estimate);
   }
   acceleration_.value = acc_avg_filter.getMean();
@@ -150,6 +189,30 @@ void Navigation::queryImus()
 
   acceleration_integrator_.update(acceleration_);
   velocity_integrator_.update(velocity_);
+}
+
+// TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
+void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
+{
+  // copy the original array for sorting
+  NavigationArray data_array_copy = data_array;
+  // find the quartiles
+  std::sort(data_array_copy.begin(), data_array_copy.end());
+  float q1 = (data_array_copy[0]+data_array_copy[1]) / 2.;
+  float q2 = (data_array_copy[1]+data_array_copy[2]) / 2.;
+  float q3 = (data_array_copy[2]+data_array_copy[3]) / 2.;
+  float iqr = q3 - q1;
+  // find the thresholds
+  float upper_limit = q3 + threshold*iqr;
+  float lower_limit = q1 - threshold*iqr;
+  // replace any outliers with the median
+  for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+    if (data_array[i] < lower_limit or data_array[i] > upper_limit) {
+      log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f. Updated to %.3f", //NOLINT
+                       i, data_array[i], q2);
+      data_array[i] = q2;
+    }
+  }
 }
 
 void Navigation::updateData()

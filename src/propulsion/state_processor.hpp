@@ -30,7 +30,7 @@
 #include "propulsion/calculate_RPM.hpp"
 #include "data/data.hpp"
 
-#define SLIPPATH "./testAcceleration.txt"
+#define SLIPPATH "data/in/oldAcc.txt"
 
 namespace hyped
 {

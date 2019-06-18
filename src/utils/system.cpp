@@ -67,6 +67,8 @@ void printUsage()
     "    --fake_embrakes --fake_motors\n"
     "    To set navigation IDs.\n"
     "    --imu_id, --run_id\n"
+    "    To set which IMU axis to be navigated after.\n"
+    "    --axis\n"
     "    To set run kind for navigation tests.\n"
     "    --tube_run, --elevator_run, --stationary_run\n"
     "");
@@ -92,17 +94,22 @@ System::System(int argc, char* argv[])
       debug_state(DEFAULT_DEBUG),
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
+      fake_batteries(false),
       fake_keyence(false),
       fake_temperature(false),
       fake_embrakes(false),
       fake_motors(false),
+<<<<<<< HEAD
       fake_imu_fail(false),
       fake_keyence_fail(false),
       fake_temperature_fail(false),
       fake_embrakes_fail(false),
       fake_motors_fail(false),
+=======
+>>>>>>> develop
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
+      axis(0),
       tube_run(true),
       elevator_run(false),
       stationary_run(false),
@@ -135,6 +142,7 @@ System::System(int argc, char* argv[])
       {"fake_batteries", no_argument, 0, 'j'},
       {"fake_keyence", no_argument, 0, 'k'},
       {"fake_temperature", no_argument, 0, 'l'},
+<<<<<<< HEAD
       {"fake_motors", no_argument, 0, 'm'},
       {"fake_embrakes", no_argument, 0, 'n'},
       {"fake_imu_fail", no_argument, 0, 'I'},
@@ -143,8 +151,13 @@ System::System(int argc, char* argv[])
       {"fake_temperature_fail", no_argument, 0, 'L'},
       {"fake_motors_fail", no_argument, 0, 'M'},
       {"fake_embrakes_fail", no_argument, 0, 'N'},
+=======
+      {"fake_embrakes", no_argument, 0, 'M'},
+      {"fake_motors", no_argument, 0, 'm'},
+>>>>>>> develop
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'q'},
+      {"axis", required_argument, 0, 'u'},
       {"tube_run", no_argument, 0, 'r'},
       {"elevator_run", no_argument, 0, 's'},
       {"stationary_run", no_argument, 0, 't'},
@@ -222,9 +235,6 @@ System::System(int argc, char* argv[])
         if (optarg) debug_embrakes = atoi(optarg);
         else        debug_embrakes = 0;
         break;
-      case 'P':
-        if (optarg) run_id = atoi(optarg);
-        else        run_id = 1;
       case 'i':   // fake_imu
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
@@ -280,6 +290,10 @@ System::System(int argc, char* argv[])
       case 'q':   // run_id
         if (optarg) run_id = atoi(optarg);
         else        run_id = 1;
+        break;
+      case 'u':   // axis
+        if (optarg) axis = atoi(optarg);
+        else        axis = 0;
         break;
       case 'r':   // tube_run
         if (optarg) tube_run = atoi(optarg);
