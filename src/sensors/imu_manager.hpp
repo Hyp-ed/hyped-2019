@@ -29,14 +29,11 @@
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/system.hpp"
-#include "utils/math/statistics.hpp"
 
 namespace hyped {
 
 using utils::concurrent::Thread;
 using utils::Logger;
-using data::NavigationVector;
-using utils::math::OnlineStatistics;
 
 namespace sensors {
 /**

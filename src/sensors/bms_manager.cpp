@@ -24,11 +24,11 @@
 #include "sensors/bms_manager.hpp"
 
 #include "sensors/bms.hpp"
-#include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "sensors/fake_batteries.hpp"
 
 namespace hyped {
+
 namespace sensors {
 
 BmsManager::BmsManager(Logger& log)
@@ -49,6 +49,7 @@ BmsManager::BmsManager(Logger& log)
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
+    kill_switch_ = new GPIO(kSSRKill, utils::io::gpio::kOut);
   } else {
     // fake batteries here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -90,11 +91,18 @@ void BmsManager::run()
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    // set high to kSSRKill if LP or HP is kCriticalFailure
-    if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
-      GPIO kill_switch(kSSRKill, utils::io::gpio::kOut);
-      kill_switch.set();
-      log_.INFO("BMS-MANAGER", "SSR Kill Switch has been set");
+    if (!sys_.fake_batteries /*|| !sys_.fake_batteries_fail*/) {
+      data::State state = data_.getStateMachineData().current_state;
+
+      // set high to kSSRKill if LP or HP is kCriticalFailure or pod in emergency states
+      // batteries module status forces kEmergencyBraking, which actuates embrakes
+      if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
+        kill_switch_->set();
+        log_.INFO("BMS-MANAGER", "Emergency State! HP SSR Kill Switch has been set");
+      } else if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
+        kill_switch_->set();
+        log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR Kill Switch has been set");
+      }
     }
     sleep(100);
   }
@@ -102,13 +110,10 @@ void BmsManager::run()
 
 bool BmsManager::batteriesInRange()
 {
-  // TODO(Greg): Check these values with power team
-  // check all LP and HP battery values are in expected range
-
   // check LP
   for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
     auto& battery = batteries_.low_power_batteries[i];      // reference batteries individually
-    if (battery.voltage < 240 || battery.voltage > 252) {   // voltage in 24V to 25.2V
+    if (battery.voltage < 175 || battery.voltage > 294) {   // voltage in 17.5V to 29.4V
       log_.ERR("BMS-MANAGER", "BMS LP %d voltage out of range: %d", i, battery.voltage);
       return false;
     }

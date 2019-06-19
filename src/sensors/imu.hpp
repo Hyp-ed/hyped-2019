@@ -28,7 +28,6 @@
 #include "utils/io/spi.hpp"
 #include "utils/io/gpio.hpp"
 
-
 namespace hyped {
 
 using hyped::utils::io::SPI;

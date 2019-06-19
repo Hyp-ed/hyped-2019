@@ -18,15 +18,12 @@
  *    limitations under the License.
  */
 
-#include "sensors/fake_temperature.hpp"
-
 #include <stdlib.h>
 
+#include "sensors/fake_temperature.hpp"
 #include "utils/timer.hpp"
-#include "data/data.hpp"
 
 namespace hyped {
-
 namespace sensors {
 
 FakeTemperature::FakeTemperature(Logger& log, bool is_fail)

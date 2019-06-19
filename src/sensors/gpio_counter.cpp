@@ -19,17 +19,14 @@
  */
 
 #include <stdio.h>
-#include "utils/concurrent/thread.hpp"
 #include "utils/io/gpio.hpp"
 #include "utils/timer.hpp"
 #include "sensors/gpio_counter.hpp"
-
 
 namespace hyped {
 
 using data::Data;
 using data::StripeCounter;
-using utils::concurrent::Thread;
 using utils::io::GPIO;
 using hyped::utils::Logger;
 

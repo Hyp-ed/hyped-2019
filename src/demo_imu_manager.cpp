@@ -54,37 +54,24 @@ int main(int argc, char* argv[])
   Thread::sleep(500);
   
   #else
-  // Imu imu0(log, 20, 0x08);
+  Imu imu0(log, 20, 0x08);
   Imu imu1(log, 7, 0x08);
   Imu imu2(log, 112, 0x08);
   Imu imu3(log, 111, 0x08);
-  Imu imu4(log, 123, 0x08);
-  Imu imu5(log, 125, 0x08);
-  Imu imu6(log, 117, 0x08);
 
-  // ImuData data0;
+  ImuData data0;
   ImuData data1;
   ImuData data2;
   ImuData data3;
-  ImuData data4;
-  ImuData data5;
-  ImuData data6;
 
   for (int i = 0; i<50; i++) {
-    // imu0.getData(&data0);
-    // log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 0, data0.acc[0], data0.acc[1], data0.acc[2]);
+    imu0.getData(&data0);
+    log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 0, data0.acc[0], data0.acc[1], data0.acc[2]);
     imu1.getData(&data1);
     log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 1, data1.acc[0], data1.acc[1], data1.acc[2]);
     imu2.getData(&data2);
     log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 2, data2.acc[0], data2.acc[1], data2.acc[2]);
     imu3.getData(&data3);
-    log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 3, data3.acc[0], data3.acc[1], data3.acc[2]);
-    imu4.getData(&data4);
-    log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 4, data4.acc[0], data4.acc[1], data4.acc[2]);
-    imu5.getData(&data5);
-    log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 5, data5.acc[0], data5.acc[1], data5.acc[2]);
-    imu6.getData(&data6);
-    log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 6, data6.acc[0], data6.acc[1], data6.acc[2]);
     Thread::sleep(100);
   }
   #endif

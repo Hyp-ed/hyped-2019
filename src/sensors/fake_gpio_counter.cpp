@@ -27,19 +27,15 @@
 
 #include "sensors/fake_gpio_counter.hpp"
 #include "utils/timer.hpp"
-#include "data/data.hpp"
-#include "utils/concurrent/thread.hpp"
 
 uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
 double kStripeDistance = 30.48;     // metres
 uint64_t kCheckTime = 358588;
 
-
 namespace hyped {
 
 using data::StripeCounter;
-using utils::concurrent::Thread;
 using utils::Logger;
 
 namespace sensors {

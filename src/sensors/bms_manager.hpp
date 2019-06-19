@@ -45,8 +45,6 @@ using utils::io::GPIO;
 namespace sensors {
 
 class BmsManager: public ManagerInterface  {
-  typedef array<BatteryData, data::Batteries::kNumLPBatteries> BatteriesLP;
-  typedef array<BatteryData, data::Batteries::kNumHPBatteries> BatteriesHP;
  public:
   explicit BmsManager(Logger& log);
   void run()                override;
@@ -54,10 +52,10 @@ class BmsManager: public ManagerInterface  {
  private:
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
+  GPIO* kill_switch_;     // for HP SSR
 
   /**
    * @brief needs to be references because run() passes directly to data struct
-   *
    */
   data::Data&     data_;
   data::Batteries batteries_;

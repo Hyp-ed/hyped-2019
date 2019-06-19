@@ -38,8 +38,6 @@ using utils::System;
 using data::Data;
 using data::Sensors;
 using data::StripeCounter;
-using data::SensorCalibration;
-
 
 namespace sensors {
 

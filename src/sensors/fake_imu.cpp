@@ -28,15 +28,15 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "data/data.hpp"
-#include "data/data_point.hpp"
 #include "sensors/fake_imu.hpp"
+#include "data/data_point.hpp"
 #include "utils/timer.hpp"
 #include "utils/math/statistics.hpp"
 
-
 namespace hyped {
+
 using utils::math::OnlineStatistics;
+
 namespace sensors {
 
 FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
