@@ -245,7 +245,8 @@ void Controller::requestStateTransition(utils::io::can::Frame& message, Controll
   }
 }
 
-void Controller::autoAlignMotorPosition() {
+void Controller::autoAlignMotorPosition()
+{
   if (sendControllerMessage(autoAlignMsg[0])) return;
 }
 

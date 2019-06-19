@@ -88,7 +88,7 @@ const NavigationType KalmanFilter::filter(NavigationType u, NavigationType z)
 
 const MatrixXf KalmanFilter::createInitialErrorCovarianceMatrix()
 {
-  MatrixXf P = MatrixXf::Constant(n_, n_, 0.5);
+  MatrixXf P = MatrixXf::Constant(n_, n_, kInitialErrorVar);
   return P;
 }
 
@@ -128,24 +128,24 @@ const MatrixXf KalmanFilter::createMeasurementMatrix()
 
 const MatrixXf KalmanFilter::createStateTransitionCovarianceMatrix()
 {
-  MatrixXf Q = MatrixXf::Constant(n_, n_, 0.02);
+  MatrixXf Q = MatrixXf::Constant(n_, n_, kStateTransitionVar);
   return Q;
 }
 
 const MatrixXf KalmanFilter::createTubeMeasurementCovarianceMatrix()
 {
-    MatrixXf R = MatrixXf::Constant(m_, m_, 0.04);
+    MatrixXf R = MatrixXf::Constant(m_, m_, kTubeMeasurementVar);
     return R;
 }
 const MatrixXf KalmanFilter::createElevatorMeasurementCovarianceMatrix()
 {
-  MatrixXf R = MatrixXf::Constant(m_, m_, 0.12);
+  MatrixXf R = MatrixXf::Constant(m_, m_, kElevatorMeasurementVar);
   return R;
 }
 
 const MatrixXf KalmanFilter::createStationaryMeasurementCovarianceMatrix()
 {
-  MatrixXf R = MatrixXf::Constant(m_, m_, 0.04);
+  MatrixXf R = MatrixXf::Constant(m_, m_, kStationaryMeasurementVar);
   return R;
 }
 

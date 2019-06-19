@@ -123,7 +123,7 @@ void StateProcessor::accelerate()
 {
   if (initialized) {
     if (accelerationTimer.getTimeMicros() - accelerationTimestamp > 5000) {
-      log_.INFO("Motor", "Accelerate");
+      log_.DBG3("Motor", "Accelerate");
       accelerationTimestamp = accelerationTimer.getTimeMicros();
       velocity = navigationData.velocity;
       int rpm = rpmCalculator->calculateRPM(velocity);

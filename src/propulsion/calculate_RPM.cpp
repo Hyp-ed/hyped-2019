@@ -28,7 +28,7 @@ namespace motor_control
 {
 
 constexpr double kHalbachRadius = 0.148;
-const std::string kAccelerationData = "../BeagleBone_black/data/configuration/AccelerationSlip.txt";
+const std::string kAccelerationData = "data/in/oldAcc.txt";
 
 CalculateRPM::CalculateRPM(Logger &log) : data_(data::Data::getInstance()),
                                           acceleration_slip_(),
