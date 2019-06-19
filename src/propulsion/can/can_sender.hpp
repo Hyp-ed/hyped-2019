@@ -78,7 +78,7 @@ class CanSender : public CanProccesor, public SenderInterface
     bool getIsSending() override;
 
   private:
-    Logger log_;
+    Logger& log_;
     uint8_t node_id_;
     Can &can_;
     std::atomic<bool> isSending;
