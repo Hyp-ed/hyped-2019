@@ -46,7 +46,7 @@ Controller::Controller(Logger& log, uint8_t id)
   nmt_message_.len        = 2;
 
   // Initialse arrays of message data:
-  FileReader::readFileData(configMsgs_, 16, kConfigMsgFile);
+  FileReader::readFileData(configMsgs_, 20, kConfigMsgFile);
   FileReader::readFileData(enterOpMsgs_, 4, kEnterOpMsgFile);
   FileReader::readFileData(enterPreOpMsg_, 1,  kEnterPreOpMsgFile);
   FileReader::readFileData(checkStateMsg_, 1, kCheckStateMsgFile);
@@ -85,7 +85,7 @@ void Controller::registerController()
 void Controller::configure()
 {
   log_.INFO("MOTOR", "Controller %d: Configuring...", node_id_);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < 20; i++) {
     if (sendControllerMessage(configMsgs_[i])) return;
   }
   log_.INFO("MOTOR", "Controller %d: Configured.", node_id_);
@@ -110,7 +110,7 @@ void Controller::enterOperational()
   sendTargetVelocity(0);
 
   // apply break
-  if (sendControllerMessage(enterOpMsgs_[1])) return;
+  // if (sendControllerMessage(enterOpMsgs_[1])) return;
 
   // send shutdown message to transition to Ready to Switch On state
   for (int i = 0; i < 8; i++) {
