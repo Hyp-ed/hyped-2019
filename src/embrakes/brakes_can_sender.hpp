@@ -24,6 +24,8 @@
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "utils/timer.hpp"
+#include "embrakes/sender_interface.hpp"
+#include "embrakes/brakes_controller_interface.hpp"
 
 #define TIMEOUT 5000
 
@@ -36,7 +38,7 @@ using utils::io::Can;
 using utils::io::CanProccesor;
 using utils::Timer;
 
-class CanSender : public CanProccesor
+class CanSender : public CanProccesor, public SenderInterface
 {
   public:
     /**
