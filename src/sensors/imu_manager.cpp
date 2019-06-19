@@ -44,7 +44,7 @@ ImuManager::ImuManager(Logger& log)
   old_timestamp_ = utils::Timer::getTimeMicros();
   utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);
 
-  if (!sys_.fake_imu) {
+  if (!(sys_.fake_imu || sys_.fake_imu_fail)) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {   // creates new real IMU objects
       imu_[i] = new Imu(log, chip_select_[i], 0x08);
     }

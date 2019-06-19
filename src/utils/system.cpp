@@ -102,8 +102,6 @@ System::System(int argc, char* argv[])
       fake_imu_fail(false),
       fake_keyence_fail(false),
       fake_temperature_fail(false),
-      fake_embrakes_fail(false),
-      fake_motors_fail(false),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
       axis(0),
@@ -145,8 +143,6 @@ System::System(int argc, char* argv[])
       {"fake_batteries_fail", no_argument, 0, 'J'},
       {"fake_keyence_fail", no_argument, 0, 'K'},
       {"fake_temperature_fail", no_argument, 0, 'L'},
-      {"fake_motors_fail", no_argument, 0, 'M'},
-      {"fake_embrakes_fail", no_argument, 0, 'N'},
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'q'},
       {"axis", required_argument, 0, 'u'},
@@ -266,14 +262,6 @@ System::System(int argc, char* argv[])
       case 'L':   // fake_temeperature_fail
         if (optarg) fake_temperature_fail = atoi(optarg);
         else        fake_temperature_fail = 1;
-        break;
-      case 'M':   // fake_motors_fail
-        if (optarg) fake_motors_fail = atoi(optarg);
-        else        fake_motors_fail = 1;
-        break;
-      case 'N':   // fake_embrakes_fail
-        if (optarg) fake_embrakes_fail = atoi(optarg);
-        else        fake_embrakes_fail = 1;
         break;
       case 'p':   // imu_id
         if (optarg) imu_id = atoi(optarg);

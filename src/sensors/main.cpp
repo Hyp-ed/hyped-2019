@@ -52,7 +52,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     imu_manager_(new ImuManager(log)),
     battery_manager_(new BmsManager(log))
 {
-  if (!sys_.fake_keyence) {
+  if (!(sys_.fake_keyence || sys_.fake_keyence_fail)) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
       GpioCounter* keyence = new GpioCounter(log_, pins_[i]);
       keyence->start();
@@ -68,7 +68,7 @@ Main::Main(uint8_t id, utils::Logger& log)
       keyences_[i] = new FakeGpioCounter(log_, false, "data/in/gpio_counter_normal_run.txt");
     }
   }
-  if (!sys_.fake_temperature) {
+  if (!(sys_.fake_temperature || sys_.fake_temperature_fail)) {
     temperature_ = new Temperature(log_, kThermistorPin);
   } else if (sys_.fake_temperature_fail) {
     // fake temperature fail case

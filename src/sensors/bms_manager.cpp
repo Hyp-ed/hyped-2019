@@ -38,7 +38,7 @@ BmsManager::BmsManager(Logger& log)
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
 
-  if (!sys_.fake_batteries) {
+  if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
     // create BMS LP
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
       BMS* bms = new BMS(i, log_);

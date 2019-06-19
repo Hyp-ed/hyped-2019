@@ -77,8 +77,6 @@ class System {
   bool fake_batteries_fail;
   bool fake_keyence_fail;
   bool fake_temperature_fail;
-  bool fake_embrakes_fail;
-  bool fake_motors_fail;
 
   // Navigation System IDs
   int8_t imu_id;
