@@ -57,6 +57,7 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
       em_started_(false),
       is_fail_acc_(is_fail_acc),
       is_fail_dec_(is_fail_dec),
+      failure_happened_(false),
       failure_time_acc_(0),
       failure_time_dec_(0),
       noise_(noise),
@@ -144,19 +145,19 @@ void FakeImuFromFile::getData(ImuData* imu)
 
     if (accCheckTime()) {
       acc_count_ = std::min(acc_count_, (int64_t) acc_val_read_.size());
+      // Check so you don't go out of bounds
+      if (acc_count_ == (int64_t) acc_val_read_.size()) {
+        prev_acc_ = acc_val_read_[acc_count_- 1];
+        operational = acc_val_operational_[acc_count_ - 1];
+      } else {
+        prev_acc_ = acc_val_read_[acc_count_];
+        operational = acc_val_operational_[acc_count_];
+      }
       if (is_fail_acc_) {
-        if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_acc_) {
+        if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_acc_ || failure_happened_) { // NOLINT [whitespace/line_length]
           prev_acc_ = acc_fail_;
           operational = false;
-        }
-      } else {
-        // Check so you don't go out of bounds
-        if (acc_count_ == (int64_t) acc_val_read_.size()) {
-          prev_acc_ = acc_val_read_[acc_count_- 1];
-          operational = acc_val_operational_[acc_count_ - 1];
-        } else {
-          prev_acc_ = acc_val_read_[acc_count_];
-          operational = acc_val_operational_[acc_count_];
+          failure_happened_ = true;
         }
       }
     }
@@ -170,19 +171,19 @@ void FakeImuFromFile::getData(ImuData* imu)
 
     if (accCheckTime()) {
       acc_count_ = std::min(acc_count_, (int64_t) dec_val_read_.size());
+      // Check so you don't go out of bounds
+      if (acc_count_ == (int64_t) dec_val_read_.size()) {
+        prev_acc_ = dec_val_read_[acc_count_-1];
+        operational = dec_val_operational_[acc_count_-1];
+      } else {
+        prev_acc_ = dec_val_read_[acc_count_];
+        operational = dec_val_operational_[acc_count_];
+      }
       if (is_fail_dec_) {
-        if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_dec_) {
+        if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_dec_ || failure_happened_) { // NOLINT [whitespace/line_length]
           prev_acc_ = acc_fail_;
           operational = false;
-        }
-      } else {
-        // Check so you don't go out of bounds
-        if (acc_count_ == (int64_t) dec_val_read_.size()) {
-          prev_acc_ = dec_val_read_[acc_count_-1];
-          operational = dec_val_operational_[acc_count_-1];
-        } else {
-          prev_acc_ = dec_val_read_[acc_count_];
-          operational = dec_val_operational_[acc_count_];
+          failure_happened_ = true;
         }
       }
     }

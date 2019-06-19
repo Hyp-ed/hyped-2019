@@ -33,7 +33,7 @@
 uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
 double kStripeDistance = 30.48;     // metres
-uint64_t kMaxTime = 1500;     // between stripe readings before throw failure micros
+uint64_t kMaxTime = 1500;     // between stripe readings before throw failure (micros)
 
 
 namespace hyped {
@@ -91,7 +91,7 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
     for (StripeCounter stripe : stripe_data_) {
       if (stripe.count.timestamp < time_now_micro) {
         stripe_count_.count.value = stripe.count.value;
-        stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+        stripe_count_.count.timestamp = stripe.count.timestamp;   // use timestamps from file
       } else {
         break;
       }
@@ -115,7 +115,8 @@ void FakeGpioCounter::checkData()
 {
   if (is_from_file_) {
     uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
-    if (time_after > kMaxTime && miss_stripe_) {
+    log_.DBG("FakeGpioCounter", "time_after: %d", time_after);
+    if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
       log_.INFO("FakeGpioCounter", "missed stripe!");
       stripe_count_.operational = false;
     }

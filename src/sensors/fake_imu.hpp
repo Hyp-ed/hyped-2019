@@ -143,6 +143,7 @@ class FakeImuFromFile : public ImuInterface {
   bool em_started_;
   bool is_fail_acc_;
   bool is_fail_dec_;
+  bool failure_happened_;
   uint64_t failure_time_acc_;
   uint64_t failure_time_dec_;
   float noise_;
