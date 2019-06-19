@@ -23,8 +23,8 @@
 
 #include <atomic>
 
-#include "embrakes/controller_interface.hpp"
-#include "embrakes/can_sender.hpp"
+#include "embrakes/brakes_controller_interface.hpp"
+#include "embrakes/brakes_can_sender.hpp"
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
@@ -41,7 +41,7 @@ using utils::concurrent::Thread;
 using utils::io::can::Frame;
 using utils::Logger;
 
-namespace motor_control {
+namespace embrakes {
 
 class Controller : public ControllerInterface {
  public:
@@ -177,6 +177,6 @@ class Controller : public ControllerInterface {
   ControllerMessage checkStateMsg_[1];
   ControllerMessage healthCheckMsgs[2];
 };
-}}  // namespace hyped::motor_control
+}}  // namespace hyped::embrakes
 
 #endif  // BRAKES_CONTROLLER_HPP_

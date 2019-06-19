@@ -24,7 +24,7 @@
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
 #include "utils/timer.hpp"
-#include "embrakes/sender_interface.hpp"
+#include "embrakes/brakes_sender_interface.hpp"
 #include "embrakes/brakes_controller_interface.hpp"
 
 #define TIMEOUT 5000
