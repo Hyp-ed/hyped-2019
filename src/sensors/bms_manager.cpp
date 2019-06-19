@@ -45,6 +45,7 @@ BmsManager::BmsManager(Logger& log)
       bms->start();
       bms_[i] = bms;
     }
+    // create BMS HP
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
