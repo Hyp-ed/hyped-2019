@@ -43,7 +43,7 @@ CanSender::CanSender(ControllerInterface* controller, uint8_t node_id, Logger& l
 
 bool CanSender::sendMessage(utils::io::can::Frame &message)
 {
-  log_.INFO("Motor", "Sending Message");
+  log_.INFO("MOTOR", "Sending Message");
   can_.send(message);
   isSending = true;
 
@@ -51,7 +51,9 @@ bool CanSender::sendMessage(utils::io::can::Frame &message)
   messageTimestamp = timer.getTimeMicros();
 
   while (isSending) {
-    if (timer.getTimeMicros() - messageTimestamp > TIMEOUT) {
+    if ((timer.getTimeMicros() - messageTimestamp) > TIMEOUT) {
+      // TODO(Iain): Test the latency and set the TIMEOUT to a reasonable value.
+      log_.ERR("MOTOR", "Sender timeout reached");
       return false;
     }
   }
@@ -76,7 +78,7 @@ void CanSender::processNewData(utils::io::can::Frame &message)
   } else if (id == kNmtTransmit + node_id_) {
     controller_->processNmtMessage(message);
   } else {
-    log_.ERR("Motor", "Controller %d: CAN message not recognised", node_id_);
+    log_.ERR("MOTOR", "Controller %d: CAN message not recognised", node_id_);
   }
 }
 
