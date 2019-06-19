@@ -96,11 +96,16 @@ void BmsManager::run()
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    // set high to kSSRKill if LP or HP is kCriticalFailure
+    data::State state = data_.getStateMachineData().current_state;
+
+    // set high to kSSRKill if LP or HP is kCriticalFailure or pod in emergency states
     // batteries module status forces kEmergencyBraking, which actuates embrakes
-    if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
+    if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       kill_switch.set();
-      log_.INFO("BMS-MANAGER", "SSR Kill Switch has been set: HP shut off...LP still running");
+      log_.INFO("BMS-MANAGER", "Emergency State! HP SSR Kill Switch has been set");
+    } else if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
+      kill_switch.set();
+      log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR Kill Switch has been set");
     }
     sleep(100);
   }
@@ -111,7 +116,7 @@ bool BmsManager::batteriesInRange()
   // check LP
   for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
     auto& battery = batteries_.low_power_batteries[i];      // reference batteries individually
-    if (battery.voltage < 240 || battery.voltage > 252) {   // voltage in 24V to 25.2V
+    if (battery.voltage < 175 || battery.voltage > 294) {   // voltage in 17.5V to 29.4V
       log_.ERR("BMS-MANAGER", "BMS LP %d voltage out of range: %d", i, battery.voltage);
       return false;
     }
