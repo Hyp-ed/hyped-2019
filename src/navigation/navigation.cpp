@@ -34,6 +34,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            axis_(axis),
            stripe_counter_(0, 0),
            keyence_used(true),
+           keyence_failure_counter_(0),
            acceleration_(0, 0.),
            velocity_(0, 0.),
            distance_(0, 0.),
@@ -161,9 +162,9 @@ void Navigation::updateUncertainty()
   /* Uncertainty from measuring is the timestamp between two measurements times velocity.
    * Furthermore, the velocity has an uncertainty due to acceleration and timestamp. */
   double delta_t = (distance_.timestamp - prev_timestamp)/1000000.0;
-  NavigationType abs_delta_acc = abs(getAcceleration() - prev_accs[1]);
+  NavigationType abs_delta_acc = abs(getAcceleration() - prev_acc);
   // Adds uncertainty from the possible shift in both directions in the timestamp
-  velocity_uncertainty += abs_delta_acc*delta_t;
+  velocity_uncertainty += abs_delta_acc*delta_t/2;
   // Adds uncertainty from the variance in acceleration from measurements
   NavigationType acc_variance = 0.0;
   for (int i = 0; i < data::Sensors::kNumImus; i++) {
@@ -195,27 +196,28 @@ void Navigation::queryKeyence()
       // Allow up to one missed stripe.
       // There must be some uncertainty in distance around the missed 30.48m.
       double allowed_uncertainty = 10.0;  // Temporary value, estimateDistanceUncertainty()
-      if (distance_.value - stripe_counter_.value*30.48 > 30.48 - allowed_uncertainty &&
-          distance_.value - stripe_counter_.value*30.48 < 30.48 + allowed_uncertainty) {
+      NavigationType distance_change = distance_.value - stripe_counter_.value*30.48;
+      if (distance_change > 30.48 - allowed_uncertainty &&
+          distance_change < 30.48 + allowed_uncertainty) {
         stripe_counter_.value++;
       }
       /* Error handling: If distance from keyence still deviates more than the allowed
       uncertainty, then the measurements are no longer believable. Important that this
       is only checked in an update, otherwise we might throw an error in between stripes. */
-      if (distance_.value - stripe_counter_.value*30.48 < 0.0 - allowed_uncertainty ||
-          distance_.value - stripe_counter_.value*30.48 > allowed_uncertainty) {
+      if (distance_change < 0.0 - allowed_uncertainty ||
+          distance_change > allowed_uncertainty) {
         // TODO(Justus) what happens in case of keyence failure?
+        keyence_failure_counter_++;
       }
-      // Lower the uncertainty in velocity, but don't in distance since that has
-      // a too large impact:
-      // TODO(Justus) Uncertainty for distance maybe? Can't just subtract right away, or?
-      velocity_uncertainty -= abs((distance_.value - stripe_counter_.value*30.48)
-        *1e6/stripe_counter_.timestamp);
+      // Lower the uncertainty in velocity:
+      velocity_uncertainty -= abs(distance_change*1e6/stripe_counter_.timestamp);
+      // Lower the uncertainty in distance:
+      distance_uncertainty -= abs(distance_change);
+      if (distance_uncertainty < 0) distance_uncertainty = abs(distance_uncertainty);
       // Update velocity value
-      velocity_.value -= abs((distance_.value - stripe_counter_.value*30.48)
-        *1e6/stripe_counter_.timestamp);
+      velocity_.value -= distance_change*1e6/stripe_counter_.timestamp;
       // Update distance value
-      distance_.value = stripe_counter_.value*30.48;
+      distance_.value -= distance_change;
       break;
     }
   }
@@ -239,22 +241,17 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  // TEMPORARY!!!!
-  // double delta_t = (distance_.timestamp - prev_timestamp)/1000000.0;
-  NavigationType acc_variance = filters_[0].KalmanFilter::getEstimateVariance();
-  NavigationType acc_stdDev = sqrt(acc_variance);
-
-  if (counter_ % 1000 == 0) {  // kPrintFreq
-    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f, d(unc)=%.3f", //NOLINT
+  if (counter_ % 1 == 0) {  // kPrintFreq
+    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                      counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
-                     stripe_counter_.value*30.48, distance_uncertainty);
-    log_.INFO("NAV", "Standard Deviation (acceleration): %.9f", acc_stdDev);
+                     stripe_counter_.value*30.48);
+    log_.INFO("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
+                 counter_, velocity_uncertainty, distance_uncertainty, keyence_failure_counter_);
   }
   counter_++;
   // Update all prev measurements
   prev_timestamp = distance_.timestamp;
-  prev_accs[1] = prev_accs[0];
-  prev_accs[0] = getAcceleration();
+  prev_acc = getAcceleration();
 }
 
 void Navigation::navigate()

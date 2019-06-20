@@ -154,6 +154,8 @@ namespace navigation {
       KeyenceDataArray prev_keyence_readings_;
       // Are the keyence sensors used or ignored?
       bool keyence_used;
+      // Have we gotten a keyence failure?
+      uint32_t keyence_failure_counter_;
 
 
       // To store estimated values
@@ -169,10 +171,8 @@ namespace navigation {
       NavigationType distance_uncertainty;
       // Uncertainty in velocity
       NavigationType velocity_uncertainty;
-      /* Previous two acceleration measurements, necessary for uncertainty determination
-       * The [0]th index stands for the previous measurement, [1] to the one before that.
-       */
-      std::array<NavigationType, 2> prev_accs;
+      // Previous two acceleration measurements, necessary for uncertainty determination
+      NavigationType prev_acc;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
