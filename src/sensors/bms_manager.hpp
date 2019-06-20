@@ -33,8 +33,6 @@
 #include "utils/system.hpp"
 #include "utils/io/gpio.hpp"
 
-constexpr int kSSRKill = 70;
-
 namespace hyped {
 
 using utils::concurrent::Thread;
@@ -54,6 +52,8 @@ class BmsManager: public ManagerInterface  {
  private:
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
+  GPIO* kill_hp_;
+  GPIO* kill_lp_;
 
   /**
    * @brief needs to be references because run() passes directly to data struct

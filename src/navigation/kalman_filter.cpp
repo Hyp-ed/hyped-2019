@@ -21,6 +21,12 @@
 namespace hyped {
 namespace navigation {
 
+constexpr float KalmanFilter::kInitialErrorVar;
+constexpr float KalmanFilter::kStateTransitionVar;
+constexpr float KalmanFilter::kTubeMeasurementVar;
+constexpr float KalmanFilter::kElevatorMeasurementVar;
+constexpr float KalmanFilter::kStationaryMeasurementVar;
+
 KalmanFilter::KalmanFilter(unsigned int n/*=3*/, unsigned int m/*=1*/, unsigned int k/*=0*/)
   : n_(n),
     m_(m),
