@@ -30,10 +30,6 @@ Controller::Controller(Logger& log, uint8_t id)
       state_(kNotReadyToSwitchOn),
       node_id_(id),
       critical_failure_(false),
-      actual_velocity_(0),
-      actual_torque_(0),
-      motor_temperature_(0),
-      controller_temperature_(0),
       sender(this, node_id_, log_)
 {
   sdo_message_.id         = kSdoReceive + node_id_;
