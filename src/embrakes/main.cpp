@@ -61,6 +61,8 @@ void Main::run() {
         break;
       case data::State::kExiting:
         break;
+      default:
+        break;
     }
   }
 
