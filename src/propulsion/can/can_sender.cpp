@@ -22,7 +22,7 @@ namespace hyped
 {
 namespace motor_control
 {
-CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
+CanSender::CanSender(Logger &log, uint8_t node_id) : log_(log),
                                                       node_id_(node_id),
                                                       can_(Can::getInstance()),
                                                       messageTimestamp(0)
@@ -32,11 +32,11 @@ CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
 }
 
 CanSender::CanSender(ControllerInterface* controller, uint8_t node_id, Logger& log)
-  : node_id_(node_id),
+  : log_(log),
+    node_id_(node_id),
     can_(Can::getInstance()),
     controller_(controller),
-    messageTimestamp(0),
-    log_(log)
+    messageTimestamp(0)
 {
   isSending = false;
   can_.start();
