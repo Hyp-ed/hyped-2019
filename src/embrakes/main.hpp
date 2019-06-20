@@ -27,12 +27,9 @@
 namespace hyped {
 
 using utils::concurrent::Thread;
-using data::Data;
-using data::State;
 using utils::Logger;
 using utils::System;
 using data::ModuleStatus;
-using data::EmergencyBrakes;
 
 namespace embrakes {
 
@@ -53,12 +50,12 @@ class Main : public Thread
     void run() override;
 
   private:
-    State currentState;
     Logger &log_;
 
     data::Data& data_;
     data::StateMachine sm_data_;
     data::EmergencyBrakes em_brakes_;
+    data::Telemetry tlm_data_;
 };
 
 }}

@@ -38,25 +38,29 @@ void Main::run() {
     // Get the current state of embrakes and state machine modules from data
     em_brakes_ = data_.getEmergencyBrakesData();
     sm_data_ = data_.getStateMachineData();
+    tlm_data_ = data_.getTelemetryData();
     
-    currentState = sm_data_.current_state;
-    
-    if (currentState == State::kCalibrating) { // Retract screw
-      em_brakes_.module_status = ModuleStatus::kReady;
-      data_.setEmergencyBrakesData(em_brakes_);
-
-    } else if (currentState == State::kNominalBraking) {
-      log_.INFO("Brakes", "Starting Nominal Braking");
-      em_brakes_.front_brakes = true;
-      em_brakes_.rear_brakes = true;
-      data_.setEmergencyBrakesData(em_brakes_);
-
-    } else if (currentState == State::kEmergencyBraking) {
-      log_.INFO("Brakes", "Starting Emergency Braking");
-      em_brakes_.front_brakes = true;
-      em_brakes_.rear_brakes = true;
-      data_.setEmergencyBrakesData(em_brakes_);
-      
+    switch (sm_data_.current_state) {
+      case data::State::kIdle:
+        break;
+      case data::State::kCalibrating:
+        em_brakes_.module_status = ModuleStatus::kReady;
+        data_.setEmergencyBrakesData(em_brakes_);
+        break;
+      case data::State::kNominalBraking: 
+        log_.INFO("Brakes", "Starting Nominal Braking");
+        em_brakes_.front_brakes = true;
+        em_brakes_.rear_brakes = true;
+        data_.setEmergencyBrakesData(em_brakes_);
+        break;
+      case data::State::kEmergencyBraking:
+        log_.INFO("Brakes", "Starting Emergency Braking");
+        em_brakes_.front_brakes = true;
+        em_brakes_.rear_brakes = true;
+        data_.setEmergencyBrakesData(em_brakes_);
+        break;
+      case data::State::kExiting:
+        break;
     }
   }
 
