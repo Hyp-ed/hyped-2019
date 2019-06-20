@@ -31,12 +31,14 @@
 #include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/system.hpp"
+#include "utils/io/gpio.hpp"
 
 namespace hyped {
 
 using utils::concurrent::Thread;
 using utils::Logger;
 using hyped::data::BatteryData;
+using utils::io::GPIO;
 
 namespace sensors {
 
@@ -50,6 +52,8 @@ class BmsManager: public ManagerInterface  {
  private:
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
+  GPIO* kill_hp_;
+  GPIO* kill_lp_;
 
   /**
    * @brief needs to be references because run() passes directly to data struct

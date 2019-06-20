@@ -27,14 +27,11 @@
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "sensors/fake_batteries.hpp"
-#include "utils/io/gpio.hpp"
 
-constexpr int kSSRKill = 70;
+constexpr int kHPSSR = 70;
+constexpr int kLPSSR = 71;
 
 namespace hyped {
-
-using utils::io::GPIO;
-
 namespace sensors {
 
 BmsManager::BmsManager(Logger& log)
@@ -54,6 +51,13 @@ BmsManager::BmsManager(Logger& log)
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
+    // Set SSR switches for real system
+    kill_hp_ = new GPIO(kHPSSR, utils::io::gpio::kOut);
+    kill_lp_ = new GPIO(kLPSSR, utils::io::gpio::kOut);
+    kill_hp_->set();
+    kill_lp_->set();    // kHPSSR and kLPSSR set low if no power to BBB
+    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", kHPSSR);
+    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", kLPSSR);
   } else {
     // fake batteries here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -73,7 +77,6 @@ BmsManager::BmsManager(Logger& log)
 
 void BmsManager::run()
 {
-  GPIO kill_switch(kSSRKill, utils::io::gpio::kOut);    // HP SSR only
   while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -91,21 +94,21 @@ void BmsManager::run()
       if (!batteriesInRange()) {
         log_.ERR("BMS-MANAGER", "battery failure detected");
         batteries_.module_status = data::ModuleStatus::kCriticalFailure;
+
+        // set low to kHPSSR if batteries is kCriticalFailure
+        // batteries module status forces kEmergencyBraking, which actuates embrakes
+        kill_hp_->clear();
+        log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
       }
     }
     // publish the new data
     data_.setBatteriesData(batteries_);
 
+    // set low to kHPSSR if pod in emergency states
     data::State state = data_.getStateMachineData().current_state;
-
-    // set high to kSSRKill if LP or HP is kCriticalFailure or pod in emergency states
-    // batteries module status forces kEmergencyBraking, which actuates embrakes
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
-      kill_switch.set();
-      log_.INFO("BMS-MANAGER", "Emergency State! HP SSR Kill Switch has been set");
-    } else if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
-      kill_switch.set();
-      log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR Kill Switch has been set");
+      kill_hp_->clear();
+      log_.INFO("BMS-MANAGER", "Emergency State! HP SSR cleared");
     }
     sleep(100);
   }
@@ -121,13 +124,18 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.current < 120 || battery.current > 700) {       // current in 12A to 70A
+    if (battery.current < 50 || battery.current > 500) {       // current in 5A to 50A
       log_.ERR("BMS-MANAGER", "BMS LP %d current out of range: %d", i, battery.current);
       return false;
     }
 
-    if (battery.temperature < 10 || battery.temperature > 50) {  // temperature in 10C to 50C
+    if (battery.temperature < 10 || battery.temperature > 60) {  // temperature in 10C to 60C
       log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.temperature);
+      return false;
+    }
+
+    if (battery.charge < 20 || battery.charge > 100) {  // charge in 20% to 100%
+      log_.ERR("BMS-MANAGER", "BMS LP %d charge out of range: %d", i, battery.charge);
       return false;
     }
   }
@@ -135,18 +143,24 @@ bool BmsManager::batteriesInRange()
   // check HP
   for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
     auto& battery = batteries_.high_power_batteries[i];     // reference battereis individually
-    if (battery.voltage < 1100 || battery.voltage > 1188) {   // voltage in 110V to 118.8V
+    if (battery.voltage < 1000 || battery.voltage > 1296) {   // voltage in 100V to 129.6V
       log_.ERR("BMS-MANAGER", "BMS HP %d voltage out of range: %d", i, battery.voltage);
       return false;
     }
 
-    if (battery.current < 0 || battery.current > 4000) {  // current in 0A to 400A
+    if (battery.current < 0 || battery.current > 3500) {  // current in 0A to 350A
       log_.ERR("BMS-MANAGER", "BMS HP %d current out of range: %d", i, battery.current);
       return false;
     }
 
-    if (battery.temperature < 10 || battery.temperature > 50) {  // temperature in 10C to 50C
+    if (battery.temperature < 10 || battery.temperature > 65) {  // temperature in 10C to 65C
       log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.temperature);
+      return false;
+    }
+
+    // TODO(Greg): HP Charge scaling needs to be tested
+    if (battery.charge < 20 || battery.charge > 100) {  // charge in 20% to 100%
+      log_.ERR("BMS-MANAGER", "BMS HP %d charge out of range: %d", i, battery.charge);
       return false;
     }
   }
