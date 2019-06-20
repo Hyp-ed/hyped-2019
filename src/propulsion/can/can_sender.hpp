@@ -28,7 +28,7 @@
 #include "sender_interface.hpp"
 #include "utils/timer.hpp"
 
-#define TIMEOUT 100000
+#define TIMEOUT 70000
 
 namespace hyped
 {

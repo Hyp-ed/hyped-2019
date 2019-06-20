@@ -57,9 +57,6 @@ bool CanSender::sendMessage(utils::io::can::Frame &message)
       log_.ERR("MOTOR", "Sender timeout reached");
       return false;
     }
-    Thread::sleep(10);
-    log_.DBG1("MOTOR", "Resending");
-    can_.send(message);
   }
 
   return true;
