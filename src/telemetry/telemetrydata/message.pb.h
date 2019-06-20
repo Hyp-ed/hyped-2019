@@ -103,12 +103,13 @@ enum ServerToClient_Command {
   ServerToClient_Command_RUN_LENGTH = 5,
   ServerToClient_Command_SERVICE_PROPULSION_GO = 6,
   ServerToClient_Command_SERVICE_PROPULSION_STOP = 7,
+  ServerToClient_Command_NOMINAL_BRAKING = 8,
   ServerToClient_Command_ServerToClient_Command_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   ServerToClient_Command_ServerToClient_Command_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool ServerToClient_Command_IsValid(int value);
 const ServerToClient_Command ServerToClient_Command_Command_MIN = ServerToClient_Command_ACK;
-const ServerToClient_Command ServerToClient_Command_Command_MAX = ServerToClient_Command_SERVICE_PROPULSION_STOP;
+const ServerToClient_Command ServerToClient_Command_Command_MAX = ServerToClient_Command_NOMINAL_BRAKING;
 const int ServerToClient_Command_Command_ARRAYSIZE = ServerToClient_Command_Command_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* ServerToClient_Command_descriptor();
@@ -278,6 +279,8 @@ class ServerToClient : public ::google::protobuf::Message /* @@protoc_insertion_
     ServerToClient_Command_SERVICE_PROPULSION_GO;
   static const Command SERVICE_PROPULSION_STOP =
     ServerToClient_Command_SERVICE_PROPULSION_STOP;
+  static const Command NOMINAL_BRAKING =
+    ServerToClient_Command_NOMINAL_BRAKING;
   static inline bool Command_IsValid(int value) {
     return ServerToClient_Command_IsValid(value);
   }
