@@ -30,7 +30,7 @@ Main::Main(uint8_t id, Logger &log)
 { /* EMPTY */ }
 
 void Main::run() {
-  log_.INFO("Embrakes", "Thread started");
+  log_.INFO("Brakes", "Thread started");
 
   System &sys = System::getSystem();
 
@@ -46,13 +46,13 @@ void Main::run() {
       data_.setEmergencyBrakesData(em_brakes_);
 
     } else if (currentState == State::kNominalBraking) {
-      log_.INFO("Embrakes", "Starting Nominal Braking");
+      log_.INFO("Brakes", "Starting Nominal Braking");
       em_brakes_.front_brakes = true;
       em_brakes_.rear_brakes = true;
       data_.setEmergencyBrakesData(em_brakes_);
 
     } else if (currentState == State::kEmergencyBraking) {
-      log_.INFO("Embrakes", "Starting Emergency Braking");
+      log_.INFO("Brakes", "Starting Emergency Braking");
       em_brakes_.front_brakes = true;
       em_brakes_.rear_brakes = true;
       data_.setEmergencyBrakesData(em_brakes_);
@@ -60,7 +60,7 @@ void Main::run() {
     }
   }
 
-  log_.INFO("Embrakes", "Thread shutting down");
+  log_.INFO("Brakes", "Thread shutting down");
 }
 
 }} // hyped::motor_control

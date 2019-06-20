@@ -140,7 +140,7 @@ class Controller : public ControllerInterface {
 
   Logger&                   log_;
   data::Data&               data_;
-  data::Motors              motor_data_;
+  data::EmergencyBrakes     brakes_data_;
   atomic<ControllerState>   state_;
   uint8_t                   node_id_;
   atomic<bool>              critical_failure_;
