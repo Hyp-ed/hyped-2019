@@ -23,11 +23,12 @@
 #include <iostream>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
+#include "utils/concurrent/thread.hpp"
 #include "propulsion/controller_interface.hpp"
 #include "sender_interface.hpp"
 #include "utils/timer.hpp"
 
-#define TIMEOUT 5000
+#define TIMEOUT 70000
 
 namespace hyped
 {
@@ -37,6 +38,7 @@ using utils::Logger;
 using utils::io::Can;
 using utils::io::CanProccesor;
 using utils::Timer;
+using utils::concurrent::Thread;
 
 class CanSender : public CanProccesor, public SenderInterface
 {
@@ -78,7 +80,7 @@ class CanSender : public CanProccesor, public SenderInterface
     bool getIsSending() override;
 
   private:
-    Logger log_;
+    Logger& log_;
     uint8_t node_id_;
     Can &can_;
     std::atomic<bool> isSending;
