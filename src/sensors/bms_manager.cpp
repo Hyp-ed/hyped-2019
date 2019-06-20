@@ -27,8 +27,14 @@
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "sensors/fake_batteries.hpp"
+#include "utils/io/gpio.hpp"
+
+constexpr int kSSRKill = 70;
 
 namespace hyped {
+
+using utils::io::GPIO;
+
 namespace sensors {
 
 BmsManager::BmsManager(Logger& log)
@@ -67,6 +73,7 @@ BmsManager::BmsManager(Logger& log)
 
 void BmsManager::run()
 {
+  GPIO kill_switch(kSSRKill, utils::io::gpio::kOut);    // HP SSR only
   while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -89,11 +96,16 @@ void BmsManager::run()
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    // set high to kSSRKill if LP or HP is kCriticalFailure
-    if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
-      GPIO kill_switch(kSSRKill, utils::io::gpio::kOut);
+    data::State state = data_.getStateMachineData().current_state;
+
+    // set high to kSSRKill if LP or HP is kCriticalFailure or pod in emergency states
+    // batteries module status forces kEmergencyBraking, which actuates embrakes
+    if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       kill_switch.set();
-      log_.INFO("BMS-MANAGER", "SSR Kill Switch has been set");
+      log_.INFO("BMS-MANAGER", "Emergency State! HP SSR Kill Switch has been set");
+    } else if (batteries_.module_status == data::ModuleStatus::kCriticalFailure) {
+      kill_switch.set();
+      log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR Kill Switch has been set");
     }
     sleep(100);
   }
@@ -101,13 +113,10 @@ void BmsManager::run()
 
 bool BmsManager::batteriesInRange()
 {
-  // TODO(Greg): Check these values with power team
-  // check all LP and HP battery values are in expected range
-
   // check LP
   for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
     auto& battery = batteries_.low_power_batteries[i];      // reference batteries individually
-    if (battery.voltage < 240 || battery.voltage > 252) {   // voltage in 24V to 25.2V
+    if (battery.voltage < 175 || battery.voltage > 294) {   // voltage in 17.5V to 29.4V
       log_.ERR("BMS-MANAGER", "BMS LP %d voltage out of range: %d", i, battery.voltage);
       return false;
     }

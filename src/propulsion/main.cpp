@@ -104,7 +104,11 @@ void Main::run()
           if (previousState != currentState)
             log_.DBG1("Motor", "State Exiting");
           previousState = currentState;
-          stateProcessor->servicePropulsion();
+          Telemetry telem = data_.getTelemetryData();
+          if (telem.service_propulsion_go) {
+            stateProcessor->servicePropulsion();
+            log_.DBG1("MOTOR", "Service propulsion active");
+          }
     } else if (currentState == State::kFailureStopped) {
           // Enter preoperational
           if (previousState != currentState)
