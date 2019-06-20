@@ -87,6 +87,7 @@ void Controller::configure()
   log_.INFO("MOTOR", "Controller %d: Configuring...", node_id_);
   for (int i = 0; i < 20; i++) {
     if (sendControllerMessage(configMsgs_[i])) return;
+    Thread::sleep(100);
   }
   log_.INFO("MOTOR", "Controller %d: Configured.", node_id_);
 }

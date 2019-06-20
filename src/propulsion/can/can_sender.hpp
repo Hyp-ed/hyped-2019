@@ -23,6 +23,7 @@
 #include <iostream>
 #include "utils/io/can.hpp"
 #include "utils/logger.hpp"
+#include "utils/concurrent/thread.hpp"
 #include "propulsion/controller_interface.hpp"
 #include "sender_interface.hpp"
 #include "utils/timer.hpp"
@@ -37,6 +38,7 @@ using utils::Logger;
 using utils::io::Can;
 using utils::io::CanProccesor;
 using utils::Timer;
+using utils::concurrent::Thread;
 
 class CanSender : public CanProccesor, public SenderInterface
 {
