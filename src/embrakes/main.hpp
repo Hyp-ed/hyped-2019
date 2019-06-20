@@ -1,7 +1,7 @@
 /*
 * Author: Gregor Konzett
 * Organisation: HYPED
-* Date: 31.3.2019
+* Date:
 * Description: Entrypoint class to the embrake module, started in it's own thread. Handles the logic to retract the brakes
 *
 *    Copyright 2019 HYPED

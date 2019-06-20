@@ -1,7 +1,7 @@
 /*
-* Author: Gregor Konzett
+* Author:
 * Organisation: HYPED
-* Date: 31.3.2019
+* Date:
 * Description: Entrypoint class to the embrake module, started in it's own thread. Handles the logic to retract the brakes
 *
 *    Copyright 2019 HYPED
@@ -42,24 +42,50 @@ void Main::run() {
     
     switch (sm_data_.current_state) {
       case data::State::kIdle:
+
+        // TODO(Kornelija): retract/disengage brakes after command from GUI
+
         break;
       case data::State::kCalibrating:
+
+        // TODO(Kornelija): calibrate brakes by retracting them
+
         em_brakes_.module_status = ModuleStatus::kReady;
         data_.setEmergencyBrakesData(em_brakes_);
         break;
-      case data::State::kNominalBraking: 
+      case data::State::kNominalBraking:
+
+        // TODO(Kornelija): engage brakes
+
         log_.INFO("Brakes", "Starting Nominal Braking");
+
+        // TODO(Kornelija): check whether button pressed before changing booleans in data structure
+
         em_brakes_.front_brakes = true;
         em_brakes_.rear_brakes = true;
         data_.setEmergencyBrakesData(em_brakes_);
         break;
       case data::State::kEmergencyBraking:
+
+        // ???brakes engaged by cutting high power???
+
         log_.INFO("Brakes", "Starting Emergency Braking");
+
+        // TODO(Kornelija): check whether button pressed before changing booleans in data structure
+
         em_brakes_.front_brakes = true;
         em_brakes_.rear_brakes = true;
         data_.setEmergencyBrakesData(em_brakes_);
         break;
       case data::State::kExiting:
+
+        // ???clamp brakes when service propulsion is stopped???
+
+        break;
+      case data::State::kFinished:
+
+        // ??? make sure brakes are retracted so the pod can slide off the rail???
+
         break;
       default:
         break;
