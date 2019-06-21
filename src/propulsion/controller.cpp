@@ -35,7 +35,7 @@ Controller::Controller(Logger& log, uint8_t id)
       actual_torque_(0),
       motor_temperature_(0),
       controller_temperature_(0),
-      sender(this, node_id_, log_)
+      sender(this, node_id_, log)
 {
   sdo_message_.id         = kSdoReceive + node_id_;
   sdo_message_.extended   = false;
@@ -46,7 +46,7 @@ Controller::Controller(Logger& log, uint8_t id)
   nmt_message_.len        = 2;
 
   // Initialse arrays of message data:
-  FileReader::readFileData(configMsgs_, 16, kConfigMsgFile);
+  FileReader::readFileData(configMsgs_, 20, kConfigMsgFile);
   FileReader::readFileData(enterOpMsgs_, 4, kEnterOpMsgFile);
   FileReader::readFileData(enterPreOpMsg_, 1,  kEnterPreOpMsgFile);
   FileReader::readFileData(checkStateMsg_, 1, kCheckStateMsgFile);
@@ -58,6 +58,7 @@ Controller::Controller(Logger& log, uint8_t id)
   FileReader::readFileData(healthCheckMsgs, 2, kHealthCheckMsgFile);
   FileReader::readFileData(updateMotorTempMsg, 1, kUpdateMotorTempFile);
   FileReader::readFileData(updateContrTempMsg, 1, kUpdateContrTempFile);
+  FileReader::readFileData(autoAlignMsg, 1, kAutoAlignMsgFile);
 }
 
 bool Controller::sendControllerMessage(ControllerMessage message_template)
@@ -84,8 +85,9 @@ void Controller::registerController()
 void Controller::configure()
 {
   log_.INFO("MOTOR", "Controller %d: Configuring...", node_id_);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < 20; i++) {
     if (sendControllerMessage(configMsgs_[i])) return;
+    Thread::sleep(100);
   }
   log_.INFO("MOTOR", "Controller %d: Configured.", node_id_);
 }
@@ -109,7 +111,7 @@ void Controller::enterOperational()
   sendTargetVelocity(0);
 
   // apply break
-  if (sendControllerMessage(enterOpMsgs_[1])) return;
+  // if (sendControllerMessage(enterOpMsgs_[1])) return;
 
   // send shutdown message to transition to Ready to Switch On state
   for (int i = 0; i < 8; i++) {
@@ -242,6 +244,11 @@ void Controller::requestStateTransition(utils::io::can::Frame& message, Controll
     log_.ERR("MOTOR", "Controller %d, Could not transition to state %d", node_id_, state);
     return;
   }
+}
+
+void Controller::autoAlignMotorPosition()
+{
+  if (sendControllerMessage(autoAlignMsg[0])) return;
 }
 
 void Controller::processEmergencyMessage(utils::io::can::Frame& message)

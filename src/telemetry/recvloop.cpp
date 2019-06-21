@@ -75,10 +75,6 @@ void RecvLoop::run()
         log_.INFO("Telemetry", "FROM SERVER: RESET");
         telem_data_struct.reset_command = true;
         break;
-      case telemetry_data::ServerToClient::RUN_LENGTH:
-        log_.INFO("Telemetry", "FROM SERVER: RUN_LENGTH %f", msg.run_length());
-        telem_data_struct.run_length = msg.run_length();
-        break;
       case telemetry_data::ServerToClient::SERVICE_PROPULSION_GO:
         log_.INFO("Telemetry", "FROM SERVER: SERVICE_PROPULSION_GO");
         telem_data_struct.service_propulsion_go = true;
@@ -86,6 +82,10 @@ void RecvLoop::run()
       case telemetry_data::ServerToClient::SERVICE_PROPULSION_STOP:
         log_.INFO("Telemetry", "FROM SERVER: SERVICE_PROPULSION_STOP");
         telem_data_struct.service_propulsion_go = false;
+        break;
+      case telemetry_data::ServerToClient::NOMINAL_BRAKING:
+        log_.INFO("Telemetry", "FROM SERVER: NOMINAL_BRAKING");
+        telem_data_struct.nominal_braking_command = true;
         break;
       default:
         log_.ERR("Telemetry", "Unrecognized input from server, ENTERING CRITICAL FAILURE");

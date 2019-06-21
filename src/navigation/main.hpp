@@ -29,6 +29,7 @@ namespace hyped {
 using data::Data;
 using data::State;
 using hyped::data::StateMachine;
+using hyped::data::ModuleStatus;
 using utils::concurrent::Thread;
 using utils::System;
 using utils::Logger;

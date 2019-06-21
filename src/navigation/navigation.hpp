@@ -43,16 +43,18 @@ using navigation::KalmanFilter;
 using utils::Logger;
 using utils::math::Integrator;
 using utils::math::OnlineStatistics;
+using utils::math::RollingStatistics;
 
 namespace navigation {
 
   class Navigation {
     public:
-      typedef std::array<ImuData, data::Sensors::kNumImus> ImuDataArray;
-      typedef DataPoint<ImuDataArray>  ImuDataPointArray;
-      typedef std::array<NavigationType, data::Sensors::kNumImus> NavigationArray;
-      typedef std::array<KalmanFilter, data::Sensors::kNumImus> FilterArray;
+      typedef std::array<ImuData, data::Sensors::kNumImus>           ImuDataArray;
+      typedef DataPoint<ImuDataArray>                                ImuDataPointArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus>    NavigationArray;
+      typedef std::array<KalmanFilter, data::Sensors::kNumImus>      FilterArray;
       typedef array<data::StripeCounter, data::Sensors::kNumKeyence> KeyenceDataArray;
+
 
       /**
        * @brief Construct a new Navigation object
@@ -109,6 +111,13 @@ namespace navigation {
        */
       void calibrateGravity();
       /**
+       * @brief Apply Tukey's fences to an array of readings
+       *
+       * @param pointer to array of original acceleration readings
+       * @param threshold value
+       */
+      void tukeyFences(NavigationArray& data_array, float threshold);
+      /**
        * @brief Update central data structure
        */
       void updateData();
@@ -127,9 +136,12 @@ namespace navigation {
       void disableKeyenceUsage();
 
     private:
-      static constexpr int kNumCalibrationQueries = 10000;
+      static constexpr int kCalibrationAttempts = 3;
+      static constexpr int kCalibrationQueries = 10000;
+
       static constexpr int kPrintFreq = 1;
       static constexpr NavigationType kEmergencyDeceleration = 24;
+      static constexpr float kTukeyThreshold = 0.75;
 
       // System communication
       Logger& log_;
@@ -140,8 +152,10 @@ namespace navigation {
       unsigned int counter_;
 
       // movement axis
-      unsigned int axis_;
-
+      unsigned int axis_
+   
+      // acceptable variances for calibration measurements: {x, y, z}
+      std::array<float, 3> calibration_limits_;
 
       // Kalman filters to filter each IMU measurement individually
       FilterArray filters_;

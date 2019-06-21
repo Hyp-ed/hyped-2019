@@ -24,7 +24,7 @@
 #include "utils/system.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
-#include "./can/can_sender.hpp"
+// #include "propulsion/can/can_sender.hpp"
 #include "data/data.hpp"
 
 #include "state_processor.hpp"
@@ -35,6 +35,7 @@ using data::Data;
 using data::State;
 using data::ModuleStatus;
 using data::Motors;
+using data::Telemetry;
 using utils::Logger;
 using utils::System;
 using utils::concurrent::Thread;
@@ -56,6 +57,8 @@ class Main : public Thread
     Logger &log_;
     StateProcessor *stateProcessor;
     State currentState;
+    State previousState;
+    Data& data_;
 };
 
 }  // namespace motor_control

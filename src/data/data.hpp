@@ -59,7 +59,7 @@ struct Navigation : public Module {
   NavigationType  distance;  // m
   NavigationType  velocity;  // m/s
   NavigationType  acceleration;  // m/s^2
-  NavigationType  emergency_braking_distance;  // m
+  NavigationType emergency_braking_distance;
   NavigationType  braking_distance = 750;  // m
 };
 
@@ -134,12 +134,13 @@ struct Motors : public Module {
 // -------------------------------------------------------------------------------------------------
 
 struct Telemetry : public Module {
+  static constexpr float run_length = 1250;  // m
   bool calibrate_command;
   bool launch_command;
   bool reset_command;
   bool service_propulsion_go;
   bool emergency_stop_command;
-  float run_length;  // m
+  bool nominal_braking_command;
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -316,6 +317,14 @@ class Data {
   Lock lock_batteries_;
   Lock lock_emergency_brakes_;
   Lock lock_calibration_data_;
+
+  Data() {}
+
+ public:
+  Data(const Data&) = delete;
+  Data& operator=(const Data &) = delete;
+  Data(Data &&) = delete;
+  Data & operator=(Data &&) = delete;
 };
 
 }}  // namespace hyped::data

@@ -1,5 +1,6 @@
 /*
  * Author: Iain Macpherson
+ * Co-Author: George Karabassis
  * Organisation: HYPED
  * Date: 11/03/2019
  * Description: Main class for the Motor Controller
@@ -170,6 +171,12 @@ class Controller : public ControllerInterface {
    * @param[in] { CAN message to be sent, Controller state requested}
    */
   void requestStateTransition(utils::io::can::Frame& message, ControllerState state) override;
+  /**
+   * @brief Sets the mode of operation to the auto align motor positon mode.
+   *        The motor should spin briefly in both directions. This is a testing state and the
+   *        rpm is not controllable.
+   */
+  void autoAlignMotorPosition();
 
  private:
   /**
@@ -218,10 +225,11 @@ class Controller : public ControllerInterface {
   const char* kHealthCheckMsgFile = "data/in/controllerConfigFiles/health_check.txt";
   const char* kUpdateMotorTempFile = "data/in/controllerConfigFiles/update_motor_temp.txt";
   const char* kUpdateContrTempFile = "data/in/controllerConfigFiles/update_contr_temp.txt";
+  const char* kAutoAlignMsgFile = "data/in/controllerConfigFiles/auto_align.txt";
 
  public:
   // Arrays of messages sent to controller (see config files for details about message contents)
-  ControllerMessage configMsgs_[16];
+  ControllerMessage configMsgs_[20];
   ControllerMessage enterOpMsgs_[4];
   ControllerMessage enterPreOpMsg_[1];
   ControllerMessage checkStateMsg_[1];
@@ -233,6 +241,7 @@ class Controller : public ControllerInterface {
   ControllerMessage healthCheckMsgs[2];
   ControllerMessage updateMotorTempMsg[1];
   ControllerMessage updateContrTempMsg[1];
+  ControllerMessage autoAlignMsg[1];
 };
 }}  // namespace hyped::motor_control
 

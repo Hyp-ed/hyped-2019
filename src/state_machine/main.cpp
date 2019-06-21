@@ -17,12 +17,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
-#include <cstdint>
-
-#include "state_machine/hyped-machine.hpp"
-#include "state_machine/main.hpp"
-
 #include <cstdint>
 
 #include "state_machine/hyped-machine.hpp"
@@ -38,7 +32,7 @@ namespace state_machine {
 Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
       hypedMachine(log),
-      timeout_(23000000),     // 60 seconds
+      timeout_(23000000),     // 23 seconds
       data_(data::Data::getInstance())
 { /* EMPTY */ }
 
@@ -118,6 +112,7 @@ bool Main::checkInitialised()
     log_.INFO("STATE", "all modules are initialised and Start Calibrating command was received");
     hypedMachine.handleEvent(kInitialised);
     telemetry_data_.calibrate_command = false;
+    data_.setTelemetryData(telemetry_data_);
     return true;
   }
   return false;
@@ -142,6 +137,7 @@ bool Main::checkReset()
     log_.INFO("STATE", "reset command received");
     hypedMachine.handleEvent(kReset);
     telemetry_data_.reset_command = false;  // reset the command to false
+    data_.setTelemetryData(telemetry_data_);
     return true;
   }
   return false;
@@ -153,6 +149,7 @@ bool Main::checkOnStart()
     log_.INFO("STATE", "launch command received");
     hypedMachine.handleEvent(kOnStart);
     telemetry_data_.launch_command = false;
+    data_.setTelemetryData(telemetry_data_);
     // also setup timer for going to emergency braking state
     time_start_ = utils::Timer::getTimeMicros();
     return true;
@@ -170,6 +167,9 @@ bool Main::checkTelemetryCriticalFailure()
   // Also check if emergency stop command was received
   if (telemetry_data_.emergency_stop_command) {
     log_.ERR("STATE", "STOP command received");
+    telemetry_data_.emergency_stop_command = false;
+    data_.setTelemetryData(telemetry_data_);
+    hypedMachine.handleEvent(kCriticalFailure);
     return true;
   }
   return false;
@@ -207,6 +207,8 @@ bool Main::checkCriticalFailure()
   // Also check if emergency stop command was received
   if (telemetry_data_.emergency_stop_command) {
     log_.ERR("STATE", "STOP command received");
+    telemetry_data_.emergency_stop_command = false;
+    data_.setTelemetryData(telemetry_data_);
     criticalFailureFound = true;
     // return true;
   }
@@ -221,11 +223,11 @@ bool Main::checkMaxDistanceReached()
 {
   if (nav_data_.distance +
       nav_data_.braking_distance +
-      20 >= telemetry_data_.run_length) {
+      20 >= data::Telemetry::run_length) {
     log_.INFO("STATE", "max distance reached");
     log_.INFO("STATE", "current distance, braking distance: %f %f"
       , nav_data_.distance
-      , telemetry_data_.run_length - nav_data_.braking_distance);
+      , nav_data_.braking_distance);
     hypedMachine.handleEvent(kMaxDistanceReached);
     return true;
   }
@@ -245,7 +247,7 @@ bool Main::checkOnExit()
 bool Main::checkFinish()
 {
   // Check if end of tube was reached (leniency of 20m)
-  if (nav_data_.distance + 20 >= telemetry_data_.run_length) {
+  if (nav_data_.distance + 20 >= data::Telemetry::run_length) {
         log_.INFO("STATE", "ready for collection");
         hypedMachine.handleEvent(kFinish);
         return true;

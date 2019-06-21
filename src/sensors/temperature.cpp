@@ -46,12 +46,11 @@ void Temperature::run()
   temp_.operational = true;
 }
 
-// TODO(Anyone): scale data correctly for TMP35
 int Temperature::scaleData(uint16_t raw_value)
 {
-  // convert to C temperature
+  // convert to degrees C
   double temp = static_cast<double>(raw_value) / 4095;
-  temp = (temp*165) - 40;
+  temp = (temp*175) - 50;
   return static_cast<int>(temp);
 }
 
