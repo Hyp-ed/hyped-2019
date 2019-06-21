@@ -48,7 +48,6 @@ void loop(Logger& logger) {
         logger.DBG2("Telemetry", "SHARED launch_command: %s", telem_data.launch_command ? "true" : "false"); // NOLINT
         logger.DBG2("Telemetry", "SHARED calibrate_command: %s", telem_data.calibrate_command ? "true" : "false"); // NOLINT
         logger.DBG2("Telemetry", "SHARED reset_command: %s", telem_data.reset_command ? "true" : "false"); // NOLINT
-        logger.DBG2("Telemetry", "SHARED run_length: %f", telem_data.run_length);
         logger.DBG2("Telemetry", "SHARED service_propulsion_go: %s", telem_data.service_propulsion_go ? "true" : "false"); // NOLINT
         logger.DBG2("Telemetry", "SHARED emergency_stop_command: %s", telem_data.emergency_stop_command ? "true" : "false"); // NOLINT
 
