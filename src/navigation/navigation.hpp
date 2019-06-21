@@ -154,7 +154,9 @@ namespace navigation {
       KeyenceDataArray prev_keyence_readings_;
       // Are the keyence sensors used or ignored?
       bool keyence_used;
-      // Have we gotten a keyence failure?
+      // This counts the number of times the keyence readings disagree with the IMU data more than
+      // allowed due to uncertainty. It is used at the moment to check if the calculated
+      // uncertainty is acceptable.
       uint32_t keyence_failure_counter_;
 
 
@@ -171,7 +173,7 @@ namespace navigation {
       NavigationType distance_uncertainty;
       // Uncertainty in velocity
       NavigationType velocity_uncertainty;
-      // Previous two acceleration measurements, necessary for uncertainty determination
+      // Previous acceleration measurement, necessary for uncertainty determination
       NavigationType prev_acc;
 
       // To convert acceleration -> velocity -> distance

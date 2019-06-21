@@ -195,7 +195,7 @@ void Navigation::queryKeyence()
 
       // Allow up to one missed stripe.
       // There must be some uncertainty in distance around the missed 30.48m.
-      double allowed_uncertainty = 10.0;  // Temporary value, estimateDistanceUncertainty()
+      double allowed_uncertainty = distance_uncertainty;  // Temporary value
       NavigationType distance_change = distance_.value - stripe_counter_.value*30.48;
       if (distance_change > 30.48 - allowed_uncertainty &&
           distance_change < 30.48 + allowed_uncertainty) {
@@ -203,17 +203,20 @@ void Navigation::queryKeyence()
       }
       /* Error handling: If distance from keyence still deviates more than the allowed
       uncertainty, then the measurements are no longer believable. Important that this
-      is only checked in an update, otherwise we might throw an error in between stripes. */
-      if (distance_change < 0.0 - allowed_uncertainty ||
-          distance_change > allowed_uncertainty) {
+      is only checked in an update, otherwise we might throw an error in between stripes.
+      The first stripe is very uncertain, since it takes the longest, thus we ignore it.
+      Even if the first stripe is missed, error handling will catch it when the second is seen.*/
+      if ((distance_change < 0.0 - allowed_uncertainty  ||
+           distance_change >       allowed_uncertainty) &&
+           stripe_counter_.value > 1) {
         // TODO(Justus) what happens in case of keyence failure?
         keyence_failure_counter_++;
       }
       // Lower the uncertainty in velocity:
       velocity_uncertainty -= abs(distance_change*1e6/stripe_counter_.timestamp);
-      // Lower the uncertainty in distance:
-      distance_uncertainty -= abs(distance_change);
-      if (distance_uncertainty < 0) distance_uncertainty = abs(distance_uncertainty);
+      // Make sure velocity uncertainty is positive.
+      velocity_uncertainty = abs(velocity_uncertainty);
+      // The uncertainty in distance is not changed from this because the impact is far too large
       // Update velocity value
       velocity_.value -= distance_change*1e6/stripe_counter_.timestamp;
       // Update distance value
@@ -241,7 +244,7 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  if (counter_ % 1 == 0) {  // kPrintFreq
+  if (counter_ % 10 == 0) {  // kPrintFreq
     log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                      counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                      stripe_counter_.value*30.48);
