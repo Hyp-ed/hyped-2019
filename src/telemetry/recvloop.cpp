@@ -87,6 +87,10 @@ void RecvLoop::run()
         log_.INFO("Telemetry", "FROM SERVER: SERVICE_PROPULSION_STOP");
         telem_data_struct.service_propulsion_go = false;
         break;
+      case telemetry_data::ServerToClient::NOMINAL_BRAKING:
+        log_.INFO("Telemetry", "FROM SERVER: NOMINAL_BRAKING");
+        telem_data_struct.nominal_braking_command = true;
+        break;
       default:
         log_.ERR("Telemetry", "Unrecognized input from server, ENTERING CRITICAL FAILURE");
         telem_data_struct.module_status = ModuleStatus::kCriticalFailure;

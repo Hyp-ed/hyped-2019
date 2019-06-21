@@ -1,5 +1,6 @@
 /*
  * Author: Iain Macpherson
+ * Co-Author: George Karabassis
  * Organisation: HYPED
  * Date: 11/03/2019
  * Description: Main class for the Motor Controller
@@ -228,7 +229,7 @@ class Controller : public ControllerInterface {
 
  public:
   // Arrays of messages sent to controller (see config files for details about message contents)
-  ControllerMessage configMsgs_[16];
+  ControllerMessage configMsgs_[20];
   ControllerMessage enterOpMsgs_[4];
   ControllerMessage enterPreOpMsg_[1];
   ControllerMessage checkStateMsg_[1];

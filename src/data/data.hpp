@@ -135,6 +135,7 @@ struct Telemetry : public Module {
   bool reset_command;
   bool service_propulsion_go;
   bool emergency_stop_command;
+  bool nominal_braking_command;
   float run_length = 1250;  // m
 };
 

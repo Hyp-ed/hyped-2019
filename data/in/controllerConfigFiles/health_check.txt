@@ -3,8 +3,6 @@
 # File containing data to send to the controllers when the updateActualTorque function
 # is called in controller.cpp
 
-# NOTE: The current data is out of date:
-
 #-------------------------------------------------------------------------------------#
 
 # Check warning status

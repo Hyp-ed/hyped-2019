@@ -15,6 +15,7 @@ message ServerToClient {
         RUN_LENGTH = 5;
         SERVICE_PROPULSION_GO = 6;
         SERVICE_PROPULSION_STOP = 7;
+        NOMINAL_BRAKING = 8;
     }
 
     Command command = 1;
