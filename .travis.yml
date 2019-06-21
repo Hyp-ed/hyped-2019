@@ -8,21 +8,15 @@ language: bash
 git:
   depth: 
 
-
-env:
-  global:
-    - PKG_CONFIG_PATH=$HOME/protobuf-$PROTOBUF_VERSION-bin/lib/pkgconfig
-
 install:
 - wget https://github.com/protocolbuffers/protobuf/releases/download/v3.8.0/protobuf-cpp-3.8.0.tar.gz
 - tar -xzvf protobuf-cpp-3.8.0.tar.gz
-- ( cd protobuf-cpp-3.8.0 && ./autogen.sh && ./configure --prefix=$HOME/protobuf-cpp-3.8.0-bin && make -j2 && make install )
+- ( cd protobuf-cpp-3.8.0 && ./configure && make && make check && make install && ldconfig )
 
 # before_script:
 # - docker run --rm --privileged multiarch/qemu-user-static:register --reset
 
 script:
-- ./autogen.sh
 - echo DONE
 - make clean
 - make
