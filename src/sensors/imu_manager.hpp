@@ -54,17 +54,19 @@ class ImuManager: public ImuManagerInterface {
 
   /**
    * @brief Calibrate IMUs then begin collecting data.
-   *
    */
   void run() override;
 
  private:
   utils::System&   sys_;
+
+  /**
+   * @brief DataPoint array for all kNumImus
+   */
   DataArray        sensors_imu_;
 
   /**
    * @brief needs to be references because run() passes directly to data struct
-   *
    */
   data::Data&      data_;
 

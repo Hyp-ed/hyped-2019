@@ -48,7 +48,7 @@ FakeBatteries::FakeBatteries(Logger& log, bool is_lp, bool is_fail)
     case_index_ = 3;
   }
   updateBatteryData();
-  log_.DBG("FakeBatteries", "Fake Battery initialised");
+  log_.INFO("FakeBatteries", "Fake Battery initialised");
 }
 
 void FakeBatteries::getData(BatteryData* battery)

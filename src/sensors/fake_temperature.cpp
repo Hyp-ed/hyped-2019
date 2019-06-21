@@ -38,7 +38,7 @@ FakeTemperature::FakeTemperature(Logger& log, bool is_fail)
       failure_happened_(false)
 {
   temp_.temp = success_;
-  log_.DBG("FakeTemperature", "Fake Temperature initialised");
+  log_.INFO("FakeTemperature", "Fake Temperature initialised");
 }
 
 void FakeTemperature::run()

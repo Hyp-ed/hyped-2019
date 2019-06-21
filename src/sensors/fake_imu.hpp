@@ -43,21 +43,23 @@ namespace sensors {
  */
 class FakeImuFromFile : public ImuInterface {
  public:
-  /*
+  /**
    * @brief     A constructor for the fake IMU class by reading from file
    *
-   * @param[in]    The line format of the input file would be the following
+   *  The line format of the input file would be the following
    *
-   *               timestamp value_x value_y value_z noise_x noise_y noise_z
+   *               timestamp value_x
    *
-   *               Sample of the format is located at 'src/fake_imu_input_xxx.txt'. Note that the
-   *               timestamp for accelerometer has to start with 0 and must be multiples of 250 and
-   *               125 for accelerometer and gyroscope respectively. You must include every timestamp
-   *               from 0 to the last timestamp which will be a multiple of 250 or 125 depending on
-   *               if it is an accelerometer or gyroscope.
+   *               Note that the
+   *               timestamp for accelerometer has to start with 0 and must be multiples of 50
+   *               accelerometer. You must include every timestamp from 0 to the last 
+   *               timestamp. Using getTimeMicros() and imu_ref_time_ will scale the timestamps
    *
-   * @param[in] acc_file_path    A string to the file location of the accelerometer data points
-   * @param[in] gyr_file_path    A string to the file location of the gyroscope data points
+   * @param log_
+   * @param acc_file_path
+   * @param dec_file_path
+   * @param em_file_path same as dec_file_path
+   * @param noise set default value
    */
   FakeImuFromFile(utils::Logger& log_,
           std::string acc_file_path,
@@ -96,7 +98,7 @@ class FakeImuFromFile : public ImuInterface {
   /*
    * @brief     A function that reads data from file directory. This function also validates them
    *            by checking if
-   *              1) The timestamp values are valid. Multiples of 250 or 150 depending on the file.
+   *              1) The timestamp values are valid. Multiples of 50 depending on the file.
    *              2) The file follows the format given in the comments of the constructor above.
    *              3) The file exists.
    *
@@ -125,6 +127,11 @@ class FakeImuFromFile : public ImuInterface {
   std::vector<bool>             em_val_operational_;
 
   int64_t acc_count_;
+
+  /**
+   * @brief scales time based on getTimeMicros() and timestamps from file
+   * 
+   */
   uint64_t imu_ref_time_;
   std::string acc_file_path_;
   std::string dec_file_path_;

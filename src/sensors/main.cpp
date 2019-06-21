@@ -101,7 +101,7 @@ void Main::checkTemperature()
     log_.ERR("Sensors", "Temperature out of range: Critical Failure!");
     auto status = data_.getSensorsData();
     status.module_status = data::ModuleStatus::kCriticalFailure;
-    data_.setSensorsData(status);    // TemperatureData not part of Sensors
+    data_.setSensorsData(status);    // critical PCB temperature would make sensors unreliable
   }
 }
 

@@ -50,14 +50,32 @@ class BmsManager: public ManagerInterface  {
  private:
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
+
+  /**
+   * @brief HPSSR held high in nominal states, cleared when module failure or pod emergency state
+   *        Batteries module status forces kEmergencyBraking, which actuates embrakes
+   */
   GPIO* kill_hp_;
+
+  /**
+   * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared 
+   * 
+   */
   GPIO* kill_lp_;
 
   /**
    * @brief needs to be references because run() passes directly to data struct
    */
   data::Data&     data_;
+
+  /**
+   * @brief holds LP BatteryData, HP BatteryData, and module_status
+   */
   data::Batteries batteries_;
+
+  /**
+   * @brief checks voltage, current, temperature, and charge
+   */
   bool batteriesInRange();
 };
 

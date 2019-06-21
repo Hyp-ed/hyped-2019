@@ -52,6 +52,7 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stri
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
+  log_.INFO("FakeGpioCounter", "Fake Keyence initialised");
 }
 
 FakeGpioCounter::FakeGpioCounter(Logger& log,

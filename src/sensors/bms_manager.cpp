@@ -55,7 +55,7 @@ BmsManager::BmsManager(Logger& log)
     kill_hp_ = new GPIO(kHPSSR, utils::io::gpio::kOut);
     kill_lp_ = new GPIO(kLPSSR, utils::io::gpio::kOut);
     kill_hp_->set();
-    kill_lp_->set();    // kHPSSR and kLPSSR set low if no power to BBB
+    kill_lp_->set();
     log_.INFO("BMS-MANAGER", "HP SSR %d has been set", kHPSSR);
     log_.INFO("BMS-MANAGER", "LP SSR %d has been set", kLPSSR);
   } else {
@@ -94,21 +94,21 @@ void BmsManager::run()
       if (!batteriesInRange()) {
         log_.ERR("BMS-MANAGER", "battery failure detected");
         batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-
-        // set low to kHPSSR if batteries is kCriticalFailure
-        // batteries module status forces kEmergencyBraking, which actuates embrakes
-        kill_hp_->clear();
-        log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+        if (!sys_.fake_batteries) {
+          kill_hp_->clear();
+          log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+        }
       }
     }
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    // set low to kHPSSR if pod in emergency states
     data::State state = data_.getStateMachineData().current_state;
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
-      kill_hp_->clear();
-      log_.INFO("BMS-MANAGER", "Emergency State! HP SSR cleared");
+      if (!sys_.fake_batteries) {
+        kill_hp_->clear();
+        log_.INFO("BMS-MANAGER", "Emergency State! HP SSR cleared");
+      }
     }
     sleep(100);
   }
