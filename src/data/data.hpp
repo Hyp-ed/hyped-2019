@@ -134,20 +134,12 @@ struct Motors : public Module {
 // -------------------------------------------------------------------------------------------------
 
 struct Telemetry : public Module {
-<<<<<<< HEAD
   bool calibrate_command = false;
   bool launch_command = false;
   bool reset_command = false;
   bool service_propulsion_go = false;
   bool emergency_stop_command = false;
-=======
-  bool calibrate_command;
-  bool launch_command;
-  bool reset_command;
-  bool service_propulsion_go;
-  bool emergency_stop_command;
-  bool nominal_braking_command;
->>>>>>> develop
+  bool nominal_braking_command = false;
   float run_length = 1250;  // m
 };
 
