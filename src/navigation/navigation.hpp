@@ -152,8 +152,8 @@ namespace navigation {
       unsigned int counter_;
 
       // movement axis
-      unsigned int axis_
-   
+      unsigned int axis_;
+
       // acceptable variances for calibration measurements: {x, y, z}
       std::array<float, 3> calibration_limits_;
 

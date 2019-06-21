@@ -42,11 +42,12 @@ namespace navigation {
       State current_state = data.getStateMachineData().current_state;
 
     if (!sys_.tube_run) nav_.Navigation::disableKeyenceUsage();
-      switch (current_state) {
+
+    switch (current_state) {
         case State::kIdle :
         case State::kReady :
           break;
-          
+
         case State::kCalibrating :
           if (nav_.getModuleStatus() == ModuleStatus::kInit) {
             nav_.calibrateGravity();

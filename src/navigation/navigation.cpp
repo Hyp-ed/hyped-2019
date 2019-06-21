@@ -33,6 +33,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
+           calibration_limits_({0.001, 0.001, 0.05}),
            stripe_counter_(0, 0),
            keyence_used(true),
            keyence_failure_counter_(0),
@@ -41,7 +42,6 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            distance_(0, 0.),
            distance_uncertainty(0.),
            velocity_uncertainty(0.),
-           calibration_limits_({0.001, 0.001, 0.05}),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
