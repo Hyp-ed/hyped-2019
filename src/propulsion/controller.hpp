@@ -229,7 +229,7 @@ class Controller : public ControllerInterface {
 
  public:
   // Arrays of messages sent to controller (see config files for details about message contents)
-  ControllerMessage configMsgs_[20];
+  ControllerMessage configMsgs_[24];
   ControllerMessage enterOpMsgs_[4];
   ControllerMessage enterPreOpMsg_[1];
   ControllerMessage checkStateMsg_[1];
