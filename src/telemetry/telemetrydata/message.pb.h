@@ -100,10 +100,9 @@ enum ServerToClient_Command {
   ServerToClient_Command_CALIBRATE = 2,
   ServerToClient_Command_LAUNCH = 3,
   ServerToClient_Command_RESET = 4,
-  ServerToClient_Command_RUN_LENGTH = 5,
-  ServerToClient_Command_SERVICE_PROPULSION_GO = 6,
-  ServerToClient_Command_SERVICE_PROPULSION_STOP = 7,
-  ServerToClient_Command_NOMINAL_BRAKING = 8,
+  ServerToClient_Command_SERVICE_PROPULSION_GO = 5,
+  ServerToClient_Command_SERVICE_PROPULSION_STOP = 6,
+  ServerToClient_Command_NOMINAL_BRAKING = 7,
   ServerToClient_Command_ServerToClient_Command_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   ServerToClient_Command_ServerToClient_Command_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
@@ -273,8 +272,6 @@ class ServerToClient : public ::google::protobuf::Message /* @@protoc_insertion_
     ServerToClient_Command_LAUNCH;
   static const Command RESET =
     ServerToClient_Command_RESET;
-  static const Command RUN_LENGTH =
-    ServerToClient_Command_RUN_LENGTH;
   static const Command SERVICE_PROPULSION_GO =
     ServerToClient_Command_SERVICE_PROPULSION_GO;
   static const Command SERVICE_PROPULSION_STOP =
@@ -310,18 +307,11 @@ class ServerToClient : public ::google::protobuf::Message /* @@protoc_insertion_
   ::telemetry_data::ServerToClient_Command command() const;
   void set_command(::telemetry_data::ServerToClient_Command value);
 
-  // float run_length = 2;
-  void clear_run_length();
-  static const int kRunLengthFieldNumber = 2;
-  float run_length() const;
-  void set_run_length(float value);
-
   // @@protoc_insertion_point(class_scope:telemetry_data.ServerToClient)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   int command_;
-  float run_length_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_message_2eproto::TableStruct;
 };
@@ -1589,20 +1579,6 @@ inline void ServerToClient::set_command(::telemetry_data::ServerToClient_Command
   
   command_ = value;
   // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.command)
-}
-
-// float run_length = 2;
-inline void ServerToClient::clear_run_length() {
-  run_length_ = 0;
-}
-inline float ServerToClient::run_length() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ServerToClient.run_length)
-  return run_length_;
-}
-inline void ServerToClient::set_run_length(float value) {
-  
-  run_length_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ServerToClient.run_length)
 }
 
 // -------------------------------------------------------------------
