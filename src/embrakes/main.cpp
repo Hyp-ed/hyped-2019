@@ -42,9 +42,11 @@ void Main::run() {
     
     switch (sm_data_.current_state) {
       case data::State::kIdle:
-
-        // TODO(Kornelija): retract/disengage brakes after command from GUI
-
+        if(tlm_data_.nominal_braking_command) {
+          // retract brakes
+        } else{
+          // clamp brakes
+        }
         break;
       case data::State::kCalibrating:
 

@@ -144,30 +144,12 @@ class Controller : public ControllerInterface {
   atomic<ControllerState>   state_;
   uint8_t                   node_id_;
   atomic<bool>              critical_failure_;
-  atomic<int32_t>           actual_velocity_;
-  atomic<int16_t>           actual_torque_;
-  atomic<uint8_t>           motor_temperature_;
-  atomic<uint8_t>           controller_temperature_;
   CanSender                 sender;
   Frame             sdo_message_;
   Frame             nmt_message_;
 
   // Network management CAN commands:
   const uint8_t     kNmtOperational        = 0x01;
-
-  // Paths to the different files of message data.
-  const char* kConfigMsgFile = "data/in/controllerConfigFiles/configure.txt";
-  const char* kEnterOpMsgFile = "data/in/controllerConfigFiles/enter_operational.txt";
-  const char* kEnterPreOpMsgFile = "data/in/controllerConfigFiles/enter_preOperational.txt";
-  const char* kCheckStateMsgFile = "data/in/controllerConfigFiles/check_state.txt";
-  const char* kSendTargetVelMsgFile = "data/in/controllerConfigFiles/send_target_velocity.txt";
-  const char* kSendTargetTorqMsgFile = "data/in/controllerConfigFiles/send_target_torque.txt";
-  const char* kUpdateActualVelMsgFile = "data/in/controllerConfigFiles/update_actual_velocity.txt";
-  const char* kUpdateActualTorqMsgFile = "data/in/controllerConfigFiles/update_actual_torque.txt";
-  const char* kQuickStopMsgFile = "data/in/controllerConfigFiles/quick_stop.txt";
-  const char* kHealthCheckMsgFile = "data/in/controllerConfigFiles/health_check.txt";
-  const char* kUpdateMotorTempFile = "data/in/controllerConfigFiles/update_motor_temp.txt";
-  const char* kUpdateContrTempFile = "data/in/controllerConfigFiles/update_contr_temp.txt";
 
  public:
   // Arrays of messages sent to controller (see config files for details about message contents)
