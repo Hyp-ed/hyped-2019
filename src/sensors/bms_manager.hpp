@@ -58,8 +58,7 @@ class BmsManager: public ManagerInterface  {
   GPIO* kill_hp_;
 
   /**
-   * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared 
-   * 
+   * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared
    */
   GPIO* kill_lp_;
 

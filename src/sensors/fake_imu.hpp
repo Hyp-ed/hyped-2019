@@ -52,7 +52,7 @@ class FakeImuFromFile : public ImuInterface {
    *
    *               Note that the
    *               timestamp for accelerometer has to start with 0 and must be multiples of 50
-   *               accelerometer. You must include every timestamp from 0 to the last 
+   *               accelerometer. You must include every timestamp from 0 to the last
    *               timestamp. Using getTimeMicros() and imu_ref_time_ will scale the timestamps
    *
    * @param log_
@@ -130,7 +130,6 @@ class FakeImuFromFile : public ImuInterface {
 
   /**
    * @brief scales time based on getTimeMicros() and timestamps from file
-   * 
    */
   uint64_t imu_ref_time_;
   std::string acc_file_path_;

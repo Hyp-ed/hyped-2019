@@ -51,8 +51,8 @@ int main(int argc, char* argv[])
     batteries = data_.getBatteriesData();
     auto lp = batteries.low_power_batteries[0];
     auto hp = batteries.high_power_batteries[0];
-    log.INFO("TEST-BMSLP", "V = %u, C = %dmA, temp  = %d", lp.voltage, lp.current, lp.temperature);
-    log.INFO("TEST-BMSHP", "V = %u, C = %dmA, temp  = %d", hp.voltage, hp.current, hp.temperature);
+    log.INFO("TEST-BMSLP", "V = %u, C = %dmA, temp  = %d, charge = %d", lp.voltage, lp.current, lp.temperature, lp.charge);
+    log.INFO("TEST-BMSHP", "V = %u, C = %dmA, temp  = %d, charge = %d", hp.voltage, hp.current, hp.temperature, hp.charge);
     Thread::sleep(500);
   }
  	return 0;
