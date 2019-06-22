@@ -5,6 +5,8 @@
 #include "utils/system.hpp"
 #include "data/data.hpp"
 
+#define FAIL 1
+
 using hyped::utils::System;
 using hyped::utils::Logger;
 using hyped::data::NavigationType;
@@ -32,9 +34,13 @@ int main(int argc, char *argv[]) {
   em_file_path = "data/in/decel_state.txt";
 
   ImuData imu;
+
+  #if FAIL
+  FakeImuFromFile fake_imu(log, acc_file_path, dec_file_path, em_file_path, true, false);
+  #else
   FakeImuFromFile fake_imu(log, acc_file_path, dec_file_path, em_file_path, false, false);
-    
-  for(int i = 0; i < 20; i++) {
+  #endif
+  for (int i = 0; i < 50; i++) {
     fake_imu.getData(&imu);
     NavigationVector accData = imu.acc;
     log.INFO("IMU_DATA", "Acc: x:%2.5f, y:%2.5f, z:%2.5f", accData[0], accData[1], accData[2]);

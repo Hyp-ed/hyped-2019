@@ -5,9 +5,12 @@
 #include "utils/system.hpp"
 #include "data/data.hpp"
 
+#define FAIL 1
+
 using hyped::utils::concurrent::Thread;
 using hyped::sensors::FakeGpioCounter;
 using hyped::utils::Logger;
+using hyped::utils::System;
 using hyped::utils::Timer;
 using hyped::data::StripeCounter;
 using hyped::data::Data;
@@ -17,9 +20,13 @@ uint8_t kStripeNum = 30;
 
 int main(int argc, char* argv[]) {
     hyped::utils::System::parseArgs(argc, argv);
-    Logger log(true, 0);
+    Logger log = System::getLogger();
+
+    #if FAIL
+    FakeGpioCounter fake_gpio(log, true, "data/in/gpio_counter_fail_run.txt");
+    #else
     FakeGpioCounter fake_gpio(log, false, "data/in/gpio_counter_normal_run.txt");
-    
+    #endif
     Data& data = Data::getInstance();
     uint32_t stripe_count = 0;
 
