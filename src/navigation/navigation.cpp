@@ -33,7 +33,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
-           calibration_limits_({0.001, 0.001, 0.05}),
+           calibration_limits_({0.05, 0.05, 0.05}),
            stripe_counter_(0, 0),
            keyence_used(true),
            keyence_failure_counter_(0),
@@ -227,8 +227,7 @@ void Navigation::queryKeyence()
     // Checks whether the stripe count has been updated and if it has not been
     // double-counted with the time constraint (100000micros atm, aka 0.1s, subject to change).
     if (prev_keyence_readings_[i].count.value != keyence_readings_[i].count.value &&
-         keyence_readings_[i].count.timestamp -
-         prev_keyence_readings_[i].count.timestamp > 1e5) {
+         keyence_readings_[i].count.timestamp - stripe_counter_.timestamp > 1e5) {
       stripe_counter_.value++;
       stripe_counter_.timestamp = keyence_readings_[i].count.timestamp;
 
@@ -237,16 +236,18 @@ void Navigation::queryKeyence()
       double allowed_uncertainty = distance_uncertainty;  // Temporary value
       NavigationType distance_change = distance_.value - stripe_counter_.value*30.48;
       if (distance_change > 30.48 - allowed_uncertainty &&
-          distance_change < 30.48 + allowed_uncertainty) {
+          distance_change < 30.48 + allowed_uncertainty &&
+          distance_.value > stripe_counter_.value*30.48 + 0.5*30.48) {
         stripe_counter_.value++;
+        distance_change -= 30.48;
       }
       /* Error handling: If distance from keyence still deviates more than the allowed
       uncertainty, then the measurements are no longer believable. Important that this
       is only checked in an update, otherwise we might throw an error in between stripes.
       The first stripe is very uncertain, since it takes the longest, thus we ignore it.
       Even if the first stripe is missed, error handling will catch it when the second is seen.*/
-      if ((distance_change < 0.0 - allowed_uncertainty  ||
-           distance_change >       allowed_uncertainty) &&
+      if ((distance_change < -allowed_uncertainty  ||
+           distance_change >  allowed_uncertainty) &&
            stripe_counter_.value > 1) {
         // TODO(Justus) what happens in case of keyence failure?
         keyence_failure_counter_++;
@@ -256,7 +257,7 @@ void Navigation::queryKeyence()
       // Make sure velocity uncertainty is positive.
       velocity_uncertainty = abs(velocity_uncertainty);
       // The uncertainty in distance is not changed from this because the impact is far too large
-      // Update velocity value
+      // Update velocity value, TODO(Justus) fix an initial timestamp to compare
       velocity_.value -= distance_change*1e6/stripe_counter_.timestamp;
       // Update distance value
       distance_.value -= distance_change;
