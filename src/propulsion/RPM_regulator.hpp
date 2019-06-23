@@ -1,6 +1,6 @@
 /*
- * Author: Iain Macpherson
- * Co-Author: George Karabassis
+ * Author: George Karabassis
+ * Co-Author: Iain Macpherson
  * Organisation: HYPED
  * Date: 11/03/2019
  * Description: Main class for the Motor Controller
@@ -22,11 +22,15 @@
 #ifndef PROPULSION_RPM_REGULATOR_HPP_
 #define PROPULSION_RPM_REGULATOR_HPP_
 
+#include <cstdlib>
+#include <vector>
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "propulsion/controller.hpp"
 
 namespace hyped {
+
+using std::vector;
 
 using utils::Logger;
 using motor_control::Controller;
@@ -38,10 +42,8 @@ class RPM_Regulator {
   /*
   * @brief Construct a new rpm regulator object
   * @param log
-  * @param optimal_rpm - filepath to the optimal rpm calculated by simulations
-  * @param optimal_current - filepath to the optimal current calculated by simulations
   */
-  RPM_Regulator(Logger& log, char* optimal_rpm, char* optimal_current);
+  explicit RPM_Regulator(Logger& log);
   /**
    * @brief Calculate the optimal rpm based on criteria from all the motors
    *        as well optimal values produced by simulations.
@@ -54,13 +56,16 @@ class RPM_Regulator {
   int32_t calculateRPM(int32_t rpm, int32_t current, int32_t temp);
 
  private:
-
   /**
-   * @brief reads the optimal values from the filepath
-   * 
+   * @brief reads the optimal values from a file
+   *
+   * @param filepath - path to a file containing values
    */
-  void readOptimalValues();
+  void readFile(vector<int32_t>* values, const char* filepath);
+
   Logger& log_;
+  const char* CURRENT_FP = "data/in/optimal_current.txt";
+  vector<int32_t> optimal_current;
 };
 
 }}  // namespace hyped::motor_control
