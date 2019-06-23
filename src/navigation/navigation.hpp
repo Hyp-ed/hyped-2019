@@ -181,6 +181,8 @@ namespace navigation {
       DataPoint<NavigationType> distance_;
       NavigationArray gravity_calibration_;
 
+      // Initial timestamp (for comparisons)
+      uint32_t init_timestamp;
       // Previous timestamp
       uint32_t prev_timestamp;
       // Uncertainty in distance

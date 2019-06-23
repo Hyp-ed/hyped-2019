@@ -253,12 +253,12 @@ void Navigation::queryKeyence()
         keyence_failure_counter_++;
       }
       // Lower the uncertainty in velocity:
-      velocity_uncertainty -= abs(distance_change*1e6/stripe_counter_.timestamp);
+      velocity_uncertainty -= abs(distance_change*1e6/(stripe_counter_.timestamp - init_timestamp));
       // Make sure velocity uncertainty is positive.
       velocity_uncertainty = abs(velocity_uncertainty);
       // The uncertainty in distance is not changed from this because the impact is far too large
-      // Update velocity value, TODO(Justus) fix an initial timestamp to compare
-      velocity_.value -= distance_change*1e6/stripe_counter_.timestamp;
+      // Update velocity value
+      velocity_.value -= distance_change*1e6/(stripe_counter_.timestamp - init_timestamp);
       // Update distance value
       distance_.value -= distance_change;
       break;
@@ -334,6 +334,7 @@ void Navigation::initTimestamps()
   acceleration_.timestamp = utils::Timer::getTimeMicros();
   velocity_    .timestamp = utils::Timer::getTimeMicros();
   distance_    .timestamp = utils::Timer::getTimeMicros();
+  init_timestamp = utils::Timer::getTimeMicros();
   prev_timestamp = utils::Timer::getTimeMicros();
   // First iteration --> get initial keyence data
   // (should be zero counters and corresponding timestamp)
