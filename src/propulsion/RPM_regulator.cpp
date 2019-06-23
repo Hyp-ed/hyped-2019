@@ -27,7 +27,8 @@ namespace hyped {
 namespace motor_control {
 
 RPM_Regulator::RPM_Regulator(Logger& log)
-  : log_(log)
+  : log_(log),
+    current_index(0)
 {
   readFile(&optimal_current, CURRENT_FP);
 }
@@ -46,15 +47,42 @@ void RPM_Regulator::readFile(vector<int32_t>* values, const char* filepath)
       values->push_back(static_cast<int32_t>(std::atoi(line)));
     }
   }
-  // testing
-  fclose(fp);
-  for (int i = 0; i < static_cast<int>(values->size()); i++) {
-    log_.INFO("MOTOR", "%d", values->at(i));
+}
+
+int32_t RPM_Regulator::calculateRPM(int32_t act_velocity, int32_t act_rpm,
+                                    int32_t act_current, int32_t act_temp)
+{
+  int32_t opt_current = optimal_current.at(current_index);
+  int32_t opt_rpm = calculateOptimalRPM(act_velocity);
+  if ( (act_current >= (opt_current - kmargin)) && (act_current <= (opt_current + kmargin)) ) {
+        current_index++;  // todo(Iain): find a better way to do this
+  }
+  if (act_current < opt_current &&
+      act_temp < MAX_TEMP &&
+      act_rpm < opt_rpm) {
+    return act_rpm + step(opt_rpm, true);
+  } else if (act_current > opt_current ||
+             act_temp > MAX_TEMP ||
+             act_rpm > opt_rpm) {
+    return act_rpm - step(opt_rpm, false);
+  } else {
+    return act_rpm;
   }
 }
 
-int32_t RPM_Regulator::calculateRPM(int32_t rpm, int32_t current, int32_t temp)
+int32_t RPM_Regulator::calculateOptimalRPM(int32_t act_velocity)
 {
-  return 0;
+  int32_t opt_rpm = std::round(0.32047 * act_velocity*act_velocity +
+                                297.72578 * act_velocity + 1024.30824);
+  return opt_rpm;
+}
+
+int32_t RPM_Regulator::step(int32_t opt_rpm, bool direction)
+{
+  if (direction) {
+    return std::round(opt_rpm*0.1);  // placeholder
+  } else {
+    return std::round(opt_rpm*0.1);  // placeholder
+  }
 }
 }}  // namespace hyped::motor_control

@@ -48,12 +48,14 @@ class RPM_Regulator {
    * @brief Calculate the optimal rpm based on criteria from all the motors
    *        as well optimal values produced by simulations.
    *
-   * @param rpm - average rpm of all the motors
-   * @param current - average current drawn by all the motors
-   * @param temp - average temperature of all motors
+   * @param act_velocity - the actual velocity of the pod from navigation
+   * @param act_rpm - average rpm of all the motors
+   * @param act_current - max current (mA) drawn out of all the motors
+   * @param act_temp - max temperature out of all the motors
    * @return int32_t - the optimal rpm which the motors should be set to.
    */
-  int32_t calculateRPM(int32_t rpm, int32_t current, int32_t temp);
+  int32_t calculateRPM(int32_t act_velocity, int32_t act_rpm,
+                      int32_t act_current, int32_t act_temp);
 
  private:
   /**
@@ -63,9 +65,32 @@ class RPM_Regulator {
    */
   void readFile(vector<int32_t>* values, const char* filepath);
 
+  /**
+   * @brief calculates the optimal rpm based off of the current velocity.
+   *
+   * @param act_velocity
+   * @return double - optimal rpm
+   */
+  int32_t calculateOptimalRPM(int32_t act_velocity);
+
+  /**
+   * @brief calculate the step to increase or decrease the rpm by.
+   *
+   * @param opt_rpm - the optimal rpm for our current velocity
+   * @param direction - the direction that the step must go in: true for pos false for neg.
+   * @return int32_t - the step with which to increase the rpm
+   */
+  int32_t step(int32_t opt_rpm, bool direction);
+
   Logger& log_;
-  const char* CURRENT_FP = "data/in/optimal_current.txt";
+  int32_t current_index;
   vector<int32_t> optimal_current;
+
+  const char* CURRENT_FP = "data/in/optimal_current.txt";
+  const int32_t MAX_RPM = 7000;
+  const int32_t MAX_TEMP = 100;  // todo(Iain): find out actual value.
+  const int32_t kmargin = 500;
+  // const int32_t RPM_MARGIN = 5;
 };
 
 }}  // namespace hyped::motor_control
