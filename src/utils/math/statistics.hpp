@@ -91,14 +91,20 @@ void OnlineStatistics<T>::update(T new_value)
 template <typename T>
 class RollingStatistics : public Statistics<T> {
  public:
+  explicit RollingStatistics();
   explicit RollingStatistics(std::size_t window_size);
   void update(T new_value) override;
+  void setWindowSize(std::size_t window_size);
 
  private:
-  const std::size_t window_size_;
+  std::size_t window_size_;
   std::queue<T, std::list<T>> window_;
   OnlineStatistics<T> online_;
 };
+
+template <typename T>
+RollingStatistics<T>::RollingStatistics() : window_size_(0)
+{}
 
 template <typename T>
 RollingStatistics<T>::RollingStatistics(std::size_t window_size) : window_size_(window_size)
@@ -132,6 +138,17 @@ void RollingStatistics<T>::update(T new_value)
     window_.pop();
     window_.push(new_value);
   }
+}
+
+/**
+ * @brief Set the size of the window to be used.
+ *
+ * window_size new size of window to use
+ */
+template <typename T>
+void RollingStatistics<T>::setWindowSize(std::size_t window_size)
+{
+  window_size_ = window_size;
 }
 
 }}}  // namespace hyped::utils::math

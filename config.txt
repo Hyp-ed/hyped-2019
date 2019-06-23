@@ -11,4 +11,6 @@ IP      localhost
 Port    9090
 
 > Navigation
+outfile_base    data/out/
+outfile_name    nav_log.csv
 

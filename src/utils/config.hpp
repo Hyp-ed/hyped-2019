@@ -49,6 +49,8 @@ class Config {
  public:
   struct Navigation {
     // define all navigation configuration fields
+    char outfile_base[20];
+    char outfile_name[20];
   } navigation;
 
   struct Telemetry {

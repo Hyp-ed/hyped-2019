@@ -61,7 +61,22 @@ void Config::ParseNone(char* line)
 
 void Config::ParseNavigation(char* line)
 {
-  printf("nav %s\n", line);
+  // get TOKEN
+  char* token = strtok(line, " ");
+
+  if (strcmp(token, "outfile_base") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      strncpy(navigation.outfile_base, value, 20);
+    }
+  }
+
+  if (strcmp(token, "outfile_name") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      strncpy(navigation.outfile_name, value, 20);
+    }
+  }
 }
 
 void Config::ParseTelemetry(char* line)

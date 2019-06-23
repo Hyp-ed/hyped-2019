@@ -1,4 +1,3 @@
-
 /*
  * Author: Lukas Schaefer
  * Organisation: HYPED
