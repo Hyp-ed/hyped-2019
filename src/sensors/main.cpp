@@ -25,11 +25,7 @@
 #include "sensors/gpio_counter.hpp"
 #include "sensors/fake_gpio_counter.hpp"
 #include "sensors/fake_temperature.hpp"
-
-
-constexpr int kKeyencePinLeft = 72;
-constexpr int kKeyencePinRight = 74;
-constexpr int kThermistorPin = 3;
+#include "utils/config.hpp"
 
 namespace hyped {
 
@@ -46,7 +42,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     data_(data::Data::getInstance()),
     sys_(utils::System::getSystem()),
     log_(log),
-    pins_ {kKeyencePinLeft, kKeyencePinRight},
+    pins_ {static_cast<uint8_t>(sys_.config->sensors.KeyenceL), static_cast<uint8_t>(sys_.config->sensors.KeyenceR)}, // NOLINT
     imu_manager_(new ImuManager(log)),
     battery_manager_(new BmsManager(log))
 {
@@ -62,7 +58,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     }
   }
   if (!sys_.fake_temperature) {
-    temperature_ = new Temperature(log_, kThermistorPin);
+    temperature_ = new Temperature(log_, sys_.config->sensors.Thermistor);
   } else {
     temperature_ = new FakeTemperature(log_, false);
   }

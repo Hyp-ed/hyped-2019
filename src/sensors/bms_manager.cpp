@@ -26,9 +26,7 @@
 #include "sensors/bms.hpp"
 #include "utils/timer.hpp"
 #include "sensors/fake_batteries.hpp"
-
-constexpr int kHPSSR = 70;
-constexpr int kLPSSR = 71;
+#include "utils/config.hpp"
 
 namespace hyped {
 namespace sensors {
@@ -52,12 +50,15 @@ BmsManager::BmsManager(Logger& log)
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
     // Set SSR switches for real system
-    kill_hp_ = new GPIO(kHPSSR, utils::io::gpio::kOut);
-    kill_lp_ = new GPIO(kLPSSR, utils::io::gpio::kOut);
+    uint8_t HPSSR = sys_.config->sensors.HPSSR;
+    uint8_t LPSSR = sys_.config->sensors.LPSSR;
+
+    kill_hp_ = new GPIO(HPSSR, utils::io::gpio::kOut);
+    kill_lp_ = new GPIO(LPSSR, utils::io::gpio::kOut);
     kill_hp_->set();
     kill_lp_->set();
-    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", kHPSSR);
-    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", kLPSSR);
+    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", HPSSR);
+    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", LPSSR);
   } else {
     // fake batteries here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
