@@ -46,19 +46,27 @@ Main::Main(uint8_t id, utils::Logger& log)
     imu_manager_(new ImuManager(log)),
     battery_manager_(new BmsManager(log))
 {
-  if (!sys_.fake_keyence) {
+  if (!(sys_.fake_keyence || sys_.fake_keyence_fail)) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
       GpioCounter* keyence = new GpioCounter(log_, pins_[i]);
       keyence->start();
       keyences_[i] = keyence;
     }
+  } else if (sys_.fake_keyence_fail) {
+    for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
+      // miss four stripes in a row after 20th, 2000 micros during peak velocity
+      keyences_[i] = new FakeGpioCounter(log_, true, "data/in/gpio_counter_fail_run.txt");
+    }
   } else {
-    for (int i =0; i < data::Sensors::kNumKeyence; i++) {
-      keyences_[i] = new FakeGpioCounter(log_, false, false, "data/in/gpio_counter_normal_run.txt");
+    for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
+      keyences_[i] = new FakeGpioCounter(log_, false, "data/in/gpio_counter_normal_run.txt");
     }
   }
-  if (!sys_.fake_temperature) {
+  if (!(sys_.fake_temperature || sys_.fake_temperature_fail)) {
     temperature_ = new Temperature(log_, sys_.config->sensors.Thermistor);
+  } else if (sys_.fake_temperature_fail) {
+    // fake temperature fail case
+    temperature_ = new FakeTemperature(log_, true);
   } else {
     temperature_ = new FakeTemperature(log_, false);
   }

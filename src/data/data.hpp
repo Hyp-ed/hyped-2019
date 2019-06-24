@@ -130,13 +130,13 @@ struct Motors : public Module {
 // -------------------------------------------------------------------------------------------------
 
 struct Telemetry : public Module {
+  static constexpr float run_length = 1250;  // m
   bool calibrate_command;
   bool launch_command;
   bool reset_command;
   bool service_propulsion_go;
   bool emergency_stop_command;
   bool nominal_braking_command;
-  float run_length = 1250;  // m
 };
 
 // -------------------------------------------------------------------------------------------------
