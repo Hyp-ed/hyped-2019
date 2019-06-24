@@ -31,7 +31,9 @@ FakeController::FakeController(Logger& log, uint8_t id, bool isFaulty)
     critical_failure_(false),
     actual_velocity_(0),
     start_time_(0),
-    timer_started_(false)
+    timer_started_(false),
+    motor_temp_(60),
+    motor_current_(1000)
 {
 }
 
@@ -113,5 +115,15 @@ bool FakeController::getFailure()
 ControllerState FakeController::getControllerState()
 {
   return state_;
+}
+
+uint8_t FakeController::getMotorTemp()
+{
+  return motor_temp_;
+}
+
+int32_t FakeController::getMotorCurrent()
+{
+  return motor_current_;
 }
 }}  // namespace hyped::motor_control

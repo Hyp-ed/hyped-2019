@@ -27,7 +27,8 @@
 #include "propulsion/controller_interface.hpp"
 #include "propulsion/controller.hpp"
 #include "propulsion/fake_controller.hpp"
-#include "propulsion/calculate_RPM.hpp"
+#include "propulsion/RPM_regulator.hpp"
+// #include "propulsion/calculate_RPM.hpp"
 #include "data/data.hpp"
 
 #define SLIPPATH "data/in/oldAcc.txt"
@@ -113,6 +114,30 @@ class StateProcessor : public StateProcessorInterface
      */
     void prepareMotors() override;
 
+    /**
+     * @brief Calculate the Average rpm of all motors
+     *
+     * @param controllers
+     * @return int32_t
+     */
+    int32_t calcAverageRPM(ControllerInterface** controllers);
+
+    /**
+     * @brief calculate the max Current drawn out of all the motors
+     *
+     * @param controllers
+     * @return int32_t
+     */
+    int32_t calcMaxCurrent(ControllerInterface** controllers);
+
+    /**
+     * @brief Calculate the max temperature out of all the motors
+     *
+     * @param controllers
+     * @return int32_t
+     */
+    int32_t calcMaxTemp(ControllerInterface** controllers);
+
     bool useFakeController;
     Logger &log_;
     System &sys_;
@@ -122,7 +147,7 @@ class StateProcessor : public StateProcessorInterface
     int32_t servicePropulsionSpeed;
     float speed;
     ControllerInterface **controllers;
-    CalculateRPM* rpmCalculator;
+    RPM_Regulator regulator;
     float velocity;
     Navigation navigationData;
     uint64_t accelerationTimestamp;

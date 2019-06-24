@@ -28,7 +28,8 @@ namespace motor_control {
 
 RPM_Regulator::RPM_Regulator(Logger& log)
   : log_(log),
-    current_index(0)
+    current_index(0),
+    failure(false)
 {
   readFile(&optimal_current, CURRENT_FP);
 }
@@ -40,7 +41,7 @@ void RPM_Regulator::readFile(vector<int32_t>* values, const char* filepath)
 
   if (fp == NULL) {
     log_.ERR("MOTOR", "Unable to open: %s", filepath);
-    exit(EXIT_FAILURE);
+    failure = true;
   } else {
     char line[255];
     while (fgets(line, static_cast<int>(sizeof(line)/sizeof(line[0])), fp)) {
@@ -84,5 +85,10 @@ int32_t RPM_Regulator::step(int32_t opt_rpm, bool direction)
   } else {
     return std::round(opt_rpm*0.1);  // placeholder
   }
+}
+
+bool RPM_Regulator::getFailure()
+{
+  return failure;
 }
 }}  // namespace hyped::motor_control

@@ -30,10 +30,11 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
   motorAmount(motorAmount),
   initialized(false),
   criticalError(false),
-  servicePropulsionSpeed(10),
-  speed(0)
+  servicePropulsionSpeed(100),
+  speed(0),
+  regulator(log_)
 {
-  rpmCalculator = new CalculateRPM(log);
+  // rpmCalculator = new CalculateRPM(log);
 
   useFakeController = sys_.fake_motors;
 
@@ -66,7 +67,7 @@ void StateProcessor::initMotors()
 
   bool error = false;
 
-  if (!rpmCalculator->initialize(SLIPPATH)) {
+  if (regulator.getFailure()) {
     error = true;
     criticalError = true;
     return;
@@ -126,7 +127,12 @@ void StateProcessor::accelerate()
       log_.DBG3("Motor", "Accelerate");
       accelerationTimestamp = accelerationTimer.getTimeMicros();
       velocity = navigationData.velocity;
-      int rpm = rpmCalculator->calculateRPM(velocity);
+
+      int32_t act_rpm = calcAverageRPM(controllers);
+      int32_t act_current = calcMaxCurrent(controllers);
+      int32_t act_temp = calcMaxTemp(controllers);
+
+      int32_t rpm = regulator.calculateRPM(velocity, act_rpm, act_current, act_temp);
 
       for (int i = 0;i < motorAmount; i++) {
         controllers[i]->sendTargetVelocity(rpm);
@@ -135,6 +141,42 @@ void StateProcessor::accelerate()
   } else {
     log_.INFO("Motor", "State Processor not initialized");
   }
+}
+
+int32_t StateProcessor::calcAverageRPM(ControllerInterface** controllers)
+{
+  int32_t total = 0;
+  for (int i = 0; i < motorAmount; i++) {
+    controllers[i]->updateActualVelocity();
+    total += controllers[i]->getVelocity();
+  }
+  return std::round(total/motorAmount);
+}
+
+int32_t StateProcessor::calcMaxCurrent(ControllerInterface** controllers)
+{
+  int32_t max_current = 0;
+  for (int i = 0; i < motorAmount; i++) {
+    controllers[i]->updateMotorCurrent();
+    int32_t current = controllers[i]->getMotorCurrent();
+    if (max_current < current) {
+      max_current = current;
+    }
+  }
+  return max_current;
+}
+
+int32_t StateProcessor::calcMaxTemp(ControllerInterface** controllers)
+{
+  int32_t max_temp = 0;
+  for (int i = 0; i < motorAmount; i++) {
+    controllers[i]->updateMotorTemp();
+    int32_t temp = controllers[i]->getMotorTemp();
+    if (max_temp < temp) {
+      max_temp = temp;
+    }
+  }
+  return max_temp;
 }
 
 void StateProcessor::quickStopAll()

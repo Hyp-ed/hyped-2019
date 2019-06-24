@@ -57,6 +57,14 @@ class RPM_Regulator {
   int32_t calculateRPM(int32_t act_velocity, int32_t act_rpm,
                       int32_t act_current, int32_t act_temp);
 
+  /**
+   * @brief Get the Failure boolean
+   *
+   * @return true - if failure has occured
+   * @return false - if no failure has occured
+   */
+  bool getFailure();
+
  private:
   /**
    * @brief reads the optimal values from a file
@@ -84,6 +92,7 @@ class RPM_Regulator {
 
   Logger& log_;
   int32_t current_index;
+  bool failure;
   vector<int32_t> optimal_current;
 
   const char* CURRENT_FP = "data/in/optimal_current.txt";

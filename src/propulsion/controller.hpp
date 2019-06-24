@@ -131,7 +131,7 @@ class Controller : public ControllerInterface {
   /**
    * @brief Request the motor temperature from the controller
    */
-  void updateMotorTemp();
+  void updateMotorTemp() override;
   /**
    * @brief Request the controller temperature from the controller
    */
@@ -139,11 +139,21 @@ class Controller : public ControllerInterface {
   /**
    * @return uint8_t - actual temperature of the motor
    */
-  uint8_t getMotorTemp();
+  uint8_t getMotorTemp() override;
   /**
    * @return uint8_t - actual temperature of the controller
    */
   uint8_t getControllerTemp();
+  /**
+   * @brief Request the motor current from the controller
+   */
+  void updateMotorCurrent() override;
+  /**
+   * @brief Get the Motor Current object
+   *
+   * @return int32_t
+   */
+  int32_t getMotorCurrent() override;
   /**
    * @brief to be called by processNewData if Emergency message is detected.
    * @param message CAN message to process
@@ -205,6 +215,7 @@ class Controller : public ControllerInterface {
   atomic<int16_t>           actual_torque_;
   atomic<uint8_t>           motor_temperature_;
   atomic<uint8_t>           controller_temperature_;
+  atomic<int32_t>           motor_current;
   CanSender                 sender;
   Frame             sdo_message_;
   Frame             nmt_message_;
@@ -225,6 +236,7 @@ class Controller : public ControllerInterface {
   const char* kHealthCheckMsgFile = "data/in/controllerConfigFiles/health_check.txt";
   const char* kUpdateMotorTempFile = "data/in/controllerConfigFiles/update_motor_temp.txt";
   const char* kUpdateContrTempFile = "data/in/controllerConfigFiles/update_contr_temp.txt";
+  const char* kUpdateMotCurrentFile = "data/in/controllerConfigFiles/update_motor_current.txt";
   const char* kAutoAlignMsgFile = "data/in/controllerConfigFiles/auto_align.txt";
 
  public:
@@ -241,6 +253,7 @@ class Controller : public ControllerInterface {
   ControllerMessage healthCheckMsgs[2];
   ControllerMessage updateMotorTempMsg[1];
   ControllerMessage updateContrTempMsg[1];
+  ControllerMessage updateMotCurrent[1];
   ControllerMessage autoAlignMsg[1];
 };
 }}  // namespace hyped::motor_control
