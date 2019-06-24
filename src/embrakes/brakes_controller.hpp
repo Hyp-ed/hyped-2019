@@ -32,18 +32,21 @@
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 
+#define TIMEOUT 70000
 
 namespace hyped {
 
 using std::atomic;
-
+using utils::io::Can;
+using utils::io::CanProccesor;
 using utils::concurrent::Thread;
 using utils::io::can::Frame;
 using utils::Logger;
+using utils::Timer;
 
 namespace embrakes {
 
-class Controller : public ControllerInterface {
+class Controller : public CanProccesor, public ControllerInterface {
  public:
   /**
    * @brief Construct a new Controller object
@@ -58,19 +61,6 @@ class Controller : public ControllerInterface {
   /**
    * @brief Apply configuration settings.
    *        (sends 16 can messages to configure the motors correctly)
-   */
-  void configure() override;
-  /**
-   * @brief Check for errors or warnings, then enter operational state.
-   */
-  void enterOperational() override;
-  /**
-   * @brief Enter preoperational state.
-   *
-   */
-  void enterPreOperational() override;
-  /**
-   * @brief Check controller state.
    */
   void checkState() override;
   /**
@@ -108,11 +98,6 @@ class Controller : public ControllerInterface {
    * @param message
    */
   void processSdoMessage(utils::io::can::Frame& message) override;
-  /**
-   * @brief Called by processNewData if NMT message is detected
-   * @param message
-   */
-  void processNmtMessage(utils::io::can::Frame& message) override;
   /*
    * @brief { Sends state transition message to controller, leaving sufficient time for
    *          controller to change state. If state does not change, throw critical failure }
@@ -144,15 +129,14 @@ class Controller : public ControllerInterface {
   atomic<ControllerState>   state_;
   uint8_t                   node_id_;
   atomic<bool>              critical_failure_;
-  CanSender                 sender;
-  Frame             sdo_message_;
-  Frame             nmt_message_;
-
-  // Network management CAN commands:
-  const uint8_t     kNmtOperational        = 0x01;
+  Can                       &can_;
+  Frame                     sdo_message_;
+  uint64_t                  messageTimestamp;
+  Timer                     timer;
+  std::atomic<bool>         isSending;
 
  public:
-  // Arrays of messages sent to controller (see config files for details about message contents)
+  // Arrays of messages sent to controller
   ControllerMessage configMsgs_[16];
   ControllerMessage enterOpMsgs_[4];
   ControllerMessage enterPreOpMsg_[1];

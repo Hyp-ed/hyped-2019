@@ -29,17 +29,15 @@ Controller::Controller(Logger& log, uint8_t id)
       brakes_data_(data_.getEmergencyBrakesData()),
       state_(kNotReadyToSwitchOn),
       node_id_(id),
-      critical_failure_(false),
-      sender(this, node_id_, log_)
+      can_(Can::getInstance()),
+      messageTimestamp(0),
+      critical_failure_(false)
 {
+  isSending = false;
+
   sdo_message_.id         = kSdoReceive + node_id_;
   sdo_message_.extended   = false;
   sdo_message_.len        = 8;
-
-  nmt_message_.id         = kNmtReceive;
-  nmt_message_.extended   = false;
-  nmt_message_.len        = 2;
-
 }
 
 bool Controller::sendControllerMessage(ControllerMessage message_template)
@@ -60,58 +58,7 @@ bool Controller::sendControllerMessage(ControllerMessage message_template)
 
 void Controller::registerController()
 {
-  sender.registerController();
-}
-
-void Controller::configure()
-{
-  log_.INFO("Brakes", "Controller %d: Configuring...", node_id_);
-  for (int i = 0; i < 16; i++) {
-    if (sendControllerMessage(configMsgs_[i])) return;
-  }
-  log_.INFO("Brakes", "Controller %d: Configured.", node_id_);
-}
-
-void Controller::enterOperational()
-{
-  // Send NMT Operational message to transition from state 0 (Not ready to switch on)
-  // to state 1 (Switch on disabled)
-  nmt_message_.data[0] = kNmtOperational;
-  nmt_message_.data[1] = node_id_;
-
-  log_.INFO("Brakes", "Controller %d: Sending NMT Operational command", node_id_);
-  sender.sendMessage(nmt_message_);
-  // leave time for the controller to enter NMT Operational
-  Thread::sleep(100);
-
-  // enables velocity mode
-  if (sendControllerMessage(enterOpMsgs_[0])) return;
-
-  // apply break
-  if (sendControllerMessage(enterOpMsgs_[1])) return;
-
-  // send shutdown message to transition to Ready to Switch On state
-  for (int i = 0; i < 8; i++) {
-    sdo_message_.data[i] = enterOpMsgs_[2].message_data[i];
-  }
-  log_.DBG1("Brakes", enterOpMsgs_[2].logger_output, node_id_);
-  requestStateTransition(sdo_message_, kReadyToSwitchOn);
-
-  // Send enter operational message to transition to the Operation Enabled state
-  for (int i = 0; i < 8; i++) {
-    sdo_message_.data[i] = enterOpMsgs_[3].message_data[i];
-  }
-  log_.DBG1("Brakes", enterOpMsgs_[3].logger_output, node_id_);
-  requestStateTransition(sdo_message_, kOperationEnabled);
-}
-
-void Controller::enterPreOperational()
-{
-  checkState();
-  if (state_ != kReadyToSwitchOn) {
-    // send shutdown command
-    if (sendControllerMessage(enterPreOpMsg_[0])) return;
-  }
+  can_.registerProcessor(this);
 }
 
 void Controller::checkState()
@@ -130,9 +77,18 @@ void Controller::healthCheck()
 
 void Controller::sendSdoMessage(utils::io::can::Frame& message)
 {
-  if (!sender.sendMessage(message)) {
-    log_.ERR("Brakes", "Controller %d: No response from controller", node_id_);
-    throwCriticalFailure();
+  log_.INFO("MOTOR", "Sending Message");
+  can_.send(message);
+  isSending = true;
+
+  timer.start();
+  messageTimestamp = timer.getTimeMicros();
+
+  while (isSending) {
+    if ((timer.getTimeMicros() - messageTimestamp) > TIMEOUT) {
+      // TODO(Iain): Test the latency and set the TIMEOUT to a reasonable value.
+      log_.ERR("MOTOR", "Sender timeout reached");
+    }
   }
 }
 
@@ -142,26 +98,6 @@ void Controller::throwCriticalFailure()
   brakes_data_ = data_.getEmergencyBrakesData();
   brakes_data_.module_status = data::ModuleStatus::kCriticalFailure;
   data_.setEmergencyBrakesData(brakes_data_);
-}
-
-void Controller::requestStateTransition(utils::io::can::Frame& message, ControllerState state)
-{
-  uint8_t state_count;
-  // Wait for max of 3 seconds, checking if the state has changed every second
-  // If it hasn't changed by the end then throw critical failure.
-  for (state_count = 0; state_count < 3; state_count++) {
-    sender.sendMessage(message);
-    Thread::sleep(1000);
-    checkState();
-    if (state_ == state) {
-      return;
-    }
-  }
-  if (state_ != state) {
-    throwCriticalFailure();
-    log_.ERR("Brakes", "Controller %d, Could not transition to state %d", node_id_, state);
-    return;
-  }
 }
 
 void Controller::processEmergencyMessage(utils::io::can::Frame& message)
@@ -349,27 +285,6 @@ void Controller::processSdoMessage(utils::io::can::Frame& message)
   if (index_1 == 0x40 && index_2 == 0x60 && sub_index == 0x00) {
     log_.DBG1("Brakes", "Controller %d: Control Word updated", node_id_);
     return;
-  }
-}
-
-void Controller::processNmtMessage(utils::io::can::Frame& message)
-{
-  int8_t nmt_state = message.data[0];
-  switch (nmt_state) {
-    case 0x00:
-      log_.INFO("Brakes", "Controller %d NMT State: Bootup", node_id_);
-      break;
-    case 0x04:
-      log_.INFO("Brakes", "Controller %d NMT State: Stopped", node_id_);
-      break;
-    case 0x05:
-      log_.INFO("Brakes", "Controller %d NMT State: Operational", node_id_);
-      break;
-    case 0x7F:
-      log_.INFO("Brakes", "Controller %d NMT State: Pre-Operational", node_id_);
-      break;
-    default:
-      log_.ERR("Brakes", "Controller %d NMT State: Not Recognised", node_id_);
   }
 }
 
