@@ -100,6 +100,12 @@ class FakeImuFromFile : public ImuInterface {
   void startDec();
   void startEm();
 
+  /**
+   * @brief sets failure time for acc or dec configuration
+   * @param state current state
+   */
+  void setFailure(data::State& state);
+
   /*
    * @brief     A function that reads data from file directory. This function also validates them
    *            by checking if

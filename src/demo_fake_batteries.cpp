@@ -5,8 +5,6 @@
 #include "utils/system.hpp"
 #include "data/data.hpp"
 
-#define FAIL 1
-
 using hyped::utils::concurrent::Thread;
 using hyped::sensors::FakeBatteries;
 using hyped::utils::Logger;
@@ -20,12 +18,15 @@ uint8_t kStripeNum = 30;
 int main(int argc, char* argv[]) {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log = System::getLogger();
+  System& sys_ = System::getSystem();     // use --fake_batteries_fail flag
 
-  #if FAIL
-  FakeBatteries fake_batteries(log, true, true);
-  #else
-  FakeBatteries fake_batteries(log, true, false);
-  #endif
+  FakeBatteries* fake_batteries_;
+
+  if (sys_.fake_batteries_fail) {
+    fake_batteries_ = new FakeBatteries(log, true, true);
+  } else {
+    fake_batteries_ = new FakeBatteries(log, true, false);
+  }
   Data& data = Data::getInstance();
 
   auto state = data.getStateMachineData();
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]) {
   BatteryData battery_data;
 
   for (int i = 0; i < 50; i++) {
-    fake_batteries.getData(&battery_data);
+    fake_batteries_->getData(&battery_data);
     log.DBG("DEMO-FakeBatteries", "Voltage = %d, Current = %d, Charge = %d, Temperature = %d",
             battery_data.voltage, battery_data.current,
             battery_data.charge, battery_data.temperature);

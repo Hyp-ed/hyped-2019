@@ -51,6 +51,13 @@ BmsManager::BmsManager(Logger& log)
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
+    // Set SSR switches for real system
+    kill_hp_ = new GPIO(kHPSSR, utils::io::gpio::kOut);
+    kill_lp_ = new GPIO(kLPSSR, utils::io::gpio::kOut);
+    kill_hp_->set();
+    kill_lp_->set();    // kHPSSR and kLPSSR set low if no power to BBB
+    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", kHPSSR);
+    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", kLPSSR);
   } else if (sys_.fake_batteries_fail) {
     // fake batteries fail here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -59,13 +66,6 @@ BmsManager::BmsManager(Logger& log)
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log_, false, true);
     }
-    // Set SSR switches for real system
-    kill_hp_ = new GPIO(kHPSSR, utils::io::gpio::kOut);
-    kill_lp_ = new GPIO(kLPSSR, utils::io::gpio::kOut);
-    kill_hp_->set();
-    kill_lp_->set();    // kHPSSR and kLPSSR set low if no power to BBB
-    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", kHPSSR);
-    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", kLPSSR);
   } else {
     // fake batteries here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {

@@ -106,10 +106,29 @@ void FakeImuFromFile::startEm()
   acc_count_ =  0;
 }
 
+void FakeImuFromFile::setFailure(data::State& state)
+{
+  // Random point of failure after acc from 0 to 20 seconds
+  if (state == data::State::kAccelerating && is_fail_acc_) {
+    // Generate a random time for a failure
+    failure_time_acc_ = (rand() % 20 + 1) * 1000000;
+  }
+  // Random point of failure after dec from 0 to 10 seconds
+  if (state == data::State::kNominalBraking && is_fail_dec_) {
+    // Generate a random time for a failure
+    failure_time_dec_ = (rand() % 10 + 1) * 1000000;
+  }
+}
+
 void FakeImuFromFile::getData(ImuData* imu)
 {
   data::State state = data_.getStateMachineData().current_state;
   bool operational = true;
+
+  if (failure_time_acc_ == 0 || failure_time_dec_ == 0) {
+    setFailure(state);
+  }
+
   // Random point of failure after acc from 0 to 20 seconds
   if (state == data::State::kAccelerating && is_fail_acc_) {
     // Generate a random time for a failure
