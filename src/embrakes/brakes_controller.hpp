@@ -24,7 +24,6 @@
 #include <atomic>
 
 #include "embrakes/brakes_controller_interface.hpp"
-#include "embrakes/brakes_can_sender.hpp"
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
@@ -45,6 +44,9 @@ using utils::Logger;
 using utils::Timer;
 
 namespace embrakes {
+
+  // Types of CANopen messages, these are used for CAN ID's
+  constexpr uint32_t kSdoReceive = 0x600;
 
 class Controller : public CanProccesor, public ControllerInterface {
  public:
