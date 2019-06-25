@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 
 namespace hyped {

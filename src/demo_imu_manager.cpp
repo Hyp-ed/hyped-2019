@@ -66,22 +66,22 @@ int main(int argc, char* argv[])
 
   for (int i = 0; i<50; i++) {
     imu0.getData(&data0);
-    log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 0, data0.acc[0], data0.acc[1], data0.acc[2]);
+    log.INFO("TEST-ImuManager", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 0, data0.acc[0], data0.acc[1], data0.acc[2]);
     imu1.getData(&data1);
-    log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 1, data1.acc[0], data1.acc[1], data1.acc[2]);
+    log.INFO("TEST-ImuManager", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 1, data1.acc[0], data1.acc[1], data1.acc[2]);
     imu2.getData(&data2);
-    log.INFO("Test-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 2, data2.acc[0], data2.acc[1], data2.acc[2]);
+    log.INFO("TEST-ImuManager", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", 2, data2.acc[0], data2.acc[1], data2.acc[2]);
     imu3.getData(&data3);
     Thread::sleep(100);
   }
   #endif
 
-  log.INFO("TEST-Imu", "Imu instance successfully created");
+  log.INFO("TEST-ImuManager", "Imu instance successfully created");
   for (int i = 0; i < 50; i++) {
     data_array_ = data_.getSensorsImuData();
     Thread::sleep(100);
     for (int j = 0; j < Sensors::kNumImus; j++) {
-      log.INFO("TEST-Imu", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, data_array_.value[j].acc[0], data_array_.value[j].acc[1], data_array_.value[j].acc[2]);
+      log.INFO("TEST-ImuManager", "accelerometer readings %d: %f m/s^2, y: %f m/s^2, z: %f m/s^2", j, data_array_.value[j].acc[0], data_array_.value[j].acc[1], data_array_.value[j].acc[2]);
     }
   }
  	return 0;

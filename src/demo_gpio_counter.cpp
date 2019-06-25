@@ -24,19 +24,19 @@ int main(int argc, char* argv[]) {
   timer.start();
   Thread::sleep(500);
   uint64_t start_time = timer.getTimeMicros();
-  log.INFO("TEST-KEYENCE", "Start time: %f", start_time);
+  log.INFO("TEST-GpioCounter", "Start time: %f", start_time);
   uint8_t val = pin.wait();
 
   while (stripe_count < kStripeNum){
-    log.DBG("KEYENCE-TEST","Waiting");
+    log.DBG("TEST-GpioCounter","Waiting");
     val = pin.wait();
     if (val == 1) {                    // if hit stripe --> gpio to high
-      // log.DBG("KEYENCE-TEST","Hit stripe at: %d micros",timer.getTimeMicros());
+      // log.DBG("TEST-GpioCounter","Hit stripe at: %d micros",timer.getTimeMicros());
       stripe_count++;
-      log.DBG("KEYENCE-TEST","Stripe Count: %d",stripe_count);
+      log.DBG("TEST-GpioCounter","Stripe Count: %d",stripe_count);
     }
   }
 
   timer.stop();
-  log.INFO("KEYENCE-TEST", "Final stripe count = %d. Final timestamp = %d", stripe_count, timer.getMicros());
+  log.INFO("TEST-GpioCounter", "Final stripe count = %d. Final timestamp = %d", stripe_count, timer.getMicros());
 }

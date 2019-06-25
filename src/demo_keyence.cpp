@@ -53,11 +53,11 @@ int main(int argc, char* argv[]) {
       stripe_data = keyence.getStripeCounter();
       if (stripe_data.count.value > stripe_count) {
         stripe_count = stripe_data.count.value;
-        log.INFO("KEYENCE-TEST","Stripe Count: %d",stripe_count);
+        log.INFO("TEST-KEYENCE","Stripe Count: %d",stripe_count);
       }
       Thread::sleep(50);                       // remove if want to see output quickly
     }
     int64_t time = stripe_data.count.timestamp;
 
-    log.INFO("KEYENCE-TEST", "Final stripe count = %d. Final timestamp = %d", stripe_count, time);
+    log.INFO("TEST-KEYENCE", "Final stripe count = %d. Final timestamp = %d", stripe_count, time);
 }

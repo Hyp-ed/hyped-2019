@@ -21,8 +21,8 @@
 #include "sensors/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "sensors/bms_manager.hpp"
-#include "sensors/temperature.hpp"
 #include "sensors/gpio_counter.hpp"
+#include "sensors/temperature.hpp"
 #include "sensors/fake_gpio_counter.hpp"
 #include "sensors/fake_temperature.hpp"
 #include "utils/config.hpp"
@@ -86,7 +86,7 @@ bool Main::keyencesUpdated()
   return false;
 }
 
-bool Main::temperatureInRange()    // TODO(anyone): add true temperature range
+bool Main::temperatureInRange()    // TODO(anyone): add true nominal temperature range of PCB
 {
   auto temperature = data_.getTemperature();
   log_.DBG1("Sensors", "Temperature from data struct: %d", temperature);
@@ -111,7 +111,7 @@ void Main::checkTemperature()
 
 void Main::run()
 {
-// start all managers
+  // start all managers
   imu_manager_->start();
   battery_manager_->start();
 

@@ -143,7 +143,7 @@ void FakeImuFromFile::getData(ImuData* imu)
   if (state == data::State::kCalibrating) {
     // start cal
     if (!cal_started_) {
-      log_.INFO("Fake-IMUs", "Start calibrating ...");
+      log_.INFO("Fake-IMU", "Start calibrating ...");
       cal_started_ = true;
       startCal();
     }
@@ -157,7 +157,7 @@ void FakeImuFromFile::getData(ImuData* imu)
   } else if (state == data::State::kAccelerating) {
     // start acc
     if (!acc_started_) {
-      log_.INFO("Fake-IMUs", "Start accelerating ...");
+      log_.INFO("Fake-IMU", "Start accelerating ...");
       acc_started_ = true;
       startAcc();
     }
@@ -183,7 +183,7 @@ void FakeImuFromFile::getData(ImuData* imu)
 
   } else if (state == data::State::kNominalBraking) {
     if (!dec_started_) {
-      log_.INFO("Fake-IMUs", "Start decelerating...");
+      log_.INFO("Fake-IMU", "Start decelerating...");
       dec_started_ = true;
       startDec();
     }
@@ -209,7 +209,7 @@ void FakeImuFromFile::getData(ImuData* imu)
 
   } else if (state == data::State::kEmergencyBraking) {
     if (!em_started_) {
-      log_.INFO("Fake-IMUs", "Start emergency breaking...");
+      log_.INFO("Fake-IMU", "Start emergency breaking...");
       em_started_ = true;
       startEm();
     }

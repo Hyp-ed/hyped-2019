@@ -53,7 +53,6 @@ class Temperature: public TemperatureInterface {
 
   /**
    * @brief one interation of checking sensors
-   *
    */
   void run() override;
 

@@ -25,14 +25,11 @@
 
 #include "sensors/manager_interface.hpp"
 
-#include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/system.hpp"
 
 namespace hyped {
 
-using utils::concurrent::Thread;
 using utils::Logger;
 
 namespace sensors {
