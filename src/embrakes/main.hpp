@@ -1,5 +1,5 @@
 /*
-* Author: Gregor Konzett
+* Author:
 * Organisation: HYPED
 * Date:
 * Description: Entrypoint class to the embrake module, started in it's own thread. Handles the logic to retract the brakes
@@ -23,7 +23,6 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "data/data.hpp"
-#include "embrakes/brakes_controller.hpp"
 
 namespace hyped {
 
@@ -31,10 +30,8 @@ using utils::concurrent::Thread;
 using utils::Logger;
 using utils::System;
 using data::ModuleStatus;
-using embrakes::Controller;
 
 namespace embrakes {
-
 /*
  * @description This module handles the interaction with the embrakes. 
 */
@@ -58,7 +55,6 @@ class Main : public Thread
     data::StateMachine     sm_data_;
     data::EmergencyBrakes  em_brakes_;
     data::Telemetry        tlm_data_;
-    Controller**           controllers;
 };
 
 }}
