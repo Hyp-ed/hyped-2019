@@ -50,11 +50,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
-  if (miss_stripe_) {
-    log_.INFO("Fake-GpioCounter", "Fake Keyence Fail initialised");
-  } else {
-    log_.INFO("Fake-GpioCounter", "Fake Keyence initialised");
-  }
 }
 
 FakeGpioCounter::FakeGpioCounter(Logger& log,
@@ -71,6 +66,11 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
   stripe_count_.operational = true;
   stripe_count_.count.timestamp = 0;
   readFromFile(stripe_data_);           // read text from file into vector class member
+  if (miss_stripe_) {
+    log_.INFO("Fake-GpioCounter", "Fake Keyence Fail initialised");
+  } else {
+    log_.INFO("Fake-GpioCounter", "Fake Keyence initialised");
+  }
 }
 
 StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect stripe count
@@ -111,7 +111,7 @@ void FakeGpioCounter::checkData()
 {
   if (is_from_file_) {
     uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
-    log_.DBG("Fake-GpioCounter", "time_after: %d", time_after);
+    log_.DBG1("Fake-GpioCounter", "time_after: %d", time_after);
     if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
       log_.INFO("Fake-GpioCounter", "missed stripe!");
       stripe_count_.operational = false;
