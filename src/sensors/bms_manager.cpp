@@ -40,14 +40,14 @@ BmsManager::BmsManager(Logger& log)
 
   if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
     // create BMS LP
-    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+    for (int i = 10; i < 10 + data::Batteries::kNumLPBatteries; i++) {
       BMS* bms = new BMS(i, log_);
       bms->start();
       bms_[i] = bms;
     }
     // create BMS HP
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-      bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
+      bms_[i + 10 + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
     // Set SSR switches for real system
     uint8_t HPSSR = sys_.config->sensors.HPSSR;
