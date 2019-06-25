@@ -90,7 +90,7 @@ void Thread::sleep(uint32_t ms)
 
 void BusyThread::run()
 {
-  uint64_t i;
+  uint64_t i = 0;
   while (running_) {
     i++;
     if (i%10000 == 0) {
