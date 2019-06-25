@@ -1,8 +1,8 @@
 /*
-* Author:
+* Author: Kornelija Sukyte
 * Organisation: HYPED
 * Date:
-* Description: Entrypoint class to the embrake module, started in it's own thread. Handles the logic to retract the brakes
+* Description: Entrypoint class to the embrake module, started in it's own thread.
 *
 *    Copyright 2019 HYPED
 *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -23,6 +23,8 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "data/data.hpp"
+
+#include "embrakes/stepper.hpp"
 
 namespace hyped {
 
@@ -49,8 +51,7 @@ class Main : public Thread
     void run() override;
 
   private:
-    Logger &log_;
-
+    Logger&                log_;
     data::Data&            data_;
     data::StateMachine     sm_data_;
     data::EmergencyBrakes  em_brakes_;

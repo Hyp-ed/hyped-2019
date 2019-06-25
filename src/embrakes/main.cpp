@@ -1,8 +1,8 @@
 /*
-* Author:
+* Author: Kornelija Sukyte
 * Organisation: HYPED
 * Date:
-* Description: Entrypoint class to the embrake module, started in it's own thread. Handles the logic to retract the brakes
+* Description: Entrypoint class to the embrake module, started in it's own thread.
 *
 *    Copyright 2019 HYPED
 *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
