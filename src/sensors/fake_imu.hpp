@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/logger.hpp"
 
@@ -43,26 +42,33 @@ namespace sensors {
  */
 class FakeImuFromFile : public ImuInterface {
  public:
-  /*
-   * @brief     A constructor for the fake IMU class by reading from file
+  /**
+   * @brief A constructor for the fake IMU class by reading from file
    *
-   * @param[in]    The line format of the input file would be the following
+   * The line format of the input file would be the following
    *
-   *               timestamp value_x value_y value_z noise_x noise_y noise_z
+   *               timestamp value_x
+   *               value_y = 9.8 and value_z = 0 set by class
    *
    *               Sample of the format is located at 'src/fake_imu_input_xxx.txt'. Note that the
-   *               timestamp for accelerometer has to start with 0 and must be multiples of 250 and
-   *               125 for accelerometer and gyroscope respectively. You must include every timestamp
-   *               from 0 to the last timestamp which will be a multiple of 250 or 125 depending on
-   *               if it is an accelerometer or gyroscope.
+   *               timestamp for accelerometer has to start with 0 and must be multiples of 250
+   *               for accelerometer. You must include every timestamp from 0 to the last timestamp
+   *               which will be a multiple of 250.
    *
-   * @param[in] acc_file_path    A string to the file location of the accelerometer data points
-   * @param[in] gyr_file_path    A string to the file location of the gyroscope data points
+   * @param log_
+   * @param acc_file_path
+   * @param dec_file_path
+   * @param em_file_path
+   * @param is_fail_acc
+   * @param is_fail_dec
+   * @param noise
    */
   FakeImuFromFile(utils::Logger& log_,
           std::string acc_file_path,
           std::string dec_file_path,
           std::string em_file_path,
+          bool is_fail_acc,
+          bool is_fail_dec,
           float noise = 0.2);
 
   bool isOnline() override { return true; }
@@ -93,10 +99,16 @@ class FakeImuFromFile : public ImuInterface {
   void startDec();
   void startEm();
 
+  /**
+   * @brief sets failure time for acc or dec configuration
+   * @param state current state
+   */
+  void setFailure(data::State& state);
+
   /*
    * @brief     A function that reads data from file directory. This function also validates them
    *            by checking if
-   *              1) The timestamp values are valid. Multiples of 250 or 150 depending on the file.
+   *              1) The timestamp values are valid. Multiples of 250.
    *              2) The file follows the format given in the comments of the constructor above.
    *              3) The file exists.
    *
@@ -115,6 +127,7 @@ class FakeImuFromFile : public ImuInterface {
   NavigationVector acc_val_;
   NavigationVector acc_noise_;
   NavigationVector prev_acc_;
+  NavigationVector acc_fail_;
 
 
   std::vector<NavigationVector> acc_val_read_;
@@ -125,6 +138,10 @@ class FakeImuFromFile : public ImuInterface {
   std::vector<bool>             em_val_operational_;
 
   int64_t acc_count_;
+
+  /**
+   * @brief scales time based on getTimeMicros() and timestamps from file
+   */
   uint64_t imu_ref_time_;
   std::string acc_file_path_;
   std::string dec_file_path_;
@@ -133,6 +150,11 @@ class FakeImuFromFile : public ImuInterface {
   bool acc_started_;
   bool dec_started_;
   bool em_started_;
+  bool is_fail_acc_;
+  bool is_fail_dec_;
+  bool failure_happened_;
+  uint64_t failure_time_acc_;
+  uint64_t failure_time_dec_;
   float noise_;
   data::Data&  data_;
 };

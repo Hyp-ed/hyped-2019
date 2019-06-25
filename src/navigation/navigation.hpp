@@ -21,6 +21,7 @@
 
 #include <array>
 #include <cstdint>
+#include <math.h>
 
 #include "data/data.hpp"
 #include "data/data_point.hpp"
@@ -48,10 +49,12 @@ namespace navigation {
 
   class Navigation {
     public:
-      typedef std::array<ImuData, data::Sensors::kNumImus>        ImuDataArray;
-      typedef DataPoint<ImuDataArray>                             ImuDataPointArray;
-      typedef std::array<NavigationType, data::Sensors::kNumImus> NavigationArray;
-      typedef std::array<KalmanFilter, data::Sensors::kNumImus>   FilterArray;
+      typedef std::array<ImuData, data::Sensors::kNumImus>           ImuDataArray;
+      typedef DataPoint<ImuDataArray>                                ImuDataPointArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus>    NavigationArray;
+      typedef std::array<KalmanFilter, data::Sensors::kNumImus>      FilterArray;
+      typedef array<data::StripeCounter, data::Sensors::kNumKeyence> KeyenceDataArray;
+
 
       /**
        * @brief Construct a new Navigation object
@@ -127,6 +130,10 @@ namespace navigation {
        * @brief Initialise timestamps for integration
        */
       void initTimestamps();
+      /**
+       * @brief Disable keyence readings to have any impact on the run.
+       */
+      void disableKeyenceUsage();
 
     private:
       static constexpr int kCalibrationAttempts = 3;
@@ -153,12 +160,35 @@ namespace navigation {
       // Kalman filters to filter each IMU measurement individually
       FilterArray filters_;
 
+      // Stripe counter (rolling values)
+      DataPoint<uint32_t> stripe_counter_;
+      // Keyence data read
+      KeyenceDataArray keyence_readings_;
+      // Previous keyence data for comparison
+      KeyenceDataArray prev_keyence_readings_;
+      // Are the keyence sensors used or ignored?
+      bool keyence_used;
+      // This counts the number of times the keyence readings disagree with the IMU data more than
+      // allowed due to uncertainty. It is used at the moment to check if the calculated
+      // uncertainty is acceptable.
+      uint32_t keyence_failure_counter_;
+
+
       // To store estimated values
       ImuDataPointArray sensor_readings_;
       DataPoint<NavigationType> acceleration_;
       DataPoint<NavigationType> velocity_;
       DataPoint<NavigationType> distance_;
       NavigationArray gravity_calibration_;
+
+      // Previous timestamp
+      uint32_t prev_timestamp;
+      // Uncertainty in distance
+      NavigationType distance_uncertainty;
+      // Uncertainty in velocity
+      NavigationType velocity_uncertainty;
+      // Previous acceleration measurement, necessary for uncertainty determination
+      NavigationType prev_acc;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
@@ -168,6 +198,14 @@ namespace navigation {
        * @brief Query sensors to determine acceleration, velocity and distance
        */
       void queryImus();
+      /**
+       * @brief Query Keyence sensors to determine whether a stripe is found, update stripe_counter_ accordingly
+       */
+      void queryKeyence();
+      /**
+       * @brief Update uncertainty in distance obtained through IMU measurements.
+       */
+      void updateUncertainty();
   };
 
 

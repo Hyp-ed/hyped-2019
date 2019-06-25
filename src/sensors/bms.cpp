@@ -20,11 +20,7 @@
 
 #include "sensors/bms.hpp"
 
-#include "data/data.hpp"
-#include "utils/io/can.hpp"
 #include "utils/logger.hpp"
-#include "utils/system.hpp"
-#include "utils/utils.hpp"
 #include "utils/timer.hpp"
 
 namespace hyped {
