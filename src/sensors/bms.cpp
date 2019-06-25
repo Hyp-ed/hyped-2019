@@ -97,7 +97,7 @@ bool BMS::hasId(uint32_t id, bool extended)
   if (id_base_ <= id && id < id_base_ + bms::kIdSize) return true;
 
   // LP current CAN message
-  if (id == 0x28) return true;
+  if (id == 0x40) return true;
 
   return false;
 }
@@ -107,13 +107,15 @@ void BMS::processNewData(utils::io::can::Frame& message)
   log_.DBG1("BMS", "module %u: received CAN message with id %d", id_, message.id);
 
   // check current CAN message
-  if (message.id == 0x28) {
+  if (message.id == 0x40) {
     if (message.len < 3) {
       log_.ERR("BMS", "module %u: current reading not enough data", id_);
       return;
     }
 
-    current_ = (message.data[1] << 8) | (message.data[2]);
+    current_ = ((message.data[0] << 8) | (message.data[1])) << 8 | (message.data[2]);
+    // current_ = (message.data[0] << 8) | (message.data[1]);
+
     return;
   }
 
