@@ -27,19 +27,15 @@
 
 #include "sensors/fake_gpio_counter.hpp"
 #include "utils/timer.hpp"
-#include "data/data.hpp"
-#include "utils/concurrent/thread.hpp"
 
 uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
 double kStripeDistance = 30.48;     // metres
 uint64_t kMaxTime = 1500;     // between stripe readings before throw failure (micros)
 
-
 namespace hyped {
 
 using data::StripeCounter;
-using utils::concurrent::Thread;
 using utils::Logger;
 
 namespace sensors {
@@ -115,9 +111,9 @@ void FakeGpioCounter::checkData()
 {
   if (is_from_file_) {
     uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
-    log_.DBG("FakeGpioCounter", "time_after: %d", time_after);
+    log_.DBG("Fake-GpioCounter", "time_after: %d", time_after);
     if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
-      log_.INFO("FakeGpioCounter", "missed stripe!");
+      log_.INFO("Fake-GpioCounter", "missed stripe!");
       stripe_count_.operational = false;
     }
   }
@@ -137,7 +133,7 @@ void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
         stripe_data_.push_back(this_line);
       }
     } else {
-      log_.ERR("FakeGpioCounter", "cannot open file");
+      log_.ERR("Fake-GpioCounter", "cannot open file");
     }
     data_file.close();
   }

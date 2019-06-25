@@ -23,7 +23,6 @@
 
 #include <cstdint>
 
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "utils/system.hpp"

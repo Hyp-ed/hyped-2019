@@ -18,12 +18,9 @@
  *    limitations under the License.
  */
 
-#include "sensors/fake_batteries.hpp"
-
 #include <stdlib.h>
 
-#include "utils/timer.hpp"
-#include "data/data.hpp"
+#include "sensors/fake_batteries.hpp"
 #include "utils/timer.hpp"
 
 namespace hyped {

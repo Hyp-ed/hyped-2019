@@ -90,10 +90,6 @@ struct Sensors : public Module {
   array<StripeCounter, kNumKeyence>  keyence_stripe_counter;
 };
 
-struct SensorCalibration {
-  array<NavigationVector, Sensors::kNumImus> imu_variance;
-};
-
 struct BatteryData {
   uint16_t  voltage;  // V
   int16_t   current;  // mA
@@ -246,15 +242,6 @@ class Data {
   void setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>&  keyence_stripe_counter);  //NOLINT
 
   /**
-   * @brief      Should be called to update sensor calibration data
-   */
-  void setCalibrationData(const SensorCalibration sensor_calibration_data);
-  /**
-   * @brief      Retrieves data from the calibrated sensors
-   */
-  SensorCalibration getCalibrationData();
-
-  /**
    * @brief      Retrieves data from the batteries.
    */
   Batteries getBatteriesData();
@@ -301,7 +288,6 @@ class Data {
   Motors motors_;
   Batteries batteries_;
   Telemetry telemetry_;
-  SensorCalibration calibration_data_;
   EmergencyBrakes emergency_brakes_;
   int temperature_;  // In degrees C
 
@@ -316,7 +302,6 @@ class Data {
   Lock lock_telemetry_;
   Lock lock_batteries_;
   Lock lock_emergency_brakes_;
-  Lock lock_calibration_data_;
 
   Data() {}
 

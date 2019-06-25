@@ -5,8 +5,6 @@
 #include "utils/system.hpp"
 #include "data/data.hpp"
 
-#define FAIL 1
-
 using hyped::utils::concurrent::Thread;
 using hyped::sensors::FakeTemperature;
 using hyped::utils::Logger;
@@ -19,12 +17,15 @@ uint8_t kStripeNum = 30;
 int main(int argc, char* argv[]) {
   hyped::utils::System::parseArgs(argc, argv);
   Logger log = System::getLogger();
+  System& sys_ = System::getSystem();       // use --fake_temperature_fail flag
 
-  #if FAIL
-  FakeTemperature fake_temperature(log, true);
-  #else
-  FakeTemperature fake_temperature(log, false);
-  #endif
+  FakeTemperature* fake_temperature_;
+
+  if (sys_.fake_temperature_fail) {
+    fake_temperature_ = new FakeTemperature(log, true);
+  } else {
+    fake_temperature_ = new FakeTemperature(log, false);
+  }
   Data& data = Data::getInstance();
 
   auto state = data.getStateMachineData();
@@ -32,8 +33,8 @@ int main(int argc, char* argv[]) {
   data.setStateMachineData(state);
 
   for (int i = 0; i < 50; i++) {
-    fake_temperature.run();
-    int value = fake_temperature.getData();
+    fake_temperature_->run();
+    int value = fake_temperature_->getData();
     log.DBG("DEMO-FakeTemperature", "Temperature = %d", value);
     Thread::sleep(250);
   }
