@@ -27,7 +27,11 @@ Main::Main(uint8_t id, Logger &log)
   : Thread(id, log),
     log_(log),
     data_(data::Data::getInstance())
-{ /* EMPTY */ }
+{ 
+  for(int i = 0; i < 4; i++) {
+    controllers[i] = new Controller(log_, 20+i);
+  }
+ }
 
 void Main::run() {
   log_.INFO("Brakes", "Thread started");

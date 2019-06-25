@@ -31,14 +31,8 @@ namespace hyped
 namespace embrakes
 {
 enum ControllerState {
-  kNotReadyToSwitchOn,
-  kSwitchOnDisabled,
-  kReadyToSwitchOn,
-  kSwitchedOn,
-  kOperationEnabled,
-  kQuickStopActive,
-  kFaultReactionActive,
-  kFault,
+  kRetracted,
+  kClamped,
 };
 
 struct ControllerMessage {
@@ -50,18 +44,8 @@ struct ControllerMessage {
 class ControllerInterface {
  public:
   virtual void registerController() = 0;
-  virtual void configure() = 0;
-  virtual void enterOperational() = 0;
-  virtual void enterPreOperational() = 0;
-  virtual void checkState() = 0;
-  virtual void healthCheck() = 0;
-  virtual bool getFailure() = 0;
   virtual ControllerState getControllerState() = 0;
-  virtual void processEmergencyMessage(utils::io::can::Frame& message) = 0;
-  virtual void processErrorMessage(uint16_t error_message) = 0;
-  virtual void processSdoMessage(utils::io::can::Frame& message) = 0;
-  virtual void processNmtMessage(utils::io::can::Frame& message) = 0;
-  virtual void requestStateTransition(utils::io::can::Frame& message, ControllerState state) = 0;
+  virtual void processNewData(utils::io::can::Frame& message) = 0;
 };
 }  // namespace embrakes
 }  // namespace hyped

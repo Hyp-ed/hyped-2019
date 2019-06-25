@@ -23,6 +23,7 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "data/data.hpp"
+#include "embrakes/brakes_controller.hpp"
 
 namespace hyped {
 
@@ -30,6 +31,7 @@ using utils::concurrent::Thread;
 using utils::Logger;
 using utils::System;
 using data::ModuleStatus;
+using embrakes::Controller;
 
 namespace embrakes {
 
@@ -52,10 +54,11 @@ class Main : public Thread
   private:
     Logger &log_;
 
-    data::Data& data_;
-    data::StateMachine sm_data_;
-    data::EmergencyBrakes em_brakes_;
-    data::Telemetry tlm_data_;
+    data::Data&            data_;
+    data::StateMachine     sm_data_;
+    data::EmergencyBrakes  em_brakes_;
+    data::Telemetry        tlm_data_;
+    Controller**           controllers;
 };
 
 }}

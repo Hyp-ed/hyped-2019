@@ -45,8 +45,12 @@ using utils::Timer;
 
 namespace embrakes {
 
-  // Types of CANopen messages, these are used for CAN ID's
-  constexpr uint32_t kSdoReceive = 0x600;
+// Types of CANopen messagesused, these are used for CAN ID's
+constexpr uint32_t kSdoReceive = 0x600;
+
+constexpr uint32_t canIds[13] {0x80, 0x600, 0x580, 0x000, 0x700,
+                              0x180, 0x200, 0x280, 0x300, 0x380,
+                              0x400, 0x480, 0x500};
 
 class Controller : public CanProccesor, public ControllerInterface {
  public:
@@ -61,56 +65,23 @@ class Controller : public CanProccesor, public ControllerInterface {
    */
   void registerController() override;
   /**
-   * @brief Apply configuration settings.
-   *        (sends 16 can messages to configure the motors correctly)
-   */
-  void checkState() override;
-  /**
-   * @brief Check the error/warning regesters of the controller.
-   */
-  void healthCheck() override;
-  /**
-   * @return critical_failure_
-   */
-  bool getFailure() override;
-  /**
    * @return state_
    */
   ControllerState getControllerState() override;
   /**
-   * @return node_id_
+   * @brief { If this function returns true, the CAN message is ment for this CAN node }
    */
-  uint8_t getNode_id();
+  bool hasId(uint32_t id, bool extended) override;
   /**
    * @brief set critical_failure_
    */
-  void setFailure(bool failure);
-  /**
-   * @brief to be called by processNewData if Emergency message is detected.
-   * @param message CAN message to process
-   */
-  void processEmergencyMessage(utils::io::can::Frame& message) override;
-  /**
-   * @brief Parses error message to find the problem
-   * @param error_message
-   */
-  void processErrorMessage(uint16_t error_message) override;
-  /**
-   * @brief Called by processNewData if SDO message is detected
-   * @param message
-   */
-  void processSdoMessage(utils::io::can::Frame& message) override;
-  /*
-   * @brief { Sends state transition message to controller, leaving sufficient time for
-   *          controller to change state. If state does not change, throw critical failure }
-   *
-   * @param[in] { CAN message to be sent, Controller state requested}
-   */
-  void requestStateTransition(utils::io::can::Frame& message, ControllerState state) override;
+  void processNewData(utils::io::can::Frame& message) override;
+
+  void sendData(uint8_t* message_data);
 
  private:
   /**
-   * @brief compact function to call the can sender class with a message,
+   * @brief compact function to send can message,
    *        while checking for critical failure.
    * @param message_template
    * @param len
@@ -137,13 +108,6 @@ class Controller : public CanProccesor, public ControllerInterface {
   Timer                     timer;
   std::atomic<bool>         isSending;
 
- public:
-  // Arrays of messages sent to controller
-  ControllerMessage configMsgs_[16];
-  ControllerMessage enterOpMsgs_[4];
-  ControllerMessage enterPreOpMsg_[1];
-  ControllerMessage checkStateMsg_[1];
-  ControllerMessage healthCheckMsgs[2];
 };
 }}  // namespace hyped::embrakes
 
