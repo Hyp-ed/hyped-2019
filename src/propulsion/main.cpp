@@ -16,7 +16,7 @@
  *    limitations under the License.
  */
 
-#include "main.hpp"
+#include "propulsion/main.hpp"
 
 namespace hyped
 {
@@ -29,8 +29,6 @@ Main::Main(uint8_t id, Logger &log)
     log_(log),
     data_(Data::getInstance())
 {
-  log_.INFO("Motor", "Logger constructor was called");
-
   stateProcessor = new StateProcessor(6, log);
 }
 
@@ -136,7 +134,7 @@ void Main::run()
     }
   }
 
-    log_.INFO("Motor", "Thread shutting down");
+  log_.INFO("Motor", "Thread shutting down");
 }
 }  // namespace motor_control
 }  // namespace hyped
