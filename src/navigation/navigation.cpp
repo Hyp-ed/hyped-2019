@@ -34,6 +34,8 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            counter_(0),
            axis_(axis),
            calibration_limits_({0.05, 0.05, 0.05}),
+           imu_reliable {true, true, true, true},
+           nOutlierImus(0),
            stripe_counter_(0, 0),
            keyence_used(true),
            keyence_failure_counter_(0),
@@ -182,12 +184,16 @@ void Navigation::queryImus()
   // process raw values
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     acc_raw[i] = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
+    // If the IMU is unreliable, set its reading to zero.
+    if (!imu_reliable[i]) acc_raw[i] = 0;
   }
   tukeyFences(acc_raw, kTukeyThreshold);
-  // Kalman filter the readings
+  // Kalman filter the readings which are reliable
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    NavigationType estimate = filters_[i].filter(acc_raw[i]);
-    acc_avg_filter.update(estimate);
+    if (imu_reliable[i]) {
+      NavigationType estimate = filters_[i].filter(acc_raw[i]);
+      acc_avg_filter.update(estimate);
+    }
   }
   acceleration_.value = acc_avg_filter.getMean();
   acceleration_.timestamp = t;
@@ -281,21 +287,49 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
   NavigationArray data_array_copy = data_array;
   // find the quartiles
   std::sort(data_array_copy.begin(), data_array_copy.end());
-  float q1 = (data_array_copy[0]+data_array_copy[1]) / 2.;
-  float q2 = (data_array_copy[1]+data_array_copy[2]) / 2.;
-  float q3 = (data_array_copy[2]+data_array_copy[3]) / 2.;
-  float iqr = q3 - q1;
+  // Define the quartiles first:
+  float q1 = 0;
+  float q2 = 0;
+  float q3 = 0;
+  // The most likely case is that all four IMUs are still reliable:
+  if (nOutlierImus == 0) {
+    q1 = (data_array_copy[0]+data_array_copy[1]) / 2.;
+    q2 = (data_array_copy[1]+data_array_copy[2]) / 2.;
+    q3 = (data_array_copy[2]+data_array_copy[3]) / 2.;
+  // The second case is that one IMU is faulty
+  } else if (nOutlierImus == 1) {
+    // When copying we know there must be one zero value
+    for (int i = 0; i < data::Sensors::kNumImus; i++) {
+      if (data_array_copy[i] != 0) {
+        if      (q1 == 0) q1 = data_array_copy[i];
+        else if (q2 == 0) q2 = data_array_copy[i];
+        else if (q3 == 0) q3 = data_array_copy[i];
+      }
+    }
+  }
   // find the thresholds
+  float iqr = q3 - q1;
   float upper_limit = q3 + threshold*iqr;
   float lower_limit = q1 - threshold*iqr;
   // replace any outliers with the median
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     if (data_array[i] < lower_limit or data_array[i] > upper_limit) {
-      log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f. Updated to %.3f", //NOLINT
-                      i, data_array[i], q2);
+      // log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f. Updated to %.3f", //NOLINT
+      //                 i, data_array[i], q2);
       data_array[i] = q2;
+      imu_outlier_counter_[i]++;
+      // If this counter exceeds some threshold then that IMU is deemed unreliable
+      if (imu_outlier_counter_[i] > 1000 && imu_reliable[i]) {
+        imu_reliable[i] = false;
+        nOutlierImus++;
+      }
+    } else {
+      imu_outlier_counter_[i] = 0;
     }
   }
+  log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
+    imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
+  log_.INFO("NAV", "Number of outliers: %d", nOutlierImus);
 }
 
 void Navigation::updateData()
@@ -311,11 +345,11 @@ void Navigation::updateData()
   data_.setNavigationData(nav_data);
 
   if (counter_ % 1 == 0) {  // kPrintFreq
-    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
-                     counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
-                     stripe_counter_.value*30.48);
-    log_.INFO("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
-                 counter_, velocity_uncertainty, distance_uncertainty, keyence_failure_counter_);
+    // log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
+    //               counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
+    //               stripe_counter_.value*30.48);
+    // log_.INFO("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
+    //            counter_, velocity_uncertainty, distance_uncertainty, keyence_failure_counter_);
   }
   counter_++;
   // Update all prev measurements

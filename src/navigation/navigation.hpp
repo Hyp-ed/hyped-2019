@@ -160,6 +160,13 @@ namespace navigation {
       // Kalman filters to filter each IMU measurement individually
       FilterArray filters_;
 
+      // Counter for consecutive outlier output from each IMU
+      std::array<uint32_t, data::Sensors::kNumImus> imu_outlier_counter_;
+      // Array of booleans to signify which IMUs are reliable or faulty
+      std::array<bool, data::Sensors::kNumImus> imu_reliable;
+      // Counter of how many IMUs have failed
+      uint32_t nOutlierImus;
+
       // Stripe counter (rolling values)
       DataPoint<uint32_t> stripe_counter_;
       // Keyence data read
