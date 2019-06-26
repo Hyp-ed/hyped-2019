@@ -113,9 +113,7 @@ void BMS::processNewData(utils::io::can::Frame& message)
       return;
     }
 
-    current_ = ((message.data[0] << 8) | (message.data[1])) << 8 | (message.data[2]);
-    // current_ = (message.data[1] << 8) | (message.data[2]);
-
+    current_ = (message.data[1] << 8) | (message.data[2]);
     return;
   }
 
