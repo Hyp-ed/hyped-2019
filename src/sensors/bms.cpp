@@ -215,7 +215,7 @@ bool BMSHP::hasId(uint32_t id, bool extended)
   if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
   
   // Thermistor expansion module
-  if (id == 0x00) return true;
+  if (id == 0x1839F380) return true;
   return false;
 }
 
@@ -243,7 +243,7 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.temperature);
 
   // thermistor expansion module
-  if (message.id == 0x00) {   // TODO(Greg, Iain): change can_id
+  if (message.id == 0x1839F380) {   // TODO(Greg, Iain): change can_id
     local_temp_data_.low_temperature     = message.data[1];
     local_temp_data_.high_temperature    = message.data[2];
     local_temp_data_.average_temperature = message.data[3];
