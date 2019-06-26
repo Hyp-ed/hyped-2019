@@ -115,14 +115,19 @@ NavigationType Navigation::getBrakingDistance() const
   return braking_distance;
 }
 
+Navigation::NavigationVectorArray Navigation::getGravityCalibration() const
+{
+  return gravity_calibration_;
+}
+
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
-  std::array<RollingStatistics<NavigationType>, data::Sensors::kNumImus> online_array =
-    {RollingStatistics<NavigationType>(kCalibrationQueries),
-     RollingStatistics<NavigationType>(kCalibrationQueries),
-     RollingStatistics<NavigationType>(kCalibrationQueries),
-     RollingStatistics<NavigationType>(kCalibrationQueries)};
+  std::array<RollingStatistics<NavigationVector>, data::Sensors::kNumImus> online_array =
+    {RollingStatistics<NavigationVector>(kCalibrationQueries),
+     RollingStatistics<NavigationVector>(kCalibrationQueries),
+     RollingStatistics<NavigationVector>(kCalibrationQueries),
+     RollingStatistics<NavigationVector>(kCalibrationQueries)};
   bool calibration_successful = false;
   int calibration_attempts = 0;
 
@@ -133,15 +138,17 @@ void Navigation::calibrateGravity()
     for (int i = 0; i < kCalibrationQueries; ++i) {
       sensor_readings_ = data_.getSensorsImuData();
       for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-        online_array[j].update(sensor_readings_.value[j].acc[axis_]);
+        online_array[j].update(sensor_readings_.value[j].acc);
       }
       Thread::sleep(1);
     }
     // Check if each calibration's variance is acceptable
     calibration_successful = true;
     for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-      bool var_within_lim = online_array[i].getVariance() < calibration_limits_[axis_];
-      calibration_successful = calibration_successful && var_within_lim;
+      for (int j = 0; j < 3; ++j) {
+        bool var_within_lim = online_array[i].getVariance()[j] < calibration_limits_[j];
+        calibration_successful = calibration_successful && var_within_lim;
+      }
     }
     calibration_attempts++;
   }
@@ -151,10 +158,15 @@ void Navigation::calibrateGravity()
     log_.INFO("NAV", "Calibration of IMU acceleration succeeded with final readings:");
     for (int i = 0; i < data::Sensors::kNumImus; ++i) {
       gravity_calibration_[i] = online_array[i].getMean();
-      double var = online_array[i].getVariance();
+      double var = 0.0;
+      for (int j = 0; j < 3; ++j) {
+        var += online_array[i].getVariance()[j];
+      }
       filters_[i].updateMeasurementCovarianceMatrix(var);
 
-      log_.INFO("NAV", "\tIMU %d: g=%.5f, var=%.5f", i, gravity_calibration_[i], var);
+      log_.INFO("NAV", "\tIMU %d: g=(%.5f, %.5f, %.5f), var=%.5f",
+              i, gravity_calibration_[i][0], gravity_calibration_[i][1],
+              gravity_calibration_[i][2], var);
     }
     status_ = ModuleStatus::kReady;
     updateData();
@@ -162,15 +174,29 @@ void Navigation::calibrateGravity()
   } else {
     log_.INFO("NAV", "Calibration of IMU acceleration failed with final readings:");
     for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-      double acc = online_array[i].getMean();
-      double var = online_array[i].getVariance();
+      NavigationVector acc = online_array[i].getMean();
+      double var = 0.0;
+      for (int j = 0; j < 3; ++j) {
+        var += online_array[i].getVariance()[j];
+      }
 
-      log_.INFO("NAV", "\tIMU %d: g=%.5f, var=%.5f", i, acc, var);
+      log_.INFO("NAV", "\tIMU %d: g=(%.5f, %.5f, %.5f), var=%.5f", i, acc[0], acc[1], acc[2], var);
     }
     status_ = ModuleStatus::kCriticalFailure;
     updateData();
     log_.INFO("NAV", "Navigation module failed on calibration");
   }
+}
+
+NavigationType Navigation::accNorm(NavigationVector& acc)
+{
+  NavigationType norm = 0.0;
+  for (unsigned int i = 0; i < 3; i ++) {
+      NavigationType a = acc[i];
+      norm += a*a;
+  }
+  norm = sqrt(norm);
+  return norm;
 }
 
 void Navigation::queryImus()
@@ -181,7 +207,8 @@ void Navigation::queryImus()
   uint32_t t = sensor_readings_.timestamp;
   // process raw values
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    acc_raw[i] = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
+    NavigationVector a = sensor_readings_.value[i].acc - gravity_calibration_[i];
+    acc_raw[i] = accNorm(a) * (1 - 2 * (a[axis_] < 0));
   }
   tukeyFences(acc_raw, kTukeyThreshold);
   // Kalman filter the readings
