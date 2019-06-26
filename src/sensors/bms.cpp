@@ -156,7 +156,7 @@ void BMS::getData(BatteryData* battery)
   for (uint16_t v: data_.voltage) battery->voltage += v;
   battery->voltage    /= 100;  // scale to 0.1V
   battery->temperature = data_.temperature;
-  battery->current     = current_ - 0x800000;  // (-1*current_)/2;
+  battery->current     = current_ - 0x800000;  // offset provided by datasheet.
 
   // charge calculation
   if (battery->voltage > 240) {                                       // constant high
