@@ -179,6 +179,7 @@ BMSHP::BMSHP(uint16_t id, Logger& log)
     : log_(log),
       can_id_(id*2 + bms::kHPBase),
       local_data_ {},
+      local_temp_data_ {},
       last_update_time_(0)
 {
   // verify this BMSHP unit has not been instantiated
@@ -209,7 +210,13 @@ void BMSHP::getData(BatteryData* battery)
 bool BMSHP::hasId(uint32_t id, bool extended)
 {
   // only accept a single CAN message
-  return id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1);
+
+  // HPBMS
+  if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
+  
+  // Thermistor expansion module
+  if (id == 0x00) return true;
+  return false;
 }
 
 void BMSHP::processNewData(utils::io::can::Frame& message)
@@ -234,6 +241,17 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.current,
     local_data_.charge,
     local_data_.temperature);
+
+  // thermistor expansion module
+  if (message.id == 0x00) {   // TODO(Greg, Iain): change can_id
+    local_temp_data_.low_temperature     = message.data[1];
+    local_temp_data_.high_temperature    = message.data[2];
+    local_temp_data_.average_temperature = message.data[3];
+  }
+  log_.DBG1("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d", 
+    local_temp_data_.low_temperature,
+    local_temp_data_.high_temperature,
+    local_temp_data_.average_temperature);
 }
 
 
