@@ -108,8 +108,7 @@ struct Batteries : public Module {
 };
 
 struct EmergencyBrakes : public Module {
-  bool front_brakes;       // true if front facing emergency brakes deploy
-  bool rear_brakes;      // true if rear facing emergency brakes deploy
+  bool brakes_retracted[4] = {false};       // true if brakes retract
 };
 
 // -------------------------------------------------------------------------------------------------

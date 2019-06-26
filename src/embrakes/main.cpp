@@ -1,5 +1,6 @@
 /*
 * Author: Kornelija Sukyte
+
 * Organisation: HYPED
 * Date:
 * Description: Entrypoint class to the embrake module, started in it's own thread.
@@ -62,10 +63,6 @@ void Main::run() {
         log_.INFO("Brakes", "Starting Nominal Braking");
 
         // TODO(Kornelija): check whether button pressed before changing booleans in data structure
-
-        em_brakes_.front_brakes = true;
-        em_brakes_.rear_brakes = true;
-        data_.setEmergencyBrakesData(em_brakes_);
         break;
       case data::State::kEmergencyBraking:
 
@@ -74,10 +71,6 @@ void Main::run() {
         log_.INFO("Brakes", "Starting Emergency Braking");
 
         // TODO(Kornelija): check whether button pressed before changing booleans in data structure
-
-        em_brakes_.front_brakes = true;
-        em_brakes_.rear_brakes = true;
-        data_.setEmergencyBrakesData(em_brakes_);
         break;
       case data::State::kExiting:
 

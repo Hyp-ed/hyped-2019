@@ -36,6 +36,13 @@ using utils::io::CanProccesor;
 
 namespace embrakes {
 
+// Types of CANopen messages, these are used for CAN ID's
+
+constexpr uint32_t kSdoReceive = 0x600;
+constexpr uint32_t kSdoTransmit = 0x580;
+
+constexpr uint32_t canIds[13] {0x600, 0x580};
+
 class Stepper :public CanProccesor {
   public:
   /**
@@ -59,12 +66,34 @@ class Stepper :public CanProccesor {
      */
   bool hasId(uint32_t id, bool extended) override;
 
+  /**
+   * @brief {checks if brake's button is pressed, notes change in the data struct}
+   */
+  void checkHome(uint8_t button);
+
+  /**
+   * @brief sends retract message
+   */
+  void sendRetract();
+
+  /**
+   * @brief sends clamp message
+   */
+  void sendClamp();
+
   private:
 
-    utils::Logger&  log_;
-    data::Data&     data_;
-    uint8_t         node_id_;
-    Can&            can_;
+    utils::Logger&        log_;
+    data::Data&           data_;
+    uint8_t               node_id_;
+    Can&                  can_;
+    data::EmergencyBrakes em_brakes_data_;
+    data::Telemetry       tlm_data_;
+    data::StateMachine    sm_data_;
+    Frame                 message_to_send;
+    uint8_t               stepper_position_LSB;
+    uint8_t               stepper_position_MSB;
+    uint8_t               stepper_period;
 
 };
 
