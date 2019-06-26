@@ -253,7 +253,10 @@ void Navigation::queryKeyence()
         keyence_failure_counter_++;
       }
       // Lower the uncertainty in velocity:
-      velocity_uncertainty -= abs(distance_change*1e6/(stripe_counter_.timestamp - init_timestamp));
+      velocity_uncertainty -= abs(distance_change*1e6/(2*
+                              (stripe_counter_.timestamp - init_timestamp)));
+      log_.INFO("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp);
+      log_.INFO("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
       // Make sure velocity uncertainty is positive.
       velocity_uncertainty = abs(velocity_uncertainty);
       // The uncertainty in distance is not changed from this because the impact is far too large
@@ -289,7 +292,7 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     if (data_array[i] < lower_limit or data_array[i] > upper_limit) {
       log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f. Updated to %.3f", //NOLINT
-                       i, data_array[i], q2);
+                      i, data_array[i], q2);
       data_array[i] = q2;
     }
   }
@@ -307,7 +310,7 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  if (counter_ % 10 == 0) {  // kPrintFreq
+  if (counter_ % 1 == 0) {  // kPrintFreq
     log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                      counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                      stripe_counter_.value*30.48);
@@ -335,6 +338,7 @@ void Navigation::initTimestamps()
   velocity_    .timestamp = utils::Timer::getTimeMicros();
   distance_    .timestamp = utils::Timer::getTimeMicros();
   init_timestamp = utils::Timer::getTimeMicros();
+  log_.INFO("NAV", "Initial timestamp:%d", init_timestamp);
   prev_timestamp = utils::Timer::getTimeMicros();
   // First iteration --> get initial keyence data
   // (should be zero counters and corresponding timestamp)
