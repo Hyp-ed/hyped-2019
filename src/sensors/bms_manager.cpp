@@ -28,6 +28,10 @@
 #include "sensors/fake_batteries.hpp"
 #include "utils/config.hpp"
 
+constexpr int kIMD = 74;
+constexpr int kGreen = 75;
+constexpr int kRed = 76;
+
 namespace hyped {
 namespace sensors {
 
@@ -59,6 +63,12 @@ BmsManager::BmsManager(Logger& log)
     kill_lp_->set();
     log_.INFO("BMS-MANAGER", "HP SSR %d has been set", HPSSR);
     log_.INFO("BMS-MANAGER", "LP SSR %d has been set", LPSSR);
+
+    imd_ = new GPIO(kIMD, utils::io::gpio::kIn);
+    green_ = new GPIO(kGreen, utils::io::gpio::kOut);
+    red_ = new GPIO(kRed, utils::io::gpio::kOut);
+    green_->set();
+    red_->set();
   } else if (sys_.fake_batteries_fail) {
     // fake batteries fail here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -98,14 +108,22 @@ void BmsManager::run()
       if (!bms_[i + data::Batteries::kNumLPBatteries]->isOnline())
         batteries_.high_power_batteries[i].voltage = 0;
     }
+
+    uint8_t val = imd_->read();     // will check every cycle of main
+    if (val == 1) {
+      green_->clear();
+      log_.INFO("BMS-MANAGER", "IMD short! Green LED cleared");
+    }
+
     // check health of batteries
     if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
       if (!batteriesInRange()) {
         log_.ERR("BMS-MANAGER", "battery failure detected");
         batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-        if (!sys_.fake_batteries) {
+        if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
           kill_hp_->clear();
           log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+          red_->clear();      // no HP voltage
         }
       }
     }
@@ -114,9 +132,10 @@ void BmsManager::run()
 
     data::State state = data_.getStateMachineData().current_state;
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
-      if (!sys_.fake_batteries) {
+      if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
         kill_hp_->clear();
         log_.INFO("BMS-MANAGER", "Emergency State! HP SSR cleared");
+        red_->clear();      // no HP voltage
       }
     }
     sleep(100);

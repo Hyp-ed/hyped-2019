@@ -60,6 +60,23 @@ class BmsManager: public ManagerInterface  {
   GPIO* kill_lp_;
 
   /**
+   * @brief insulation monitoring device held high if possible battery short
+   */
+  GPIO* imd_;
+
+  /**
+   * @brief ON- no short indication from imd_
+   *        OFF- possible short indication from imd_
+   */
+  GPIO* green_;
+
+  /**
+   * @brief ON- voltage present at pack connectors
+   *        OFF- no voltage present at pack connectors, ie kill_hp_ cleared
+   */
+  GPIO* red_;
+
+  /**
    * @brief needs to be references because run() passes directly to data struct
    */
   data::Data&     data_;
