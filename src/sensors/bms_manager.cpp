@@ -30,7 +30,6 @@
 
 constexpr int kIMD = 74;
 constexpr int kGreen = 75;
-constexpr int kRed = 76;
 
 namespace hyped {
 namespace sensors {
@@ -66,9 +65,7 @@ BmsManager::BmsManager(Logger& log)
 
     imd_ = new GPIO(kIMD, utils::io::gpio::kIn);
     green_ = new GPIO(kGreen, utils::io::gpio::kOut);
-    red_ = new GPIO(kRed, utils::io::gpio::kOut);
     green_->set();
-    red_->set();
   } else if (sys_.fake_batteries_fail) {
     // fake batteries fail here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -123,7 +120,6 @@ void BmsManager::run()
         if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
           kill_hp_->clear();
           log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
-          red_->clear();      // no HP voltage
         }
       }
     }
@@ -135,7 +131,6 @@ void BmsManager::run()
       if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
         kill_hp_->clear();
         log_.INFO("BMS-MANAGER", "Emergency State! HP SSR cleared");
-        red_->clear();      // no HP voltage
       }
     }
     sleep(100);
