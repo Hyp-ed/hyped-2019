@@ -31,6 +31,9 @@
 #include "utils/system.hpp"
 #include "utils/io/gpio.hpp"
 
+constexpr int kNumImd = 6;
+constexpr int kNumLED = 2;
+
 namespace hyped {
 
 using utils::Logger;
@@ -62,14 +65,34 @@ class BmsManager: public ManagerInterface  {
   /**
    * @brief insulation monitoring device held high if possible battery short
    */
-  GPIO* imd_;
+  GPIO* imd_[kNumImd];
 
   /**
    * @brief ON- no short indication from imd_
    *        OFF- possible short indication from imd_
    */
-  GPIO* green_;
-  
+  GPIO* green_led_[kNumLED];
+
+  /**
+   * @brief GPIO pins for imds
+   */
+  uint8_t pin_imd_[kNumImd];
+
+  /**
+   * @brief GPIO pins for green LEDs
+   */
+  uint8_t pin_led_[kNumLED];
+
+  /**
+   * @brief GPIO pin for HPSSR, init at construction from config file
+   */
+  uint8_t hp_ssr_;
+
+  /**
+   * @brief GPIO pin for LPSSR, init at construction from config file
+   */
+  uint8_t lp_ssr_;
+
   /**
    * @brief needs to be references because run() passes directly to data struct
    */
