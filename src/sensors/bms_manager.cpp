@@ -110,8 +110,7 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    // loop check imd and set both greens
-
+    // iterate through imd_ and set LEDs
     for (GPIO* pin : imd_) {
       uint8_t val = pin->read();     // will check every cycle of run()
       if (val == 1) {
