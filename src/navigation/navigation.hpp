@@ -49,11 +49,12 @@ namespace navigation {
 
   class Navigation {
     public:
-      typedef std::array<ImuData, data::Sensors::kNumImus>           ImuDataArray;
-      typedef DataPoint<ImuDataArray>                                ImuDataPointArray;
-      typedef std::array<NavigationType, data::Sensors::kNumImus>    NavigationArray;
-      typedef std::array<KalmanFilter, data::Sensors::kNumImus>      FilterArray;
-      typedef array<data::StripeCounter, data::Sensors::kNumKeyence> KeyenceDataArray;
+      typedef std::array<ImuData, data::Sensors::kNumImus>            ImuDataArray;
+      typedef DataPoint<ImuDataArray>                                 ImuDataPointArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus>     NavigationArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus - 1> NavigationArrayOneFaulty;
+      typedef std::array<KalmanFilter, data::Sensors::kNumImus>       FilterArray;
+      typedef array<data::StripeCounter, data::Sensors::kNumKeyence>  KeyenceDataArray;
 
 
       /**

@@ -280,6 +280,7 @@ void Navigation::disableKeyenceUsage()
 {
   keyence_used = false;
 }
+
 // TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
 void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
 {
@@ -299,12 +300,23 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
   // The second case is that one IMU is faulty
   } else if (nOutlierImus == 1) {
     // When copying we know there must be one zero value
-    for (int i = 0; i < data::Sensors::kNumImus; i++) {
-      if (data_array_copy[i] != 0) {
-        if      (q1 == 0) q1 = data_array_copy[i];
-        else if (q2 == 0) q2 = data_array_copy[i];
-        else if (q3 == 0) q3 = data_array_copy[i];
-      }
+    // There is definitely a more efficient way to write this... todo?
+    if (!imu_reliable[0]) {
+      q1 = (data_array_copy[1] + data_array_copy[2]) / 2.;
+      q2 =  data_array_copy[2];
+      q3 = (data_array_copy[2] + data_array_copy[3]) / 2.;
+    } else if (!imu_reliable[1]) {
+      q1 = (data_array_copy[0] + data_array_copy[2]) / 2.;
+      q2 =  data_array_copy[2];
+      q3 = (data_array_copy[2] + data_array_copy[3]) / 2.;
+    } else if (!imu_reliable[2]) {
+      q1 = (data_array_copy[0] + data_array_copy[1]) / 2.;
+      q2 =  data_array_copy[1];
+      q3 = (data_array_copy[1] + data_array_copy[3]) / 2.;
+    } else if (!imu_reliable[3]) {
+      q1 = (data_array_copy[0] + data_array_copy[1]) / 2.;
+      q2 =  data_array_copy[1];
+      q3 = (data_array_copy[1] + data_array_copy[2]) / 2.;
     }
   }
   // find the thresholds
@@ -313,7 +325,7 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
   float lower_limit = q1 - threshold*iqr;
   // replace any outliers with the median
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    if (data_array[i] < lower_limit or data_array[i] > upper_limit) {
+    if ((data_array[i] < lower_limit or data_array[i] > upper_limit) && imu_reliable[i]) {
       // log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f. Updated to %.3f", //NOLINT
       //                 i, data_array[i], q2);
       data_array[i] = q2;
@@ -327,9 +339,11 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
       imu_outlier_counter_[i] = 0;
     }
   }
-  log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
-    imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
-  log_.INFO("NAV", "Number of outliers: %d", nOutlierImus);
+  if (counter_ % 1000 == 0) {
+    log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
+      imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
+    log_.INFO("NAV", "Number of outliers: %d", nOutlierImus);
+  }
 }
 
 void Navigation::updateData()
@@ -378,5 +392,4 @@ void Navigation::initTimestamps()
   // (should be zero counters and corresponding timestamp)
   prev_keyence_readings_ = data_.getSensorsKeyenceData();
 }
-
 }}  // namespace hyped::navigation
