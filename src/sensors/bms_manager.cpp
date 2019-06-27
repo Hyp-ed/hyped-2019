@@ -28,9 +28,6 @@
 #include "sensors/fake_batteries.hpp"
 #include "utils/config.hpp"
 
-constexpr int kIMD = 74;
-constexpr int kGreen = 75;
-
 namespace hyped {
 namespace sensors {
 
@@ -42,7 +39,6 @@ BmsManager::BmsManager(Logger& log)
       lp_ssr_(sys_.config->sensors.LPSSR),
       pin_imd_ {46, 63, 33, 88, 11, 80},
       pin_led_ {76, 77}
-
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
 

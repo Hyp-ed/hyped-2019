@@ -50,6 +50,10 @@ class BmsManager: public ManagerInterface  {
  private:
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
+  /**
+   * @brief needs to be references because run() passes directly to data struct
+   */
+  data::Data&     data_;
 
   /**
    * @brief HPSSR held high in nominal states, cleared when module failure or pod emergency state
@@ -61,6 +65,16 @@ class BmsManager: public ManagerInterface  {
    * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared
    */
   GPIO* kill_lp_;
+
+  /**
+   * @brief GPIO pin for HPSSR, init at construction from config file
+   */
+  uint8_t hp_ssr_;
+
+  /**
+   * @brief GPIO pin for LPSSR, init at construction from config file
+   */
+  uint8_t lp_ssr_;
 
   /**
    * @brief insulation monitoring device held high if possible battery short
@@ -82,21 +96,6 @@ class BmsManager: public ManagerInterface  {
    * @brief GPIO pins for green LEDs
    */
   uint8_t pin_led_[kNumLED];
-
-  /**
-   * @brief GPIO pin for HPSSR, init at construction from config file
-   */
-  uint8_t hp_ssr_;
-
-  /**
-   * @brief GPIO pin for LPSSR, init at construction from config file
-   */
-  uint8_t lp_ssr_;
-
-  /**
-   * @brief needs to be references because run() passes directly to data struct
-   */
-  data::Data&     data_;
 
   /**
    * @brief holds LP BatteryData, HP BatteryData, and module_status
