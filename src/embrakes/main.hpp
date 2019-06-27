@@ -56,6 +56,10 @@ class Main : public Thread
     data::StateMachine     sm_data_;
     data::EmergencyBrakes  em_brakes_;
     data::Telemetry        tlm_data_;
+    Stepper*               brake_1;
+    Stepper*               brake_2;
+    Stepper*               brake_3;
+    Stepper*               brake_4;
 };
 
 }}

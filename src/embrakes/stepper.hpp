@@ -94,6 +94,8 @@ class Stepper :public CanProccesor {
     uint8_t               stepper_position_LSB;
     uint8_t               stepper_position_MSB;
     uint8_t               stepper_period;
+    uint8_t               isEnabled;
+    uint8_t               isHome;
 
 };
 

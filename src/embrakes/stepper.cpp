@@ -34,7 +34,9 @@ can_.start();
 
 stepper_position_LSB = 0x0;
 stepper_position_MSB = 0x0;
-stepper_period = 0xA;
+stepper_period       = 0x28;
+isEnabled            = 0x0; // is true (or set to anything above 0) if brakes to be retracted
+isHome               = 0x0; // is true (equal to 1) if button is pressed (if brakes are retracted)
 
 message_to_send.id       = kSdoReceive + node_id_;
 message_to_send.extended = false;
@@ -51,14 +53,15 @@ void Stepper::ProcessNewData(Frame &message)
   uint32_t id = message.id;
   if(id == kSdoTransmit + node_id_) {
     uint8_t isEnabled = message.data[0];
-    uint16_t stepper_position = (message.data[2] << 8)| message.data[1];
+    uint8_t stepper_position_LSB = message.data[1];
+    uint8_t stepper_position_MSB = message.data[2];
     uint8_t isHome = message.data[3];
     uint16_t current_average = (message.data[5] << 8)| message.data[4];
     uint8_t can_id = message.data[6];
 
     checkHome(isHome);
     
-  } else{
+  } else {
     log_.ERR("Brakes", "Stepper %d: CAN message not recognised", node_id_);
   }
 }
@@ -82,14 +85,17 @@ void Stepper::checkHome(uint8_t button)
     data_.setEmergencyBrakesData(em_brakes_data_);
   } else if(!button && em_brakes_data_.brakes_retracted[brk_id]){
     em_brakes_data_.brakes_retracted[brk_id] = false;
+    data_.setEmergencyBrakesData(em_brakes_data_);
   }
 }
 
 void Stepper::sendRetract(){
   log_.INFO("Brakes", "Sending a retract message");
   message_to_send.data[0] = 0x1;
-  message_to_send.data[4] = stepper_period;
-// what would the target position be?? can we just hard code it based on experimentation
+  message_to_send.data[3] = stepper_period;
+  message_to_send.data[2] = 0x7d;
+  message_to_send.data[1] = 0x0;
+
   can_.send(message_to_send);
   
 }
@@ -97,8 +103,10 @@ void Stepper::sendRetract(){
 void Stepper::sendClamp(){
   log_.INFO("Brakes", "Calmping the brakes");
   message_to_send.data[0] = 0x0;
-  message_to_send.data[4] = stepper_period;
-// what would the target position be? do we need to specify it at all
+  message_to_send.data[3] = stepper_period;
+  message_to_send.data[2] = stepper_position_MSB;
+  message_to_send.data[1] = stepper_position_LSB;
+
   can_.send(message_to_send);
 }
 

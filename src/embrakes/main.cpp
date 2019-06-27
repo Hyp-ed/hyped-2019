@@ -1,6 +1,5 @@
 /*
 * Author: Kornelija Sukyte
-
 * Organisation: HYPED
 * Date:
 * Description: Entrypoint class to the embrake module, started in it's own thread.
@@ -28,7 +27,12 @@ Main::Main(uint8_t id, Logger &log)
   : Thread(id, log),
     log_(log),
     data_(data::Data::getInstance())
-{}
+{
+  brake_1 = new Stepper(log_, 20);
+  brake_2 = new Stepper(log_, 21);
+  brake_3 = new Stepper(log_, 22);
+  brake_4 = new Stepper(log_, 23);
+}
 
 void Main::run() {
   log_.INFO("Brakes", "Thread started");
@@ -43,26 +47,48 @@ void Main::run() {
     
     switch (sm_data_.current_state) {
       case data::State::kIdle:
-        if(tlm_data_.nominal_braking_command) {
-          // retract brakes
-        } else{
-          // clamp brakes
+        if(tlm_data_.nominal_braking_command && !em_brakes_.brakes_retracted[0] &&
+          !em_brakes_.brakes_retracted[1] && !em_brakes_.brakes_retracted[2] &&
+          !em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
+
+        } else if(!tlm_data_.nominal_braking_command && em_brakes_.brakes_retracted[0] &&
+          em_brakes_.brakes_retracted[1] && em_brakes_.brakes_retracted[2] &&
+          em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendClamp();
+          brake_2->sendClamp();
+          brake_3->sendClamp();
+          brake_4->sendClamp();
+
         }
         break;
       case data::State::kCalibrating:
-
-        // TODO(Kornelija): calibrate brakes by retracting them
-
+        if(!em_brakes_.brakes_retracted[0] && !em_brakes_.brakes_retracted[1] &&
+        !em_brakes_.brakes_retracted[2] && !em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
+        }
         em_brakes_.module_status = ModuleStatus::kReady;
         data_.setEmergencyBrakesData(em_brakes_);
         break;
       case data::State::kNominalBraking:
-
-        // TODO(Kornelija): engage brakes
-
+        if(em_brakes_.brakes_retracted[0] && em_brakes_.brakes_retracted[1] &&
+        em_brakes_.brakes_retracted[2] && em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendClamp();
+          brake_2->sendClamp();
+          brake_3->sendClamp();
+          brake_4->sendClamp();
+        }
         log_.INFO("Brakes", "Starting Nominal Braking");
-
-        // TODO(Kornelija): check whether button pressed before changing booleans in data structure
         break;
       case data::State::kEmergencyBraking:
 
@@ -70,7 +96,7 @@ void Main::run() {
 
         log_.INFO("Brakes", "Starting Emergency Braking");
 
-        // TODO(Kornelija): check whether button pressed before changing booleans in data structure
+        // TODO(Kornelija): checkHome
         break;
       case data::State::kExiting:
 
@@ -78,9 +104,25 @@ void Main::run() {
 
         break;
       case data::State::kFinished:
+        if(tlm_data_.nominal_braking_command && !em_brakes_.brakes_retracted[0] &&
+          !em_brakes_.brakes_retracted[1] && !em_brakes_.brakes_retracted[2] &&
+          !em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
 
-        // ??? make sure brakes are retracted so the pod can slide off the rail???
+        } else if(!tlm_data_.nominal_braking_command && em_brakes_.brakes_retracted[0] &&
+          em_brakes_.brakes_retracted[1] && em_brakes_.brakes_retracted[2] &&
+          em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendClamp();
+          brake_2->sendClamp();
+          brake_3->sendClamp();
+          brake_4->sendClamp();
 
+        }
         break;
       default:
         break;
@@ -88,5 +130,5 @@ void Main::run() {
   }
   log_.INFO("Brakes", "Thread shutting down");
 }
-
-}} // hyped::motor_control
+}  // namespace embrakes
+}  // namespace hyped

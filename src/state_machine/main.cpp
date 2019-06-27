@@ -258,8 +258,8 @@ bool Main::checkFinish()
 bool Main::checkAtRest()
 {
   if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1 &&
-      emergency_brakes_data_.brakes_retracted[0] && emergency_brakes_data_.brakes_retracted[1] &&
-      emergency_brakes_data_.brakes_retracted[2] && emergency_brakes_data_.brakes_retracted[3]) {
+      !emergency_brakes_data_.brakes_retracted[0] && !emergency_brakes_data_.brakes_retracted[1] &&
+      !emergency_brakes_data_.brakes_retracted[2] && !emergency_brakes_data_.brakes_retracted[3]) {
     log_.INFO("STATE", "RPM reached zero.");
     hypedMachine.handleEvent(kAtRest);
     return true;
