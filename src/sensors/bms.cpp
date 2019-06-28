@@ -213,7 +213,7 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 
   // HPBMS
   if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
-  
+
   // Thermistor expansion module
   if (id == 0x1839F380) return true;
   return false;
@@ -221,6 +221,19 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
+  // thermistor expansion module first to get high_voltage_cell
+  if (message.id == 0x1839F380) {
+    local_temp_data_.low_temperature     = message.data[1];
+    local_temp_data_.high_temperature    = message.data[2];
+    local_temp_data_.average_temperature = message.data[3];
+    local_data_.temperature = message.data[3];   // main data struct
+  }
+  log_.DBG1("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
+    local_temp_data_.high_temperature,
+    local_temp_data_.average_temperature,
+    local_temp_data_.low_temperature);
+
+  // TODO(Greg, Iain): config main BMSHP message
   // message format is expected to look like this:
   // [ voltageH , volageL  , currentH   , currentL,
   //  charge   , HighTemp , AverageTemp, state, lowVoltageCellH,
@@ -229,29 +242,17 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.voltage     = (message.data[0] << 8) | message.data[1];
     local_data_.current     = (message.data[2] << 8) | message.data[3];
     local_data_.charge      = message.data[4] * 0.5;    // data needs scaling
-    local_data_.temperature = message.data[5];
+    // local_data_.temperature = message.data[5];
     local_data_.low_voltage_cell  = ((message.data[6] << 8) | message.data[7])/10;
     last_update_time_ = utils::Timer::getTimeMicros();
   } else {
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/10;
   }
 
-  log_.DBG1("BMSHP", "received data Volt,Curr,Char,Temp %u,%u,%u,%d",
+  log_.DBG1("BMSHP", "received data Volt,Curr,Char, %u,%u,%u",
     local_data_.voltage,
     local_data_.current,
-    local_data_.charge,
-    local_data_.temperature);
-
-  // thermistor expansion module
-  if (message.id == 0x1839F380) {   // TODO(Greg, Iain): change can_id
-    local_temp_data_.low_temperature     = message.data[1];
-    local_temp_data_.high_temperature    = message.data[2];
-    local_temp_data_.average_temperature = message.data[3];
-  }
-  log_.DBG1("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d", 
-    local_temp_data_.low_temperature,
-    local_temp_data_.high_temperature,
-    local_temp_data_.average_temperature);
+    local_data_.charge);
 }
 
 
