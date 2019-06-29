@@ -20,7 +20,6 @@ SRCS := \
   propulsion/fake_controller.cpp \
   propulsion/controller.cpp \
   propulsion/file_reader.cpp \
-  propulsion/calculate_RPM.cpp \
   propulsion/RPM_regulator.cpp \
   sensors/fake_imu.cpp \
   sensors/fake_gpio_counter.cpp \
