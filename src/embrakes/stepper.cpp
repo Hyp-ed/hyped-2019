@@ -48,7 +48,7 @@ void Stepper::registerStepper()
   can_.registerProcessor(this);
 }
 
-void Stepper::ProcessNewData(Frame &message)
+void Stepper::processNewData(utils::io::can::Frame &message)
 {
   uint32_t id = message.id;
   if(id == kSdoTransmit + node_id_) {

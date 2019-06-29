@@ -59,7 +59,7 @@ class Stepper :public CanProccesor {
   /**
      * @brief { This function processes incoming CAN messages }
      */
-  void processNewData(Frame &message) override;
+  void processNewData(utils::io::can::Frame &message) override;
 
   /**
      * @brief { Returns true if the CAN message is ment for this CAN node }
