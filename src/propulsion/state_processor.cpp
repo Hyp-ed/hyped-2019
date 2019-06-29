@@ -27,6 +27,7 @@ namespace motor_control
 StateProcessor::StateProcessor(int motorAmount, Logger &log)
   : log_(log),
   sys_(System::getSystem()),
+  data_(Data::getInstance()),
   motorAmount(motorAmount),
   initialized(false),
   criticalError(false),
@@ -129,7 +130,7 @@ void StateProcessor::accelerate()
       velocity = navigationData.velocity;
 
       int32_t act_rpm = calcAverageRPM(controllers);
-      int32_t act_current = calcMaxCurrent(controllers);
+      int32_t act_current = calcMaxCurrent();
       int32_t act_temp = calcMaxTemp(controllers);
 
       int32_t rpm = regulator.calculateRPM(velocity, act_rpm, act_current, act_temp);
@@ -153,12 +154,12 @@ int32_t StateProcessor::calcAverageRPM(ControllerInterface** controllers)
   return std::round(total/motorAmount);
 }
 
-int32_t StateProcessor::calcMaxCurrent(ControllerInterface** controllers)
+int16_t StateProcessor::calcMaxCurrent()
 {
-  int32_t max_current = 0;
-  for (int i = 0; i < motorAmount; i++) {
-    controllers[i]->updateMotorCurrent();
-    int32_t current = controllers[i]->getMotorCurrent();
+  Batteries hp_packs = data_.getBatteriesData();
+  int16_t max_current = 0;
+  for (int i = 0; i < hp_packs.kNumHPBatteries; i++) {
+    int16_t current = hp_packs.high_power_batteries[i].current;
     if (max_current < current) {
       max_current = current;
     }

@@ -41,6 +41,7 @@ namespace motor_control
 
 using utils::Logger;
 using utils::System;
+using data::Batteries;
 using utils::Timer;
 using data::Navigation;
 using data::Data;
@@ -128,7 +129,7 @@ class StateProcessor : public StateProcessorInterface
      * @param controllers
      * @return int32_t
      */
-    int32_t calcMaxCurrent(ControllerInterface** controllers);
+    int16_t calcMaxCurrent();
 
     /**
      * @brief Calculate the max temperature out of all the motors
@@ -141,6 +142,7 @@ class StateProcessor : public StateProcessorInterface
     bool useFakeController;
     Logger &log_;
     System &sys_;
+    Data   &data_;
     int motorAmount;
     bool initialized;
     bool criticalError;
