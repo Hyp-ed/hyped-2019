@@ -22,6 +22,10 @@
 #ifndef PROPULSION_RPM_REGULATOR_HPP_
 #define PROPULSION_RPM_REGULATOR_HPP_
 
+#define MAX_RPM 7000  // todo(Iain): update for actual run
+#define MAX_TEMP 100  // todo(Iain): find out actual value.
+#define MAX_CURRENT 30  // todo(Iain): replace this with an actual function.
+
 #include <cstdlib>
 #include <vector>
 #include "utils/system.hpp"
@@ -93,13 +97,6 @@ class RPM_Regulator {
   Logger& log_;
   int32_t current_index;
   bool failure;
-  vector<int32_t> optimal_current;
-
-  const char* CURRENT_FP = "data/in/optimal_current.txt";
-  const int32_t MAX_RPM = 7000;
-  const int32_t MAX_TEMP = 100;  // todo(Iain): find out actual value.
-  const int32_t kmargin = 500;
-  // const int32_t RPM_MARGIN = 5;
 };
 
 }}  // namespace hyped::motor_control

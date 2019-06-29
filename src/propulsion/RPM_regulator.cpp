@@ -31,38 +31,33 @@ RPM_Regulator::RPM_Regulator(Logger& log)
     current_index(0),
     failure(false)
 {
-  readFile(&optimal_current, CURRENT_FP);
 }
 
-void RPM_Regulator::readFile(vector<int32_t>* values, const char* filepath)
-{
-  FILE* fp;
-  fp = fopen(filepath, "r");
+// void RPM_Regulator::readFile(vector<int32_t>* values, const char* filepath)
+// {
+//   FILE* fp;
+//   fp = fopen(filepath, "r");
 
-  if (fp == NULL) {
-    log_.ERR("MOTOR", "Unable to open: %s", filepath);
-    failure = true;
-  } else {
-    char line[255];
-    while (fgets(line, static_cast<int>(sizeof(line)/sizeof(line[0])), fp)) {
-      values->push_back(static_cast<int32_t>(std::atoi(line)));
-    }
-  }
-}
+//   if (fp == NULL) {
+//     log_.ERR("MOTOR", "Unable to open: %s", filepath);
+//     failure = true;
+//   } else {
+//     char line[255];
+//     while (fgets(line, static_cast<int>(sizeof(line)/sizeof(line[0])), fp)) {
+//       values->push_back(static_cast<int32_t>(std::atoi(line)));
+//     }
+//   }
+// }
 
 int32_t RPM_Regulator::calculateRPM(int32_t act_velocity, int32_t act_rpm,
                                     int32_t act_current, int32_t act_temp)
 {
-  int32_t opt_current = optimal_current.at(current_index);
   int32_t opt_rpm = calculateOptimalRPM(act_velocity);
-  if ( (act_current >= (opt_current - kmargin)) && (act_current <= (opt_current + kmargin)) ) {
-        current_index++;  // todo(Iain): find a better way to do this
-  }
-  if (act_current < opt_current &&
+  if (act_current < MAX_CURRENT &&
       act_temp < MAX_TEMP &&
       act_rpm < opt_rpm) {
     return act_rpm + step(opt_rpm, true);
-  } else if (act_current > opt_current ||
+  } else if (act_current > MAX_CURRENT ||
              act_temp > MAX_TEMP ||
              act_rpm > opt_rpm) {
     return act_rpm - step(opt_rpm, false);
