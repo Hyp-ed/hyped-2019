@@ -36,16 +36,20 @@ int main(int argc, char** argv) {
   controller.configure();
   controller.enterOperational();
 
-  int8_t vel;
+  int8_t vel = 0;
+  // Thread::sleep(1000);
+  // controller.sendTargetVelocity(10);
 
-  while(1) {
-  vel = readVel("data/in/target_velocity_test.txt");
+  // Thread::sleep(100000);
 
-  controller.sendTargetVelocity(vel);
-  Thread::sleep(1000);
-  }
+  // while(1) {
+  // vel = readVel("data/in/target_velocity_test.txt");
+
+  // controller.sendTargetVelocity(vel);
+  // Thread::sleep(1000);
+  // }
   
-  // controller.autoAlignMotorPosition();
+  controller.autoAlignMotorPosition();
 
   // controller.sendTargetVelocity(50);
 
