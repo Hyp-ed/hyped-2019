@@ -28,21 +28,23 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "data/data.hpp"
-#include "data/data_point.hpp"
 #include "sensors/fake_imu.hpp"
+#include "data/data_point.hpp"
 #include "utils/timer.hpp"
 #include "utils/math/statistics.hpp"
 
-
 namespace hyped {
+
 using utils::math::OnlineStatistics;
+
 namespace sensors {
 
 FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
                 std::string acc_file_path,
                 std::string dec_file_path,
                 std::string em_file_path,
+                bool is_fail_acc,
+                bool is_fail_dec,
                 float noise)
     : log_(log),
       acc_noise_(1),
@@ -53,6 +55,11 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
       acc_started_(false),
       dec_started_(false),
       em_started_(false),
+      is_fail_acc_(is_fail_acc),
+      is_fail_dec_(is_fail_dec),
+      failure_happened_(false),
+      failure_time_acc_(0),
+      failure_time_dec_(0),
       noise_(noise),
       data_(data::Data::getInstance())
 {
@@ -61,8 +68,18 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
   acc[1] = 0.0;
   acc[2] = 9.8;
   acc_val_ = acc;
+
+  acc_fail_[0] = -37.3942;
+  acc_fail_[1] = 0;
+  acc_fail_[2] = 9.8;
   readDataFromFile(acc_file_path_, dec_file_path_, em_file_path_);
-  log_.INFO("Fake-IMU", "Fake IMU initialised");
+  if (is_fail_acc_) {
+    log_.INFO("Fake-IMU", "Fake IMU Fail_Acc initialised");
+  } else if (is_fail_dec_) {
+    log_.INFO("Fake-IMU", "Fake IMU Fail_Dec initialised");
+  } else {
+    log_.INFO("Fake-IMU", "Fake IMU initialised");
+  }
 }
 
 void FakeImuFromFile::startCal()
@@ -89,15 +106,44 @@ void FakeImuFromFile::startEm()
   acc_count_ =  0;
 }
 
+void FakeImuFromFile::setFailure(data::State& state)
+{
+  // Random point of failure after acc from 0 to 20 seconds
+  if (state == data::State::kAccelerating && is_fail_acc_) {
+    // Generate a random time for a failure
+    failure_time_acc_ = (rand() % 20 + 1) * 1000000;
+  }
+  // Random point of failure after dec from 0 to 10 seconds
+  if (state == data::State::kNominalBraking && is_fail_dec_) {
+    // Generate a random time for a failure
+    failure_time_dec_ = (rand() % 10 + 1) * 1000000;
+  }
+}
+
 void FakeImuFromFile::getData(ImuData* imu)
 {
   data::State state = data_.getStateMachineData().current_state;
   bool operational = true;
 
+  if (failure_time_acc_ == 0 || failure_time_dec_ == 0) {
+    setFailure(state);
+  }
+
+  // Random point of failure after acc from 0 to 20 seconds
+  if (state == data::State::kAccelerating && is_fail_acc_) {
+    // Generate a random time for a failure
+    failure_time_acc_ = (rand() % 20 + 1) * 1000000;
+  }
+  // Random point of failure after dec from 0 to 10 seconds
+  if (state == data::State::kNominalBraking && is_fail_dec_) {
+    // Generate a random time for a failure
+    failure_time_dec_ = (rand() % 10 + 1) * 1000000;
+  }
+
   if (state == data::State::kCalibrating) {
     // start cal
     if (!cal_started_) {
-      log_.INFO("Fake-IMUs", "Start calibrating ...");
+      log_.INFO("Fake-IMU", "Start calibrating ...");
       cal_started_ = true;
       startCal();
     }
@@ -111,7 +157,7 @@ void FakeImuFromFile::getData(ImuData* imu)
   } else if (state == data::State::kAccelerating) {
     // start acc
     if (!acc_started_) {
-      log_.INFO("Fake-IMUs", "Start accelerating ...");
+      log_.INFO("Fake-IMU", "Start accelerating ...");
       acc_started_ = true;
       startAcc();
     }
@@ -126,11 +172,18 @@ void FakeImuFromFile::getData(ImuData* imu)
         prev_acc_ = acc_val_read_[acc_count_];
         operational = acc_val_operational_[acc_count_];
       }
+      if (is_fail_acc_) {
+        if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_acc_ || failure_happened_) { // NOLINT [whitespace/line_length]
+          prev_acc_ = acc_fail_;
+          operational = false;
+          failure_happened_ = true;
+        }
+      }
     }
 
   } else if (state == data::State::kNominalBraking) {
     if (!dec_started_) {
-      log_.INFO("Fake-IMUs", "Start decelerating...");
+      log_.INFO("Fake-IMU", "Start decelerating...");
       dec_started_ = true;
       startDec();
     }
@@ -145,11 +198,18 @@ void FakeImuFromFile::getData(ImuData* imu)
         prev_acc_ = dec_val_read_[acc_count_];
         operational = dec_val_operational_[acc_count_];
       }
+      if (is_fail_dec_) {
+        if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_dec_ || failure_happened_) { // NOLINT [whitespace/line_length]
+          prev_acc_ = acc_fail_;
+          operational = false;
+          failure_happened_ = true;
+        }
+      }
     }
 
   } else if (state == data::State::kEmergencyBraking) {
     if (!em_started_) {
-      log_.INFO("Fake-IMUs", "Start emergency breaking...");
+      log_.INFO("Fake-IMU", "Start emergency breaking...");
       em_started_ = true;
       startEm();
     }
@@ -226,6 +286,7 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
       std::stringstream input(line);
       input >> temp_time;
 
+      // checks whether timestamp format matches refresh rate
       if (temp_time != timestamp*counter) {
         log_.ERR("Fake-IMU", "Timestamp format invalid %d", temp_time);
       }
@@ -235,8 +296,7 @@ void FakeImuFromFile::readDataFromFile(std::string acc_file_path,
       value[2] = 9.8;
 
       val_read->push_back(addNoiseToData(value, noise_));
-      // TODO(jack): Add random point of failure in run for now everything works
-      bool_read->push_back(1);
+      bool_read->push_back(1);      // always true
 
       counter++;
     }

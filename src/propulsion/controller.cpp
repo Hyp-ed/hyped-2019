@@ -47,7 +47,7 @@ Controller::Controller(Logger& log, uint8_t id)
   nmt_message_.len        = 2;
 
   // Initialse arrays of message data:
-  FileReader::readFileData(configMsgs_, 20, kConfigMsgFile);
+  FileReader::readFileData(configMsgs_, 24, kConfigMsgFile);
   FileReader::readFileData(enterOpMsgs_, 4, kEnterOpMsgFile);
   FileReader::readFileData(enterPreOpMsg_, 1,  kEnterPreOpMsgFile);
   FileReader::readFileData(checkStateMsg_, 1, kCheckStateMsgFile);
@@ -87,7 +87,7 @@ void Controller::registerController()
 void Controller::configure()
 {
   log_.INFO("MOTOR", "Controller %d: Configuring...", node_id_);
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 24; i++) {
     if (sendControllerMessage(configMsgs_[i])) return;
     Thread::sleep(100);
   }

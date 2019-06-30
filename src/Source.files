@@ -25,13 +25,13 @@ SRCS := \
   sensors/fake_gpio_counter.cpp \
   sensors/fake_batteries.cpp \
   sensors/fake_temperature.cpp \
+  sensors/bms.cpp \
   sensors/imu.cpp \
   sensors/gpio_counter.cpp \
+  sensors/temperature.cpp \
+  sensors/bms_manager.cpp \
   sensors/imu_manager.cpp \
   sensors/main.cpp \
-  sensors/bms.cpp \
-  sensors/bms_manager.cpp \
-  sensors/temperature.cpp \
   state_machine/main.cpp \
   state_machine/hyped-machine.cpp \
   state_machine/states.cpp \

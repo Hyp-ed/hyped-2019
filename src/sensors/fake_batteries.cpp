@@ -18,12 +18,9 @@
  *    limitations under the License.
  */
 
-#include "sensors/fake_batteries.hpp"
-
 #include <stdlib.h>
 
-#include "utils/timer.hpp"
-#include "data/data.hpp"
+#include "sensors/fake_batteries.hpp"
 #include "utils/timer.hpp"
 
 namespace hyped {
@@ -51,7 +48,11 @@ FakeBatteries::FakeBatteries(Logger& log, bool is_lp, bool is_fail)
     case_index_ = 3;
   }
   updateBatteryData();
-  log_.DBG("FakeBatteries", "Fake Battery initialised");
+  if (is_fail_) {
+    log_.INFO("Fake-Batteries", "Fake Battery Fail initialised");
+  } else {
+    log_.INFO("Fake-Batteries", "Fake Battery initialised");
+  }
 }
 
 void FakeBatteries::getData(BatteryData* battery)

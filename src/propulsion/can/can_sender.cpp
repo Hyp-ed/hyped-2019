@@ -16,7 +16,7 @@
  *    limitations under the License.
  */
 
-#include "can_sender.hpp"
+#include "propulsion/can/can_sender.hpp"
 
 namespace hyped
 {

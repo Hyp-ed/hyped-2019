@@ -16,7 +16,7 @@
 *    limitations under the License.
 */
 
-#include "state_processor.hpp"
+#include "propulsion/state_processor.hpp"
 
 namespace hyped
 {
