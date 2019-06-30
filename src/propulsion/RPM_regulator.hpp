@@ -75,7 +75,8 @@ class RPM_Regulator {
    *
    * @param filepath - path to a file containing values
    */
-  void readFile(vector<int32_t>* values, const char* filepath);
+  // Add back if necessary
+  // void readFile(vector<int32_t>* values, const char* filepath);
 
   /**
    * @brief calculates the optimal rpm based off of the current velocity.
