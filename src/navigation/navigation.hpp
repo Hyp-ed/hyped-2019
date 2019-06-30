@@ -199,6 +199,8 @@ namespace navigation {
       NavigationType velocity_uncertainty;
       // Previous acceleration measurement, necessary for uncertainty determination
       NavigationType prev_acc;
+      // Previous velocity measurement
+      NavigationType prev_vel;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity

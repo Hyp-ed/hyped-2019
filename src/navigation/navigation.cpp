@@ -209,7 +209,7 @@ void Navigation::updateUncertainty()
   double delta_t = (distance_.timestamp - prev_timestamp)/1000000.0;
   NavigationType abs_delta_acc = abs(getAcceleration() - prev_acc);
   // Adds uncertainty from the possible shift in both directions in the timestamp
-  velocity_uncertainty += abs_delta_acc*delta_t/2;
+  velocity_uncertainty += abs_delta_acc*delta_t/2.;
   // Adds uncertainty from the variance in acceleration from measurements
   NavigationType acc_variance = 0.0;
   for (int i = 0; i < data::Sensors::kNumImus; i++) {
@@ -223,6 +223,8 @@ void Navigation::updateUncertainty()
   velocity_uncertainty += acc_stdDev*delta_t;
   // Hence uncertainty in distance becomes updated with:
   distance_uncertainty += velocity_uncertainty*delta_t;
+  // Also, distance will be affected by taking the average of two velocities
+  distance_uncertainty += abs(getVelocity() - prev_vel) * delta_t / 2.;
 }
 
 void Navigation::queryKeyence()
@@ -339,11 +341,11 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
       imu_outlier_counter_[i] = 0;
     }
   }
-  if (counter_ % 1000 == 0) {
-    log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
-      imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
-    log_.INFO("NAV", "Number of outliers: %d", nOutlierImus);
-  }
+  // if (counter_ % 1000 == 0) {
+  // log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
+     // imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
+    // log_.INFO("NAV", "Number of outliers: %d", nOutlierImus);
+  // }
 }
 
 void Navigation::updateData()
@@ -359,16 +361,17 @@ void Navigation::updateData()
   data_.setNavigationData(nav_data);
 
   if (counter_ % 1 == 0) {  // kPrintFreq
-    // log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
-    //               counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
-    //               stripe_counter_.value*30.48);
-    // log_.INFO("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
-    //            counter_, velocity_uncertainty, distance_uncertainty, keyence_failure_counter_);
+    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
+               counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
+               stripe_counter_.value*30.48);
+    log_.INFO("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
+               counter_, velocity_uncertainty, distance_uncertainty, keyence_failure_counter_);
   }
   counter_++;
   // Update all prev measurements
   prev_timestamp = distance_.timestamp;
   prev_acc = getAcceleration();
+  prev_vel = getVelocity();
 }
 
 void Navigation::navigate()
