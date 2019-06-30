@@ -8,28 +8,56 @@ using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using hyped::motor_control::Controller;
 
+int8_t readVel(const char* filepath)
+{
+  FILE* fp;
+
+  fp = fopen(filepath, "r");
+
+  int8_t vel = 0;
+
+  if (fp == NULL) {
+  } else {
+    char line[255];
+    fgets(line, 255, fp);
+    vel = std::atoi(line);
+  }
+  fclose(fp);
+  return vel;
+}
+
 int main(int argc, char** argv) {
   System::parseArgs(argc, argv);
   Logger log = System::getLogger();
 
-  Controller controller(log, 2);
+  Controller controller(log, 5);
 
   controller.registerController();
   controller.configure();
   controller.enterOperational();
 
-  int32_t max_velocity = 200;
-  int32_t current_velocity;
-  int32_t target_velocity;
+  int8_t vel = 0;
+  // Thread::sleep(1000);
+  // controller.sendTargetVelocity(10);
 
-  while (controller.getVelocity() < max_velocity) {
-    current_velocity = controller.getVelocity();
-    target_velocity = current_velocity + 100;
-    controller.sendTargetVelocity(target_velocity);
-    log.INFO("MOT-TEST", "Current velocity: %d rpm", current_velocity);
-    Thread::sleep(1000);
-  }
+  // Thread::sleep(100000);
 
-  Thread::sleep(10000);
-  controller.enterPreOperational();
+  // while(1) {
+  // vel = readVel("data/in/target_velocity_test.txt");
+
+  // controller.sendTargetVelocity(vel);
+  // Thread::sleep(1000);
+  // }
+  
+  controller.autoAlignMotorPosition();
+
+  // controller.sendTargetVelocity(50);
+
+  // for (auto i = 0; i < 20; i++) {
+  //   controller.updateActualVelocity();
+  //   auto vel = controller.getVelocity();
+  //   log.INFO("TEST", "Actual velocity: %d rpm", vel);
+  //   Thread::sleep(1000);
+  // }
+  // controller.enterPreOperational();
 }
