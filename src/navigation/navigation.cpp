@@ -209,8 +209,8 @@ void Navigation::queryImus()
   uint32_t t = sensor_readings_.timestamp;
   // process raw values
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    if (!imu_reliable[i]) acc_raw[i] = 0;
-    else {
+    if (!imu_reliable[i]) { acc_raw[i] = 0;
+    } else {
       NavigationVector a = sensor_readings_.value[i].acc - gravity_calibration_[i];
       acc_raw[i] = accNorm(a) * (1 - 2 * (a[axis_] < 0));
     }
