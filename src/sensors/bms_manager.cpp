@@ -113,8 +113,8 @@ void BmsManager::run()
     // iterate through imd_ and set LEDs
     for (GPIO* pin : imd_) {
       uint8_t val = pin->read();     // will check every cycle of run()
-      if (val == 1) {
-        for (int i =0; i < kNumLED; i++) {
+      if (val) {
+        for (int i = 0; i < kNumLED; i++) {
           green_led_[i]->clear();
           log_.ERR("BMS-MANAGER", "IMD short! Green LED %d cleared", i);
         }
