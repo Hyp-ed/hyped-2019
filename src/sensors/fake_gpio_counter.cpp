@@ -27,30 +27,24 @@
 
 #include "sensors/fake_gpio_counter.hpp"
 #include "utils/timer.hpp"
-#include "data/data.hpp"
-#include "utils/concurrent/thread.hpp"
 
 uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
 double kStripeDistance = 30.48;     // metres
-uint64_t kCheckTime = 358588;
-
+uint64_t kMaxTime = 1500;     // between stripe readings before throw failure (micros)
 
 namespace hyped {
 
 using data::StripeCounter;
-using utils::concurrent::Thread;
 using utils::Logger;
 
 namespace sensors {
 
-FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stripe)
+FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
     : log_(log),
     data_(Data::getInstance()),
     start_time_(0),
-    check_time_(kCheckTime),
     miss_stripe_(miss_stripe),
-    double_stripe_(double_stripe),
     is_from_file_(false),
     acc_ref_init_(false)
 {
@@ -59,13 +53,11 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe, bool double_stri
 }
 
 FakeGpioCounter::FakeGpioCounter(Logger& log,
-  bool miss_stripe, bool double_stripe, std::string file_path)
+  bool miss_stripe, std::string file_path)
     : log_(log),
     data_(Data::getInstance()),
     start_time_(0),
-    check_time_(kCheckTime),
     miss_stripe_(miss_stripe),
-    double_stripe_(double_stripe),
     file_path_(file_path),
     is_from_file_(true),
     acc_ref_init_(false)
@@ -74,6 +66,11 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
   stripe_count_.operational = true;
   stripe_count_.count.timestamp = 0;
   readFromFile(stripe_data_);           // read text from file into vector class member
+  if (miss_stripe_) {
+    log_.INFO("Fake-GpioCounter", "Fake Keyence Fail initialised");
+  } else {
+    log_.INFO("Fake-GpioCounter", "Fake Keyence initialised");
+  }
 }
 
 StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect stripe count
@@ -90,14 +87,14 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
     for (StripeCounter stripe : stripe_data_) {
       if (stripe.count.timestamp < time_now_micro) {
         stripe_count_.count.value = stripe.count.value;
-        stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+        stripe_count_.count.timestamp = stripe.count.timestamp;   // use timestamps from file
       } else {
         break;
       }
     }
     checkData();
   } else {
-    data::Navigation nav   = data_.getNavigationData();
+    data::Navigation nav   = data_.getNavigationData();     // throw failure from fake_imu
     uint32_t current_count = stripe_count_.count.value;
 
     uint16_t nav_count = std::floor(nav.distance/kStripeDistance);      // cast floor int;
@@ -107,21 +104,17 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
       stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
     }
   }
-
   return stripe_count_;
 }
 
-// TODO(Jack): Need to implement stripe missing or counting 2 stripes
 void FakeGpioCounter::checkData()
 {
-  // let pod wait at first...then start comparing data
-  if (((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) > 8000) {
-    if (miss_stripe_) {
-      log_.INFO("fake_gpio_counter", "missed stripe, changing now");
-      stripe_count_.count.value++;
-    } else if (double_stripe_) {
-      log_.INFO("fake_gpio_counter", "double stripe count, changing now");
-      stripe_count_.count.value--;
+  if (is_from_file_) {
+    uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
+    log_.DBG1("Fake-GpioCounter", "time_after: %d", time_after);
+    if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
+      log_.INFO("Fake-GpioCounter", "missed stripe!");
+      stripe_count_.operational = false;
     }
   }
 }
@@ -140,7 +133,7 @@ void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
         stripe_data_.push_back(this_line);
       }
     } else {
-      log_.ERR("fake_gpio_counter", "cannot open file");
+      log_.ERR("Fake-GpioCounter", "cannot open file");
     }
     data_file.close();
   }

@@ -19,8 +19,10 @@
  */
 
 #include <stdio.h>
-#include "utils/io/adc.hpp"
+
 #include "sensors/temperature.hpp"
+#include "utils/io/adc.hpp"
+
 namespace hyped {
 
 using data::Data;

@@ -111,7 +111,7 @@ void GPIO::initialise()
 
   fd = open("/dev/mem", O_RDWR);
   if (fd < 0) {
-    log.ERR("GPIO", "coultd not open /dev/mem");
+    log.ERR("GPIO", "could not open /dev/mem");
     return;
   }
 

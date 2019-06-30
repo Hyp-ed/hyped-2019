@@ -12,3 +12,9 @@ Port    9090
 
 > Navigation
 
+> Sensors
+KeyenceL    72
+KeyenceR    74
+Thermistor  3
+HPSSR       70
+LPSSR       71

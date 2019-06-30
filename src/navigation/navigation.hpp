@@ -51,11 +51,11 @@ namespace navigation {
     public:
       typedef std::array<ImuData, data::Sensors::kNumImus>            ImuDataArray;
       typedef DataPoint<ImuDataArray>                                 ImuDataPointArray;
+      typedef std::array<NavigationVector, data::Sensors::kNumImus>   NavigationVectorArray;
       typedef std::array<NavigationType, data::Sensors::kNumImus>     NavigationArray;
       typedef std::array<NavigationType, data::Sensors::kNumImus - 1> NavigationArrayOneFaulty;
       typedef std::array<KalmanFilter, data::Sensors::kNumImus>       FilterArray;
       typedef array<data::StripeCounter, data::Sensors::kNumKeyence>  KeyenceDataArray;
-
 
       /**
        * @brief Construct a new Navigation object
@@ -106,7 +106,7 @@ namespace navigation {
        *
        * @return NavitationArray recorded gravitational acceleration [m/s^2]
        */
-      NavigationArray getGravityCalibration() const;
+      NavigationVectorArray getGravityCalibration() const;
       /**
        * @brief Determine the value of gravitational acceleration measured by sensors at rest
        */
@@ -187,7 +187,7 @@ namespace navigation {
       DataPoint<NavigationType> acceleration_;
       DataPoint<NavigationType> velocity_;
       DataPoint<NavigationType> distance_;
-      NavigationArray gravity_calibration_;
+      NavigationVectorArray gravity_calibration_;
 
       // Initial timestamp (for comparisons)
       uint32_t init_timestamp;
@@ -206,6 +206,10 @@ namespace navigation {
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
       Integrator<NavigationType> velocity_integrator_;      // velocity to distance
 
+      /**
+       * @brief Compute norm of acceleration measurement
+       */
+      NavigationType accNorm(NavigationVector& acc);
       /**
        * @brief Query sensors to determine acceleration, velocity and distance
        */

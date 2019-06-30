@@ -24,12 +24,9 @@
 #include "sensors/bms_manager.hpp"
 
 #include "sensors/bms.hpp"
-#include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "sensors/fake_batteries.hpp"
-
-constexpr int kHPSSR = 70;
-constexpr int kLPSSR = 71;
+#include "utils/config.hpp"
 
 namespace hyped {
 namespace sensors {
@@ -41,23 +38,35 @@ BmsManager::BmsManager(Logger& log)
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
 
-  if (!sys_.fake_batteries) {
+  if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
     // create BMS LP
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
       BMS* bms = new BMS(i, log_);
       bms->start();
       bms_[i] = bms;
     }
+    // create BMS HP
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
     // Set SSR switches for real system
-    kill_hp_ = new GPIO(kHPSSR, utils::io::gpio::kOut);
-    kill_lp_ = new GPIO(kLPSSR, utils::io::gpio::kOut);
+    uint8_t HPSSR = sys_.config->sensors.HPSSR;
+    uint8_t LPSSR = sys_.config->sensors.LPSSR;
+
+    kill_hp_ = new GPIO(HPSSR, utils::io::gpio::kOut);
+    kill_lp_ = new GPIO(LPSSR, utils::io::gpio::kOut);
     kill_hp_->set();
-    kill_lp_->set();    // kHPSSR and kLPSSR set low if no power to BBB
-    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", kHPSSR);
-    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", kLPSSR);
+    kill_lp_->set();
+    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", HPSSR);
+    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", LPSSR);
+  } else if (sys_.fake_batteries_fail) {
+    // fake batteries fail here
+    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+      bms_[i] = new FakeBatteries(log_, true, true);
+    }
+    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+      bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log_, false, true);
+    }
   } else {
     // fake batteries here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -94,21 +103,21 @@ void BmsManager::run()
       if (!batteriesInRange()) {
         log_.ERR("BMS-MANAGER", "battery failure detected");
         batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-
-        // set low to kHPSSR if batteries is kCriticalFailure
-        // batteries module status forces kEmergencyBraking, which actuates embrakes
-        kill_hp_->clear();
-        log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+        if (!sys_.fake_batteries) {
+          kill_hp_->clear();
+          log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+        }
       }
     }
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    // set low to kHPSSR if pod in emergency states
     data::State state = data_.getStateMachineData().current_state;
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
-      kill_hp_->clear();
-      log_.INFO("BMS-MANAGER", "Emergency State! HP SSR cleared");
+      if (!sys_.fake_batteries) {
+        kill_hp_->clear();
+        log_.INFO("BMS-MANAGER", "Emergency State! HP SSR cleared");
+      }
     }
     sleep(100);
   }
