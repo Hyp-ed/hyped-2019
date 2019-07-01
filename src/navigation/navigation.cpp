@@ -315,67 +315,94 @@ void Navigation::disableKeyenceUsage()
 // TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
 void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
 {
-  // copy the original array for sorting
-  NavigationArray data_array_copy = data_array;
-  // find the quartiles
-  std::sort(data_array_copy.begin(), data_array_copy.end());
   // Define the quartiles first:
   float q1 = 0;
   float q2 = 0;
   float q3 = 0;
   // The most likely case is that all four IMUs are still reliable:
   if (nOutlierImus_ == 0) {
+    // copy the original array for sorting
+    NavigationArray data_array_copy = data_array;
+    // find the quartiles
+    std::sort(data_array_copy.begin(), data_array_copy.end());
     q1 = (data_array_copy[0]+data_array_copy[1]) / 2.;
     q2 = (data_array_copy[1]+data_array_copy[2]) / 2.;
     q3 = (data_array_copy[2]+data_array_copy[3]) / 2.;
   // The second case is that one IMU is faulty
   } else if (nOutlierImus_ == 1) {
-    // When copying we know there must be one zero value
-    // There is definitely a more efficient way to write this... todo?
+    // select non-outlier values
+    NavigationArrayOneFaulty data_array_faulty;
     if (!imu_reliable_[0]) {
-      q1 = (data_array_copy[1] + data_array_copy[2]) / 2.;
-      q2 =  data_array_copy[2];
-      q3 = (data_array_copy[2] + data_array_copy[3]) / 2.;
+      data_array_faulty = {data_array[1], data_array[2], data_array[3]};
     } else if (!imu_reliable_[1]) {
-      q1 = (data_array_copy[0] + data_array_copy[2]) / 2.;
-      q2 =  data_array_copy[2];
-      q3 = (data_array_copy[2] + data_array_copy[3]) / 2.;
+      data_array_faulty = {data_array[0], data_array[2], data_array[3]};
     } else if (!imu_reliable_[2]) {
-      q1 = (data_array_copy[0] + data_array_copy[1]) / 2.;
-      q2 =  data_array_copy[1];
-      q3 = (data_array_copy[1] + data_array_copy[3]) / 2.;
+      data_array_faulty = {data_array[0], data_array[1], data_array[3]};
     } else if (!imu_reliable_[3]) {
-      q1 = (data_array_copy[0] + data_array_copy[1]) / 2.;
-      q2 =  data_array_copy[1];
-      q3 = (data_array_copy[1] + data_array_copy[2]) / 2.;
+      data_array_faulty = {data_array[0], data_array[1], data_array[2]};
     }
+    std::sort(data_array_faulty.begin(), data_array_faulty.end());
+    q1 = (data_array_faulty[0] + data_array_faulty[1]) / 2.;
+    q2 =  data_array_faulty[1];
+    q3 = (data_array_faulty[1] + data_array_faulty[2]) / 2.;
+  } else if (nOutlierImus_ < 4) {
+    // set all 0.0 IMUs to non-zero avg
+    float sum_non_outliers = 0.0;
+    unsigned int num_non_outliers = 0;
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      if (data_array[i] != 0.0) {
+        // no outlier
+        num_non_outliers += 1;
+        sum_non_outliers += data_array[i];
+      }
+    }
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      data_array[i] = sum_non_outliers / num_non_outliers;
+    }
+    // do not check for further outliers because no reliable detection could be made!
+    return;
   }
   // find the thresholds
   float iqr = q3 - q1;
+  // clip IQR to upper bound to avoid issues with very large outliers
+  if (iqr > kTukeyIQRBound) {
+    iqr = kTukeyIQRBound;
+  }
   float upper_limit = q3 + threshold*iqr;
   float lower_limit = q1 - threshold*iqr;
   // replace any outliers with the median
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     if ((data_array[i] < lower_limit or data_array[i] > upper_limit) && imu_reliable_[i]) {
-      // log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f. Updated to %.3f", //NOLINT
-      //                 i, data_array[i], q2);
+      log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f not in [%.3f, %.3f]. Updated to %.3f", //NOLINT
+                i+1, data_array[i], lower_limit, upper_limit, q2);
+      // log_.INFO("NAV", "Outlier detected with quantiles: %.3f, %.3f, %.3f", q1, q2, q3);
+
       data_array[i] = q2;
       imu_outlier_counter_[i]++;
       // If this counter exceeds some threshold then that IMU is deemed unreliable
       if (imu_outlier_counter_[i] > 1000 && imu_reliable_[i]) {
+        // log_.INFO("NAV", "IMU%d is an outlier!", i + 1);
         imu_reliable_[i] = false;
         nOutlierImus_++;
       }
       if (nOutlierImus_ > 1) status_ = ModuleStatus::kCriticalFailure;
     } else {
       imu_outlier_counter_[i] = 0;
+      if (counter_ % 100 == 0 && imu_reliable_[i]) {
+        /*
+         * log_.INFO("NAV", "No Outlier detected in IMU %d, reading: %.3f in [%.3f, %.3f]",
+         *           i+1, data_array[i], lower_limit, upper_limit);
+         */
+      }
     }
   }
-  // if (counter_ % 1000 == 0) {
-  // log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
-     // imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
-    // log_.INFO("NAV", "Number of outliers: %d", nOutlierImus_);
-  // }
+  /*
+   * if (counter_ % 100 == 0) {
+   *   log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
+   *    imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
+   *   log_.INFO("NAV", "Number of outliers: %d", nOutlierImus_);
+   * }
+   */
 }
 
 void Navigation::updateData()
@@ -390,7 +417,7 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  if (counter_ % 1 == 0) {  // kPrintFreq
+  if (counter_ % 100 == 0) {  // kPrintFreq
     log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                stripe_counter_.value*30.48);

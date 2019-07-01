@@ -142,7 +142,8 @@ namespace navigation {
 
       static constexpr int kPrintFreq = 1;
       static constexpr NavigationType kEmergencyDeceleration = 24;
-      static constexpr float kTukeyThreshold = 0.75;
+      static constexpr float kTukeyThreshold = 1;  // 0.75
+      static constexpr float kTukeyIQRBound = 3;
 
       // System communication
       Logger& log_;
