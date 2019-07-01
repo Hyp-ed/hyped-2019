@@ -126,7 +126,6 @@ class FakeController : public ControllerInterface {
   bool              timer_started_;
   uint64_t          fail_time_;
   uint8_t           motor_temp_;
-  int32_t           motor_current_;
 };
 
 }}  //  namespace hyped::utils
