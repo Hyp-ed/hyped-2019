@@ -108,8 +108,7 @@ struct Batteries : public Module {
 };
 
 struct EmergencyBrakes : public Module {
-  bool front_brakes;       // true if front facing emergency brakes deploy
-  bool rear_brakes;      // true if rear facing emergency brakes deploy
+  bool brakes_retracted[4] = {false};       // true if brakes retract
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -131,12 +130,12 @@ struct Motors : public Module {
 
 struct Telemetry : public Module {
   static constexpr float run_length = 1250;  // m
-  bool calibrate_command;
-  bool launch_command;
-  bool reset_command;
-  bool service_propulsion_go;
-  bool emergency_stop_command;
-  bool nominal_braking_command;
+  bool calibrate_command = false;
+  bool launch_command = false;
+  bool reset_command = false;
+  bool service_propulsion_go = false;
+  bool emergency_stop_command = false;
+  bool nominal_braking_command = false;
 };
 
 // -------------------------------------------------------------------------------------------------

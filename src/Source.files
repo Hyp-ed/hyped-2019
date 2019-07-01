@@ -9,9 +9,7 @@ SRCS := \
   navigation/main_log.cpp \
   navigation/navigation.cpp \
   embrakes/main.cpp \
-  embrakes/retractor_manager.cpp \
-  embrakes/fake_retractor.cpp \
-  embrakes/retractor.cpp \
+  embrakes/stepper.cpp \
   propulsion/can/fake_can_endpoint.cpp \
   propulsion/state_processor.cpp \
   propulsion/main.cpp \

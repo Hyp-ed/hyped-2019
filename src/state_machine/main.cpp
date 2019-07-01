@@ -103,11 +103,11 @@ void Main::run()
 bool Main::checkInitialised()
 {
   // all modules must be initialised
-  if (telemetry_data_.module_status == data::ModuleStatus::kInit &&
-      nav_data_.module_status       == data::ModuleStatus::kInit &&
-      motor_data_.module_status     == data::ModuleStatus::kInit &&
-      sensors_data_.module_status   == data::ModuleStatus::kInit &&
-      batteries_data_.module_status == data::ModuleStatus::kInit &&
+  if (telemetry_data_.module_status == ModuleStatus::kInit &&
+      nav_data_.module_status       == ModuleStatus::kInit &&
+      motor_data_.module_status     == ModuleStatus::kInit &&
+      sensors_data_.module_status   == ModuleStatus::kInit &&
+      batteries_data_.module_status == ModuleStatus::kInit &&
       telemetry_data_.calibrate_command) {
     log_.INFO("STATE", "all modules are initialised and Start Calibrating command was received");
     hypedMachine.handleEvent(kInitialised);
@@ -121,9 +121,9 @@ bool Main::checkInitialised()
 bool Main::checkSystemsChecked()
 {
   // nav and motors must be ready
-  if (nav_data_.module_status   == data::ModuleStatus::kReady &&
-      motor_data_.module_status == data::ModuleStatus::kReady &&
-      emergency_brakes_data_.module_status == data::ModuleStatus::kReady) {
+  if (nav_data_.module_status   == ModuleStatus::kReady &&
+      motor_data_.module_status == ModuleStatus::kReady &&
+      emergency_brakes_data_.module_status == ModuleStatus::kReady) {
     log_.INFO("STATE", "systems ready");
     hypedMachine.handleEvent(kSystemsChecked);
     return true;
@@ -159,7 +159,7 @@ bool Main::checkOnStart()
 
 bool Main::checkTelemetryCriticalFailure()
 {
-  if (telemetry_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+  if (telemetry_data_.module_status == ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by telemetry ");
     hypedMachine.handleEvent(kCriticalFailure);
     return true;
@@ -179,27 +179,27 @@ bool Main::checkCriticalFailure()
 {
   bool criticalFailureFound = false;
   // check if any of the module has failed (except sensors)
-  if (telemetry_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+  if (telemetry_data_.module_status == ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by telemetry ");
     criticalFailureFound = true;
     // return true
   }
-  if (nav_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+  if (nav_data_.module_status == ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by navigation ");
     criticalFailureFound = true;
     // return true;
   }
-  if (motor_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+  if (motor_data_.module_status == ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by motors ");
     criticalFailureFound = true;
     // return true;
   }
-  if (batteries_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+  if (batteries_data_.module_status == ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by batteries ");
     criticalFailureFound = true;
     // return true;
   }
-  if (emergency_brakes_data_.module_status == data::ModuleStatus::kCriticalFailure) {
+  if (emergency_brakes_data_.module_status == ModuleStatus::kCriticalFailure) {
     log_.ERR("STATE", "Critical failure caused by emergency brakes ");
     criticalFailureFound = true;
     // return true;
@@ -258,7 +258,8 @@ bool Main::checkFinish()
 bool Main::checkAtRest()
 {
   if (nav_data_.acceleration >= -0.1 && nav_data_.acceleration <= 0.1 &&
-      emergency_brakes_data_.front_brakes && emergency_brakes_data_.rear_brakes) {
+      !emergency_brakes_data_.brakes_retracted[0] && !emergency_brakes_data_.brakes_retracted[1] &&
+      !emergency_brakes_data_.brakes_retracted[2] && !emergency_brakes_data_.brakes_retracted[3]) {
     log_.INFO("STATE", "RPM reached zero.");
     hypedMachine.handleEvent(kAtRest);
     return true;
