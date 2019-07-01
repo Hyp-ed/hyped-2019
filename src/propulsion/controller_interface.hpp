@@ -62,8 +62,6 @@ class ControllerInterface {
   virtual bool getFailure() = 0;
   virtual void updateMotorTemp() = 0;
   virtual uint8_t getMotorTemp() = 0;
-  virtual void updateMotorCurrent() = 0;
-  virtual int32_t getMotorCurrent() = 0;
   virtual ControllerState getControllerState() = 0;
   virtual void processEmergencyMessage(utils::io::can::Frame& message) = 0;
   virtual void processErrorMessage(uint16_t error_message) = 0;

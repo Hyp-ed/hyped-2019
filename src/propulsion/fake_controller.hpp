@@ -98,7 +98,6 @@ class FakeController : public ControllerInterface {
   ControllerState getControllerState() override;
 
   uint8_t getMotorTemp() override;
-  int32_t getMotorCurrent() override;
 
   // empty functions from interface not used in the fake controller
   void processEmergencyMessage(utils::io::can::Frame& message) override {/*EMPTY*/}
@@ -108,7 +107,6 @@ class FakeController : public ControllerInterface {
   void requestStateTransition(utils::io::can::Frame& message,
                               ControllerState state) override {/*EMPTY*/}
   void updateMotorTemp() override {/*EMPTY*/}
-  void updateMotorCurrent() override {/*EMPTY*/}
 
  private:
   /**

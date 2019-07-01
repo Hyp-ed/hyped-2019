@@ -35,7 +35,6 @@ Controller::Controller(Logger& log, uint8_t id)
       actual_torque_(0),
       motor_temperature_(0),
       controller_temperature_(0),
-      motor_current(0),
       sender(this, node_id_, log)
 {
   sdo_message_.id         = kSdoReceive + node_id_;
@@ -59,7 +58,6 @@ Controller::Controller(Logger& log, uint8_t id)
   FileReader::readFileData(healthCheckMsgs, 2, kHealthCheckMsgFile);
   FileReader::readFileData(updateMotorTempMsg, 1, kUpdateMotorTempFile);
   FileReader::readFileData(updateContrTempMsg, 1, kUpdateContrTempFile);
-  FileReader::readFileData(updateMotCurrent, 1, kUpdateMotCurrentFile);
   FileReader::readFileData(autoAlignMsg, 1, kAutoAlignMsgFile);
 }
 
@@ -246,16 +244,6 @@ void Controller::requestStateTransition(utils::io::can::Frame& message, Controll
     log_.ERR("MOTOR", "Controller %d, Could not transition to state %d", node_id_, state);
     return;
   }
-}
-
-void Controller::updateMotorCurrent()
-{
-  if (sendControllerMessage(updateMotCurrent[0])) return;
-}
-
-int32_t Controller::getMotorCurrent()
-{
-  return motor_current;
 }
 
 void Controller::autoAlignMotorPosition()
