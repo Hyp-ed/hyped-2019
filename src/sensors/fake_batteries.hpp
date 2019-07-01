@@ -1,5 +1,5 @@
 /*
- * Author: Jack Horsburgh and Gregory Dayo
+ * Author: Jack Horsburgh and Gregory Dayao
  * Organisation: HYPED
  * Date: 6/04/19
  * Description: Main class for fake.
@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 
 namespace hyped {
@@ -41,26 +40,46 @@ class FakeBatteries : public BMSInterface {
   typedef array<uint16_t, 6> BatteryInformation;
 
  public:
+  /**
+   * @brief Construct a new Fake Batteries object
+   *
+   * @param log
+   * @param is_lp
+   * @param is_fail
+   */
   FakeBatteries(Logger& log, bool is_lp, bool is_fail);
+
+  /**
+   * @brief waits for accelerating state, generate random time for error
+   * @param battery BatteryData pointer
+   */
   void getData(BatteryData* battery) override;
   bool isOnline() override;
 
  private:
   Data& data_;
   utils::Logger& log_;
+
+  /**
+   * @brief if is_fail_ == true, will throw failure
+   */
   void checkFailure();
+
+  /**
+   * @brief updates values from array given case_index_
+   */
   void updateBatteryData();
 
   BatteryInformation lp_failure_;
-  BatteryInformation lp_success_;    // TODO(Greg): adjust values
+  BatteryInformation lp_success_;
   BatteryInformation hp_failure_;
-  BatteryInformation hp_success_;    // TODO(Greg): adjust values
+  BatteryInformation hp_success_;
   // different success and fail cases
   BatteryCases cases_;
 
   bool is_lp_;
   bool is_fail_;
-  int case_index_;
+  int case_index_;    // handle for array of values for both hp/lp
 
   uint16_t voltage_;
   int16_t current_;

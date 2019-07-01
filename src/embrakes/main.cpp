@@ -1,8 +1,8 @@
 /*
-* Author: Gregor Konzett
+* Author: Kornelija Sukyte
 * Organisation: HYPED
-* Date: 31.3.2019
-* Description: Entrypoint class to the embrake module, started in it's own thread. Handles the logic to retract the brakes
+* Date:
+* Description: Entrypoint class to the embrake module, started in it's own thread.
 *
 *    Copyright 2019 HYPED
 *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -23,58 +23,112 @@ namespace hyped
 
 namespace embrakes
 {
-    Main::Main(uint8_t id, Logger &log)
-	: Thread(id, log),
-	  log_(log),
-	  finishedRetracting_(false)
+Main::Main(uint8_t id, Logger &log)
+  : Thread(id, log),
+    log_(log),
+    data_(data::Data::getInstance())
 {
+  brake_1 = new Stepper(log_, 20);
+  brake_2 = new Stepper(log_, 21);
+  brake_3 = new Stepper(log_, 22);
+  brake_4 = new Stepper(log_, 23);
 }
 
-void Main::run()
-{
-  log_.INFO("Embrakes", "Thread started");
+void Main::run() {
+  log_.INFO("Brakes", "Thread started");
 
-	System &sys = System::getSystem();
+  System &sys = System::getSystem();
 
-	Data stateMachineData = Data::getInstance();
+  while (sys.running_) {
+    // Get the current state of embrakes and state machine modules from data
+    em_brakes_ = data_.getEmergencyBrakesData();
+    sm_data_ = data_.getStateMachineData();
+    tlm_data_ = data_.getTelemetryData();
+    
+    switch (sm_data_.current_state) {
+      case data::State::kIdle:
+        if(tlm_data_.nominal_braking_command && !em_brakes_.brakes_retracted[0] &&
+          !em_brakes_.brakes_retracted[1] && !em_brakes_.brakes_retracted[2] &&
+          !em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
 
-	EmergencyBrakes emBrakesState = stateMachineData.getEmergencyBrakesData();
+        } else if(!tlm_data_.nominal_braking_command && em_brakes_.brakes_retracted[0] &&
+          em_brakes_.brakes_retracted[1] && em_brakes_.brakes_retracted[2] &&
+          em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendClamp();
+          brake_2->sendClamp();
+          brake_3->sendClamp();
+          brake_4->sendClamp();
 
-	// activate, step, push
-	Pins pins[BREAKAMOUNT]={
-		{8,9,11}
-	};
+        }
+        break;
+      case data::State::kCalibrating:
+        if(!em_brakes_.brakes_retracted[0] && !em_brakes_.brakes_retracted[1] &&
+        !em_brakes_.brakes_retracted[2] && !em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
+        }
+        em_brakes_.module_status = ModuleStatus::kReady;
+        data_.setEmergencyBrakesData(em_brakes_);
+        break;
+      case data::State::kNominalBraking:
+        if(em_brakes_.brakes_retracted[0] && em_brakes_.brakes_retracted[1] &&
+        em_brakes_.brakes_retracted[2] && em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendClamp();
+          brake_2->sendClamp();
+          brake_3->sendClamp();
+          brake_4->sendClamp();
+        }
+        log_.INFO("Brakes", "Starting Nominal Braking");
+        break;
+      case data::State::kEmergencyBraking:
 
-	retractorManager = new RetractorManager(BREAKAMOUNT, pins,log_);
+        // ???brakes engaged by cutting high power???
 
-	while (sys.running_)
-	{
-    // Get the current state of the system from the state machine's data
-		
-		currentState = stateMachineData.getStateMachineData().current_state;
-		
-		if (currentState == State::kCalibrating) // Retract screw
-		{
-			if (retractorManager->getStatus() == StatusCodes::IDLE) {
-					log_.INFO("Embrakes", "Start Retracting");
-					retractorManager->retract();
-			} else if (retractorManager->getStatus() == StatusCodes::ERROR) {
-				log_.ERR("Embrakes", "An error occured");
-				emBrakesState.module_status = ModuleStatus::kCriticalFailure;
-				stateMachineData.setEmergencyBrakesData(emBrakesState);
+        log_.INFO("Brakes", "Starting Emergency Braking");
 
-				finishedRetracting_ = true;
-			} else if (retractorManager->getStatus() == StatusCodes::FINISHED && !finishedRetracting_) {
-				log_.INFO("Embrakes", "Brakes are retracted");
-				emBrakesState.module_status = ModuleStatus::kReady;
-				stateMachineData.setEmergencyBrakesData(emBrakesState);
-				
-				finishedRetracting_ = true;
-			}
-		}
-	}
+        // TODO(Kornelija): checkHome
+        break;
+      case data::State::kExiting:
 
-	log_.INFO("Embrakes", "Thread shutting down");
+        // ???clamp brakes when service propulsion is stopped???
+
+        break;
+      case data::State::kFinished:
+        if(tlm_data_.nominal_braking_command && !em_brakes_.brakes_retracted[0] &&
+          !em_brakes_.brakes_retracted[1] && !em_brakes_.brakes_retracted[2] &&
+          !em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
+
+        } else if(!tlm_data_.nominal_braking_command && em_brakes_.brakes_retracted[0] &&
+          em_brakes_.brakes_retracted[1] && em_brakes_.brakes_retracted[2] &&
+          em_brakes_.brakes_retracted[3]) {
+          
+          brake_1->sendClamp();
+          brake_2->sendClamp();
+          brake_3->sendClamp();
+          brake_4->sendClamp();
+
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  log_.INFO("Brakes", "Thread shutting down");
 }
-
-}} // hyped::motor_control
+}  // namespace embrakes
+}  // namespace hyped

@@ -7,8 +7,14 @@
 # ParseNavigation() function
 
 > Telemetry
-IP      125.45.25.1
-Port    8000
+IP      localhost
+Port    9090
 
 > Navigation
 
+> Sensors
+KeyenceL    72
+KeyenceR    74
+Thermistor  3
+HPSSR       70
+LPSSR       71

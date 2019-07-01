@@ -31,13 +31,8 @@ ifeq ($(CROSS), 0)
 else
 	CC:=hyped-cross-g++
 	CFLAGS:=$(CFLAGS) -DARCH_32
-	LFLAGS:= -static
+	LFLAGS:= $(LFLAGS) -static
 $(info cross-compiling)
-endif
-
-ifeq ($(PROTOBUF), 1)
-	CFLAGS:=$(CFLAGS) $(shell pkg-config --cflags protobuf)
-	LFLAGS:=$(LFLAGS) $(shell pkg-config --libs protobuf)
 endif
 
 # test if compiler is installed
@@ -47,8 +42,14 @@ endif
 LL:=$(CC)
 
 
-
 include $(SRCS_DIR)/Source.files
+
+ifeq ($(PROTOBUF), 1)
+	CFLAGS:=$(CFLAGS) $(shell pkg-config --cflags protobuf)
+	LFLAGS:=$(LFLAGS) $(shell pkg-config --libs protobuf)
+	SRCS:=$(SRCS) $(shell find src/telemetry -type f -name '*.cpp' | sed 's|^src/||')
+endif
+
 SRCS := $(SRCS) $(MAIN)
 OBJS := $(SRCS:.cpp=.o)
 
@@ -71,7 +72,7 @@ default: lint $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(Echo) "Linking executable $(MAIN) into $@"
-	$(Verb) $(LL) $(LFLAGS) -o $@ $(OBJS)
+	$(Verb) $(LL)  -o $@ $(OBJS) $(LFLAGS)
 
 
 $(OBJS): $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
@@ -103,7 +104,7 @@ doc:
 	$(Verb) doxygen Doxyfile
 
 protoc:
-	-$(Verb) mkdir src/telemetry/telemetrydata
+	-$(Verb) mkdir -p src/telemetry/telemetrydata
 	$(Verb) protoc -I=src/telemetry --cpp_out=src/telemetry/telemetrydata message.proto
 	$(Verb) mv src/telemetry/telemetrydata/message.pb.cc src/telemetry/telemetrydata/message.pb.cpp
 

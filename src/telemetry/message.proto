@@ -5,77 +5,88 @@ package telemetry_data;
 option java_package = "telemetrydata";
 option java_outer_classname = "TelemetryData";
 
-message TestMessage {
-    enum Command {
-        ERROR = 0;
-        VELOCITY = 1;
-        ACCELERATION = 2;
-        BRAKE_TEMP = 3;
-        // commands below intended for server to client
-        FINISH = 4;
-        EM_STOP = 5;
-    }
-
-    Command command = 1;
-    int32 data = 2;
-}
-
 message ServerToClient {
     enum Command {
         ACK = 0;
         STOP = 1;
-        LAUNCH = 2;
-        RESET = 3;
-        RUN_LENGTH = 4;
-        SERVICE_PROPULSION = 5;
+        CALIBRATE = 2;
+        LAUNCH = 3;
+        RESET = 4;
+        SERVICE_PROPULSION_GO = 5;
+        SERVICE_PROPULSION_STOP = 6;
+        NOMINAL_BRAKING = 7;
     }
 
     Command command = 1;
-    float run_length = 2;
-    bool service_propulsion = 3;
 }
 
 message ClientToServer {
+    enum ModuleStatus {
+        START = 0;
+        INIT = 1;
+        READY = 2;
+        CRITICAL_FAILURE = 3;
+    }
+
     message Navigation {
-        float distance = 1;
-        float velocity = 2;
-        float acceleration = 3;
+        ModuleStatus module_status = 1;
+        float distance = 2;
+        float velocity = 3;
+        float acceleration = 4;
     }
 
     message StateMachine {
         enum State {
-            IDLE = 0;
-            CALIBRATING = 1;
-            READY = 2;
-            ACCELERATING = 3;
-            NOMINAL_BRAKING = 4;
-            EMERGENCY_BRAKING = 5;
-            RUN_COMPLETE = 6;
-            FAILURE_STOPPED = 7;
-            EXITING = 8;
-            FINISHED = 9;
-            INVALID = 10;
+            INVALID = 0;
+            IDLE = 1;
+            CALIBRATING = 2;
+            READY = 3;
+            ACCELERATING = 4;
+            NOMINAL_BRAKING = 5;
+            EMERGENCY_BRAKING = 6;
+            RUN_COMPLETE = 7;
+            FAILURE_STOPPED = 8;
+            EXITING = 9;
+            FINISHED = 10;
         }
 
-        State state = 1;
+        State current_state = 2;
     }
 
     message Motors {
-        sint32 velocity_1 = 1;
-        sint32 velocity_2 = 2;
-        sint32 velocity_3 = 3;
-        sint32 velocity_4 = 4;
-        sint32 velocity_5 = 5;
-        sint32 velocity_6 = 6;
+        ModuleStatus module_status = 1;
+        sint32 velocity_1 = 2;
+        sint32 velocity_2 = 3;
+        sint32 velocity_3 = 4;
+        sint32 velocity_4 = 5;
+        sint32 velocity_5 = 6;
+        sint32 velocity_6 = 7;
     }
 
-    // message Batteries {
-// 
-    // }
+    message Batteries {
+        message BatteryData {
+            uint32 voltage = 1;
+            sint32 current = 2;
+            uint32 charge = 3;
+            int32 temperature = 4;
+            uint32 low_voltage_cell = 5;
+            uint32 high_voltage_cell = 6;
+        }
 
-    // message Sensors {
-// 
-    // }
+        ModuleStatus module_status = 1;
+        repeated BatteryData low_power_batteries = 2;
+        repeated BatteryData high_power_batteries = 3;
+    }
+
+    message Sensors {
+        message ImuData {
+            bool operational = 1;
+            repeated float acc = 2;
+        }
+
+        ModuleStatus module_status = 1;
+        repeated ImuData imu = 2;
+    }
 
     message EmergencyBrakes {
         bool front_brakes = 1;
@@ -85,7 +96,7 @@ message ClientToServer {
     Navigation navigation = 1;
     StateMachine state_machine = 2;
     Motors motors = 3;
-    // Batteries batteries = 4;
-    // Sensors sensors = 5;
+    Batteries batteries = 4;
+    Sensors sensors = 5;
     EmergencyBrakes emergency_brakes = 6;
 }

@@ -60,12 +60,15 @@ void printUsage()
     "\n  --debug_motor, --debug_nav, --debug_sensor, --debug_state, --debug_tlm, --debug_embrakes\n"
     "    Set module-specific debug level. All DBG[n] where n <= level messages are printed.\n"
     "    To use fake system.\n"
-    "    --fake_imu\n"
-    "    --fake_batteries\n"
-    "    --fake_keyence\n"
+    "    --fake_imu --fake_imu_fail\n"
+    "    --fake_batteries --fake_batteries_fail\n"
+    "    --fake_keyence --fake_keyence_fail\n"
+    "    --fake_temperature --fake_temperature_fail\n"
     "    --fake_embrakes --fake_motors\n"
     "    To set navigation IDs.\n"
     "    --imu_id, --run_id\n"
+    "    To set which IMU axis to be navigated after.\n"
+    "    --axis\n"
     "    To set run kind for navigation tests.\n"
     "    --tube_run, --elevator_run, --stationary_run\n"
     "");
@@ -91,11 +94,17 @@ System::System(int argc, char* argv[])
       debug_state(DEFAULT_DEBUG),
       debug_tlm(DEFAULT_DEBUG),
       fake_imu(false),
+      fake_batteries(false),
       fake_keyence(false),
+      fake_temperature(false),
       fake_embrakes(false),
       fake_motors(false),
+      fake_imu_fail(false),
+      fake_keyence_fail(false),
+      fake_temperature_fail(false),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
+      axis(0),
       tube_run(true),
       elevator_run(false),
       stationary_run(false),
@@ -113,7 +122,7 @@ System::System(int argc, char* argv[])
       {"verbose_nav", optional_argument, 0, 'A'},
       {"verbose_sensor", optional_argument, 0, 'b'},
       {"verbose_state", optional_argument, 0, 'B'},
-      {"verbose_embrakes", optional_argument, 0, 'n'},
+      {"verbose_embrakes", optional_argument, 0, 'o'},
       {"verbose_tlm", optional_argument, 0, 'c'},
       {"config", required_argument, 0, 'C'},
       {"debug", optional_argument, 0, 'd'},
@@ -122,15 +131,21 @@ System::System(int argc, char* argv[])
       {"debug_sensor", optional_argument, 0, 'f'},
       {"debug_state", optional_argument, 0, 'F'},
       {"debug_tlm", optional_argument, 0, 'g'},
-      {"debug_embrakes", optional_argument, 0, 'N'},
+      {"debug_embrakes", optional_argument, 0, 'O'},
       {"help", no_argument, 0, 'h'},
       {"fake_imu", no_argument, 0, 'i'},
-      {"fake_keyence", no_argument, 0, 'k'},
-      {"fake_motors", no_argument, 0, 'm'},
-      {"fake_embrakes", no_argument, 0, 'M'},
       {"fake_batteries", no_argument, 0, 'j'},
+      {"fake_keyence", no_argument, 0, 'k'},
+      {"fake_temperature", no_argument, 0, 'l'},
+      {"fake_motors", no_argument, 0, 'm'},
+      {"fake_embrakes", no_argument, 0, 'n'},
+      {"fake_imu_fail", no_argument, 0, 'I'},
+      {"fake_batteries_fail", no_argument, 0, 'J'},
+      {"fake_keyence_fail", no_argument, 0, 'K'},
+      {"fake_temperature_fail", no_argument, 0, 'L'},
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'q'},
+      {"axis", required_argument, 0, 'u'},
       {"tube_run", no_argument, 0, 'r'},
       {"elevator_run", no_argument, 0, 's'},
       {"stationary_run", no_argument, 0, 't'},
@@ -177,7 +192,7 @@ System::System(int argc, char* argv[])
         if (optarg) verbose_tlm = atoi(optarg);
         else        verbose_tlm = true;
         break;
-      case 'n':   // verbose_embrakes
+      case 'o':   // verbose_embrakes
         if (optarg) verbose_embrakes = atoi(optarg);
         else        verbose_embrakes = true;
         break;
@@ -204,18 +219,15 @@ System::System(int argc, char* argv[])
         if (optarg) debug_tlm = atoi(optarg);
         else        debug_tlm = 0;
         break;
-      case 'N':   // debug_embrakes
+      case 'O':   // debug_embrakes
         if (optarg) debug_embrakes = atoi(optarg);
         else        debug_embrakes = 0;
         break;
-      case 'P':
-        if (optarg) run_id = atoi(optarg);
-        else        run_id = 1;
       case 'i':   // fake_imu
         if (optarg) fake_imu = atoi(optarg);
         else        fake_imu = 1;
         break;
-      case 'j':
+      case 'j':   // fake batteries
         if (optarg) fake_batteries = atoi(optarg);
         else        fake_batteries = 1;
         break;
@@ -223,13 +235,33 @@ System::System(int argc, char* argv[])
         if (optarg) fake_keyence = atoi(optarg);
         else        fake_keyence = 1;
         break;
-      case 'm':
+      case 'l':   // fake_temeperature
+        if (optarg) fake_temperature = atoi(optarg);
+        else        fake_temperature = 1;
+        break;
+      case 'm':   // fake_motors
         if (optarg) fake_motors = atoi(optarg);
         else        fake_motors = 1;
         break;
-      case 'M':
+      case 'n':   // fake_embrakes
         if (optarg) fake_embrakes = atoi(optarg);
         else        fake_embrakes = 1;
+        break;
+      case 'I':   // fake_imu_fail
+        if (optarg) fake_imu_fail = atoi(optarg);
+        else        fake_imu_fail = 1;
+        break;
+      case 'J':   // fake batteries_fail
+        if (optarg) fake_batteries_fail = atoi(optarg);
+        else        fake_batteries_fail = 1;
+        break;
+      case 'K':   // fake_keyence_fail
+        if (optarg) fake_keyence_fail = atoi(optarg);
+        else        fake_keyence_fail = 1;
+        break;
+      case 'L':   // fake_temeperature_fail
+        if (optarg) fake_temperature_fail = atoi(optarg);
+        else        fake_temperature_fail = 1;
         break;
       case 'p':   // imu_id
         if (optarg) imu_id = atoi(optarg);
@@ -238,6 +270,10 @@ System::System(int argc, char* argv[])
       case 'q':   // run_id
         if (optarg) run_id = atoi(optarg);
         else        run_id = 1;
+        break;
+      case 'u':   // axis
+        if (optarg) axis = atoi(optarg);
+        else        axis = 0;
         break;
       case 'r':   // tube_run
         if (optarg) tube_run = atoi(optarg);
@@ -260,6 +296,7 @@ System::System(int argc, char* argv[])
           stationary_run = 1;
           tube_run = 0;
         }
+        break;
       default:
         printUsage();
         exit(1);

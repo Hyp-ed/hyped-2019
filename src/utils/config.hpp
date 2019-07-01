@@ -31,7 +31,7 @@ namespace utils {
 
 // forward declaration
 class System;
-class ModuleEntry;
+struct ModuleEntry;
 
 enum Submodule {
   kNone,
@@ -56,9 +56,18 @@ class Config {
     char Port[5];
   } telemetry;
 
+  struct Sensors {
+    int KeyenceL;
+    int KeyenceR;
+    int Thermistor;
+    int HPSSR;
+    int LPSSR;
+  } sensors;
+
 //  private:
   void ParseNavigation(char* line);
   void ParseTelemetry(char* line);
+  void ParseSensors(char* line);
   void ParseNone(char* line);
 
 

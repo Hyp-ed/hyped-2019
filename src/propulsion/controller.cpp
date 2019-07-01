@@ -1,5 +1,6 @@
 /*
  * Author: Iain Macpherson
+ * Co-Author: George Karabassis
  * Organisation: HYPED
  * Date: 11/03/2019
  * Description: Main class for the Motor Controller
@@ -34,7 +35,7 @@ Controller::Controller(Logger& log, uint8_t id)
       actual_torque_(0),
       motor_temperature_(0),
       controller_temperature_(0),
-      sender(this, node_id_, log_)
+      sender(this, node_id_, log)
 {
   sdo_message_.id         = kSdoReceive + node_id_;
   sdo_message_.extended   = false;
@@ -45,7 +46,7 @@ Controller::Controller(Logger& log, uint8_t id)
   nmt_message_.len        = 2;
 
   // Initialse arrays of message data:
-  FileReader::readFileData(configMsgs_, 16, kConfigMsgFile);
+  FileReader::readFileData(configMsgs_, 24, kConfigMsgFile);
   FileReader::readFileData(enterOpMsgs_, 4, kEnterOpMsgFile);
   FileReader::readFileData(enterPreOpMsg_, 1,  kEnterPreOpMsgFile);
   FileReader::readFileData(checkStateMsg_, 1, kCheckStateMsgFile);
@@ -57,6 +58,7 @@ Controller::Controller(Logger& log, uint8_t id)
   FileReader::readFileData(healthCheckMsgs, 2, kHealthCheckMsgFile);
   FileReader::readFileData(updateMotorTempMsg, 1, kUpdateMotorTempFile);
   FileReader::readFileData(updateContrTempMsg, 1, kUpdateContrTempFile);
+  FileReader::readFileData(autoAlignMsg, 1, kAutoAlignMsgFile);
 }
 
 bool Controller::sendControllerMessage(ControllerMessage message_template)
@@ -83,16 +85,15 @@ void Controller::registerController()
 void Controller::configure()
 {
   log_.INFO("MOTOR", "Controller %d: Configuring...", node_id_);
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < 24; i++) {
     if (sendControllerMessage(configMsgs_[i])) return;
+    Thread::sleep(100);
   }
   log_.INFO("MOTOR", "Controller %d: Configured.", node_id_);
 }
 
 void Controller::enterOperational()
 {
-  // TODO(Iain): Check that this is still valid:
-
   // Send NMT Operational message to transition from state 0 (Not ready to switch on)
   // to state 1 (Switch on disabled)
   nmt_message_.data[0] = kNmtOperational;
@@ -110,7 +111,7 @@ void Controller::enterOperational()
   sendTargetVelocity(0);
 
   // apply break
-  if (sendControllerMessage(enterOpMsgs_[1])) return;
+  // if (sendControllerMessage(enterOpMsgs_[1])) return;
 
   // send shutdown message to transition to Ready to Switch On state
   for (int i = 0; i < 8; i++) {
@@ -227,7 +228,7 @@ void Controller::throwCriticalFailure()
 
 void Controller::requestStateTransition(utils::io::can::Frame& message, ControllerState state)
 {
-  uint8_t state_count;  // any reason that this is out here?
+  uint8_t state_count;
   // Wait for max of 3 seconds, checking if the state has changed every second
   // If it hasn't changed by the end then throw critical failure.
   for (state_count = 0; state_count < 3; state_count++) {
@@ -245,9 +246,13 @@ void Controller::requestStateTransition(utils::io::can::Frame& message, Controll
   }
 }
 
+void Controller::autoAlignMotorPosition()
+{
+  if (sendControllerMessage(autoAlignMsg[0])) return;
+}
+
 void Controller::processEmergencyMessage(utils::io::can::Frame& message)
 {
-  // note currently this data is all out of date
   log_.ERR("MOTOR", "Controller %d: CAN Emergency", node_id_);
   throwCriticalFailure();
   uint8_t index_1   = message.data[0];
@@ -437,7 +442,6 @@ void Controller::processEmergencyMessage(utils::io::can::Frame& message)
 
 void Controller::processErrorMessage(uint16_t error_message)
 {
-  // note currently this data is all out of date
   switch (error_message) {
     case 0x1000:
       log_.ERR("MOTOR", "Controller %d error: Unspecified error", node_id_);
@@ -501,7 +505,6 @@ void Controller::processErrorMessage(uint16_t error_message)
 
 void Controller::processSdoMessage(utils::io::can::Frame& message)
 {
-  // note currently this data is all out of date
   uint8_t index_1   = message.data[1];
   uint8_t index_2   = message.data[2];
   uint8_t sub_index = message.data[3];
@@ -530,6 +533,8 @@ void Controller::processSdoMessage(utils::io::can::Frame& message)
   if (index_1 == 0x26 && index_2 == 0x20 && sub_index == 0x01) {
     controller_temperature_ = message.data[4];
   }
+
+  // Process motor current TODO(iain): find register to process and correct types
 
   // Process warning message
   if (index_1 == 0x27 && index_2 == 0x20 && sub_index == 0x00) {

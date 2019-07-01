@@ -30,7 +30,7 @@ enum Event {
   kOnStart,
   kCriticalFailure,
   kMaxDistanceReached,
-  kVelocityZeroReached,
+  kAtRest,
   kOnExit,
   kFinish,
   kReset

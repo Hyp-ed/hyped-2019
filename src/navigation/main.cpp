@@ -27,17 +27,46 @@ namespace navigation {
     : Thread(id, log),
       log_(log),
       sys_(System::getSystem()),
-      nav_(log)
-  {
-    log_.INFO("NAV", "Navigation initialising");
-  }
+      nav_(log, sys_.axis) {}
 
   void Main::run()
   {
-    log_.INFO("NAV", "Navigation starting");
+    log_.INFO("NAV", "Axis: %d", sys_.axis);
+    log_.INFO("NAV", "Navigation waiting for calibration");
 
-    while (sys_.running_) {
-      nav_.updateData();
+    Data& data = Data::getInstance();
+    bool navigation_complete = false;
+
+    // wait for calibration state for calibration
+    while (sys_.running_ && !navigation_complete) {
+      State current_state = data.getStateMachineData().current_state;
+
+    if (!sys_.tube_run) nav_.Navigation::disableKeyenceUsage();
+
+    switch (current_state) {
+        case State::kIdle :
+        case State::kReady :
+          break;
+
+        case State::kCalibrating :
+          if (nav_.getModuleStatus() == ModuleStatus::kInit) {
+            nav_.calibrateGravity();
+            nav_.initTimestamps();
+          }
+          break;
+
+        case State::kAccelerating :
+        case State::kNominalBraking :
+        case State::kEmergencyBraking :
+        case State::kExiting :
+        case State::kRunComplete :
+          nav_.navigate();
+          break;
+
+        default :
+          navigation_complete = true;
+          break;
+      }
     }
   }
 

@@ -3,18 +3,12 @@
 # File containing data to send to the controllers when the updateActualTorque function
 # is called in controller.cpp
 
-# Format of 8-byte message:
-# First byte is the Function Code (eg: writeOneByte) the remaining 7 bytes are message
-# data to write.
-
-# NOTE: The current data is out of date:
-
 #-------------------------------------------------------------------------------------#
 
 # Check warning status
 >Controller %d: Checking for warnings
-0x40 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+0x40 0x27 0x20 0x00 0x00 0x00 0x00 0x00
 
 # Check error status
 >Controller %d: Checking for errors
-0x40 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+0x40 0x3F 0x60 0x00 0x00 0x00 0x00 0x00

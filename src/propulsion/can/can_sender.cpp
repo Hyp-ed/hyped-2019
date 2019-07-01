@@ -16,13 +16,13 @@
  *    limitations under the License.
  */
 
-#include "can_sender.hpp"
+#include "propulsion/can/can_sender.hpp"
 
 namespace hyped
 {
 namespace motor_control
 {
-CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
+CanSender::CanSender(Logger &log, uint8_t node_id) : log_(log),
                                                       node_id_(node_id),
                                                       can_(Can::getInstance()),
                                                       messageTimestamp(0)
@@ -31,8 +31,9 @@ CanSender::CanSender(Logger &log_, uint8_t node_id) : log_(log_),
   can_.start();
 }
 
-CanSender::CanSender(ControllerInterface* controller, uint8_t node_id, Logger& log_)
-  : node_id_(node_id),
+CanSender::CanSender(ControllerInterface* controller, uint8_t node_id, Logger& log)
+  : log_(log),
+    node_id_(node_id),
     can_(Can::getInstance()),
     controller_(controller),
     messageTimestamp(0)
@@ -43,7 +44,7 @@ CanSender::CanSender(ControllerInterface* controller, uint8_t node_id, Logger& l
 
 bool CanSender::sendMessage(utils::io::can::Frame &message)
 {
-  log_.INFO("Motor", "Sending Message");
+  log_.INFO("MOTOR", "Sending Message");
   can_.send(message);
   isSending = true;
 
@@ -51,7 +52,9 @@ bool CanSender::sendMessage(utils::io::can::Frame &message)
   messageTimestamp = timer.getTimeMicros();
 
   while (isSending) {
-    if (timer.getTimeMicros() - messageTimestamp > TIMEOUT) {
+    if ((timer.getTimeMicros() - messageTimestamp) > TIMEOUT) {
+      // TODO(Iain): Test the latency and set the TIMEOUT to a reasonable value.
+      log_.ERR("MOTOR", "Sender timeout reached");
       return false;
     }
   }
@@ -76,7 +79,7 @@ void CanSender::processNewData(utils::io::can::Frame &message)
   } else if (id == kNmtTransmit + node_id_) {
     controller_->processNmtMessage(message);
   } else {
-    log_.ERR("Motor", "Controller %d: CAN message not recognised", node_id_);
+    log_.ERR("MOTOR", "Controller %d: CAN message not recognised", node_id_);
   }
 }
 

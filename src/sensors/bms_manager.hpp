@@ -6,7 +6,7 @@
  * BMS manager for getting battery data and pushes to data struct.
  * Checks whether batteries are in range and enters emergency state if fails.
  *
- *    Copyright 2018 HYPED
+ *    Copyright 2019 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
@@ -27,22 +27,22 @@
 
 #include "sensors/manager_interface.hpp"
 
-#include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/system.hpp"
+#include "utils/io/gpio.hpp"
+
+constexpr int kNumImd = 6;
+constexpr int kNumLED = 2;
 
 namespace hyped {
 
-using utils::concurrent::Thread;
 using utils::Logger;
 using hyped::data::BatteryData;
+using utils::io::GPIO;
 
 namespace sensors {
 
 class BmsManager: public ManagerInterface  {
-  typedef array<BatteryData, data::Batteries::kNumLPBatteries> BatteriesLP;
-  typedef array<BatteryData, data::Batteries::kNumHPBatteries> BatteriesHP;
  public:
   explicit BmsManager(Logger& log);
   void run()                override;
@@ -50,13 +50,61 @@ class BmsManager: public ManagerInterface  {
  private:
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
-
   /**
    * @brief needs to be references because run() passes directly to data struct
-   *
    */
   data::Data&     data_;
+
+  /**
+   * @brief HPSSR held high in nominal states, cleared when module failure or pod emergency state
+   *        Batteries module status forces kEmergencyBraking, which actuates embrakes
+   */
+  GPIO* kill_hp_;
+
+  /**
+   * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared
+   */
+  GPIO* kill_lp_;
+
+  /**
+   * @brief GPIO pin for HPSSR, init at construction from config file
+   */
+  uint8_t hp_ssr_;
+
+  /**
+   * @brief GPIO pin for LPSSR, init at construction from config file
+   */
+  uint8_t lp_ssr_;
+
+  /**
+   * @brief insulation monitoring device held high if possible battery short
+   */
+  GPIO* imd_[kNumImd];
+
+  /**
+   * @brief ON- no short indication from imd_
+   *        OFF- possible short indication from imd_
+   */
+  GPIO* green_led_[kNumLED];
+
+  /**
+   * @brief GPIO pins for imds
+   */
+  uint8_t pin_imd_[kNumImd];
+
+  /**
+   * @brief GPIO pins for green LEDs
+   */
+  uint8_t pin_led_[kNumLED];
+
+  /**
+   * @brief holds LP BatteryData, HP BatteryData, and module_status
+   */
   data::Batteries batteries_;
+
+  /**
+   * @brief checks voltage, current, temperature, and charge
+   */
   bool batteriesInRange();
 };
 

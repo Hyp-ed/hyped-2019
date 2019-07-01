@@ -68,12 +68,21 @@ class System {
   bool fake_imu;
   bool fake_batteries;
   bool fake_keyence;
+  bool fake_temperature;
   bool fake_embrakes;
   bool fake_motors;
+
+  // Fake Fail System variables below
+  bool fake_imu_fail;
+  bool fake_batteries_fail;
+  bool fake_keyence_fail;
+  bool fake_temperature_fail;
 
   // Navigation System IDs
   int8_t imu_id;
   int8_t run_id;
+  // Navigation IMU axis
+  int8_t axis;
   // Navigation kind of run
   bool tube_run;
   bool elevator_run;

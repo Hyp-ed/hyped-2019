@@ -55,12 +55,11 @@ struct Module {
 // -------------------------------------------------------------------------------------------------
 typedef float NavigationType;
 typedef Vector<NavigationType, 3> NavigationVector;
-typedef array<NavigationVector, 3> NavigationEstimate;
 struct Navigation : public Module {
   NavigationType  distance;  // m
   NavigationType  velocity;  // m/s
   NavigationType  acceleration;  // m/s^2
-  NavigationType  emergency_braking_distance;  // m
+  NavigationType emergency_braking_distance;
   NavigationType  braking_distance = 750;  // m
 };
 
@@ -79,16 +78,16 @@ struct StripeCounter : public Sensor {
   DataPoint<uint32_t> count;
 };
 
+struct TemperatureData : public Sensor {
+  int temp;
+};
+
 struct Sensors : public Module {
-  static constexpr int kNumImus = 6;            // TODO(Greg): change back to final cte for PCB
+  static constexpr int kNumImus = 4;
   static constexpr int kNumKeyence = 2;
 
   DataPoint<array<ImuData, kNumImus>> imu;
   array<StripeCounter, kNumKeyence>  keyence_stripe_counter;
-};
-
-struct SensorCalibration {
-  array<NavigationVector, Sensors::kNumImus> imu_variance;
 };
 
 struct BatteryData {
@@ -101,7 +100,7 @@ struct BatteryData {
 };
 
 struct Batteries : public Module {
-  static constexpr int kNumLPBatteries = 2;
+  static constexpr int kNumLPBatteries = 3;
   static constexpr int kNumHPBatteries = 3;
 
   array<BatteryData, kNumLPBatteries> low_power_batteries;
@@ -109,8 +108,7 @@ struct Batteries : public Module {
 };
 
 struct EmergencyBrakes : public Module {
-  bool front_brakes;       // true if front facing emergency brakes deploy
-  bool rear_brakes;      // true if rear facing emergency brakes deploy
+  bool brakes_retracted[4] = {false};       // true if brakes retract
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -131,10 +129,13 @@ struct Motors : public Module {
 // -------------------------------------------------------------------------------------------------
 
 struct Telemetry : public Module {
-  bool launch_command;
-  bool reset_command;
-  float run_length;  // m
-  bool service_propulsion_go;
+  static constexpr float run_length = 1250;  // m
+  bool calibrate_command = false;
+  bool launch_command = false;
+  bool reset_command = false;
+  bool service_propulsion_go = false;
+  bool emergency_stop_command = false;
+  bool nominal_braking_command = false;
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -198,18 +199,18 @@ class Data {
 
 
   /**
-   * @brief Get the Temperature from the IMU
+   * @brief Get the Temperature from averaged thermistor values
    *
    * @return int temperature in degrees C
    */
   int getTemperature();
 
   /**
-   * @brief Set the Temperature from the IMU
+   * @brief Set the Temperature from averaged thermistor values
    *
    * @param temp - temp in degrees C
    */
-  void setTemperature(int temp);
+  void setTemperature(const int& temp);
 
   /**
    * @brief      Retrieves data from all sensors
@@ -238,15 +239,6 @@ class Data {
    * @brief      Should be called to update sensor keyence data.
    */
   void setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>&  keyence_stripe_counter);  //NOLINT
-
-  /**
-   * @brief      Should be called to update sensor calibration data
-   */
-  void setCalibrationData(const SensorCalibration sensor_calibration_data);
-  /**
-   * @brief      Retrieves data from the calibrated sensors
-   */
-  SensorCalibration getCalibrationData();
 
   /**
    * @brief      Retrieves data from the batteries.
@@ -295,7 +287,6 @@ class Data {
   Motors motors_;
   Batteries batteries_;
   Telemetry telemetry_;
-  SensorCalibration calibration_data_;
   EmergencyBrakes emergency_brakes_;
   int temperature_;  // In degrees C
 
@@ -310,7 +301,14 @@ class Data {
   Lock lock_telemetry_;
   Lock lock_batteries_;
   Lock lock_emergency_brakes_;
-  Lock lock_calibration_data_;
+
+  Data() {}
+
+ public:
+  Data(const Data&) = delete;
+  Data& operator=(const Data &) = delete;
+  Data(Data &&) = delete;
+  Data & operator=(Data &&) = delete;
 };
 
 }}  // namespace hyped::data

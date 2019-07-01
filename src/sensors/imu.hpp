@@ -28,7 +28,6 @@
 #include "utils/io/spi.hpp"
 #include "utils/io/gpio.hpp"
 
-
 namespace hyped {
 
 using hyped::utils::io::SPI;
@@ -80,19 +79,16 @@ class Imu : public ImuInterface {
 
   /**
    * @brief Resets and enables fifo after sleeping 500 ms, frame size is set to 6 for xyz acceleration
-   *
    */
   void enableFifo();
 
   /**
    * @brief used for SPI chipselect with GPIO pin for IMU
-   *
    */
   void select();
 
   /**
    * @brief used for SPI chipselect with GPIO pin for IMU
-   *
    */
   void deSelect();
 

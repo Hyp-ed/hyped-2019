@@ -22,11 +22,10 @@
 #include "sensors/imu_manager.hpp"
 #include "sensors/bms_manager.hpp"
 #include "sensors/gpio_counter.hpp"
+#include "sensors/temperature.hpp"
 #include "sensors/fake_gpio_counter.hpp"
-
-
-constexpr int kKeyencePinLeft = 36;
-constexpr int kKeyencePinRight = 33;
+#include "sensors/fake_temperature.hpp"
+#include "utils/config.hpp"
 
 namespace hyped {
 
@@ -35,8 +34,6 @@ using utils::System;
 using data::Data;
 using data::Sensors;
 using data::StripeCounter;
-using data::SensorCalibration;
-
 
 namespace sensors {
 
@@ -45,21 +42,39 @@ Main::Main(uint8_t id, utils::Logger& log)
     data_(data::Data::getInstance()),
     sys_(utils::System::getSystem()),
     log_(log),
-    pins_ {kKeyencePinLeft, kKeyencePinRight},
+    pins_ {static_cast<uint8_t>(sys_.config->sensors.KeyenceL), static_cast<uint8_t>(sys_.config->sensors.KeyenceR)}, // NOLINT
     imu_manager_(new ImuManager(log)),
     battery_manager_(new BmsManager(log))
 {
-  if (!sys_.fake_keyence) {
+  if (!(sys_.fake_keyence || sys_.fake_keyence_fail)) {
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
       GpioCounter* keyence = new GpioCounter(log_, pins_[i]);
       keyence->start();
       keyences_[i] = keyence;
     }
+  } else if (sys_.fake_keyence_fail) {
+    for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
+      // miss four stripes in a row after 20th, 2000 micros during peak velocity
+      keyences_[i] = new FakeGpioCounter(log_, true, "data/in/gpio_counter_fail_run.txt");
+    }
   } else {
-    for (int i =0; i < data::Sensors::kNumKeyence; i++) {
-      keyences_[i] = new FakeGpioCounter(log_, false, false, "data/in/gpio_counter_normal_run.txt");
+    for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
+      keyences_[i] = new FakeGpioCounter(log_, false, "data/in/gpio_counter_normal_run.txt");
     }
   }
+  if (!(sys_.fake_temperature || sys_.fake_temperature_fail)) {
+    temperature_ = new Temperature(log_, sys_.config->sensors.Thermistor);
+  } else if (sys_.fake_temperature_fail) {
+    // fake temperature fail case
+    temperature_ = new FakeTemperature(log_, true);
+  } else {
+    temperature_ = new FakeTemperature(log_, false);
+  }
+  // kInit for SM transition
+  sensors_ = data_.getSensorsData();
+  sensors_.module_status = data::ModuleStatus::kInit;
+  data_.setSensorsData(sensors_);
+  log_.INFO("Sensors", "Sensors have been initialised");
 }
 
 bool Main::keyencesUpdated()
@@ -71,9 +86,32 @@ bool Main::keyencesUpdated()
   return false;
 }
 
+bool Main::temperatureInRange()    // TODO(anyone): add true nominal temperature range of PCB
+{
+  auto temperature = data_.getTemperature();
+  log_.DBG1("Sensors", "Temperature from data struct: %d", temperature);
+  if (temperature < -10 || temperature > 60) {  // temperature in -10C to 60C
+    log_.ERR("Sensors", "Temperature out of range: %d", temperature);
+    return false;
+  }
+  return true;
+}
+
+void Main::checkTemperature()
+{
+  temperature_->run();               // not a thread
+  data_.setTemperature(temperature_->getData());
+  if (!temperatureInRange()) {
+    log_.ERR("Sensors", "Temperature out of range: Critical Failure!");
+    auto status = data_.getSensorsData();
+    status.module_status = data::ModuleStatus::kCriticalFailure;
+    data_.setSensorsData(status);    // critical PCB temperature would make sensors unreliable
+  }
+}
+
 void Main::run()
 {
-// start all managers
+  // start all managers
   imu_manager_->start();
   battery_manager_->start();
 
@@ -81,6 +119,7 @@ void Main::run()
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
   prev_keyence_stripe_count_arr_ = keyence_stripe_counter_arr_;
 
+  int temp_count = 0;
   while (sys_.running_) {
     // We need to read the gpio counters and write to the data structure
     // If previous is not equal to the new data then update
@@ -90,9 +129,13 @@ void Main::run()
       prev_keyence_stripe_count_arr_ = keyence_stripe_counter_arr_;
     }
     for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
-      prev_keyence_stripe_count_arr_[i] = keyences_[i]->getStripeCounter();
+      keyence_stripe_counter_arr_[i] = keyences_[i]->getStripeCounter();
     }
     Thread::sleep(10);  // Sleep for 10ms
+    temp_count++;
+    if (temp_count % 20 == 0) {       // check every 20 cycles of main
+      checkTemperature();
+    }
   }
 
   imu_manager_->join();

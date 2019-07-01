@@ -2,7 +2,7 @@
  * Author: Uday Patel, Jack Horsburgh and Ragnor Comerford
  * Organisation: HYPED
  * Date: 28/05/18
- * Description: Main interface for IMU class.
+ * Description: Main sensor interfaces, used to create fake sensors
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@
 namespace hyped {
 
 using data::ImuData;
+using data::TemperatureData;
 using data::NavigationVector;
 using data::BatteryData;
 
@@ -66,6 +67,20 @@ class BMSInterface: public SensorInterface {
    * @param battery - output pointer to be filled by this sensor
    */
   virtual void getData(BatteryData* battery) = 0;
+};
+
+class TemperatureInterface {
+ public:
+  /**
+   * @brief not a thread, checks temperature
+   */
+  virtual void run() = 0;
+
+  /**
+   * @brief returns int representation of temperature
+   * @return int temperature degrees C
+   */
+  virtual int getData() = 0;
 };
 }}  // namespace hyped::sensors
 

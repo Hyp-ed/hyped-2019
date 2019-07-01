@@ -51,7 +51,8 @@ struct ModuleEntry {
 ModuleEntry module_map[] = {
   {kNone,         "NOMODULE",       &Config::ParseNone},
   {kNavigation,   "Navigation",     &Config::ParseNavigation},
-  {kTelemetry,    "Telemetry",      &Config::ParseTelemetry}
+  {kTelemetry,    "Telemetry",      &Config::ParseTelemetry},
+  {kSensors,      "Sensors",        &Config::ParseSensors}
 };
 
 void Config::ParseNone(char* line)
@@ -80,10 +81,58 @@ void Config::ParseTelemetry(char* line)
 
   // get TOKEN
   char* token = strtok(line, " ");
+
   if (strcmp(token, "IP") == 0) {
     char* value = strtok(NULL, " ");
     if (value) {
       strncpy(telemetry.IP, value, 16);
+    }
+  }
+
+  if (strcmp(token, "Port") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      strncpy(telemetry.Port, value, 4);
+    }
+  }
+}
+
+void Config::ParseSensors(char* line)
+{
+  char* token = strtok(line, " ");
+
+  if (strcmp(token, "KeyenceL") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.KeyenceL = atoi(value);
+    }
+  }
+
+  if (strcmp(token, "KeyenceR") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.KeyenceR = atoi(value);
+    }
+  }
+
+  if (strcmp(token, "Thermistor") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.Thermistor = atoi(value);
+    }
+  }
+
+  if (strcmp(token, "HPSSR") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.HPSSR = atoi(value);
+    }
+  }
+
+  if (strcmp(token, "LPSSR") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.LPSSR = atoi(value);
     }
   }
 }

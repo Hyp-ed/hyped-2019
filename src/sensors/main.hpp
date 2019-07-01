@@ -4,7 +4,7 @@
  * Date:
  * Description:
  * Main initialises and manages sensor drivers. Main is not responsible for initialisation
- * of supporting io drivers (i2c, spi, can). This should be done by the sensor
+ * of supporting io drivers (spi, can, adc). This should be done by the sensor
  * drivers themselves.
  *
  *    Copyright 2019 HYPED
@@ -26,8 +26,6 @@
 
 #include <cstdint>
 
-#include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "sensors/manager_interface.hpp"
 #include "utils/system.hpp"
@@ -37,8 +35,8 @@ namespace hyped {
 namespace sensors {
 
 /**
- * @brief Initialise sensors, data instances to be pulled in managers, gpio threads declared in main
- *
+ * @brief Initialise sensors, data instances to be pulled in managers
+ *        gpio threads and adc checks declared in main
  */
 class Main: public Thread {
   public:
@@ -46,7 +44,27 @@ class Main: public Thread {
     void run() override;    // from thread
 
   private:
+    /**
+     * @brief as long as at least one keyence value is updated
+     *
+     * @return true
+     * @return false
+     */
     bool keyencesUpdated();
+
+    /**
+     * @brief checks range of pod temperature
+     *
+     * @return true if status is valid
+     * @return false if kCriticalFailure
+     */
+    bool temperatureInRange();
+
+    /**
+     * @brief used to check the temperature infrequently in main loop,
+     *        unnecessary to constantly check temperature;
+     */
+    void checkTemperature();
 
     data::Data&     data_;
     utils::System&  sys_;
@@ -57,12 +75,21 @@ class Main: public Thread {
     data::Batteries batteries_;
     data::StripeCounter stripe_counter_;
 
-    uint8_t                                pins_[data::Sensors::kNumImus];
+    uint8_t                                pins_[data::Sensors::kNumKeyence];
     GpioInterface*                         keyences_[data::Sensors::kNumKeyence];  // 0 L and 1 R
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
+    TemperatureInterface*                  temperature_;
 
+    /**
+     * @brief update this from GpioCounter::getStripeCounter();
+     */
     array<data::StripeCounter, data::Sensors::kNumKeyence> keyence_stripe_counter_arr_;
+
+    /**
+     * @brief use this to compare with keyence_stripe_counter_arr_
+     *        update when keyenceUpdated() == true
+     */
     array<data::StripeCounter, data::Sensors::kNumKeyence> prev_keyence_stripe_count_arr_;
 };
 

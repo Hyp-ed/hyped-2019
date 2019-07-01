@@ -30,8 +30,8 @@ using Eigen::MatrixXf;
 using Eigen::VectorXf;
 
 namespace hyped {
+using data::NavigationType;
 using data::NavigationVector;
-using data::NavigationEstimate;
 using utils::System;
 using utils::math::KalmanMultivariate;
 
@@ -40,20 +40,28 @@ namespace navigation {
 class KalmanFilter
 {
   public:
-    KalmanFilter(unsigned int n_, unsigned int m_);
-    KalmanFilter(unsigned int n_, unsigned int m_, unsigned int k_);
+    KalmanFilter(unsigned int n = 3, unsigned int m = 1, unsigned int k = 0);
     void setup();
     void updateStateTransitionMatrix(double dt);
-    const NavigationEstimate filter(NavigationVector& z_);
-    const NavigationEstimate filter(NavigationVector& u_, NavigationVector& z_);
+    void updateMeasurementCovarianceMatrix(double var);
+    const NavigationType filter(NavigationType z);
+    const NavigationType filter(NavigationType u, NavigationType z);
+    // transfer estimate to NavigationVector
+    const NavigationType getEstimate();
+    // transfer estimate variances to NavigationVector
+    const NavigationType getEstimateVariance();
   private:
-    unsigned int    n;
-    unsigned int    m;
-    unsigned int    k;
-    KalmanMultivariate  kalmanFilter;
+    unsigned int    n_;
+    unsigned int    m_;
+    unsigned int    k_;
+    KalmanMultivariate  kalmanFilter_;
 
-    // set initial estimate x and error covariance P
-    void setInitialEstimate();
+    // covariance matrix variances
+    static constexpr float kInitialErrorVar = 0.5;
+    static constexpr float kStateTransitionVar = 0.02;
+    static constexpr float kTubeMeasurementVar = 0.001;
+    static constexpr float kElevatorMeasurementVar = 0.12;
+    static constexpr float kStationaryMeasurementVar = 0.04;
 
     // create initial error covariance matrix P
     const MatrixXf createInitialErrorCovarianceMatrix();
@@ -69,11 +77,8 @@ class KalmanFilter
 
     // create measurement covariance matrices R
     const MatrixXf createTubeMeasurementCovarianceMatrix();
-    const MatrixXf createStationaryMeasurementCovarianceMatrix();
     const MatrixXf createElevatorMeasurementCovarianceMatrix();
-
-    // transfer estimate to NavigationEstimate
-    const NavigationEstimate getNavigationEstimate();
+    const MatrixXf createStationaryMeasurementCovarianceMatrix();
 };
 }}  // namespace hyped navigation
 

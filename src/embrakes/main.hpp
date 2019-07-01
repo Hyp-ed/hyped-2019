@@ -1,8 +1,8 @@
 /*
-* Author: Gregor Konzett
+* Author: Kornelija Sukyte
 * Organisation: HYPED
-* Date: 31.3.2019
-* Description: Entrypoint class to the embrake module, started in it's own thread. Handles the logic to retract the brakes
+* Date:
+* Description: Entrypoint class to the embrake module, started in it's own thread.
 *
 *    Copyright 2019 HYPED
 *    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -23,29 +23,19 @@
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "data/data.hpp"
-#include "retractor_manager.hpp"
 
-#define BREAKAMOUNT 1
+#include "embrakes/stepper.hpp"
 
 namespace hyped {
 
 using utils::concurrent::Thread;
-using data::Data;
-using data::State;
 using utils::Logger;
 using utils::System;
 using data::ModuleStatus;
-using data::EmergencyBrakes;
 
 namespace embrakes {
-
 /*
  * @description This module handles the interaction with the embrakes. 
- * If the current state of the state machine is kCalibrating, the Main class calls the retract function of the RetractorManager
- * class to start the retracting process. This includes the initialization of the GPIO pins and the actual retracting process,
- * which is done in it's own thread in the Retractor class for every embrake (There are 4)
- * After the brakes are fully retracted by the Retractor class the Main class is setting the module_status to kReady. If the brakes could not be fully retracted,
- * the module_status is set to kCriticalFailure.
 */
 class Main : public Thread 
 {
@@ -61,10 +51,15 @@ class Main : public Thread
     void run() override;
 
   private:
-    State currentState;
-    RetractorManager *retractorManager;
-    Logger &log_;
-    bool finishedRetracting_;
+    Logger&                log_;
+    data::Data&            data_;
+    data::StateMachine     sm_data_;
+    data::EmergencyBrakes  em_brakes_;
+    data::Telemetry        tlm_data_;
+    Stepper*               brake_1;
+    Stepper*               brake_2;
+    Stepper*               brake_3;
+    Stepper*               brake_4;
 };
 
 }}

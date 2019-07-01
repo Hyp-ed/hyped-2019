@@ -19,10 +19,10 @@
 #ifndef NAVIGATION_IMU_DATA_LOGGER_HPP_
 #define NAVIGATION_IMU_DATA_LOGGER_HPP_
 
-#include <stdio.h>
 #include <unistd.h>
+#include <cstdint>
+#include <string>
 
-#include <iostream>
 #include <cstdio>
 #include <fstream>
 
@@ -30,8 +30,8 @@
 #include "data/data_point.hpp"
 
 namespace hyped {
+using data::NavigationType;
 using data::NavigationVector;
-using data::NavigationEstimate;
 using data::DataPoint;
 
 namespace navigation {
@@ -39,23 +39,20 @@ namespace navigation {
 class ImuDataLogger
 {
   public:
-    explicit ImuDataLogger(std::ofstream* outfile_);
+    ImuDataLogger();
+    ~ImuDataLogger();
     void setup(int imu_id, int run_id);
     void setupKalman(int imu_id, int run_id);
-    void dataToFileSimulation(DataPoint<NavigationVector>* acc,
-                  DataPoint<NavigationVector>* vel,
-                  DataPoint<NavigationVector>* pos);
-    void dataToFile(DataPoint<NavigationVector>* accRaw,
-            DataPoint<NavigationVector>* accCor,
-            DataPoint<NavigationVector>*  vel,
-            DataPoint<NavigationVector>*  pos);
-    void dataToFileKalman(DataPoint<NavigationVector>* accRaw,
-                DataPoint<NavigationVector>* accCor,
-                DataPoint<NavigationVector>*  vel,
-                DataPoint<NavigationVector>*  pos,
-                NavigationEstimate& x);
+    void dataToFileSimulation(NavigationVector& acc, uint32_t timestamp);
+    void dataToFile(NavigationVector& accRaw,
+            NavigationVector& accCor, uint32_t timestamp);
+    void dataToFileKalman(NavigationVector& accRaw,
+                NavigationVector& accCor,
+                NavigationVector& x,
+                uint32_t timestamp);
   private:
-    std::ofstream*   outfile;
+    std::string file_path_;
+    std::ofstream* outfile_;
 };
 }}  // namespace hyped navigation
 

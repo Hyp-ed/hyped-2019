@@ -91,7 +91,7 @@ int Data::getTemperature()
   return temperature_;
 }
 
-void Data::setTemperature(int temp)
+void Data::setTemperature(const int& temp)
 {
   ScopedLock L(&lock_temp_);
   temperature_ = temp;
@@ -113,18 +113,6 @@ void Data::setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence
 {
   ScopedLock L(&lock_sensors_);
   sensors_.keyence_stripe_counter = keyence_stripe_counter;
-}
-
-void Data::setCalibrationData(const SensorCalibration sensor_calibration_data)
-{
-  ScopedLock L(&lock_calibration_data_);
-  calibration_data_ = sensor_calibration_data;
-}
-
-SensorCalibration Data::getCalibrationData()
-{
-  ScopedLock L(&lock_calibration_data_);
-  return calibration_data_;
 }
 
 Batteries Data::getBatteriesData()

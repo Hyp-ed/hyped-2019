@@ -20,11 +20,7 @@
 
 #include "sensors/bms.hpp"
 
-#include "data/data.hpp"
-#include "utils/io/can.hpp"
 #include "utils/logger.hpp"
-#include "utils/system.hpp"
-#include "utils/utils.hpp"
 #include "utils/timer.hpp"
 
 namespace hyped {
@@ -160,7 +156,7 @@ void BMS::getData(BatteryData* battery)
   for (uint16_t v: data_.voltage) battery->voltage += v;
   battery->voltage    /= 100;  // scale to 0.1V
   battery->temperature = data_.temperature;
-  battery->current     = (-1*current_)/2;
+  battery->current     = current_ - 0x800000;  // offset provided by datasheet.
 
   // charge calculation
   if (battery->voltage > 240) {                                       // constant high
@@ -183,6 +179,7 @@ BMSHP::BMSHP(uint16_t id, Logger& log)
     : log_(log),
       can_id_(id*2 + bms::kHPBase),
       local_data_ {},
+      local_temp_data_ {},
       last_update_time_(0)
 {
   // verify this BMSHP unit has not been instantiated
@@ -213,11 +210,30 @@ void BMSHP::getData(BatteryData* battery)
 bool BMSHP::hasId(uint32_t id, bool extended)
 {
   // only accept a single CAN message
-  return id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1);
+
+  // HPBMS
+  if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
+
+  // Thermistor expansion module
+  if (id == 0x1839F380) return true;
+  return false;
 }
 
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
+  // thermistor expansion module first to get high_voltage_cell
+  if (message.id == 0x1839F380) {
+    local_temp_data_.low_temperature     = message.data[1];
+    local_temp_data_.high_temperature    = message.data[2];
+    local_temp_data_.average_temperature = message.data[3];
+    local_data_.temperature = message.data[3];   // main data struct
+  }
+  log_.DBG1("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
+    local_temp_data_.high_temperature,
+    local_temp_data_.average_temperature,
+    local_temp_data_.low_temperature);
+
+  // TODO(Greg, Iain): config main BMSHP message
   // message format is expected to look like this:
   // [ voltageH , volageL  , currentH   , currentL,
   //  charge   , HighTemp , AverageTemp, state, lowVoltageCellH,
@@ -226,18 +242,17 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.voltage     = (message.data[0] << 8) | message.data[1];
     local_data_.current     = (message.data[2] << 8) | message.data[3];
     local_data_.charge      = message.data[4] * 0.5;    // data needs scaling
-    local_data_.temperature = message.data[5];
+    // local_data_.temperature = message.data[5];
     local_data_.low_voltage_cell  = ((message.data[6] << 8) | message.data[7])/10;
     last_update_time_ = utils::Timer::getTimeMicros();
   } else {
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/10;
   }
 
-  log_.DBG1("BMSHP", "received data Volt,Curr,Char,Temp %u,%u,%u,%d",
+  log_.DBG1("BMSHP", "received data Volt,Curr,Char, %u,%u,%u",
     local_data_.voltage,
     local_data_.current,
-    local_data_.charge,
-    local_data_.temperature);
+    local_data_.charge);
 }
 
 
