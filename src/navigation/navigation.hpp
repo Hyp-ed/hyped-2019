@@ -164,9 +164,9 @@ namespace navigation {
       // Counter for consecutive outlier output from each IMU
       std::array<uint32_t, data::Sensors::kNumImus> imu_outlier_counter_;
       // Array of booleans to signify which IMUs are reliable or faulty
-      std::array<bool, data::Sensors::kNumImus> imu_reliable;
+      std::array<bool, data::Sensors::kNumImus> imu_reliable_;
       // Counter of how many IMUs have failed
-      uint32_t nOutlierImus;
+      uint32_t nOutlierImus_;
 
       // Stripe counter (rolling values)
       DataPoint<uint32_t> stripe_counter_;
@@ -175,7 +175,7 @@ namespace navigation {
       // Previous keyence data for comparison
       KeyenceDataArray prev_keyence_readings_;
       // Are the keyence sensors used or ignored?
-      bool keyence_used;
+      bool keyence_used_;
       // This counts the number of times the keyence readings disagree with the IMU data more than
       // allowed due to uncertainty. It is used at the moment to check if the calculated
       // uncertainty is acceptable.
@@ -190,17 +190,17 @@ namespace navigation {
       NavigationVectorArray gravity_calibration_;
 
       // Initial timestamp (for comparisons)
-      uint32_t init_timestamp;
+      uint32_t init_timestamp_;
       // Previous timestamp
-      uint32_t prev_timestamp;
+      uint32_t prev_timestamp_;
       // Uncertainty in distance
-      NavigationType distance_uncertainty;
+      NavigationType distance_uncertainty_;
       // Uncertainty in velocity
-      NavigationType velocity_uncertainty;
+      NavigationType velocity_uncertainty_;
       // Previous acceleration measurement, necessary for uncertainty determination
-      NavigationType prev_acc;
+      NavigationType prev_acc_;
       // Previous velocity measurement
-      NavigationType prev_vel;
+      NavigationType prev_vel_;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
