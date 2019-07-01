@@ -174,6 +174,9 @@ void FakeImuFromFile::getData(ImuData* imu)
       }
       if (is_fail_acc_) {
         if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_acc_ || failure_happened_) { // NOLINT [whitespace/line_length]
+          if (!failure_happened_) {
+            log_.INFO("Fake-IMU", "Start failure...");
+          }
           prev_acc_ = acc_fail_;
           operational = false;
           failure_happened_ = true;
@@ -200,6 +203,9 @@ void FakeImuFromFile::getData(ImuData* imu)
       }
       if (is_fail_dec_) {
         if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_dec_ || failure_happened_) { // NOLINT [whitespace/line_length]
+          if (!failure_happened_) {
+            log_.INFO("Fake-IMU", "Start failure...");
+          }
           prev_acc_ = acc_fail_;
           operational = false;
           failure_happened_ = true;
