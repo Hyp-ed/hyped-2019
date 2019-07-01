@@ -534,6 +534,8 @@ void Controller::processSdoMessage(utils::io::can::Frame& message)
     controller_temperature_ = message.data[4];
   }
 
+  // Process motor current TODO(iain): find register to process and correct types
+
   // Process warning message
   if (index_1 == 0x27 && index_2 == 0x20 && sub_index == 0x00) {
     if (message.data[4] != 0 && message.data[5] != 0) {

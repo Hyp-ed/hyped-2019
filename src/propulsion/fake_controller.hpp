@@ -97,6 +97,8 @@ class FakeController : public ControllerInterface {
    */
   ControllerState getControllerState() override;
 
+  uint8_t getMotorTemp() override;
+
   // empty functions from interface not used in the fake controller
   void processEmergencyMessage(utils::io::can::Frame& message) override {/*EMPTY*/}
   void processErrorMessage(uint16_t error_message) override {/*EMPTY*/}
@@ -104,6 +106,7 @@ class FakeController : public ControllerInterface {
   void processNmtMessage(utils::io::can::Frame& message) override {/*EMPTY*/}
   void requestStateTransition(utils::io::can::Frame& message,
                               ControllerState state) override {/*EMPTY*/}
+  void updateMotorTemp() override {/*EMPTY*/}
 
  private:
   /**
@@ -122,6 +125,7 @@ class FakeController : public ControllerInterface {
   uint64_t          start_time_;
   bool              timer_started_;
   uint64_t          fail_time_;
+  uint8_t           motor_temp_;
 };
 
 }}  //  namespace hyped::utils

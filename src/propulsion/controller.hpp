@@ -131,7 +131,7 @@ class Controller : public ControllerInterface {
   /**
    * @brief Request the motor temperature from the controller
    */
-  void updateMotorTemp();
+  void updateMotorTemp() override;
   /**
    * @brief Request the controller temperature from the controller
    */
@@ -139,7 +139,7 @@ class Controller : public ControllerInterface {
   /**
    * @return uint8_t - actual temperature of the motor
    */
-  uint8_t getMotorTemp();
+  uint8_t getMotorTemp() override;
   /**
    * @return uint8_t - actual temperature of the controller
    */
