@@ -83,7 +83,7 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
 
   if (is_from_file_) {
     // Get time in micro seconds and iterate through the vector until we find what stripe we are at
-    uint64_t time_now_micro = (utils::Timer::getTimeMicros() - accel_ref_time_)/1000;
+    uint64_t time_now_micro = (utils::Timer::getTimeMicros() - accel_ref_time_);
     for (StripeCounter stripe : stripe_data_) {
       if (stripe.count.timestamp < time_now_micro) {
         stripe_count_.count.value = stripe.count.value;
@@ -129,7 +129,8 @@ void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
       while (data_file >> time && data_file >> count) {
         StripeCounter this_line;
         this_line.count.value = count;
-        this_line.count.timestamp = time;
+        // save timestamps in Microseconds
+        this_line.count.timestamp = time*1000;
         stripe_data_.push_back(this_line);
       }
     } else {
