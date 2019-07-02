@@ -26,6 +26,8 @@
 #ifndef UTILS_CONFIG_HPP_
 #define UTILS_CONFIG_HPP_
 
+#include "data/data.hpp"
+
 namespace hyped {
 namespace utils {
 
@@ -57,11 +59,14 @@ class Config {
   } telemetry;
 
   struct Sensors {
+    int chip_select[data::Sensors::kNumImus];
     int KeyenceL;
     int KeyenceR;
     int Thermistor;
-    int HPSSR;
-    int LPSSR;
+    int HPSSR[data::Batteries::kNumHPBatteries];
+    int LPSSR[data::Batteries::kNumLPBatteries];
+    int IMD[data::Batteries::kNumIMD];
+    int LED[data::Batteries::kNumLED];
   } sensors;
 
 //  private:
