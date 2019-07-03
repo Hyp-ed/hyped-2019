@@ -62,7 +62,7 @@ void Stepper::processNewData(utils::io::can::Frame &message)
     checkHome(isHome);
     
   } else {
-    log_.ERR("Brakes", "Stepper %d: CAN message not recognised", node_id_);
+    log_.ERR("Brakes", "Stepper %d, %i: CAN message not recognised", node_id_, id);
   }
 }
 
@@ -89,12 +89,12 @@ void Stepper::checkHome(uint8_t button)
   }
 }
 
-void Stepper::sendRetract(){
+void Stepper::sendRetract(uint8_t LSB, uint8_t MSB){
   log_.INFO("Brakes", "Sending a retract message");
   message_to_send.data[0] = 0x1;
   message_to_send.data[3] = stepper_period;
-  message_to_send.data[2] = 0x7d;
-  message_to_send.data[1] = 0x0;
+  message_to_send.data[2] = MSB;
+  message_to_send.data[1] = LSB;
 
   can_.send(message_to_send);
   

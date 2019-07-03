@@ -74,7 +74,7 @@ class Stepper :public CanProccesor {
   /**
    * @brief sends retract message
    */
-  void sendRetract();
+  void sendRetract(uint8_t LSB, uint8_t MSB);
 
   /**
    * @brief sends clamp message

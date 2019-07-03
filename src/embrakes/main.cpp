@@ -51,10 +51,10 @@ void Main::run() {
           !em_brakes_.brakes_retracted[1] && !em_brakes_.brakes_retracted[2] &&
           !em_brakes_.brakes_retracted[3]) {
           
-          brake_1->sendRetract();
-          brake_2->sendRetract();
-          brake_3->sendRetract();
-          brake_4->sendRetract();
+          brake_1->sendRetract(0x0,0x7d);
+          brake_2->sendRetract(0x0, 0x7d);
+          brake_3->sendRetract(0x0, 0x7d);
+          brake_4->sendRetract(0x0, 0x7d);
 
         } else if(!tlm_data_.nominal_braking_command && em_brakes_.brakes_retracted[0] &&
           em_brakes_.brakes_retracted[1] && em_brakes_.brakes_retracted[2] &&
@@ -71,10 +71,10 @@ void Main::run() {
         if(!em_brakes_.brakes_retracted[0] && !em_brakes_.brakes_retracted[1] &&
         !em_brakes_.brakes_retracted[2] && !em_brakes_.brakes_retracted[3]) {
           
-          brake_1->sendRetract();
-          brake_2->sendRetract();
-          brake_3->sendRetract();
-          brake_4->sendRetract();
+          brake_1->sendRetract(0x0, 0x7d);
+          brake_2->sendRetract(0x0, 0x7d);
+          brake_3->sendRetract(0x0, 0x7d);
+          brake_4->sendRetract(0x0, 0x7d);
         }
         em_brakes_.module_status = ModuleStatus::kReady;
         data_.setEmergencyBrakesData(em_brakes_);
@@ -108,10 +108,10 @@ void Main::run() {
           !em_brakes_.brakes_retracted[1] && !em_brakes_.brakes_retracted[2] &&
           !em_brakes_.brakes_retracted[3]) {
           
-          brake_1->sendRetract();
-          brake_2->sendRetract();
-          brake_3->sendRetract();
-          brake_4->sendRetract();
+          brake_1->sendRetract(0x0, 0x7d);
+          brake_2->sendRetract(0x0, 0x7d);
+          brake_3->sendRetract(0x0, 0x7d);
+          brake_4->sendRetract(0x0, 0x7d);
 
         } else if(!tlm_data_.nominal_braking_command && em_brakes_.brakes_retracted[0] &&
           em_brakes_.brakes_retracted[1] && em_brakes_.brakes_retracted[2] &&

@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
     Stepper* stepper;
     stepper = new Stepper(log, 20);
     stepper->registerStepper();
-    stepper->sendRetract();
+    stepper->sendRetract(0x0, 0x7d);
     log.INFO("Brakes_test", "Retract message sent");
     Thread::sleep(10000);
     stepper->sendClamp();
