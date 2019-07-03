@@ -83,7 +83,10 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
 
   if (is_from_file_) {
     // Get time in micro seconds and iterate through the vector until we find what stripe we are at
-    uint64_t time_now_micro = (utils::Timer::getTimeMicros() - accel_ref_time_);
+    uint64_t time_now_micro = 0;
+    if (acc_ref_init_) {
+      time_now_micro = (utils::Timer::getTimeMicros() - accel_ref_time_);
+    }
     for (StripeCounter stripe : stripe_data_) {
       if (stripe.count.timestamp < time_now_micro) {
         stripe_count_.count.value = stripe.count.value;
@@ -110,7 +113,10 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
 void FakeGpioCounter::checkData()
 {
   if (is_from_file_) {
-    uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
+    uint64_t time_after = 0;
+    if (acc_ref_init_) {
+      time_after = (utils::Timer::getTimeMicros() - accel_ref_time_) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
+    }
     log_.DBG1("Fake-GpioCounter", "time_after: %d", time_after);
     if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
       log_.INFO("Fake-GpioCounter", "missed stripe!");
