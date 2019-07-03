@@ -155,7 +155,7 @@ void BMS::getData(BatteryData* battery)
   battery->voltage = 0;
   for (uint16_t v: data_.voltage) battery->voltage += v;
   battery->voltage    /= 100;  // scale to 0.1V
-  battery->temperature = data_.temperature;
+  battery->average_temperature = data_.temperature;
   battery->current     = current_ - 0x800000;  // offset provided by datasheet.
 
   // charge calculation
@@ -179,7 +179,6 @@ BMSHP::BMSHP(uint16_t id, Logger& log)
     : log_(log),
       can_id_(id*2 + bms::kHPBase),
       local_data_ {},
-      local_temp_data_ {},
       last_update_time_(0)
 {
   // verify this BMSHP unit has not been instantiated
@@ -221,17 +220,16 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
-  // thermistor expansion module first to get high_voltage_cell
+  // thermistor expansion module first to get high_voltage_cell from can_id_
   if (message.id == 0x1839F380) {
-    local_temp_data_.low_temperature     = message.data[1];
-    local_temp_data_.high_temperature    = message.data[2];
-    local_temp_data_.average_temperature = message.data[3];
-    local_data_.temperature = message.data[3];   // main data struct
+    local_data_.low_temperature     = message.data[1];
+    local_data_.high_temperature    = message.data[2];
+    local_data_.average_temperature = message.data[3];   // main data struct
   }
   log_.DBG1("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
-    local_temp_data_.high_temperature,
-    local_temp_data_.average_temperature,
-    local_temp_data_.low_temperature);
+    local_data_.high_temperature,
+    local_data_.average_temperature,
+    local_data_.low_temperature);
 
   // TODO(Greg, Iain): config main BMSHP message
   // message format is expected to look like this:
@@ -241,8 +239,8 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   if (message.id == can_id_) {
     local_data_.voltage     = (message.data[0] << 8) | message.data[1];
     local_data_.current     = (message.data[2] << 8) | message.data[3];
-    local_data_.charge      = message.data[4] * 0.5;    // data needs scaling
-    // local_data_.temperature = message.data[5];
+    local_data_.charge      = message.data[4] * 0.5;    // TODO(Greg): data needs scaling
+    // local_data_.average_temperature = message.data[5];
     local_data_.low_voltage_cell  = ((message.data[6] << 8) | message.data[7])/10;
     last_update_time_ = utils::Timer::getTimeMicros();
   } else {

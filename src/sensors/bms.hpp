@@ -66,12 +66,6 @@ constexpr uint16_t kIdSize      = 5;       // size of id-space of BMS-CAN messag
 
 constexpr uint16_t kHPBase      = 0x6B0;    // CAN id for high power BMSHP
 
-struct HPBatteryTemperature {
-  int8_t high_temperature;
-  int8_t average_temperature;
-  int8_t low_temperature;
-};
-
 struct Data {
   static constexpr uint8_t kTemperatureOffset = 40;
   static constexpr uint8_t kCellNum           = 7;
@@ -159,7 +153,6 @@ class BMSHP : public CanProccesor, public BMSInterface {
   void processNewData(utils::io::can::Frame& message) override;
 
  private:
-  bms::HPBatteryTemperature  local_temp_data_;
   Logger&         log_;
   uint16_t        can_id_;            // CAN id to be used
   BatteryData     local_data_;        // stores values from CAN

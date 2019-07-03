@@ -161,8 +161,8 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.temperature < 10 || battery.temperature > 60) {  // temperature in 10C to 60C
-      log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.temperature);
+    if (battery.average_temperature < 10 || battery.average_temperature > 60) {  // NOLINT[whitespace/line_length] temperature in 10C to 60C
+      log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
 
@@ -185,8 +185,18 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.temperature < 10 || battery.temperature > 65) {  // temperature in 10C to 65C
-      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.temperature);
+    if (battery.average_temperature < 10 || battery.average_temperature > 65) {  // NOLINT[whitespace/line_length] temperature in 10C to 65C
+      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
+      return false;
+    }
+
+    if (battery.low_temperature < 10) {
+      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.low_temperature); // NOLINT[whitespace/line_length]
+      return false;
+    }
+
+    if (battery.high_temperature > 65) {
+      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.high_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
 
