@@ -110,17 +110,18 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    // iterate through imd_ and set LEDs
-    for (GPIO* pin : imd_) {
-      uint8_t val = pin->read();     // will check every cycle of run()
-      if (val) {
-        for (int i = 0; i < data::Batteries::kNumLED; i++) {
-          green_led_[i]->clear();
-          log_.ERR("BMS-MANAGER", "IMD short! Green LED %d cleared", i);
+    if (!(sys_.fake_batteries_fail || sys_.fake_batteries)) {
+      // iterate through imd_ and set LEDs
+      for (GPIO* pin : imd_) {
+        uint8_t val = pin->read();     // will check every cycle of run()
+        if (val) {
+          for (int i = 0; i < data::Batteries::kNumLED; i++) {
+            green_led_[i]->clear();
+            log_.ERR("BMS-MANAGER", "IMD short! Green LED %d cleared", i);
+          }
         }
       }
     }
-
     // check health of batteries
     if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
       if (!batteriesInRange()) {
