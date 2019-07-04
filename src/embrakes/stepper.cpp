@@ -89,10 +89,10 @@ void Stepper::checkHome(uint8_t button)
   }
 }
 
-void Stepper::sendRetract(uint8_t LSB, uint8_t MSB){
+void Stepper::sendRetract(uint8_t LSB, uint8_t MSB, uint8_t period){
   log_.INFO("Brakes", "Sending a retract message");
   message_to_send.data[0] = 0x1;
-  message_to_send.data[3] = stepper_period;
+  message_to_send.data[3] = period;
   message_to_send.data[2] = MSB;
   message_to_send.data[1] = LSB;
 
