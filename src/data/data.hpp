@@ -102,6 +102,8 @@ struct BatteryData {
 struct Batteries : public Module {
   static constexpr int kNumLPBatteries = 3;
   static constexpr int kNumHPBatteries = 3;
+  static constexpr int kNumIMD = 6;
+  static constexpr int kNumLED = 2;
 
   array<BatteryData, kNumLPBatteries> low_power_batteries;
   array<BatteryData, kNumHPBatteries> high_power_batteries;

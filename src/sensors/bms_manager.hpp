@@ -31,9 +31,6 @@
 #include "utils/system.hpp"
 #include "utils/io/gpio.hpp"
 
-constexpr int kNumImd = 6;
-constexpr int kNumLED = 2;
-
 namespace hyped {
 
 using utils::Logger;
@@ -59,43 +56,23 @@ class BmsManager: public ManagerInterface  {
    * @brief HPSSR held high in nominal states, cleared when module failure or pod emergency state
    *        Batteries module status forces kEmergencyBraking, which actuates embrakes
    */
-  GPIO* kill_hp_;
+  GPIO* hp_ssr_[data::Batteries::kNumHPBatteries];
 
   /**
    * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared
    */
-  GPIO* kill_lp_;
-
-  /**
-   * @brief GPIO pin for HPSSR, init at construction from config file
-   */
-  uint8_t hp_ssr_;
-
-  /**
-   * @brief GPIO pin for LPSSR, init at construction from config file
-   */
-  uint8_t lp_ssr_;
+  GPIO* lp_ssr_[data::Batteries::kNumHPBatteries];
 
   /**
    * @brief insulation monitoring device held high if possible battery short
    */
-  GPIO* imd_[kNumImd];
+  GPIO* imd_[data::Batteries::kNumIMD];
 
   /**
    * @brief ON- no short indication from imd_
    *        OFF- possible short indication from imd_
    */
-  GPIO* green_led_[kNumLED];
-
-  /**
-   * @brief GPIO pins for imds
-   */
-  uint8_t pin_imd_[kNumImd];
-
-  /**
-   * @brief GPIO pins for green LEDs
-   */
-  uint8_t pin_led_[kNumLED];
+  GPIO* green_led_[data::Batteries::kNumLED];
 
   /**
    * @brief holds LP BatteryData, HP BatteryData, and module_status

@@ -101,6 +101,15 @@ void Config::ParseSensors(char* line)
 {
   char* token = strtok(line, " ");
 
+  if (strcmp(token, "ChipSelect") == 0) {
+    for (int i = 0; i < data::Sensors::kNumImus; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+      sensors.chip_select[i] = atoi(value);
+      }
+    }
+  }
+
   if (strcmp(token, "KeyenceL") == 0) {
     char* value = strtok(NULL, " ");
     if (value) {
@@ -123,16 +132,38 @@ void Config::ParseSensors(char* line)
   }
 
   if (strcmp(token, "HPSSR") == 0) {
-    char* value = strtok(NULL, " ");
-    if (value) {
-      sensors.HPSSR = atoi(value);
+    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+      sensors.HPSSR[i] = atoi(value);
+      }
     }
   }
 
   if (strcmp(token, "LPSSR") == 0) {
-    char* value = strtok(NULL, " ");
-    if (value) {
-      sensors.LPSSR = atoi(value);
+    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+      sensors.LPSSR[i] = atoi(value);
+      }
+    }
+  }
+
+  if (strcmp(token, "IMD") == 0) {
+    for (int i = 0; i < data::Batteries::kNumIMD; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+      sensors.IMD[i] = atoi(value);
+      }
+    }
+  }
+
+  if (strcmp(token, "LED") == 0) {
+    for (int i = 0; i < data::Batteries::kNumLED; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+      sensors.LED[i] = atoi(value);
+      }
     }
   }
 }

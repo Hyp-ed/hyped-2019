@@ -34,11 +34,7 @@ namespace sensors {
 BmsManager::BmsManager(Logger& log)
     : ManagerInterface(log),
       sys_(utils::System::getSystem()),
-      data_(Data::getInstance()),
-      hp_ssr_(sys_.config->sensors.HPSSR),
-      lp_ssr_(sys_.config->sensors.LPSSR),
-      pin_imd_ {46, 63, 33, 88, 11, 80},
-      pin_led_ {76, 77}
+      data_(Data::getInstance())
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
 
@@ -53,21 +49,25 @@ BmsManager::BmsManager(Logger& log)
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
+
     // Set SSR switches for real system
-
-    kill_hp_ = new GPIO(hp_ssr_, utils::io::gpio::kOut);
-    kill_lp_ = new GPIO(lp_ssr_, utils::io::gpio::kOut);
-    kill_hp_->set();
-    kill_lp_->set();
-    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", hp_ssr_);
-    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", lp_ssr_);
-
-    // TODO(Greg): confirm pin selection with electronics team
-    for (int i = 0; i < kNumImd; i++) {
-      imd_[i] = new GPIO(pin_imd_[i], utils::io::gpio::kIn);
+    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+      hp_ssr_[i] = new GPIO(sys_.config->sensors.HPSSR[i], utils::io::gpio::kOut);
+      hp_ssr_[i]->set();
+      log_.INFO("BMS-MANAGER", "HP SSR %d has been set", i);
     }
-    for (int i = 0; i < kNumLED; i++) {
-      green_led_[i] = new GPIO(pin_led_[i], utils::io::gpio::kOut);
+    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+      lp_ssr_[i] = new GPIO(sys_.config->sensors.LPSSR[i], utils::io::gpio::kOut);
+      lp_ssr_[i]->set();
+      log_.INFO("BMS-MANAGER", "LP SSR %d has been set", i);
+    }
+
+    // IMD and LED initialisation
+    for (int i = 0; i < data::Batteries::kNumIMD; i++) {
+      imd_[i] = new GPIO(sys_.config->sensors.IMD[i], utils::io::gpio::kIn);
+    }
+    for (int i = 0; i < data::Batteries::kNumLED; i++) {
+      green_led_[i] = new GPIO(sys_.config->sensors.LED[i], utils::io::gpio::kOut);
       green_led_[i]->set();
     }
   } else if (sys_.fake_batteries_fail) {
@@ -110,25 +110,28 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    // iterate through imd_ and set LEDs
-    for (GPIO* pin : imd_) {
-      uint8_t val = pin->read();     // will check every cycle of run()
-      if (val) {
-        for (int i = 0; i < kNumLED; i++) {
-          green_led_[i]->clear();
-          log_.ERR("BMS-MANAGER", "IMD short! Green LED %d cleared", i);
+    if (!(sys_.fake_batteries_fail || sys_.fake_batteries)) {
+      // iterate through imd_ and set LEDs
+      for (GPIO* pin : imd_) {
+        uint8_t val = pin->read();     // will check every cycle of run()
+        if (val) {
+          for (int i = 0; i < data::Batteries::kNumLED; i++) {
+            green_led_[i]->clear();
+            log_.ERR("BMS-MANAGER", "IMD short! Green LED %d cleared", i);
+          }
         }
       }
     }
-
     // check health of batteries
     if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
       if (!batteriesInRange()) {
         log_.ERR("BMS-MANAGER", "battery failure detected");
         batteries_.module_status = data::ModuleStatus::kCriticalFailure;
         if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
-          kill_hp_->clear();
-          log_.ERR("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+          for (GPIO* pin : hp_ssr_) {
+            pin->clear();
+            log_.ERR("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+          }
         }
       }
     }
@@ -138,8 +141,10 @@ void BmsManager::run()
     data::State state = data_.getStateMachineData().current_state;
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
-        kill_hp_->clear();
-        log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
+        for (GPIO* pin : hp_ssr_) {
+          pin->clear();
+          log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
+        }
       }
     }
     sleep(100);
