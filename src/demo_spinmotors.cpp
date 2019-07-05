@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
@@ -8,18 +10,20 @@ using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using hyped::motor_control::Controller;
 
-int8_t readVel(const char* filepath)
+int32_t readVel(const char* filepath, Logger& log)
 {
   FILE* fp;
 
   fp = fopen(filepath, "r");
 
-  int8_t vel = 0;
+  int32_t vel = 0;
 
   if (fp == NULL) {
   } else {
     char line[255];
     fgets(line, 255, fp);
+    log.INFO("TEST", "line= %s",line);
+
     vel = std::atoi(line);
   }
   fclose(fp);
@@ -34,22 +38,24 @@ int main(int argc, char** argv) {
 
   controller.registerController();
   controller.configure();
+
+  int32_t vel = 0;
+  controller.sendTargetVelocity(vel);
   controller.enterOperational();
 
-  int8_t vel = 0;
   // Thread::sleep(1000);
   // controller.sendTargetVelocity(10);
 
   // Thread::sleep(100000);
 
-  // while(1) {
-  // vel = readVel("data/in/target_velocity_test.txt");
-
-  // controller.sendTargetVelocity(vel);
-  // Thread::sleep(1000);
-  // }
+  while(1) {
+  vel = readVel("data/in/target_velocity_test.txt", log);
+  log.INFO("TEST", "vel= %d", vel);
+  controller.sendTargetVelocity(vel);
+  Thread::sleep(1000);
+  }
   
-  controller.autoAlignMotorPosition();
+  // controller.autoAlignMotorPosition();
 
   // controller.sendTargetVelocity(50);
 
