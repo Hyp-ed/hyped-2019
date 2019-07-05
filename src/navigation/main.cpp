@@ -42,6 +42,7 @@ namespace navigation {
       State current_state = data.getStateMachineData().current_state;
 
     if (!sys_.tube_run) nav_.Navigation::disableKeyenceUsage();
+    if (sys_.fake_keyence) nav_.Navigation::setKeyenceFake();
 
     switch (current_state) {
         case State::kIdle :
