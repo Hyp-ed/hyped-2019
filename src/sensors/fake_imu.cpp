@@ -28,15 +28,15 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "data/data.hpp"
-#include "data/data_point.hpp"
 #include "sensors/fake_imu.hpp"
+#include "data/data_point.hpp"
 #include "utils/timer.hpp"
 #include "utils/math/statistics.hpp"
 
-
 namespace hyped {
+
 using utils::math::OnlineStatistics;
+
 namespace sensors {
 
 FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
@@ -143,7 +143,7 @@ void FakeImuFromFile::getData(ImuData* imu)
   if (state == data::State::kCalibrating) {
     // start cal
     if (!cal_started_) {
-      log_.INFO("Fake-IMUs", "Start calibrating ...");
+      log_.INFO("Fake-IMU", "Start calibrating ...");
       cal_started_ = true;
       startCal();
     }
@@ -157,7 +157,7 @@ void FakeImuFromFile::getData(ImuData* imu)
   } else if (state == data::State::kAccelerating) {
     // start acc
     if (!acc_started_) {
-      log_.INFO("Fake-IMUs", "Start accelerating ...");
+      log_.INFO("Fake-IMU", "Start accelerating ...");
       acc_started_ = true;
       startAcc();
     }
@@ -174,6 +174,9 @@ void FakeImuFromFile::getData(ImuData* imu)
       }
       if (is_fail_acc_) {
         if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_acc_ || failure_happened_) { // NOLINT [whitespace/line_length]
+          if (!failure_happened_) {
+            log_.INFO("Fake-IMU", "Start failure...");
+          }
           prev_acc_ = acc_fail_;
           operational = false;
           failure_happened_ = true;
@@ -183,7 +186,7 @@ void FakeImuFromFile::getData(ImuData* imu)
 
   } else if (state == data::State::kNominalBraking) {
     if (!dec_started_) {
-      log_.INFO("Fake-IMUs", "Start decelerating...");
+      log_.INFO("Fake-IMU", "Start decelerating...");
       dec_started_ = true;
       startDec();
     }
@@ -200,6 +203,9 @@ void FakeImuFromFile::getData(ImuData* imu)
       }
       if (is_fail_dec_) {
         if (utils::Timer::getTimeMicros() - imu_ref_time_ >= failure_time_dec_ || failure_happened_) { // NOLINT [whitespace/line_length]
+          if (!failure_happened_) {
+            log_.INFO("Fake-IMU", "Start failure...");
+          }
           prev_acc_ = acc_fail_;
           operational = false;
           failure_happened_ = true;
@@ -209,7 +215,7 @@ void FakeImuFromFile::getData(ImuData* imu)
 
   } else if (state == data::State::kEmergencyBraking) {
     if (!em_started_) {
-      log_.INFO("Fake-IMUs", "Start emergency breaking...");
+      log_.INFO("Fake-IMU", "Start emergency breaking...");
       em_started_ = true;
       startEm();
     }

@@ -64,7 +64,6 @@ bool FileReader::readFileData(ControllerMessage* messages, int len, const char* 
 
 void FileReader::splitData(std::basic_string<char> line, std::string lineData[])
 {
-  // TODO(Iain): Improve this implementation
   std::vector<std::string> tokens;
   std::stringstream check1(line);
   std::string intermediate;

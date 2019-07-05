@@ -34,14 +34,16 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            counter_(0),
            axis_(axis),
            calibration_limits_({0.05, 0.05, 0.05}),
+           imu_reliable_ {true, true, true, true},
+           nOutlierImus_(0),
            stripe_counter_(0, 0),
-           keyence_used(true),
+           keyence_used_(true),
            keyence_failure_counter_(0),
            acceleration_(0, 0.),
            velocity_(0, 0.),
            distance_(0, 0.),
-           distance_uncertainty(0.),
-           velocity_uncertainty(0.),
+           distance_uncertainty_(0.),
+           velocity_uncertainty_(0.),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -115,14 +117,19 @@ NavigationType Navigation::getBrakingDistance() const
   return braking_distance;
 }
 
+Navigation::NavigationVectorArray Navigation::getGravityCalibration() const
+{
+  return gravity_calibration_;
+}
+
 void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
-  std::array<RollingStatistics<NavigationType>, data::Sensors::kNumImus> online_array =
-    {RollingStatistics<NavigationType>(kCalibrationQueries),
-     RollingStatistics<NavigationType>(kCalibrationQueries),
-     RollingStatistics<NavigationType>(kCalibrationQueries),
-     RollingStatistics<NavigationType>(kCalibrationQueries)};
+  std::array<RollingStatistics<NavigationVector>, data::Sensors::kNumImus> online_array =
+    {RollingStatistics<NavigationVector>(kCalibrationQueries),
+     RollingStatistics<NavigationVector>(kCalibrationQueries),
+     RollingStatistics<NavigationVector>(kCalibrationQueries),
+     RollingStatistics<NavigationVector>(kCalibrationQueries)};
   bool calibration_successful = false;
   int calibration_attempts = 0;
 
@@ -133,15 +140,17 @@ void Navigation::calibrateGravity()
     for (int i = 0; i < kCalibrationQueries; ++i) {
       sensor_readings_ = data_.getSensorsImuData();
       for (int j = 0; j < data::Sensors::kNumImus; ++j) {
-        online_array[j].update(sensor_readings_.value[j].acc[axis_]);
+        online_array[j].update(sensor_readings_.value[j].acc);
       }
       Thread::sleep(1);
     }
     // Check if each calibration's variance is acceptable
     calibration_successful = true;
     for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-      bool var_within_lim = online_array[i].getVariance() < calibration_limits_[axis_];
-      calibration_successful = calibration_successful && var_within_lim;
+      for (int j = 0; j < 3; ++j) {
+        bool var_within_lim = online_array[i].getVariance()[j] < calibration_limits_[j];
+        calibration_successful = calibration_successful && var_within_lim;
+      }
     }
     calibration_attempts++;
   }
@@ -151,10 +160,15 @@ void Navigation::calibrateGravity()
     log_.INFO("NAV", "Calibration of IMU acceleration succeeded with final readings:");
     for (int i = 0; i < data::Sensors::kNumImus; ++i) {
       gravity_calibration_[i] = online_array[i].getMean();
-      double var = online_array[i].getVariance();
+      double var = 0.0;
+      for (int j = 0; j < 3; ++j) {
+        var += online_array[i].getVariance()[j];
+      }
       filters_[i].updateMeasurementCovarianceMatrix(var);
 
-      log_.INFO("NAV", "\tIMU %d: g=%.5f, var=%.5f", i, gravity_calibration_[i], var);
+      log_.INFO("NAV", "\tIMU %d: g=(%.5f, %.5f, %.5f), var=%.5f",
+              i, gravity_calibration_[i][0], gravity_calibration_[i][1],
+              gravity_calibration_[i][2], var);
     }
     status_ = ModuleStatus::kReady;
     updateData();
@@ -162,15 +176,29 @@ void Navigation::calibrateGravity()
   } else {
     log_.INFO("NAV", "Calibration of IMU acceleration failed with final readings:");
     for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-      double acc = online_array[i].getMean();
-      double var = online_array[i].getVariance();
+      NavigationVector acc = online_array[i].getMean();
+      double var = 0.0;
+      for (int j = 0; j < 3; ++j) {
+        var += online_array[i].getVariance()[j];
+      }
 
-      log_.INFO("NAV", "\tIMU %d: g=%.5f, var=%.5f", i, acc, var);
+      log_.INFO("NAV", "\tIMU %d: g=(%.5f, %.5f, %.5f), var=%.5f", i, acc[0], acc[1], acc[2], var);
     }
     status_ = ModuleStatus::kCriticalFailure;
     updateData();
     log_.INFO("NAV", "Navigation module failed on calibration");
   }
+}
+
+NavigationType Navigation::accNorm(NavigationVector& acc)
+{
+  NavigationType norm = 0.0;
+  for (unsigned int i = 0; i < 3; i ++) {
+      NavigationType a = acc[i];
+      norm += a*a;
+  }
+  norm = sqrt(norm);
+  return norm;
 }
 
 void Navigation::queryImus()
@@ -181,13 +209,19 @@ void Navigation::queryImus()
   uint32_t t = sensor_readings_.timestamp;
   // process raw values
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    acc_raw[i] = sensor_readings_.value[i].acc[axis_] - gravity_calibration_[i];
+    if (!imu_reliable_[i]) { acc_raw[i] = 0;
+    } else {
+      NavigationVector a = sensor_readings_.value[i].acc - gravity_calibration_[i];
+      acc_raw[i] = accNorm(a) * (1 - 2 * (a[axis_] < 0));
+    }
   }
   tukeyFences(acc_raw, kTukeyThreshold);
-  // Kalman filter the readings
+  // Kalman filter the readings which are reliable
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    NavigationType estimate = filters_[i].filter(acc_raw[i]);
-    acc_avg_filter.update(estimate);
+    if (imu_reliable_[i]) {
+      NavigationType estimate = filters_[i].filter(acc_raw[i]);
+      acc_avg_filter.update(estimate);
+    }
   }
   acceleration_.value = acc_avg_filter.getMean();
   acceleration_.timestamp = t;
@@ -200,10 +234,10 @@ void Navigation::updateUncertainty()
 {
   /* Uncertainty from measuring is the timestamp between two measurements times velocity.
    * Furthermore, the velocity has an uncertainty due to acceleration and timestamp. */
-  double delta_t = (distance_.timestamp - prev_timestamp)/1000000.0;
-  NavigationType abs_delta_acc = abs(getAcceleration() - prev_acc);
+  double delta_t = (distance_.timestamp - prev_timestamp_)/1000000.0;
+  NavigationType abs_delta_acc = abs(getAcceleration() - prev_acc_);
   // Adds uncertainty from the possible shift in both directions in the timestamp
-  velocity_uncertainty += abs_delta_acc*delta_t/2;
+  velocity_uncertainty_ += abs_delta_acc*delta_t/2.;
   // Adds uncertainty from the variance in acceleration from measurements
   NavigationType acc_variance = 0.0;
   for (int i = 0; i < data::Sensors::kNumImus; i++) {
@@ -214,9 +248,11 @@ void Navigation::updateUncertainty()
   // Standard deviation
   NavigationType acc_stdDev = sqrt(acc_variance);
   // uncertainty is the std deviation integrated to give velocity
-  velocity_uncertainty += acc_stdDev*delta_t;
+  velocity_uncertainty_ += acc_stdDev*delta_t;
   // Hence uncertainty in distance becomes updated with:
-  distance_uncertainty += velocity_uncertainty*delta_t;
+  distance_uncertainty_ += velocity_uncertainty_*delta_t;
+  // Also, distance will be affected by taking the average of two velocities
+  distance_uncertainty_ += abs(getVelocity() - prev_vel_) * delta_t / 2.;
 }
 
 void Navigation::queryKeyence()
@@ -233,7 +269,7 @@ void Navigation::queryKeyence()
 
       // Allow up to one missed stripe.
       // There must be some uncertainty in distance around the missed 30.48m.
-      double allowed_uncertainty = distance_uncertainty;  // Temporary value
+      double allowed_uncertainty = distance_uncertainty_;  // Temporary value
       NavigationType distance_change = distance_.value - stripe_counter_.value*30.48;
       if (distance_change > 30.48 - allowed_uncertainty &&
           distance_change < 30.48 + allowed_uncertainty &&
@@ -249,16 +285,20 @@ void Navigation::queryKeyence()
       if ((distance_change < -allowed_uncertainty  ||
            distance_change >  allowed_uncertainty) &&
            stripe_counter_.value > 1) {
-        // TODO(Justus) what happens in case of keyence failure?
         keyence_failure_counter_++;
       }
+      // If there is more than one disagreement, we get kCriticalFailure
+      if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
       // Lower the uncertainty in velocity:
-      velocity_uncertainty -= abs(distance_change*1e6/stripe_counter_.timestamp);
+      velocity_uncertainty_ -= abs(distance_change*1e6/(2*
+                               (stripe_counter_.timestamp - init_timestamp_)));
+      log_.INFO("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
+      log_.INFO("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
       // Make sure velocity uncertainty is positive.
-      velocity_uncertainty = abs(velocity_uncertainty);
+      velocity_uncertainty_ = abs(velocity_uncertainty_);
       // The uncertainty in distance is not changed from this because the impact is far too large
-      // Update velocity value, TODO(Justus) fix an initial timestamp to compare
-      velocity_.value -= distance_change*1e6/stripe_counter_.timestamp;
+      // Update velocity value
+      velocity_.value -= distance_change*1e6/(stripe_counter_.timestamp - init_timestamp_);
       // Update distance value
       distance_.value -= distance_change;
       break;
@@ -269,30 +309,100 @@ void Navigation::queryKeyence()
 
 void Navigation::disableKeyenceUsage()
 {
-  keyence_used = false;
+  keyence_used_ = false;
 }
+
 // TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
 void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
 {
-  // copy the original array for sorting
-  NavigationArray data_array_copy = data_array;
-  // find the quartiles
-  std::sort(data_array_copy.begin(), data_array_copy.end());
-  float q1 = (data_array_copy[0]+data_array_copy[1]) / 2.;
-  float q2 = (data_array_copy[1]+data_array_copy[2]) / 2.;
-  float q3 = (data_array_copy[2]+data_array_copy[3]) / 2.;
-  float iqr = q3 - q1;
+  // Define the quartiles first:
+  float q1 = 0;
+  float q2 = 0;
+  float q3 = 0;
+  // The most likely case is that all four IMUs are still reliable:
+  if (nOutlierImus_ == 0) {
+    // copy the original array for sorting
+    NavigationArray data_array_copy = data_array;
+    // find the quartiles
+    std::sort(data_array_copy.begin(), data_array_copy.end());
+    q1 = (data_array_copy[0]+data_array_copy[1]) / 2.;
+    q2 = (data_array_copy[1]+data_array_copy[2]) / 2.;
+    q3 = (data_array_copy[2]+data_array_copy[3]) / 2.;
+  // The second case is that one IMU is faulty
+  } else if (nOutlierImus_ == 1) {
+    // select non-outlier values
+    NavigationArrayOneFaulty data_array_faulty;
+    if (!imu_reliable_[0]) {
+      data_array_faulty = {data_array[1], data_array[2], data_array[3]};
+    } else if (!imu_reliable_[1]) {
+      data_array_faulty = {data_array[0], data_array[2], data_array[3]};
+    } else if (!imu_reliable_[2]) {
+      data_array_faulty = {data_array[0], data_array[1], data_array[3]};
+    } else if (!imu_reliable_[3]) {
+      data_array_faulty = {data_array[0], data_array[1], data_array[2]};
+    }
+    std::sort(data_array_faulty.begin(), data_array_faulty.end());
+    q1 = (data_array_faulty[0] + data_array_faulty[1]) / 2.;
+    q2 =  data_array_faulty[1];
+    q3 = (data_array_faulty[1] + data_array_faulty[2]) / 2.;
+  } else if (nOutlierImus_ < 4) {
+    // set all 0.0 IMUs to non-zero avg
+    float sum_non_outliers = 0.0;
+    unsigned int num_non_outliers = 0;
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      if (data_array[i] != 0.0) {
+        // no outlier
+        num_non_outliers += 1;
+        sum_non_outliers += data_array[i];
+      }
+    }
+    for (int i = 0; i < data::Sensors::kNumImus; ++i) {
+      data_array[i] = sum_non_outliers / num_non_outliers;
+    }
+    // do not check for further outliers because no reliable detection could be made!
+    return;
+  }
   // find the thresholds
+  float iqr = q3 - q1;
+  // clip IQR to upper bound to avoid issues with very large outliers
+  if (iqr > kTukeyIQRBound) {
+    iqr = kTukeyIQRBound;
+  }
   float upper_limit = q3 + threshold*iqr;
   float lower_limit = q1 - threshold*iqr;
   // replace any outliers with the median
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
-    if (data_array[i] < lower_limit or data_array[i] > upper_limit) {
-      log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f. Updated to %.3f", //NOLINT
-                       i, data_array[i], q2);
+    if ((data_array[i] < lower_limit or data_array[i] > upper_limit) && imu_reliable_[i]) {
+      log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f not in [%.3f, %.3f]. Updated to %.3f", //NOLINT
+                i+1, data_array[i], lower_limit, upper_limit, q2);
+      // log_.INFO("NAV", "Outlier detected with quantiles: %.3f, %.3f, %.3f", q1, q2, q3);
+
       data_array[i] = q2;
+      imu_outlier_counter_[i]++;
+      // If this counter exceeds some threshold then that IMU is deemed unreliable
+      if (imu_outlier_counter_[i] > 1000 && imu_reliable_[i]) {
+        // log_.INFO("NAV", "IMU%d is an outlier!", i + 1);
+        imu_reliable_[i] = false;
+        nOutlierImus_++;
+      }
+      if (nOutlierImus_ > 1) status_ = ModuleStatus::kCriticalFailure;
+    } else {
+      imu_outlier_counter_[i] = 0;
+      if (counter_ % 100 == 0 && imu_reliable_[i]) {
+        /*
+         * log_.INFO("NAV", "No Outlier detected in IMU %d, reading: %.3f in [%.3f, %.3f]",
+         *           i+1, data_array[i], lower_limit, upper_limit);
+         */
+      }
     }
   }
+  /*
+   * if (counter_ % 100 == 0) {
+   *   log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
+   *    imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
+   *   log_.INFO("NAV", "Number of outliers: %d", nOutlierImus_);
+   * }
+   */
 }
 
 void Navigation::updateData()
@@ -307,23 +417,24 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  if (counter_ % 10 == 0) {  // kPrintFreq
+  if (counter_ % 100 == 0) {  // kPrintFreq
     log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
-                     counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
-                     stripe_counter_.value*30.48);
+               counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
+               stripe_counter_.value*30.48);
     log_.INFO("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
-                 counter_, velocity_uncertainty, distance_uncertainty, keyence_failure_counter_);
+               counter_, velocity_uncertainty_, distance_uncertainty_, keyence_failure_counter_);
   }
   counter_++;
   // Update all prev measurements
-  prev_timestamp = distance_.timestamp;
-  prev_acc = getAcceleration();
+  prev_timestamp_ = distance_.timestamp;
+  prev_acc_ = getAcceleration();
+  prev_vel_ = getVelocity();
 }
 
 void Navigation::navigate()
 {
   queryImus();
-  if (keyence_used) queryKeyence();
+  if (keyence_used_) queryKeyence();
   updateUncertainty();
   updateData();
 }
@@ -334,10 +445,13 @@ void Navigation::initTimestamps()
   acceleration_.timestamp = utils::Timer::getTimeMicros();
   velocity_    .timestamp = utils::Timer::getTimeMicros();
   distance_    .timestamp = utils::Timer::getTimeMicros();
-  prev_timestamp = utils::Timer::getTimeMicros();
+  prev_acc_ = getAcceleration();
+  prev_vel_ = getVelocity();
+  init_timestamp_ = utils::Timer::getTimeMicros();
+  log_.INFO("NAV", "Initial timestamp:%d", init_timestamp_);
+  prev_timestamp_ = utils::Timer::getTimeMicros();
   // First iteration --> get initial keyence data
   // (should be zero counters and corresponding timestamp)
   prev_keyence_readings_ = data_.getSensorsKeyenceData();
 }
-
 }}  // namespace hyped::navigation

@@ -24,12 +24,9 @@
 #include "sensors/bms_manager.hpp"
 
 #include "sensors/bms.hpp"
-#include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "sensors/fake_batteries.hpp"
-
-constexpr int kHPSSR = 70;
-constexpr int kLPSSR = 71;
+#include "utils/config.hpp"
 
 namespace hyped {
 namespace sensors {
@@ -48,16 +45,31 @@ BmsManager::BmsManager(Logger& log)
       bms->start();
       bms_[i] = bms;
     }
+    // create BMS HP
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
     }
+
     // Set SSR switches for real system
-    kill_hp_ = new GPIO(kHPSSR, utils::io::gpio::kOut);
-    kill_lp_ = new GPIO(kLPSSR, utils::io::gpio::kOut);
-    kill_hp_->set();
-    kill_lp_->set();    // kHPSSR and kLPSSR set low if no power to BBB
-    log_.INFO("BMS-MANAGER", "HP SSR %d has been set", kHPSSR);
-    log_.INFO("BMS-MANAGER", "LP SSR %d has been set", kLPSSR);
+    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+      hp_ssr_[i] = new GPIO(sys_.config->sensors.HPSSR[i], utils::io::gpio::kOut);
+      hp_ssr_[i]->set();
+      log_.INFO("BMS-MANAGER", "HP SSR %d has been set", i);
+    }
+    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+      lp_ssr_[i] = new GPIO(sys_.config->sensors.LPSSR[i], utils::io::gpio::kOut);
+      lp_ssr_[i]->set();
+      log_.INFO("BMS-MANAGER", "LP SSR %d has been set", i);
+    }
+
+    // IMD and LED initialisation
+    for (int i = 0; i < data::Batteries::kNumIMD; i++) {
+      imd_[i] = new GPIO(sys_.config->sensors.IMD[i], utils::io::gpio::kIn);
+    }
+    for (int i = 0; i < data::Batteries::kNumLED; i++) {
+      green_led_[i] = new GPIO(sys_.config->sensors.LED[i], utils::io::gpio::kOut);
+      green_led_[i]->set();
+    }
   } else if (sys_.fake_batteries_fail) {
     // fake batteries fail here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -97,26 +109,43 @@ void BmsManager::run()
       if (!bms_[i + data::Batteries::kNumLPBatteries]->isOnline())
         batteries_.high_power_batteries[i].voltage = 0;
     }
+
+    if (!(sys_.fake_batteries_fail || sys_.fake_batteries)) {
+      // iterate through imd_ and set LEDs
+      for (GPIO* pin : imd_) {
+        uint8_t val = pin->read();     // will check every cycle of run()
+        if (val) {
+          for (int i = 0; i < data::Batteries::kNumLED; i++) {
+            green_led_[i]->clear();
+            log_.ERR("BMS-MANAGER", "IMD short! Green LED %d cleared", i);
+          }
+        }
+      }
+    }
     // check health of batteries
     if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
       if (!batteriesInRange()) {
         log_.ERR("BMS-MANAGER", "battery failure detected");
         batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-
-        // set low to kHPSSR if batteries is kCriticalFailure
-        // batteries module status forces kEmergencyBraking, which actuates embrakes
-        kill_hp_->clear();
-        log_.INFO("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+        if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
+          for (GPIO* pin : hp_ssr_) {
+            pin->clear();
+            log_.ERR("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
+          }
+        }
       }
     }
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    // set low to kHPSSR if pod in emergency states
     data::State state = data_.getStateMachineData().current_state;
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
-      kill_hp_->clear();
-      log_.INFO("BMS-MANAGER", "Emergency State! HP SSR cleared");
+      if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
+        for (GPIO* pin : hp_ssr_) {
+          pin->clear();
+          log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
+        }
+      }
     }
     sleep(100);
   }
@@ -137,8 +166,8 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.temperature < 10 || battery.temperature > 60) {  // temperature in 10C to 60C
-      log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.temperature);
+    if (battery.average_temperature < 10 || battery.average_temperature > 60) {  // NOLINT[whitespace/line_length] temperature in 10C to 60C
+      log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
 
@@ -161,8 +190,18 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.temperature < 10 || battery.temperature > 65) {  // temperature in 10C to 65C
-      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.temperature);
+    if (battery.average_temperature < 10 || battery.average_temperature > 65) {  // NOLINT[whitespace/line_length] temperature in 10C to 65C
+      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
+      return false;
+    }
+
+    if (battery.low_temperature < 10) {
+      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.low_temperature); // NOLINT[whitespace/line_length]
+      return false;
+    }
+
+    if (battery.high_temperature > 65) {
+      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.high_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
 

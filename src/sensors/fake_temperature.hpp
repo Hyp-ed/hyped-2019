@@ -24,7 +24,6 @@
 #include <string>
 
 #include "utils/logger.hpp"
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 
 namespace hyped {

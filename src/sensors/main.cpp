@@ -21,15 +21,11 @@
 #include "sensors/main.hpp"
 #include "sensors/imu_manager.hpp"
 #include "sensors/bms_manager.hpp"
-#include "sensors/temperature.hpp"
 #include "sensors/gpio_counter.hpp"
+#include "sensors/temperature.hpp"
 #include "sensors/fake_gpio_counter.hpp"
 #include "sensors/fake_temperature.hpp"
-
-
-constexpr int kKeyencePinLeft = 72;
-constexpr int kKeyencePinRight = 74;
-constexpr int kThermistorPin = 3;
+#include "utils/config.hpp"
 
 namespace hyped {
 
@@ -38,8 +34,6 @@ using utils::System;
 using data::Data;
 using data::Sensors;
 using data::StripeCounter;
-using data::SensorCalibration;
-
 
 namespace sensors {
 
@@ -48,7 +42,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     data_(data::Data::getInstance()),
     sys_(utils::System::getSystem()),
     log_(log),
-    pins_ {kKeyencePinLeft, kKeyencePinRight},
+    pins_ {static_cast<uint8_t>(sys_.config->sensors.KeyenceL), static_cast<uint8_t>(sys_.config->sensors.KeyenceR)}, // NOLINT
     imu_manager_(new ImuManager(log)),
     battery_manager_(new BmsManager(log))
 {
@@ -69,7 +63,7 @@ Main::Main(uint8_t id, utils::Logger& log)
     }
   }
   if (!(sys_.fake_temperature || sys_.fake_temperature_fail)) {
-    temperature_ = new Temperature(log_, kThermistorPin);
+    temperature_ = new Temperature(log_, sys_.config->sensors.Thermistor);
   } else if (sys_.fake_temperature_fail) {
     // fake temperature fail case
     temperature_ = new FakeTemperature(log_, true);
@@ -80,7 +74,7 @@ Main::Main(uint8_t id, utils::Logger& log)
   sensors_ = data_.getSensorsData();
   sensors_.module_status = data::ModuleStatus::kInit;
   data_.setSensorsData(sensors_);
-  log_.INFO("SENSORS-MAIN", "Sensors have been initialised");
+  log_.INFO("Sensors", "Sensors have been initialised");
 }
 
 bool Main::keyencesUpdated()
@@ -92,12 +86,12 @@ bool Main::keyencesUpdated()
   return false;
 }
 
-bool Main::temperatureInRange()    // TODO(anyone): add true temperature range
+bool Main::temperatureInRange()    // TODO(anyone): add true nominal temperature range of PCB
 {
   auto temperature = data_.getTemperature();
-  log_.DBG1("SENSORS-MAIN", "Temperature from data struct: %d", temperature);
+  log_.DBG1("Sensors", "Temperature from data struct: %d", temperature);
   if (temperature < -10 || temperature > 60) {  // temperature in -10C to 60C
-    log_.ERR("SENSORS-MAIN", "Temperature out of range: %d", temperature);
+    log_.ERR("Sensors", "Temperature out of range: %d", temperature);
     return false;
   }
   return true;
@@ -108,16 +102,16 @@ void Main::checkTemperature()
   temperature_->run();               // not a thread
   data_.setTemperature(temperature_->getData());
   if (!temperatureInRange()) {
-    log_.ERR("SENSORS-MAIN", "Temperature out of range: Critical Failure!");
+    log_.ERR("Sensors", "Temperature out of range: Critical Failure!");
     auto status = data_.getSensorsData();
     status.module_status = data::ModuleStatus::kCriticalFailure;
-    data_.setSensorsData(status);    // TemperatureData not part of Sensors
+    data_.setSensorsData(status);    // critical PCB temperature would make sensors unreliable
   }
 }
 
 void Main::run()
 {
-// start all managers
+  // start all managers
   imu_manager_->start();
   battery_manager_->start();
 

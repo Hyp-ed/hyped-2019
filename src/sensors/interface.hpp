@@ -2,7 +2,7 @@
  * Author: Uday Patel, Jack Horsburgh and Ragnor Comerford
  * Organisation: HYPED
  * Date: 28/05/18
- * Description: Main interface for IMU class.
+ * Description: Main sensor interfaces, used to create fake sensors
  *
  *    Copyright 2018 HYPED
  *    Licensed under the Apache License, Version 2.0 (the "License");

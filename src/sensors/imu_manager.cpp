@@ -23,31 +23,31 @@
 
 #include "sensors/imu.hpp"
 #include "sensors/fake_imu.hpp"
-#include "data/data.hpp"
 #include "utils/timer.hpp"
+#include "utils/config.hpp"
 
 namespace hyped {
 
 using data::Data;
 using data::Sensors;
 using utils::System;
-using data::NavigationVector;
-using data::SensorCalibration;
 
 namespace sensors {
 ImuManager::ImuManager(Logger& log)
     : ImuManagerInterface(log),
       sys_(System::getSystem()),
-      data_(Data::getInstance()),
-      chip_select_ {47, 22, 36, 86}
+      data_(Data::getInstance())
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
-  utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);
 
   if (!(sys_.fake_imu || sys_.fake_imu_fail)) {
+    utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k1MHz);
+
     for (int i = 0; i < data::Sensors::kNumImus; i++) {   // creates new real IMU objects
-      imu_[i] = new Imu(log, chip_select_[i], 0x08);
+      imu_[i] = new Imu(log, sys_.config->sensors.chip_select[i], 0x08);
     }
+
+    utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
   } else if (sys_.fake_imu_fail) {
     for (int i = 0; i < data::Sensors::kNumImus; i++) {
       // change params to fail in kAcccelerating or kNominalBraking states
@@ -64,7 +64,6 @@ ImuManager::ImuManager(Logger& log)
                                     "data/in/decel_state.txt", false, false);
     }
   }
-  utils::io::SPI::getInstance().setClock(utils::io::SPI::Clock::k20MHz);
   log_.INFO("IMU-MANAGER", "imu data has been initialised");
 }
 

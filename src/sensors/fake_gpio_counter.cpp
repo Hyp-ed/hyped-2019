@@ -27,19 +27,15 @@
 
 #include "sensors/fake_gpio_counter.hpp"
 #include "utils/timer.hpp"
-#include "data/data.hpp"
-#include "utils/concurrent/thread.hpp"
 
 uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
 double kStripeDistance = 30.48;     // metres
 uint64_t kMaxTime = 1500;     // between stripe readings before throw failure (micros)
 
-
 namespace hyped {
 
 using data::StripeCounter;
-using utils::concurrent::Thread;
 using utils::Logger;
 
 namespace sensors {
@@ -54,11 +50,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
-  if (miss_stripe_) {
-    log_.INFO("Fake-GpioCounter", "Fake Keyence Fail initialised");
-  } else {
-    log_.INFO("Fake-GpioCounter", "Fake Keyence initialised");
-  }
 }
 
 FakeGpioCounter::FakeGpioCounter(Logger& log,
@@ -75,6 +66,11 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
   stripe_count_.operational = true;
   stripe_count_.count.timestamp = 0;
   readFromFile(stripe_data_);           // read text from file into vector class member
+  if (miss_stripe_) {
+    log_.INFO("Fake-GpioCounter", "Fake Keyence Fail initialised");
+  } else {
+    log_.INFO("Fake-GpioCounter", "Fake Keyence initialised");
+  }
 }
 
 StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect stripe count
@@ -87,7 +83,10 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
 
   if (is_from_file_) {
     // Get time in micro seconds and iterate through the vector until we find what stripe we are at
-    uint64_t time_now_micro = (utils::Timer::getTimeMicros() - accel_ref_time_)/1000;
+    uint64_t time_now_micro = 0;
+    if (acc_ref_init_) {
+      time_now_micro = (utils::Timer::getTimeMicros() - accel_ref_time_);
+    }
     for (StripeCounter stripe : stripe_data_) {
       if (stripe.count.timestamp < time_now_micro) {
         stripe_count_.count.value = stripe.count.value;
@@ -114,10 +113,13 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
 void FakeGpioCounter::checkData()
 {
   if (is_from_file_) {
-    uint64_t time_after = ((utils::Timer::getTimeMicros() - accel_ref_time_)/1000) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
-    log_.DBG("FakeGpioCounter", "time_after: %d", time_after);
+    uint64_t time_after = 0;
+    if (acc_ref_init_) {
+      time_after = (utils::Timer::getTimeMicros() - accel_ref_time_) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
+    }
+    log_.DBG1("Fake-GpioCounter", "time_after: %d", time_after);
     if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
-      log_.INFO("FakeGpioCounter", "missed stripe!");
+      log_.INFO("Fake-GpioCounter", "missed stripe!");
       stripe_count_.operational = false;
     }
   }
@@ -133,11 +135,12 @@ void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
       while (data_file >> time && data_file >> count) {
         StripeCounter this_line;
         this_line.count.value = count;
-        this_line.count.timestamp = time;
+        // save timestamps in Microseconds
+        this_line.count.timestamp = time*1000;
         stripe_data_.push_back(this_line);
       }
     } else {
-      log_.ERR("FakeGpioCounter", "cannot open file");
+      log_.ERR("Fake-GpioCounter", "cannot open file");
     }
     data_file.close();
   }

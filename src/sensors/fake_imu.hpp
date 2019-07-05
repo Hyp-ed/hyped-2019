@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/logger.hpp"
 
@@ -139,6 +138,10 @@ class FakeImuFromFile : public ImuInterface {
   std::vector<bool>             em_val_operational_;
 
   int64_t acc_count_;
+
+  /**
+   * @brief scales time based on getTimeMicros() and timestamps from file
+   */
   uint64_t imu_ref_time_;
   std::string acc_file_path_;
   std::string dec_file_path_;

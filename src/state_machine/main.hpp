@@ -33,6 +33,7 @@ namespace hyped {
 
 using utils::concurrent::Thread;
 using utils::Logger;
+using data::ModuleStatus;
 
 namespace state_machine {
 

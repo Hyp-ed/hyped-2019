@@ -19,17 +19,14 @@
  */
 
 #include <stdio.h>
-#include "utils/concurrent/thread.hpp"
 #include "utils/io/gpio.hpp"
 #include "utils/timer.hpp"
 #include "sensors/gpio_counter.hpp"
-
 
 namespace hyped {
 
 using data::Data;
 using data::StripeCounter;
-using utils::concurrent::Thread;
 using utils::io::GPIO;
 using hyped::utils::Logger;
 
@@ -52,7 +49,7 @@ void GpioCounter::run()
     val = thepin.wait();
     if (val == 1) {
       stripe_counter_.count.value = stripe_counter_.count.value+1;
-      log_.DBG1("KEYENCE-TEST", "Stripe Count: %d", stripe_counter_.count.value);
+      log_.DBG1("TEST-KEYENCE", "Stripe Count: %d", stripe_counter_.count.value);
       stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
       stripe_counter_.operational = true;
     }

@@ -49,12 +49,13 @@ namespace navigation {
 
   class Navigation {
     public:
-      typedef std::array<ImuData, data::Sensors::kNumImus>           ImuDataArray;
-      typedef DataPoint<ImuDataArray>                                ImuDataPointArray;
-      typedef std::array<NavigationType, data::Sensors::kNumImus>    NavigationArray;
-      typedef std::array<KalmanFilter, data::Sensors::kNumImus>      FilterArray;
-      typedef array<data::StripeCounter, data::Sensors::kNumKeyence> KeyenceDataArray;
-
+      typedef std::array<ImuData, data::Sensors::kNumImus>            ImuDataArray;
+      typedef DataPoint<ImuDataArray>                                 ImuDataPointArray;
+      typedef std::array<NavigationVector, data::Sensors::kNumImus>   NavigationVectorArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus>     NavigationArray;
+      typedef std::array<NavigationType, data::Sensors::kNumImus - 1> NavigationArrayOneFaulty;
+      typedef std::array<KalmanFilter, data::Sensors::kNumImus>       FilterArray;
+      typedef array<data::StripeCounter, data::Sensors::kNumKeyence>  KeyenceDataArray;
 
       /**
        * @brief Construct a new Navigation object
@@ -105,7 +106,7 @@ namespace navigation {
        *
        * @return NavitationArray recorded gravitational acceleration [m/s^2]
        */
-      NavigationArray getGravityCalibration() const;
+      NavigationVectorArray getGravityCalibration() const;
       /**
        * @brief Determine the value of gravitational acceleration measured by sensors at rest
        */
@@ -141,7 +142,8 @@ namespace navigation {
 
       static constexpr int kPrintFreq = 1;
       static constexpr NavigationType kEmergencyDeceleration = 24;
-      static constexpr float kTukeyThreshold = 0.75;
+      static constexpr float kTukeyThreshold = 1;  // 0.75
+      static constexpr float kTukeyIQRBound = 3;
 
       // System communication
       Logger& log_;
@@ -160,6 +162,13 @@ namespace navigation {
       // Kalman filters to filter each IMU measurement individually
       FilterArray filters_;
 
+      // Counter for consecutive outlier output from each IMU
+      std::array<uint32_t, data::Sensors::kNumImus> imu_outlier_counter_;
+      // Array of booleans to signify which IMUs are reliable or faulty
+      std::array<bool, data::Sensors::kNumImus> imu_reliable_;
+      // Counter of how many IMUs have failed
+      uint32_t nOutlierImus_;
+
       // Stripe counter (rolling values)
       DataPoint<uint32_t> stripe_counter_;
       // Keyence data read
@@ -167,7 +176,7 @@ namespace navigation {
       // Previous keyence data for comparison
       KeyenceDataArray prev_keyence_readings_;
       // Are the keyence sensors used or ignored?
-      bool keyence_used;
+      bool keyence_used_;
       // This counts the number of times the keyence readings disagree with the IMU data more than
       // allowed due to uncertainty. It is used at the moment to check if the calculated
       // uncertainty is acceptable.
@@ -179,21 +188,29 @@ namespace navigation {
       DataPoint<NavigationType> acceleration_;
       DataPoint<NavigationType> velocity_;
       DataPoint<NavigationType> distance_;
-      NavigationArray gravity_calibration_;
+      NavigationVectorArray gravity_calibration_;
 
+      // Initial timestamp (for comparisons)
+      uint32_t init_timestamp_;
       // Previous timestamp
-      uint32_t prev_timestamp;
+      uint32_t prev_timestamp_;
       // Uncertainty in distance
-      NavigationType distance_uncertainty;
+      NavigationType distance_uncertainty_;
       // Uncertainty in velocity
-      NavigationType velocity_uncertainty;
+      NavigationType velocity_uncertainty_;
       // Previous acceleration measurement, necessary for uncertainty determination
-      NavigationType prev_acc;
+      NavigationType prev_acc_;
+      // Previous velocity measurement
+      NavigationType prev_vel_;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
       Integrator<NavigationType> velocity_integrator_;      // velocity to distance
 
+      /**
+       * @brief Compute norm of acceleration measurement
+       */
+      NavigationType accNorm(NavigationVector& acc);
       /**
        * @brief Query sensors to determine acceleration, velocity and distance
        */

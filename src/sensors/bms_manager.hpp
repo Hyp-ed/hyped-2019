@@ -27,15 +27,12 @@
 
 #include "sensors/manager_interface.hpp"
 
-#include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/system.hpp"
 #include "utils/io/gpio.hpp"
 
 namespace hyped {
 
-using utils::concurrent::Thread;
 using utils::Logger;
 using hyped::data::BatteryData;
 using utils::io::GPIO;
@@ -43,8 +40,6 @@ using utils::io::GPIO;
 namespace sensors {
 
 class BmsManager: public ManagerInterface  {
-  typedef array<BatteryData, data::Batteries::kNumLPBatteries> BatteriesLP;
-  typedef array<BatteryData, data::Batteries::kNumHPBatteries> BatteriesHP;
  public:
   explicit BmsManager(Logger& log);
   void run()                override;
@@ -52,15 +47,41 @@ class BmsManager: public ManagerInterface  {
  private:
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
-  GPIO* kill_hp_;
-  GPIO* kill_lp_;
-
   /**
    * @brief needs to be references because run() passes directly to data struct
-   *
    */
   data::Data&     data_;
+
+  /**
+   * @brief HPSSR held high in nominal states, cleared when module failure or pod emergency state
+   *        Batteries module status forces kEmergencyBraking, which actuates embrakes
+   */
+  GPIO* hp_ssr_[data::Batteries::kNumHPBatteries];
+
+  /**
+   * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared
+   */
+  GPIO* lp_ssr_[data::Batteries::kNumHPBatteries];
+
+  /**
+   * @brief insulation monitoring device held high if possible battery short
+   */
+  GPIO* imd_[data::Batteries::kNumIMD];
+
+  /**
+   * @brief ON- no short indication from imd_
+   *        OFF- possible short indication from imd_
+   */
+  GPIO* green_led_[data::Batteries::kNumLED];
+
+  /**
+   * @brief holds LP BatteryData, HP BatteryData, and module_status
+   */
   data::Batteries batteries_;
+
+  /**
+   * @brief checks voltage, current, temperature, and charge
+   */
   bool batteriesInRange();
 };
 

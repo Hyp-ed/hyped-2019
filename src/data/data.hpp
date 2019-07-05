@@ -90,30 +90,29 @@ struct Sensors : public Module {
   array<StripeCounter, kNumKeyence>  keyence_stripe_counter;
 };
 
-struct SensorCalibration {
-  array<NavigationVector, Sensors::kNumImus> imu_variance;
-};
-
 struct BatteryData {
   uint16_t  voltage;  // V
   int16_t   current;  // mA
   uint8_t   charge;
-  int8_t    temperature;  // C
+  int8_t    low_temperature;  // for BMSHP only, BMSLP value=0
+  int8_t    average_temperature;  // C
+  int8_t    high_temperature;  // for BMSHP only, BMSLP value=0
   uint16_t  low_voltage_cell;  // V
   uint16_t  high_voltage_cell;  // V
 };
 
 struct Batteries : public Module {
-  static constexpr int kNumLPBatteries = 2;
+  static constexpr int kNumLPBatteries = 3;
   static constexpr int kNumHPBatteries = 3;
+  static constexpr int kNumIMD = 6;
+  static constexpr int kNumLED = 2;
 
   array<BatteryData, kNumLPBatteries> low_power_batteries;
   array<BatteryData, kNumHPBatteries> high_power_batteries;
 };
 
 struct EmergencyBrakes : public Module {
-  bool front_brakes;       // true if front facing emergency brakes deploy
-  bool rear_brakes;      // true if rear facing emergency brakes deploy
+  bool brakes_retracted[4] = {false};       // true if brakes retract
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -135,12 +134,12 @@ struct Motors : public Module {
 
 struct Telemetry : public Module {
   static constexpr float run_length = 1250;  // m
-  bool calibrate_command;
-  bool launch_command;
-  bool reset_command;
-  bool service_propulsion_go;
-  bool emergency_stop_command;
-  bool nominal_braking_command;
+  bool calibrate_command = false;
+  bool launch_command = false;
+  bool reset_command = false;
+  bool service_propulsion_go = false;
+  bool emergency_stop_command = false;
+  bool nominal_braking_command = false;
 };
 
 // -------------------------------------------------------------------------------------------------
@@ -246,15 +245,6 @@ class Data {
   void setSensorsKeyenceData(const array<StripeCounter, Sensors::kNumKeyence>&  keyence_stripe_counter);  //NOLINT
 
   /**
-   * @brief      Should be called to update sensor calibration data
-   */
-  void setCalibrationData(const SensorCalibration sensor_calibration_data);
-  /**
-   * @brief      Retrieves data from the calibrated sensors
-   */
-  SensorCalibration getCalibrationData();
-
-  /**
    * @brief      Retrieves data from the batteries.
    */
   Batteries getBatteriesData();
@@ -301,7 +291,6 @@ class Data {
   Motors motors_;
   Batteries batteries_;
   Telemetry telemetry_;
-  SensorCalibration calibration_data_;
   EmergencyBrakes emergency_brakes_;
   int temperature_;  // In degrees C
 
@@ -316,7 +305,6 @@ class Data {
   Lock lock_telemetry_;
   Lock lock_batteries_;
   Lock lock_emergency_brakes_;
-  Lock lock_calibration_data_;
 
   Data() {}
 

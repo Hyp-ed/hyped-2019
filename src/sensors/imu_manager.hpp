@@ -25,18 +25,12 @@
 
 #include "sensors/manager_interface.hpp"
 
-#include "utils/concurrent/thread.hpp"
-#include "data/data.hpp"
 #include "sensors/interface.hpp"
 #include "utils/system.hpp"
-#include "utils/math/statistics.hpp"
 
 namespace hyped {
 
-using utils::concurrent::Thread;
 using utils::Logger;
-using data::NavigationVector;
-using utils::math::OnlineStatistics;
 
 namespace sensors {
 /**
@@ -57,21 +51,22 @@ class ImuManager: public ImuManagerInterface {
 
   /**
    * @brief Calibrate IMUs then begin collecting data.
-   *
    */
   void run() override;
 
  private:
   utils::System&   sys_;
+
+  /**
+   * @brief DataPoint array for all kNumImus
+   */
   DataArray        sensors_imu_;
 
   /**
    * @brief needs to be references because run() passes directly to data struct
-   *
    */
   data::Data&      data_;
 
-  uint8_t           chip_select_[data::Sensors::kNumImus];
   ImuInterface*     imu_[data::Sensors::kNumImus];
 };
 
