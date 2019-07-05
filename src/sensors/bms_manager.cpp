@@ -41,7 +41,7 @@ BmsManager::BmsManager(Logger& log)
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
 
-  if (!sys_.fake_batteries) {
+  if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
     // create BMS LP
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
       BMS* bms = new BMS(i, log_);
@@ -58,6 +58,14 @@ BmsManager::BmsManager(Logger& log)
     kill_lp_->set();    // kHPSSR and kLPSSR set low if no power to BBB
     log_.INFO("BMS-MANAGER", "HP SSR %d has been set", kHPSSR);
     log_.INFO("BMS-MANAGER", "LP SSR %d has been set", kLPSSR);
+  } else if (sys_.fake_batteries_fail) {
+    // fake batteries fail here
+    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
+      bms_[i] = new FakeBatteries(log_, true, true);
+    }
+    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+      bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log_, false, true);
+    }
   } else {
     // fake batteries here
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {

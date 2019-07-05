@@ -29,7 +29,7 @@ Main::Main(uint8_t id, Logger &log)
     log_(log),
     data_(Data::getInstance())
 {
-  stateProcessor = new StateProcessor(6, log);
+  stateProcessor = new StateProcessor(kNumMotors, log);
 }
 
 void Main::run()
@@ -42,7 +42,6 @@ void Main::run()
 
   while (isRunning && sys.running_) {
     // Get the current state of the system from the state machine's data
-
     currentState = data_.getStateMachineData().current_state;
 
     if (currentState == State::kIdle) {  // Initialize motors
