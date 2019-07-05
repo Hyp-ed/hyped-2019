@@ -30,10 +30,10 @@ namespace sensors {
 FakeBatteries::FakeBatteries(Logger& log, bool is_lp, bool is_fail)
       : data_(Data::getInstance()),
       log_(log),
-      lp_failure_ {100, 1000, 0, 100, 100, 300},
-      lp_success_ {245, 450, 70, 35, 175, 294},
-      hp_failure_ {900, 10000, 0, 100, 500, 2000},
-      hp_success_ {1150, 3000, 70, 35, 1000, 1296},
+      lp_failure_ {100, 1000, 0, 100, 100, 100, 100, 300},
+      lp_success_ {245, 450, 70, 35, 35, 35, 175, 294},
+      hp_failure_ {900, 10000, 0, 5, 70, 100, 500, 2000},
+      hp_success_ {1150, 3000, 70, 30, 35, 40, 1000, 1296},
       cases_ {lp_failure_, lp_success_, hp_failure_, hp_success_},
       is_lp_(is_lp),
       is_fail_(is_fail),
@@ -70,12 +70,14 @@ void FakeBatteries::getData(BatteryData* battery)
     }
   }
   checkFailure();
-  battery->voltage           = voltage_;
-  battery->current           = current_;
-  battery->charge            = charge_;
-  battery->temperature       = temperature_;
-  battery->low_voltage_cell  = low_voltage_cell_;
-  battery->high_voltage_cell = high_voltage_cell_;
+  battery->voltage              = local_data_.voltage;
+  battery->current              = local_data_.current;
+  battery->charge               = local_data_.charge;
+  battery->low_temperature      = local_data_.low_temperature;  // same for LP
+  battery->average_temperature  = local_data_.average_temperature;
+  battery->high_temperature     = local_data_.high_temperature;  // same for LP
+  battery->low_voltage_cell     = local_data_.low_voltage_cell;
+  battery->high_voltage_cell    = local_data_.high_voltage_cell;
 }
 
 void FakeBatteries::checkFailure()
@@ -91,12 +93,14 @@ void FakeBatteries::checkFailure()
 
 void FakeBatteries::updateBatteryData()
 {
-  voltage_            = cases_[case_index_][0];
-  current_            = cases_[case_index_][1];
-  charge_             = cases_[case_index_][2];
-  temperature_        = cases_[case_index_][3];
-  low_voltage_cell_   = cases_[case_index_][4];
-  high_voltage_cell_  = cases_[case_index_][5];
+  local_data_.voltage             = cases_[case_index_][0];
+  local_data_.current             = cases_[case_index_][1];
+  local_data_.charge              = cases_[case_index_][2];
+  local_data_.low_temperature     = cases_[case_index_][3];
+  local_data_.average_temperature = cases_[case_index_][4];
+  local_data_.high_temperature    = cases_[case_index_][5];
+  local_data_.low_voltage_cell    = cases_[case_index_][6];
+  local_data_.high_voltage_cell   = cases_[case_index_][7];
 }
 
 bool FakeBatteries::isOnline()
