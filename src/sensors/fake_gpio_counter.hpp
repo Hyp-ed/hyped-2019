@@ -62,22 +62,13 @@ class FakeGpioCounter : public GpioInterface {
   StripeCounter getStripeCounter() override;
 
  private:
-  bool timeout(StripeCounter stripe_data);    // if needs to break out
+   /**
+   * @brief turns sensor offline if max time reached between stripes by analysing timestamps
+   */
+  void checkData();
   void readFromFile(std::vector<StripeCounter>& data);
   Logger& log_;
   Data& data_;
-
-  /**
-   * @brief check if 5 seconds have passed to start comparing navigation data with stripe counter
-   */
-  uint64_t start_time_;
-
-  /**
-   * @brief minimum time between stripes ().358588 seconds, max speeed 85 m/s)
-   * make sure not to miss two stripes in a row
-   *
-   */
-  uint64_t check_time_ = 358588;
 
   /**
    * @brief current stripe data

@@ -43,7 +43,6 @@ namespace sensors {
 FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
     : log_(log),
     data_(Data::getInstance()),
-    start_time_(0),
     miss_stripe_(miss_stripe),
     is_from_file_(false),
     acc_ref_init_(false)
@@ -56,7 +55,6 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
   bool miss_stripe, std::string file_path)
     : log_(log),
     data_(Data::getInstance()),
-    start_time_(0),
     miss_stripe_(miss_stripe),
     file_path_(file_path),
     is_from_file_(true),
@@ -83,8 +81,8 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
 
   if (is_from_file_) {
     // Get time in micro seconds and iterate through the vector until we find what stripe we are at
-    if (state == data::State::kAccelerating ||
-        state == data::State::kNominalBraking && acc_ref_init_) {
+    if ((state == data::State::kAccelerating || state == data::State::kNominalBraking)
+       && acc_ref_init_) {
       uint64_t time_now_micro = (utils::Timer::getTimeMicros() - accel_start_time_);
 
       for (StripeCounter stripe : stripe_data_) {
@@ -96,6 +94,8 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
           break;
         }
       }
+    }
+    checkData();
     } else {
       // We are not in a state were we have data from a text file
       // base data of the navigation output
@@ -108,9 +108,24 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
         stripe_count_.count.value = nav_count;
         stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
       }
-    }
+    // }
   }
   return stripe_count_;
+}
+
+void FakeGpioCounter::checkData()
+{
+  if (is_from_file_) {
+    uint64_t time_after = 0;
+    if (acc_ref_init_) {
+      time_after = (utils::Timer::getTimeMicros() - accel_start_time_) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
+    }
+    log_.DBG1("Fake-GpioCounter", "time_after: %d", time_after);
+    if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
+      log_.INFO("Fake-GpioCounter", "missed stripe!");
+      stripe_count_.operational = false;
+    }
+  }
 }
 
 void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)
