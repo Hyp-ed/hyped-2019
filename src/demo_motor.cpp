@@ -4,7 +4,6 @@
 #include "utils/logger.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
-#include "state_machine/hyped-machine.hpp"
 #include "propulsion/main.hpp"
 
 using hyped::utils::System;
@@ -13,9 +12,9 @@ using hyped::utils::concurrent::Thread;
 using hyped::data::StateMachine;
 using hyped::data::Motors;
 using hyped::data::ModuleStatus;
-using hyped::state_machine::HypedMachine;
 using hyped::data::Data;
 using hyped::data::State;
+using hyped::data::Navigation;
 using hyped::motor_control::Main;
 
 int main(int argc, char** argv)
@@ -25,6 +24,7 @@ int main(int argc, char** argv)
   Data& data = Data::getInstance();
   StateMachine state = data.getStateMachineData();
   Motors motor_data = data.getMotorData();
+  Navigation nav_data = data.getNavigationData();
 
   state.current_state = State::kIdle;
   data.setStateMachineData(state);
@@ -48,6 +48,11 @@ int main(int argc, char** argv)
     data.setStateMachineData(state);
   }
 
-
+  while (state.current_state == State::kAccelerating) {
+    nav_data = data.getNavigationData();
+    nav_data.velocity = 0;
+    data.setNavigationData(nav_data);
+    state = data.getStateMachineData();
+  }
   motors->join();
 }
