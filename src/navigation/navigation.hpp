@@ -135,6 +135,10 @@ namespace navigation {
        * @brief Disable keyence readings to have any impact on the run.
        */
       void disableKeyenceUsage();
+      /**
+       * @brief Set the keyence used to fake, so the system knows to use central timestamps.
+       */
+      void setKeyenceFake();
 
     private:
       static constexpr int kCalibrationAttempts = 3;
@@ -177,6 +181,8 @@ namespace navigation {
       KeyenceDataArray prev_keyence_readings_;
       // Are the keyence sensors used or ignored?
       bool keyence_used_;
+      // Is the keyence used fake or real?
+      bool keyence_real_;
       // This counts the number of times the keyence readings disagree with the IMU data more than
       // allowed due to uncertainty. It is used at the moment to check if the calculated
       // uncertainty is acceptable.

@@ -38,6 +38,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            nOutlierImus_(0),
            stripe_counter_(0, 0),
            keyence_used_(true),
+           keyence_real_(true),
            keyence_failure_counter_(0),
            acceleration_(0, 0.),
            velocity_(0, 0.),
@@ -257,7 +258,7 @@ void Navigation::updateUncertainty()
 
 void Navigation::queryKeyence()
 {
-  // initialise the keyence readings with the data from the central data struct
+  // set the keyence readings with the data from the central data struct
   keyence_readings_ = data_.getSensorsKeyenceData();
   for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
     // Checks whether the stripe count has been updated and if it has not been
@@ -266,11 +267,16 @@ void Navigation::queryKeyence()
          keyence_readings_[i].count.timestamp - stripe_counter_.timestamp > 1e5) {
       stripe_counter_.value++;
       stripe_counter_.timestamp = keyence_readings_[i].count.timestamp;
+      if (!keyence_real_) stripe_counter_.timestamp = utils::Timer::getTimeMicros();
 
       // Allow up to one missed stripe.
       // There must be some uncertainty in distance around the missed 30.48m.
-      double allowed_uncertainty = distance_uncertainty_;  // Temporary value
+      NavigationType allowed_uncertainty = distance_uncertainty_;
       NavigationType distance_change = distance_.value - stripe_counter_.value*30.48;
+      /* There should only be an updated stripe count if the IMU determined distance is closer
+       * to the the next stripe than the current. It should not just lie within the uncertainty,
+       * otherwise we might count way more stripes than there are as soon as the uncertainty gets
+       * fairly large (>15m). */
       if (distance_change > 30.48 - allowed_uncertainty &&
           distance_change < 30.48 + allowed_uncertainty &&
           distance_.value > stripe_counter_.value*30.48 + 0.5*30.48) {
@@ -290,8 +296,8 @@ void Navigation::queryKeyence()
       // If there is more than one disagreement, we get kCriticalFailure
       if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
       // Lower the uncertainty in velocity:
-      velocity_uncertainty_ -= abs(distance_change*1e6/(2*
-                               (stripe_counter_.timestamp - init_timestamp_)));
+      velocity_uncertainty_ -= abs(distance_change*1e6/
+                               (stripe_counter_.timestamp - init_timestamp_));
       log_.INFO("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
       log_.INFO("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
       // Make sure velocity uncertainty is positive.
@@ -310,6 +316,11 @@ void Navigation::queryKeyence()
 void Navigation::disableKeyenceUsage()
 {
   keyence_used_ = false;
+}
+
+void Navigation::setKeyenceFake()
+{
+  keyence_real_ = false;
 }
 
 // TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
@@ -417,7 +428,7 @@ void Navigation::updateData()
 
   data_.setNavigationData(nav_data);
 
-  if (counter_ % 100 == 0) {  // kPrintFreq
+  if (counter_ % 1 == 0) {  // kPrintFreq
     log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                stripe_counter_.value*30.48);
