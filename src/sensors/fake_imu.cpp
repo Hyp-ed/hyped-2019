@@ -194,7 +194,7 @@ void FakeImuFromFile::getData(ImuData* imu)
 
       // prevent acc from becoming negative when pod is stopping
       float vel = data_.getNavigationData().velocity;
-      if (vel < 1){
+      if (vel < 1) {
         prev_acc_ = getZeroAcc();
       }
     }
@@ -221,7 +221,7 @@ void FakeImuFromFile::getData(ImuData* imu)
       }
 
       // prevent acc from becoming negative when pod is stopping
-      if (vel < 1){
+      if (vel < 1) {
         prev_acc_ = getZeroAcc();
       }
       operational = true;
@@ -319,7 +319,8 @@ bool FakeImuFromFile::accCheckTime()
   return true;
 }
 
-NavigationVector FakeImuFromFile::getZeroAcc() {
+NavigationVector FakeImuFromFile::getZeroAcc()
+{
   NavigationVector value;
   value[0] = 0.0;
   value[1] = 0.0;
