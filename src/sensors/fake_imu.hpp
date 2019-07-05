@@ -106,9 +106,7 @@ class FakeImuFromFile : public ImuInterface {
   void setFailure(data::State& state);
 
   /**
-   * @brief Get zero acceleration as a vector
-   * 
-   * @return NavigationVector
+   * @return NavigationVector zero acceleration as a vector
    */
   NavigationVector getZeroAcc();
 
@@ -131,7 +129,6 @@ class FakeImuFromFile : public ImuInterface {
    */
   bool accCheckTime();
 
-  NavigationVector acc_val_;
   NavigationVector acc_noise_;
   NavigationVector prev_acc_;
   NavigationVector acc_fail_;
@@ -144,6 +141,9 @@ class FakeImuFromFile : public ImuInterface {
   std::vector<NavigationVector> em_val_read_;
   std::vector<bool>             em_val_operational_;
 
+  /**
+   * @brief used in accCheckTime()
+   */
   int64_t acc_count_;
 
   /**

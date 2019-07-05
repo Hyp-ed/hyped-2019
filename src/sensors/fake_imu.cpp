@@ -63,12 +63,6 @@ FakeImuFromFile::FakeImuFromFile(utils::Logger& log,
       noise_(noise),
       data_(data::Data::getInstance())
 {
-  NavigationVector acc;
-  acc[0] = 0.0;
-  acc[1] = 0.0;
-  acc[2] = 9.8;
-  acc_val_ = acc;
-
   acc_fail_[0] = -37.3942;
   acc_fail_[1] = 0;
   acc_fail_[2] = 9.8;
@@ -137,6 +131,7 @@ void FakeImuFromFile::getData(ImuData* imu)
       startCal();
     }
 
+    // pod stationary
     prev_acc_ = getZeroAcc();
 
   } else if (state == data::State::kAccelerating) {
@@ -196,6 +191,12 @@ void FakeImuFromFile::getData(ImuData* imu)
           failure_happened_ = true;
         }
       }
+
+      // prevent acc from becoming negative when pod is stopping
+      float vel = data_.getNavigationData().velocity;
+      if (vel < 1){
+        prev_acc_ = getZeroAcc();
+      }
     }
 
   } else if (state == data::State::kEmergencyBraking) {
@@ -219,14 +220,15 @@ void FakeImuFromFile::getData(ImuData* imu)
         prev_acc_ = em_val_read_[acc_count_];
       }
 
-      if (vel < 1 || vel > 0){
+      // prevent acc from becoming negative when pod is stopping
+      if (vel < 1){
         prev_acc_ = getZeroAcc();
       }
       operational = true;
     }
 
   } else {
-    prev_acc_ = addNoiseToData(acc_val_, noise_);
+    prev_acc_ = getZeroAcc();
     operational = true;
   }
   imu->acc = prev_acc_;
@@ -317,7 +319,7 @@ bool FakeImuFromFile::accCheckTime()
   return true;
 }
 
-NavigationVector FakeImuFromFile::getZeroAcc(){
+NavigationVector FakeImuFromFile::getZeroAcc() {
   NavigationVector value;
   value[0] = 0.0;
   value[1] = 0.0;
