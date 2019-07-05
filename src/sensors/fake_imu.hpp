@@ -105,6 +105,13 @@ class FakeImuFromFile : public ImuInterface {
    */
   void setFailure(data::State& state);
 
+  /**
+   * @brief Get zero acceleration as a vector
+   * 
+   * @return NavigationVector
+   */
+  NavigationVector getZeroAcc();
+
   /*
    * @brief     A function that reads data from file directory. This function also validates them
    *            by checking if

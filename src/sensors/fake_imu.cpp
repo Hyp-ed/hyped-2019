@@ -129,17 +129,6 @@ void FakeImuFromFile::getData(ImuData* imu)
     setFailure(state);
   }
 
-  // Random point of failure after acc from 0 to 20 seconds
-  if (state == data::State::kAccelerating && is_fail_acc_) {
-    // Generate a random time for a failure
-    failure_time_acc_ = (rand() % 20 + 1) * 1000000;
-  }
-  // Random point of failure after dec from 0 to 10 seconds
-  if (state == data::State::kNominalBraking && is_fail_dec_) {
-    // Generate a random time for a failure
-    failure_time_dec_ = (rand() % 10 + 1) * 1000000;
-  }
-
   if (state == data::State::kCalibrating) {
     // start cal
     if (!cal_started_) {
@@ -148,11 +137,7 @@ void FakeImuFromFile::getData(ImuData* imu)
       startCal();
     }
 
-    NavigationVector value;
-    value[0] = 0.0;
-    value[1] = 0.0;
-    value[2] = 9.8;
-    prev_acc_ = addNoiseToData(value, noise_);
+    prev_acc_ = getZeroAcc();
 
   } else if (state == data::State::kAccelerating) {
     // start acc
@@ -221,12 +206,21 @@ void FakeImuFromFile::getData(ImuData* imu)
     }
 
     if (accCheckTime()) {
+      // TODO(Greg): Implement a better emergency braking.
+      // Currently when we transition to emergency braking it still says we are deccelerating
+      // When we are not and our distance moved increases over time.
+      float vel = data_.getNavigationData().velocity;
       acc_count_ = std::min(acc_count_, (int64_t) em_val_read_.size());
+
       // Check so you don't go out of bounds
       if (acc_count_ == (int64_t) em_val_read_.size()) {
         prev_acc_ = em_val_read_[acc_count_-1];
       } else {
         prev_acc_ = em_val_read_[acc_count_];
+      }
+
+      if (vel < 1 || vel > 0){
+        prev_acc_ = getZeroAcc();
       }
       operational = true;
     }
@@ -322,6 +316,15 @@ bool FakeImuFromFile::accCheckTime()
   acc_count_ = time_span/kAccTimeInterval + 1;
   return true;
 }
+
+NavigationVector FakeImuFromFile::getZeroAcc(){
+  NavigationVector value;
+  value[0] = 0.0;
+  value[1] = 0.0;
+  value[2] = 9.8;
+  return addNoiseToData(value, noise_);
+}
+
 
 // FakeAccurateImu::FakeAccurateImu(utils::Logger& log)
 //     : data_(data::Data::getInstance()),
