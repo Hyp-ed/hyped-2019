@@ -258,7 +258,7 @@ void Navigation::updateUncertainty()
 
 void Navigation::queryKeyence()
 {
-  // initialise the keyence readings with the data from the central data struct
+  // set the keyence readings with the data from the central data struct
   keyence_readings_ = data_.getSensorsKeyenceData();
   for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
     // Checks whether the stripe count has been updated and if it has not been
@@ -271,8 +271,12 @@ void Navigation::queryKeyence()
 
       // Allow up to one missed stripe.
       // There must be some uncertainty in distance around the missed 30.48m.
-      double allowed_uncertainty = distance_uncertainty_;  // Temporary value
+      NavigationType allowed_uncertainty = distance_uncertainty_;
       NavigationType distance_change = distance_.value - stripe_counter_.value*30.48;
+      /* There should only be an updated stripe count if the IMU determined distance is closer
+       * to the the next stripe than the current. It should not just lie within the uncertainty,
+       * otherwise we might count way more stripes than there are as soon as the uncertainty gets
+       * fairly large (>15m). */
       if (distance_change > 30.48 - allowed_uncertainty &&
           distance_change < 30.48 + allowed_uncertainty &&
           distance_.value > stripe_counter_.value*30.48 + 0.5*30.48) {
