@@ -77,52 +77,40 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
 {
   data::State state = data_.getStateMachineData().current_state;
   if (!acc_ref_init_ && state == data::State::kAccelerating) {
-    accel_ref_time_ = utils::Timer::getTimeMicros();
+    accel_start_time_ = utils::Timer::getTimeMicros();
     acc_ref_init_ = true;
   }
 
   if (is_from_file_) {
     // Get time in micro seconds and iterate through the vector until we find what stripe we are at
-    uint64_t time_now_micro = 0;
-    if (acc_ref_init_) {
-      time_now_micro = (utils::Timer::getTimeMicros() - accel_ref_time_);
-    }
-    for (StripeCounter stripe : stripe_data_) {
-      if (stripe.count.timestamp < time_now_micro) {
-        stripe_count_.count.value = stripe.count.value;
-        stripe_count_.count.timestamp = stripe.count.timestamp;   // use timestamps from file
-      } else {
-        break;
+    if (state == data::State::kAccelerating ||
+        state == data::State::kNominalBraking && acc_ref_init_) {
+      uint64_t time_now_micro = (utils::Timer::getTimeMicros() - accel_start_time_);
+
+      for (StripeCounter stripe : stripe_data_) {
+        if (stripe.count.timestamp < time_now_micro) {
+          stripe_count_.count.value = stripe.count.value;
+          // use system timestamp from file
+          stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+        } else {
+          break;
+        }
       }
-    }
-    checkData();
-  } else {
-    data::Navigation nav   = data_.getNavigationData();     // throw failure from fake_imu
-    uint32_t current_count = stripe_count_.count.value;
+    } else {
+      // We are not in a state were we have data from a text file
+      // base data of the navigation output
+      data::Navigation nav   = data_.getNavigationData();     // throw failure from fake_imu
+      uint32_t current_count = stripe_count_.count.value;
 
-    uint16_t nav_count = std::floor(nav.distance/kStripeDistance);      // cast floor int;
+      uint16_t nav_count = std::floor(nav.distance/kStripeDistance);      // cast floor int;
 
-    if (current_count != nav_count) {
-      stripe_count_.count.value = nav_count;
-      stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+      if (current_count != nav_count) {
+        stripe_count_.count.value = nav_count;
+        stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+      }
     }
   }
   return stripe_count_;
-}
-
-void FakeGpioCounter::checkData()
-{
-  if (is_from_file_) {
-    uint64_t time_after = 0;
-    if (acc_ref_init_) {
-      time_after = (utils::Timer::getTimeMicros() - accel_ref_time_) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
-    }
-    log_.DBG1("Fake-GpioCounter", "time_after: %d", time_after);
-    if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
-      log_.INFO("Fake-GpioCounter", "missed stripe!");
-      stripe_count_.operational = false;
-    }
-  }
 }
 
 void FakeGpioCounter::readFromFile(std::vector<StripeCounter>& data)

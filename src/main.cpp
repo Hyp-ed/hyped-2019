@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   Thread* embrakes = new hyped::embrakes::Main(1, log_embrakes);
   Thread* motors = new hyped::motor_control::Main(2, log_motor);
   Thread* state_machine = new hyped::state_machine::Main(4, log_state);
-  Thread* nav     = new hyped::navigation::Main(1, log_nav);
+  Thread* nav     = new hyped::navigation::Main(5, log_nav);
 
   // Start the threads here
   sensors->start();

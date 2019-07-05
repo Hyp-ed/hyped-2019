@@ -62,11 +62,6 @@ class FakeGpioCounter : public GpioInterface {
   StripeCounter getStripeCounter() override;
 
  private:
-   /**
-   * @brief turns sensor offline if max time reached between stripes by analysing timestamps
-   */
-  void checkData();
-
   bool timeout(StripeCounter stripe_data);    // if needs to break out
   void readFromFile(std::vector<StripeCounter>& data);
   Logger& log_;
@@ -101,7 +96,7 @@ class FakeGpioCounter : public GpioInterface {
    */
   std::vector<StripeCounter> stripe_data_;
   bool is_from_file_;
-  uint64_t accel_ref_time_;
+  uint64_t accel_start_time_;
   bool acc_ref_init_;
 };
 
