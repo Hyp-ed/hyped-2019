@@ -31,7 +31,7 @@
 uint64_t kBrakeTime = 10000000;
 uint32_t kTrackDistance = 2000;
 double kStripeDistance = 30.48;     // metres
-uint64_t kMaxTime = 1500;     // between stripe readings before throw failure (micros)
+uint64_t kMaxTime = 1500000;     // between stripe readings before throw failure (micros)
 
 namespace hyped {
 
@@ -45,7 +45,9 @@ FakeGpioCounter::FakeGpioCounter(Logger& log, bool miss_stripe)
     data_(Data::getInstance()),
     miss_stripe_(miss_stripe),
     is_from_file_(false),
-    acc_ref_init_(false)
+    acc_ref_init_(false),
+    stripe_file_timestamp_(0)
+
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
@@ -58,7 +60,8 @@ FakeGpioCounter::FakeGpioCounter(Logger& log,
     miss_stripe_(miss_stripe),
     file_path_(file_path),
     is_from_file_(true),
-    acc_ref_init_(false)
+    acc_ref_init_(false),
+    stripe_file_timestamp_(0)
 {
   stripe_count_.count.value = 0;                                      // start stripe count
   stripe_count_.operational = true;
@@ -90,6 +93,7 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
           stripe_count_.count.value = stripe.count.value;
           // use system timestamp from file
           stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
+          stripe_file_timestamp_ = stripe.count.timestamp;
         } else {
           break;
         }
@@ -108,8 +112,7 @@ StripeCounter FakeGpioCounter::getStripeCounter()     // returns incorrect strip
         stripe_count_.count.value = nav_count;
         stripe_count_.count.timestamp = utils::Timer::getTimeMicros();
       }
-    // }
-  }
+    }
   return stripe_count_;
 }
 
@@ -118,10 +121,10 @@ void FakeGpioCounter::checkData()
   if (is_from_file_) {
     uint64_t time_after = 0;
     if (acc_ref_init_) {
-      time_after = (utils::Timer::getTimeMicros() - accel_start_time_) - stripe_count_.count.timestamp;   // NOLINT [whitespace/line_length]
+      time_after = utils::Timer::getTimeMicros() - (stripe_file_timestamp_ + accel_start_time_);   // NOLINT [whitespace/line_length]
     }
     log_.DBG1("Fake-GpioCounter", "time_after: %d", time_after);
-    if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 5) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
+    if (time_after > kMaxTime && miss_stripe_ && stripe_count_.count.value > 1) { // time_after is longer on first few stripes NOLINT [whitespace/line_length]
       log_.INFO("Fake-GpioCounter", "missed stripe!");
       stripe_count_.operational = false;
     }

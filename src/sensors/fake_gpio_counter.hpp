@@ -89,6 +89,11 @@ class FakeGpioCounter : public GpioInterface {
   bool is_from_file_;
   uint64_t accel_start_time_;
   bool acc_ref_init_;
+
+  /**
+   * @brief used to compare previous stripes if missed stripe
+   */
+  uint64_t stripe_file_timestamp_;
 };
 
 }}  // namespace hyped::sensors
