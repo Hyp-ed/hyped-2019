@@ -154,11 +154,11 @@ void BMS::getData(BatteryData* battery)
 {
   battery->voltage = 0;
   for (uint16_t v: data_.voltage) battery->voltage += v;
-  battery->voltage    /= 100;  // scale to 0.1V
+  battery->voltage    /= 100;  // scale to 0.1V from mV
   battery->average_temperature = data_.temperature;
   battery->high_temperature = 0;  // not used
   battery->low_temperature = 0;   // not used
-  battery->current     = current_ - 0x800000;  // offset provided by datasheet.
+  battery->current     = current_ - 0x800000;  // offset provided by datasheet  TODO(Greg, Iain): scale to correct unit NOLINT
 
   // charge calculation
   if (battery->voltage > 240) {                                       // constant high
@@ -239,14 +239,14 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   //  charge   , HighTemp , AverageTemp, state, lowVoltageCellH,
   //  lowVoltageCellL ]
   if (message.id == can_id_) {
-    local_data_.voltage     = (message.data[0] << 8) | message.data[1];
-    local_data_.current     = (message.data[2] << 8) | message.data[3];
+    local_data_.voltage     = (message.data[0] << 8) | message.data[1]; // TODO(Greg, Iain): scale to correct unit NOLINT
+    local_data_.current     = (message.data[2] << 8) | message.data[3]; // TODO(Greg, Iain): scale to correct unit NOLINT
     local_data_.charge      = message.data[4] * 0.5;    // TODO(Greg): data needs scaling
     // local_data_.average_temperature = message.data[5];
-    local_data_.low_voltage_cell  = ((message.data[6] << 8) | message.data[7])/10;
+    local_data_.low_voltage_cell  = ((message.data[6] << 8) | message.data[7])/10; // TODO(Greg, Iain): scale to correct unit NOLINT
     last_update_time_ = utils::Timer::getTimeMicros();
   } else {
-    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/10;
+    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/10; // TODO(Greg, Iain): scale to correct unit NOLINT
   }
 
   log_.DBG1("BMSHP", "received data Volt,Curr,Char, %u,%u,%u",
