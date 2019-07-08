@@ -318,8 +318,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, front_brakes_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, rear_brakes_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, brakes_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -342,7 +341,7 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 52, -1, sizeof(::telemetry_data::ClientToServer_Sensors_ImuData)},
   { 59, -1, sizeof(::telemetry_data::ClientToServer_Sensors)},
   { 66, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
-  { 73, -1, sizeof(::telemetry_data::ClientToServer)},
+  { 72, -1, sizeof(::telemetry_data::ClientToServer)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -385,7 +384,7 @@ void AddDescriptorsImpl() {
       "\007\n\003ACK\020\000\022\010\n\004STOP\020\001\022\r\n\tCALIBRATE\020\002\022\n\n\006LAU"
       "NCH\020\003\022\t\n\005RESET\020\004\022\031\n\025SERVICE_PROPULSION_G"
       "O\020\005\022\033\n\027SERVICE_PROPULSION_STOP\020\006\022\023\n\017NOMI"
-      "NAL_BRAKING\020\007\"\271\r\n\016ClientToServer\022=\n\nnavi"
+      "NAL_BRAKING\020\007\"\236\r\n\016ClientToServer\022=\n\nnavi"
       "gation\030\001 \001(\0132).telemetry_data.ClientToSe"
       "rver.Navigation\022B\n\rstate_machine\030\002 \001(\0132+"
       ".telemetry_data.ClientToServer.StateMach"
@@ -425,14 +424,13 @@ void AddDescriptorsImpl() {
       "Server.ModuleStatus\022;\n\003imu\030\002 \003(\0132..telem"
       "etry_data.ClientToServer.Sensors.ImuData"
       "\032+\n\007ImuData\022\023\n\013operational\030\001 \001(\010\022\013\n\003acc\030"
-      "\002 \003(\002\032<\n\017EmergencyBrakes\022\024\n\014front_brakes"
-      "\030\001 \001(\010\022\023\n\013rear_brakes\030\002 \001(\010\"D\n\014ModuleSta"
-      "tus\022\t\n\005START\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020C"
-      "RITICAL_FAILURE\020\003B\036\n\rtelemetrydataB\rTele"
-      "metryDatab\006proto3"
+      "\002 \003(\002\032!\n\017EmergencyBrakes\022\016\n\006brakes\030\001 \003(\010"
+      "\"D\n\014ModuleStatus\022\t\n\005START\020\000\022\010\n\004INIT\020\001\022\t\n"
+      "\005READY\020\002\022\024\n\020CRITICAL_FAILURE\020\003B\036\n\rteleme"
+      "trydataB\rTelemetryDatab\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 2017);
+      descriptor, 1990);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
 }
@@ -3059,8 +3057,7 @@ void ClientToServer_Sensors::InternalSwap(ClientToServer_Sensors* other) {
 void ClientToServer_EmergencyBrakes::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ClientToServer_EmergencyBrakes::kFrontBrakesFieldNumber;
-const int ClientToServer_EmergencyBrakes::kRearBrakesFieldNumber;
+const int ClientToServer_EmergencyBrakes::kBrakesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_EmergencyBrakes::ClientToServer_EmergencyBrakes()
@@ -3072,18 +3069,13 @@ ClientToServer_EmergencyBrakes::ClientToServer_EmergencyBrakes()
 }
 ClientToServer_EmergencyBrakes::ClientToServer_EmergencyBrakes(const ClientToServer_EmergencyBrakes& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+      _internal_metadata_(NULL),
+      brakes_(from.brakes_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::memcpy(&front_brakes_, &from.front_brakes_,
-    static_cast<size_t>(reinterpret_cast<char*>(&rear_brakes_) -
-    reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
   // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.EmergencyBrakes)
 }
 
 void ClientToServer_EmergencyBrakes::SharedCtor() {
-  ::memset(&front_brakes_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&rear_brakes_) -
-      reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
 }
 
 ClientToServer_EmergencyBrakes::~ClientToServer_EmergencyBrakes() {
@@ -3114,9 +3106,7 @@ void ClientToServer_EmergencyBrakes::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&front_brakes_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&rear_brakes_) -
-      reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
+  brakes_.Clear();
   _internal_metadata_.Clear();
 }
 
@@ -3130,28 +3120,19 @@ bool ClientToServer_EmergencyBrakes::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // bool front_brakes = 1;
+      // repeated bool brakes = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, this->mutable_brakes())));
+        } else if (
+            static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &front_brakes_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // bool rear_brakes = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &rear_brakes_)));
+                 1, 10u, input, this->mutable_brakes())));
         } else {
           goto handle_unusual;
         }
@@ -3184,14 +3165,13 @@ void ClientToServer_EmergencyBrakes::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // bool front_brakes = 1;
-  if (this->front_brakes() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->front_brakes(), output);
-  }
-
-  // bool rear_brakes = 2;
-  if (this->rear_brakes() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->rear_brakes(), output);
+  // repeated bool brakes = 1;
+  if (this->brakes_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(static_cast< ::google::protobuf::uint32>(
+        _brakes_cached_byte_size_));
+    ::google::protobuf::internal::WireFormatLite::WriteBoolArray(
+      this->brakes().data(), this->brakes_size(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -3208,14 +3188,17 @@ void ClientToServer_EmergencyBrakes::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // bool front_brakes = 1;
-  if (this->front_brakes() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->front_brakes(), target);
-  }
-
-  // bool rear_brakes = 2;
-  if (this->rear_brakes() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->rear_brakes(), target);
+  // repeated bool brakes = 1;
+  if (this->brakes_size() > 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
+      1,
+      ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
+      target);
+    target = ::google::protobuf::io::CodedOutputStream::WriteVarint32ToArray(
+        static_cast< ::google::protobuf::int32>(
+            _brakes_cached_byte_size_), target);
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteBoolNoTagToArray(this->brakes_, target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -3235,14 +3218,20 @@ size_t ClientToServer_EmergencyBrakes::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // bool front_brakes = 1;
-  if (this->front_brakes() != 0) {
-    total_size += 1 + 1;
-  }
-
-  // bool rear_brakes = 2;
-  if (this->rear_brakes() != 0) {
-    total_size += 1 + 1;
+  // repeated bool brakes = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->brakes_size());
+    size_t data_size = 1UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+            static_cast< ::google::protobuf::int32>(data_size));
+    }
+    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _brakes_cached_byte_size_ = cached_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -3272,12 +3261,7 @@ void ClientToServer_EmergencyBrakes::MergeFrom(const ClientToServer_EmergencyBra
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.front_brakes() != 0) {
-    set_front_brakes(from.front_brakes());
-  }
-  if (from.rear_brakes() != 0) {
-    set_rear_brakes(from.rear_brakes());
-  }
+  brakes_.MergeFrom(from.brakes_);
 }
 
 void ClientToServer_EmergencyBrakes::CopyFrom(const ::google::protobuf::Message& from) {
@@ -3304,8 +3288,7 @@ void ClientToServer_EmergencyBrakes::Swap(ClientToServer_EmergencyBrakes* other)
 }
 void ClientToServer_EmergencyBrakes::InternalSwap(ClientToServer_EmergencyBrakes* other) {
   using std::swap;
-  swap(front_brakes_, other->front_brakes_);
-  swap(rear_brakes_, other->rear_brakes_);
+  brakes_.InternalSwap(&other->brakes_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
