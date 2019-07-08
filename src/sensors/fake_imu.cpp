@@ -194,6 +194,7 @@ void FakeImuFromFile::getData(ImuData* imu)
 
       // prevent acc from becoming negative when pod is stopping
       float vel = data_.getNavigationData().velocity;
+      log_.DBG1("Fake-IMU", "velocity: %f", vel);
       if (vel < 1) {
         prev_acc_ = getZeroAcc();
       }
@@ -207,10 +208,6 @@ void FakeImuFromFile::getData(ImuData* imu)
     }
 
     if (accCheckTime()) {
-      // TODO(Greg): Implement a better emergency braking.
-      // Currently when we transition to emergency braking it still says we are deccelerating
-      // When we are not and our distance moved increases over time.
-      float vel = data_.getNavigationData().velocity;
       acc_count_ = std::min(acc_count_, (int64_t) em_val_read_.size());
 
       // Check so you don't go out of bounds
@@ -219,7 +216,8 @@ void FakeImuFromFile::getData(ImuData* imu)
       } else {
         prev_acc_ = em_val_read_[acc_count_];
       }
-
+      float vel = data_.getNavigationData().velocity;
+      log_.DBG1("Fake-IMU", "velocity: %f", vel);
       // prevent acc from becoming negative when pod is stopping
       if (vel < 1) {
         prev_acc_ = getZeroAcc();
