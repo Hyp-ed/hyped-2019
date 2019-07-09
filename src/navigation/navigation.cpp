@@ -292,6 +292,7 @@ void Navigation::queryKeyence()
            distance_change >  allowed_uncertainty) &&
            stripe_counter_.value > 1) {
         keyence_failure_counter_++;
+        keyence_failure_counter_ += floor(distance_change / 30.48);
       }
       // If there is more than one disagreement, we get kCriticalFailure
       // Lower the uncertainty in velocity:
@@ -426,14 +427,14 @@ void Navigation::updateData()
   nav_data.emergency_braking_distance = getEmergencyBrakingDistance();
   nav_data.braking_distance           = getBrakingDistance();
 
-
+  // if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
   data_.setNavigationData(nav_data);
 
-  if (counter_ % 1 == 0) {  // kPrintFreq
-    log_.DBG3("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
+  if (counter_ % 100 == 0) {  // kPrintFreq
+    log_.DBG("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                stripe_counter_.value*30.48);
-    log_.DBG3("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
+    log_.DBG("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
                counter_, velocity_uncertainty_, distance_uncertainty_, keyence_failure_counter_);
   }
   counter_++;
