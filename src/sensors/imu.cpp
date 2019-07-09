@@ -218,10 +218,10 @@ int Imu::readFifo(std::vector<ImuData>& data)
     size_t fifo_size = (((uint16_t) (buffer[0]&0x0F)) << 8) + (((uint16_t) buffer[1]));
 
     if (fifo_size == 0) {
-      log_.DBG1("Imu-FIFO", "FIFO EMPTY");
+      log_.DBG3("Imu-FIFO", "FIFO EMPTY");
       return 0;
     }
-    log_.DBG1("Imu-FIFO", "Buffer size = %d", fifo_size);
+    log_.DBG3("Imu-FIFO", "Buffer size = %d", fifo_size);
     int16_t axcounts, aycounts, azcounts;           // include negative int
     float value_x, value_y, value_z;
     for (size_t i = 0; i < (fifo_size/kFrameSize_); i++) {
@@ -255,7 +255,7 @@ int Imu::readFifo(std::vector<ImuData>& data)
 void Imu::getData(ImuData* data)
 {
   if (is_online_) {
-    log_.DBG3("Imu", "Getting Imu data");
+    log_.DBG2("Imu", "Getting Imu data");
     auto& acc = data->acc;
     uint8_t response[8];
     int16_t bit_data;

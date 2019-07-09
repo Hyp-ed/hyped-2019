@@ -228,7 +228,7 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.high_temperature    = message.data[2];
     local_data_.average_temperature = message.data[3];   // main data struct
   }
-  log_.DBG1("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
+  log_.DBG2("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
     local_data_.high_temperature,
     local_data_.average_temperature,
     local_data_.low_temperature);
@@ -249,7 +249,7 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/10; // TODO(Greg, Iain): scale to correct unit NOLINT
   }
 
-  log_.DBG1("BMSHP", "received data Volt,Curr,Char, %u,%u,%u",
+  log_.DBG2("BMSHP", "received data Volt,Curr,Char, %u,%u,%u",
     local_data_.voltage,
     local_data_.current,
     local_data_.charge);

@@ -89,7 +89,7 @@ bool Main::keyencesUpdated()
 bool Main::temperatureInRange()    // TODO(anyone): add true nominal temperature range of PCB
 {
   auto temperature = data_.getTemperature();
-  log_.DBG1("Sensors", "Temperature from data struct: %d", temperature);
+  log_.DBG2("Sensors", "Temperature from data struct: %d", temperature);
   if (temperature < -10 || temperature > 60) {  // temperature in -10C to 60C
     log_.ERR("Sensors", "Temperature out of range: %d", temperature);
     return false;
