@@ -76,6 +76,10 @@ int main(int argc, char* argv[])
   }
   #endif
 
+  StateMachine state_machine = data_.getStateMachineData();
+  state_machine.current_state = State::kAccelerating;   // change state for different accel values
+  data_.setStateMachineData(state_machine);
+
   log.INFO("TEST-ImuManager", "Imu instance successfully created");
   for (int i = 0; i < 50; i++) {
     data_array_ = data_.getSensorsImuData();

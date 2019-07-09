@@ -100,6 +100,7 @@ System::System(int argc, char* argv[])
       fake_embrakes(false),
       fake_motors(false),
       fake_imu_fail(false),
+      fake_batteries_fail(false),
       fake_keyence_fail(false),
       fake_temperature_fail(false),
       imu_id(DEFAULT_NAV_ID),

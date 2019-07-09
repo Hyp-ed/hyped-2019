@@ -135,6 +135,8 @@ void Main::run()
     temp_count++;
     if (temp_count % 20 == 0) {       // check every 20 cycles of main
       checkTemperature();
+      // So that temp_count does not get huge
+      temp_count = 0;
     }
   }
 
