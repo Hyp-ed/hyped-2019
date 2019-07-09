@@ -194,7 +194,7 @@ void FakeImuFromFile::getData(ImuData* imu)
 
       // prevent acc from becoming negative when pod is stopping
       float vel = data_.getNavigationData().velocity;
-      log_.DBG("Fake-IMU", "velocity: %f", vel);
+      log_.DBG3("Fake-IMU", "velocity: %f", vel);
       if (vel < 1) {
         prev_acc_ = getZeroAcc();
       }
@@ -217,7 +217,7 @@ void FakeImuFromFile::getData(ImuData* imu)
         prev_acc_ = em_val_read_[acc_count_];
       }
       float vel = data_.getNavigationData().velocity;
-      log_.DBG("Fake-IMU", "velocity: %f", vel);
+      log_.DBG3("Fake-IMU", "velocity: %f", vel);
       // prevent acc from becoming negative when pod is stopping
       if (vel < 1) {
         prev_acc_ = getZeroAcc();

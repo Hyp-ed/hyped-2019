@@ -49,7 +49,7 @@ void GpioCounter::run()
     val = thepin.wait();
     if (val == 1) {
       stripe_counter_.count.value = stripe_counter_.count.value+1;
-      log_.DBG1("TEST-KEYENCE", "Stripe Count: %d", stripe_counter_.count.value);
+      log_.DBG3("TEST-KEYENCE", "Stripe Count: %d", stripe_counter_.count.value);
       stripe_counter_.count.timestamp =  utils::Timer::getTimeMicros();
       stripe_counter_.operational = true;
     }
