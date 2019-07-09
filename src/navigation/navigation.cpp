@@ -187,7 +187,7 @@ void Navigation::calibrateGravity()
     }
     status_ = ModuleStatus::kCriticalFailure;
     updateData();
-    log_.INFO("NAV", "Navigation module failed on calibration");
+    log_.ERR("NAV", "Navigation module failed on calibration");
   }
 }
 
@@ -294,12 +294,11 @@ void Navigation::queryKeyence()
         keyence_failure_counter_++;
       }
       // If there is more than one disagreement, we get kCriticalFailure
-      if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
       // Lower the uncertainty in velocity:
       velocity_uncertainty_ -= abs(distance_change*1e6/
                                (stripe_counter_.timestamp - init_timestamp_));
-      log_.INFO("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
-      log_.INFO("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
+      log_.DBG2("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
+      log_.DBG2("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
       // Make sure velocity uncertainty is positive.
       velocity_uncertainty_ = abs(velocity_uncertainty_);
       // The uncertainty in distance is not changed from this because the impact is far too large
@@ -310,6 +309,7 @@ void Navigation::queryKeyence()
       break;
     }
   }
+  if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
   prev_keyence_readings_ = keyence_readings_;
 }
 
@@ -384,15 +384,15 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
   // replace any outliers with the median
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     if ((data_array[i] < lower_limit or data_array[i] > upper_limit) && imu_reliable_[i]) {
-      log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f not in [%.3f, %.3f]. Updated to %.3f", //NOLINT
+      log_.DBG3("NAV", "Outlier detected in IMU %d, reading: %.3f not in [%.3f, %.3f]. Updated to %.3f", //NOLINT
                 i+1, data_array[i], lower_limit, upper_limit, q2);
-      // log_.INFO("NAV", "Outlier detected with quantiles: %.3f, %.3f, %.3f", q1, q2, q3);
+      // log_.DBG3("NAV", "Outlier detected with quantiles: %.3f, %.3f, %.3f", q1, q2, q3);
 
       data_array[i] = q2;
       imu_outlier_counter_[i]++;
       // If this counter exceeds some threshold then that IMU is deemed unreliable
       if (imu_outlier_counter_[i] > 1000 && imu_reliable_[i]) {
-        // log_.INFO("NAV", "IMU%d is an outlier!", i + 1);
+        // log_.DBG3("NAV", "IMU%d is an outlier!", i + 1);
         imu_reliable_[i] = false;
         nOutlierImus_++;
       }
@@ -401,7 +401,7 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
       imu_outlier_counter_[i] = 0;
       if (counter_ % 100 == 0 && imu_reliable_[i]) {
         /*
-         * log_.INFO("NAV", "No Outlier detected in IMU %d, reading: %.3f in [%.3f, %.3f]",
+         * log_.DBG3("NAV", "No Outlier detected in IMU %d, reading: %.3f in [%.3f, %.3f]",
          *           i+1, data_array[i], lower_limit, upper_limit);
          */
       }
@@ -409,9 +409,9 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
   }
   /*
    * if (counter_ % 100 == 0) {
-   *   log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
+   *   log_.DBG3("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
    *    imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
-   *   log_.INFO("NAV", "Number of outliers: %d", nOutlierImus_);
+   *   log_.DBG3("NAV", "Number of outliers: %d", nOutlierImus_);
    * }
    */
 }
@@ -426,13 +426,14 @@ void Navigation::updateData()
   nav_data.emergency_braking_distance = getEmergencyBrakingDistance();
   nav_data.braking_distance           = getBrakingDistance();
 
+
   data_.setNavigationData(nav_data);
 
   if (counter_ % 1 == 0) {  // kPrintFreq
-    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
+    log_.DBG3("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                stripe_counter_.value*30.48);
-    log_.INFO("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
+    log_.DBG3("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
                counter_, velocity_uncertainty_, distance_uncertainty_, keyence_failure_counter_);
   }
   counter_++;
@@ -459,7 +460,7 @@ void Navigation::initTimestamps()
   prev_acc_ = getAcceleration();
   prev_vel_ = getVelocity();
   init_timestamp_ = utils::Timer::getTimeMicros();
-  log_.INFO("NAV", "Initial timestamp:%d", init_timestamp_);
+  log_.DBG3("NAV", "Initial timestamp:%d", init_timestamp_);
   prev_timestamp_ = utils::Timer::getTimeMicros();
   // First iteration --> get initial keyence data
   // (should be zero counters and corresponding timestamp)
