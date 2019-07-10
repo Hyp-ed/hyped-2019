@@ -270,18 +270,18 @@ void Navigation::queryKeyence()
       if (!keyence_real_) stripe_counter_.timestamp = utils::Timer::getTimeMicros();
 
       // Allow up to one missed stripe.
-      // There must be some uncertainty in distance around the missed 30.48m.
+      // There must be some uncertainty in distance around the missed 30.48m (kStripeDistance).
       NavigationType allowed_uncertainty = distance_uncertainty_;
-      NavigationType distance_change = distance_.value - stripe_counter_.value*30.48;
+      NavigationType distance_change = distance_.value - stripe_counter_.value*kStripeDistance;
       /* There should only be an updated stripe count if the IMU determined distance is closer
        * to the the next stripe than the current. It should not just lie within the uncertainty,
        * otherwise we might count way more stripes than there are as soon as the uncertainty gets
        * fairly large (>15m). */
-      if (distance_change > 30.48 - allowed_uncertainty &&
-          distance_change < 30.48 + allowed_uncertainty &&
-          distance_.value > stripe_counter_.value*30.48 + 0.5*30.48) {
+      if (distance_change > kStripeDistance - allowed_uncertainty &&
+          distance_change < kStripeDistance + allowed_uncertainty &&
+          distance_.value > stripe_counter_.value*kStripeDistance + 0.5*kStripeDistance) {
         stripe_counter_.value++;
-        distance_change -= 30.48;
+        distance_change -= kStripeDistance;
       }
       /* Error handling: If distance from keyence still deviates more than the allowed
       uncertainty, then the measurements are no longer believable. Important that this
@@ -292,7 +292,7 @@ void Navigation::queryKeyence()
            distance_change >  allowed_uncertainty) &&
            stripe_counter_.value > 1) {
         keyence_failure_counter_++;
-        keyence_failure_counter_ += floor(distance_change / 30.48);
+        keyence_failure_counter_ += floor(distance_change / kStripeDistance);
       }
       // If there is more than one disagreement, we get kCriticalFailure
       // Lower the uncertainty in velocity:
@@ -324,7 +324,6 @@ void Navigation::setKeyenceFake()
   keyence_real_ = false;
 }
 
-// TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
 void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
 {
   // Define the quartiles first:
@@ -430,10 +429,10 @@ void Navigation::updateData()
   data_.setNavigationData(nav_data);
 
   if (counter_ % 100 == 0) {  // kPrintFreq
-    log_.DBG("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
+    log_.DBG1("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
-               stripe_counter_.value*30.48);
-    log_.DBG("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
+               stripe_counter_.value*kStripeDistance);
+    log_.DBG1("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
                counter_, velocity_uncertainty_, distance_uncertainty_, keyence_failure_counter_);
   }
   counter_++;

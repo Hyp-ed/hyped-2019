@@ -149,6 +149,8 @@ namespace navigation {
       static constexpr float kTukeyThreshold = 1;  // 0.75
       static constexpr float kTukeyIQRBound = 3;
 
+      static constexpr NavigationType kStripeDistance = 30.48;
+
       // System communication
       Logger& log_;
       Data& data_;
