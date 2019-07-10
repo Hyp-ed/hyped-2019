@@ -446,7 +446,7 @@ void Navigation::navigate()
 {
   queryImus();
   if (keyence_used_) queryKeyence();
-  updateUncertainty();
+  if (counter_ > 1000) updateUncertainty();
   updateData();
 }
 
