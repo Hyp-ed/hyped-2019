@@ -425,7 +425,7 @@ void Navigation::updateData()
   nav_data.velocity                   = getVelocity();
   nav_data.acceleration               = getAcceleration();
   nav_data.emergency_braking_distance = getEmergencyBrakingDistance();
-  nav_data.braking_distance           = getBrakingDistance();
+  nav_data.braking_distance           = 1.1 * getEmergencyBrakingDistance();
 
   // if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
   data_.setNavigationData(nav_data);
