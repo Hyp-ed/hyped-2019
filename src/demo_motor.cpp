@@ -1,7 +1,5 @@
 // demo file to spin up the motors by running the main propulsion thread.
 
-#include <stdio.h>
-
 #include "utils/system.hpp"
 #include "utils/logger.hpp"
 #include "utils/concurrent/thread.hpp"
@@ -14,20 +12,10 @@ using hyped::utils::concurrent::Thread;
 using hyped::data::StateMachine;
 using hyped::data::Motors;
 using hyped::data::ModuleStatus;
-<<<<<<< Updated upstream
-=======
-using hyped::data::Navigation;
-using hyped::data::NavigationType;
-using hyped::state_machine::HypedMachine;
->>>>>>> Stashed changes
 using hyped::data::Data;
 using hyped::data::State;
 using hyped::data::Navigation;
 using hyped::motor_control::Main;
-
-NavigationType readVel(char* filepath);
-
-#define VEL
 
 int main(int argc, char** argv)
 {
@@ -56,29 +44,15 @@ int main(int argc, char** argv)
     motor_data = data.getMotorData();
   }
   if (motor_data.module_status == ModuleStatus::kReady) {
-    char ch;
-    puts("Waiting to accelerate. Press ENTER to continue.");
-    scanf("%c", &ch);
-
     state.current_state = State::kAccelerating;
     data.setStateMachineData(state);
-    log.INFO("TEST", "Accelerating");
   }
 
-  while (1) {
-    Navigation nav_data = data.getNavigationData();
-    nav_data.velocity = readVel("data/in/acceleration_profile.txt");
+  while (state.current_state == State::kAccelerating) {
+    nav_data = data.getNavigationData();
+    nav_data.velocity = 0;
     data.setNavigationData(nav_data);
+    state = data.getStateMachineData();
   }
-
   motors->join();
-}
-
-NavigationType readVel(char* filepath) {
-  FILE* fp;
-  fopen(filepath, "r");
-
-  if (fp == NULL) {
-    return 0;
-  }
 }
