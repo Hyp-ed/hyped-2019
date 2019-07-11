@@ -144,9 +144,9 @@ void BmsManager::run()
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    data::State state = data_.getStateMachineData().current_state;
-    if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
-      if (!sys_.battery_test) {
+    if (!sys_.battery_test) {
+      data::State state = data_.getStateMachineData().current_state;
+      if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
         if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
           for (GPIO* pin : hp_ssr_) {
             pin->clear();

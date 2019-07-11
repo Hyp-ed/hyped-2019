@@ -217,16 +217,22 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 
   // Thermistor expansion module
   if (id == 0x1839F380) return true;
+
+  // ignore id == 0x1838F380 || 0x18EEFF80
+
+  if (id == 0x1838F380 || id == 0x18EEFF80) return true;
   return false;
 }
 
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
   // thermistor expansion module first to get high_voltage_cell from can_id_
-  if (message.id == 0x1839F380) {
+  if (message.id == 0x1839F380) {   // 0x1838F380 or 0x18EEFF80
     local_data_.low_temperature     = message.data[1];
     local_data_.high_temperature    = message.data[2];
     local_data_.average_temperature = message.data[3];   // main data struct
+  } else if (message.id == 0x1838F380 || message.id == 0x18EEFF80) {
+    // do nothing
   }
   log_.DBG2("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
     local_data_.high_temperature,
