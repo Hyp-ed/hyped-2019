@@ -38,7 +38,7 @@ BMS::BMS(uint8_t id, Logger& log)
       can_(Can::getInstance()),
       running_(false)
 {
-  ASSERT(id < 10 + data::Batteries::kNumLPBatteries);
+  ASSERT(id < data::Batteries::kNumLPBatteries);
   // verify this BMS unit has not been instantiated
   for (uint8_t i : existing_ids_) {
     if (id == i) {
@@ -247,18 +247,19 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   if (message.id == can_id_) {
     local_data_.voltage     = (message.data[0] << 8) | message.data[1]; // TODO(Greg, Iain): scale to correct unit NOLINT
     local_data_.current     = (message.data[2] << 8) | message.data[3]; // TODO(Greg, Iain): scale to correct unit NOLINT
-    local_data_.charge      = message.data[4] * 0.5;    // TODO(Greg): data needs scaling
-    // local_data_.average_temperature = message.data[5];
-    local_data_.low_voltage_cell  = ((message.data[6] << 8) | message.data[7])/10; // TODO(Greg, Iain): scale to correct unit NOLINT
+    local_data_.charge      = message.data[4];    // TODO(Greg): data needs scaling
+    local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]); // TODO(Greg, Iain): scale to correct unit NOLINT
     last_update_time_ = utils::Timer::getTimeMicros();
-  } else {
-    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/10; // TODO(Greg, Iain): scale to correct unit NOLINT
+  } else if (message.id == static_cast<uint16_t>(can_id_ + 1)){    // id_base 0x6B1
+    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]); // TODO(Greg, Iain): scale to correct unit NOLINT
   }
 
-  log_.DBG2("BMSHP", "received data Volt,Curr,Char, %u,%u,%u",
+  log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
     local_data_.current,
-    local_data_.charge);
+    local_data_.charge,
+    local_data_.low_voltage_cell,
+    local_data_.high_voltage_cell);
 }
 
 
