@@ -70,7 +70,7 @@ void printUsage()
     "    To set which IMU axis to be navigated after.\n"
     "    --axis\n"
     "    To set run kind for navigation tests.\n"
-    "    --tube_run, --elevator_run, --stationary_run\n"
+    "    --tube_run, --elevator_run, --stationary_run, --outside_run\n"
     "");
 }
 }   // namespace hyped::utils::System
@@ -109,6 +109,7 @@ System::System(int argc, char* argv[])
       tube_run(true),
       elevator_run(false),
       stationary_run(false),
+      outside_run(false),
       running_(true),
       config(0)
 {
@@ -150,6 +151,7 @@ System::System(int argc, char* argv[])
       {"tube_run", no_argument, 0, 'r'},
       {"elevator_run", no_argument, 0, 's'},
       {"stationary_run", no_argument, 0, 't'},
+      {"outside_run", no_argument, 0, 'w'},
       {0, 0, 0, 0}
     };    // options for long in long_options array, can support optional argument
     // returns option character from argv array following '-' or '--' from command line
@@ -295,6 +297,15 @@ System::System(int argc, char* argv[])
           tube_run = 0;
         } else {
           stationary_run = 1;
+          tube_run = 0;
+        }
+        break;
+      case 'w':   // outside_run
+        if (optarg) {
+          outside_run = atoi(optarg);
+          tube_run = 0;
+        } else {
+          outside_run = 1;
           tube_run = 0;
         }
         break;
