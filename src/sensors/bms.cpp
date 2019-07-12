@@ -160,6 +160,8 @@ void BMS::getData(BatteryData* battery)
   battery->low_temperature = 0;   // not used
   battery->current     = current_ - 0x800000;  // offset provided by datasheet  TODO(Greg, Iain): scale to correct unit NOLINT
 
+
+  // TODO(Greg): refigure for batteries
   // charge calculation
   if (battery->voltage > 240) {                                       // constant high
     battery->charge = 95;
@@ -219,7 +221,6 @@ bool BMSHP::hasId(uint32_t id, bool extended)
   if (id == 0x1839F380) return true;
 
   // ignore id == 0x1838F380 || 0x18EEFF80
-
   if (id == 0x1838F380 || id == 0x18EEFF80) return true;
   return false;
 }
@@ -231,7 +232,10 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.low_temperature     = message.data[1];
     local_data_.high_temperature    = message.data[2];
     local_data_.average_temperature = message.data[3];   // main data struct
-  } else if (message.id == 0x1838F380 || message.id == 0x18EEFF80) {
+  }
+  
+  // is this needed???
+  if (message.id == 0x1838F380 || message.id == 0x18EEFF80) {
     // do nothing
   }
   log_.DBG2("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
@@ -250,7 +254,9 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.charge      = message.data[4];    // TODO(Greg): data needs scaling
     local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]); // TODO(Greg, Iain): scale to correct unit NOLINT
     last_update_time_ = utils::Timer::getTimeMicros();
-  } else {    // id_base 0x6B1
+  } 
+  
+  if (message.id == static_cast<uint16_t>(can_id_ + 1)){    // id_base 0x6B1
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]); // TODO(Greg, Iain): scale to correct unit NOLINT
   }
 

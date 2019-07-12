@@ -38,20 +38,23 @@ BmsManager::BmsManager(Logger& log)
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
   if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
-    // int id_num = 10;
+    int id_num = 10;
     // create BMS LP
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
       BMS* bms = new BMS(i, log_);
+      // BMS* bms = new BMS(id_num, log_);
       bms->start();
       bms_[i] = bms;
-      // id_num++;
+      id_num++;
     }
     // fake HP for state machine tests
     if (!sys_.fake_highpower) {
       // create BMS HP
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
-        // id_num++;
+        // bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(id_num, log_);
+
+        id_num++;
       }
     } else {
       // fake HP battery only
