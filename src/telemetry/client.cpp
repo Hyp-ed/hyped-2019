@@ -37,8 +37,8 @@ Client::Client(Logger& log)
 Client::Client(Logger& log, const utils::Config& config)
   : log_ {log},
     signal_handler_ {},
-    kPort {config.telemetry.Port},
-    kServerIP {config.telemetry.IP}
+    kPort {config.telemetry.Port.c_str()},
+    kServerIP {config.telemetry.IP.c_str()}
 {
   log_.DBG("Telemetry", "Client object created");
 }
