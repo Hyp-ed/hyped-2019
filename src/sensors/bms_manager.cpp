@@ -37,7 +37,6 @@ BmsManager::BmsManager(Logger& log)
       data_(Data::getInstance())
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
-
   if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
     int id_num = 10;
     // create BMS LP
@@ -47,10 +46,18 @@ BmsManager::BmsManager(Logger& log)
       bms_[i] = bms;
       id_num++;
     }
-    // create BMS HP
-    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-      bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(id_num, log_);
-      id_num++;
+    // fake HP for state machine tests
+    if (!sys_.fake_highpower) {
+      // create BMS HP
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(id_num, log_);
+        id_num++;
+      }
+    } else {
+      // fake HP battery only
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log_, false, false);
+      }
     }
 
     if (!sys_.battery_test) {
