@@ -91,6 +91,7 @@ class System {
   bool tube_run;
   bool elevator_run;
   bool stationary_run;
+  bool outside_run;
 
   // barriers
   /**
