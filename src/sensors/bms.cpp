@@ -154,7 +154,7 @@ void BMS::getData(BatteryData* battery)
 {
   battery->voltage = 0;
   for (uint16_t v: data_.voltage) battery->voltage += v;
-  battery->voltage    /= 100;  // scale to 0.1V from mV
+  // battery->voltage    /= 100;  // scale to 0.1V from mV
   battery->average_temperature = data_.temperature;
   battery->high_temperature = 0;  // not used
   battery->low_temperature = 0;   // not used
