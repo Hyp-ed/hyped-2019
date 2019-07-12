@@ -45,6 +45,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            distance_(0, 0.),
            distance_uncertainty_(0.),
            velocity_uncertainty_(0.),
+           initTimeSet(false),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -272,6 +273,7 @@ void Navigation::queryKeyence()
       // Allow up to one missed stripe.
       // There must be some uncertainty in distance around the missed 30.48m (kStripeDistance).
       NavigationType allowed_uncertainty = distance_uncertainty_;
+      if (distance_uncertainty_ < 5) allowed_uncertainty = 5.;
       NavigationType distance_change = distance_.value - stripe_counter_.value*kStripeDistance;
       /* There should only be an updated stripe count if the IMU determined distance is closer
        * to the the next stripe than the current. It should not just lie within the uncertainty,
@@ -295,11 +297,12 @@ void Navigation::queryKeyence()
         keyence_failure_counter_ += floor(distance_change / kStripeDistance);
       }
       // If there is more than one disagreement, we get kCriticalFailure
-      // Lower the uncertainty in velocity:
+      // Lower the uncertainty in velocity (based on sinuisoidal distribution):
       velocity_uncertainty_ -= abs(distance_change*1e6/
                                (stripe_counter_.timestamp - init_timestamp_));
-      log_.DBG2("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
-      log_.DBG2("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
+      log_.DBG("NAV", "Stripe detected!");
+      log_.DBG1("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
+      log_.DBG1("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
       // Make sure velocity uncertainty is positive.
       velocity_uncertainty_ = abs(velocity_uncertainty_);
       // The uncertainty in distance is not changed from this because the impact is far too large
@@ -322,6 +325,16 @@ void Navigation::disableKeyenceUsage()
 void Navigation::setKeyenceFake()
 {
   keyence_real_ = false;
+}
+
+bool Navigation::getHasInit()
+{
+  return initTimeSet;
+}
+
+void Navigation::setHasInit()
+{
+  initTimeSet = true;
 }
 
 void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
@@ -429,10 +442,10 @@ void Navigation::updateData()
   data_.setNavigationData(nav_data);
 
   if (counter_ % 100 == 0) {  // kPrintFreq
-    log_.DBG1("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
+    log_.DBG("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
                stripe_counter_.value*kStripeDistance);
-    log_.DBG1("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
+    log_.DBG("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
                counter_, velocity_uncertainty_, distance_uncertainty_, keyence_failure_counter_);
   }
   counter_++;

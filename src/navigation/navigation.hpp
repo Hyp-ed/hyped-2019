@@ -132,6 +132,16 @@ namespace navigation {
        */
       void initTimestamps();
       /**
+       * @brief Used to check whether initial timestamps have been set
+       *
+       * @return Boolean whether init timestamps have been set
+       */
+      bool getHasInit();
+      /*
+       * @brief Set initialisation of timestamps to true
+       */
+      void setHasInit();
+      /**
        * @brief Disable keyence readings to have any impact on the run.
        */
       void disableKeyenceUsage();
@@ -210,6 +220,8 @@ namespace navigation {
       NavigationType prev_acc_;
       // Previous velocity measurement
       NavigationType prev_vel_;
+      // Have initial timestamps been set?
+      bool initTimeSet;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity

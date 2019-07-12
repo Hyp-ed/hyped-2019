@@ -52,11 +52,15 @@ namespace navigation {
         case State::kCalibrating :
           if (nav_.getModuleStatus() == ModuleStatus::kInit) {
             nav_.calibrateGravity();
-            nav_.initTimestamps();
           }
           break;
 
         case State::kAccelerating :
+           if (!nav_.getHasInit()) {
+             nav_.initTimestamps();
+             nav_.setHasInit();
+           }
+
         case State::kNominalBraking :
         case State::kEmergencyBraking :
         case State::kExiting :
@@ -70,5 +74,4 @@ namespace navigation {
       }
     }
   }
-
 }}  // namespace hyped::navigation
