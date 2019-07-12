@@ -19,10 +19,9 @@
  */
 
 #include "utils/config.hpp"
-
 #include <cstdio>
 #include <cstring>
-
+#include <string>  // redundant includes to make linter stop complaining
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 
@@ -37,7 +36,6 @@ struct ModuleEntry {
   char      name[20];   // no module name should exceed 20 characters
   Parser    parse;
 };
-
 
 /**
  * Update this table to register new config mapping. Each row corresponds
@@ -79,22 +77,32 @@ void Config::ParseTelemetry(char* line)
   // After this, the value can be converted from string to bool/int/string and
   // stored in the corresponding configuration field
 
+  // convert char* line to c++ style string
+  std::string cpp_line {line};  // NOLINT
+
   // get TOKEN
-  char* token = strtok(line, " ");
+  /* char* token = strtok(line, " "); */
+  std::string token = cpp_line.substr(0, cpp_line.find(' '));
 
-  if (strcmp(token, "IP") == 0) {
-    char* value = strtok(NULL, " ");
-    if (value) {
-      strncpy(telemetry.IP, value, 16);
-    }
+  if (token == "IP") {
+    telemetry.IP = cpp_line.substr(cpp_line.find(' '), cpp_line.length());
+  } else if (token == "Port") {
+    telemetry.Port = cpp_line.substr(cpp_line.find(' '), cpp_line.length());
   }
 
-  if (strcmp(token, "Port") == 0) {
-    char* value = strtok(NULL, " ");
-    if (value) {
-      strncpy(telemetry.Port, value, 4);
-    }
-  }
+  /* if (strcmp(token, "IP") == 0) { */
+  /*   char* value = strtok(NULL, " "); */
+  /*   if (value) { */
+  /*     strncpy(telemetry.IP, value, 16); */
+  /*   } */
+  /* } */
+
+  /* if (strcmp(token, "Port") == 0) { */
+  /*   char* value = strtok(NULL, " "); */
+  /*   if (value) { */
+  /*     strncpy(telemetry.Port, value, 4); */
+  /*   } */
+  /* } */
 }
 
 void Config::ParseSensors(char* line)
@@ -184,10 +192,11 @@ Config::Config(char* config_file)
   // allocate line buffer, read and parse file line by line
   char line[BUFFER_SIZE];
   ModuleEntry* current_module = &module_map[0];
+
   while (fgets(line, sizeof(line), file) != NULL) {
     // remove new line character
-    for (char& value:line) {
-      if (value == '\n')  value = '\0';
+    for (char& value : line) {
+      if (value == '\n') value = '\0';
     }
 
     // '>' character marks change for submodule
@@ -204,6 +213,7 @@ Config::Config(char* config_file)
             break;
           }
         }
+
         if (prev_module == current_module) {
           log.ERR("CONFIG", "module name \"%s\" not found, keeping to module \"%s\""
                   , line+1
@@ -211,6 +221,7 @@ Config::Config(char* config_file)
         } else {
           log.INFO("CONFIG", "changing module to \"%s\"", current_module->name);
         }
+
         break;
       }
       default: {
@@ -219,6 +230,7 @@ Config::Config(char* config_file)
       }
     }
   }
+
   log.DBG("CONFIG", "configuration file %s loaded", config_file);
   fclose(file);
 }

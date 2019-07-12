@@ -26,6 +26,7 @@
 #ifndef UTILS_CONFIG_HPP_
 #define UTILS_CONFIG_HPP_
 
+#include <string>
 #include "data/data.hpp"
 
 namespace hyped {
@@ -54,8 +55,10 @@ class Config {
   } navigation;
 
   struct Telemetry {
-    char IP[16];
-    char Port[5];
+    /* char IP[16]; */
+    /* char Port[5]; */
+    std::string IP;
+    std::string Port;
   } telemetry;
 
   struct Sensors {
@@ -74,7 +77,6 @@ class Config {
   void ParseTelemetry(char* line);
   void ParseSensors(char* line);
   void ParseNone(char* line);
-
 
  private:
   explicit Config(char* config_file);
