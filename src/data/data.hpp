@@ -91,14 +91,14 @@ struct Sensors : public Module {
 };
 
 struct BatteryData {
-  uint16_t  voltage;  // V
-  int16_t   current;  // mA
-  uint8_t   charge;
+  uint16_t  voltage;  // dV
+  int16_t   current;  // dA
+  uint8_t   charge;   // %
   int8_t    low_temperature;  // for BMSHP only, BMSLP value=0
   int8_t    average_temperature;  // C
   int8_t    high_temperature;  // for BMSHP only, BMSLP value=0
-  uint16_t  low_voltage_cell;  // V
-  uint16_t  high_voltage_cell;  // V
+  uint16_t  low_voltage_cell;  // dV
+  uint16_t  high_voltage_cell;  // dV
 };
 
 struct Batteries : public Module {

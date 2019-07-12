@@ -245,9 +245,7 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
 
   // TODO(Greg, Iain): config main BMSHP message
   // message format is expected to look like this:
-  // [ voltageH , volageL  , currentH   , currentL,
-  //  charge   , HighTemp , AverageTemp, state, lowVoltageCellH,
-  //  lowVoltageCellL ]
+  // [ voltageH , volageL , currentH , currentL , charge, lowVoltageCellH , lowVoltageCellL ]
   if (message.id == can_id_) {
     local_data_.voltage     = (message.data[0] << 8) | message.data[1]; // TODO(Greg, Iain): scale to correct unit NOLINT
     local_data_.current     = (message.data[2] << 8) | message.data[3]; // TODO(Greg, Iain): scale to correct unit NOLINT
