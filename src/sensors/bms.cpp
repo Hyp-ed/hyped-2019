@@ -250,7 +250,7 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.charge      = message.data[4];    // TODO(Greg): data needs scaling
     local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]); // TODO(Greg, Iain): scale to correct unit NOLINT
     last_update_time_ = utils::Timer::getTimeMicros();
-  } else if (message.id == static_cast<uint16_t>(can_id_ + 1)){    // id_base 0x6B1
+  } else {    // id_base 0x6B1
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]); // TODO(Greg, Iain): scale to correct unit NOLINT
   }
 
