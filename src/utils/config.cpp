@@ -22,13 +22,15 @@
 #include <cstdio>
 #include <cstring>
 #include <string>  // redundant includes to make linter stop complaining
+#include <vector>
+#include <sstream>
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 
 namespace hyped {
 namespace utils {
 
-#define BUFFER_SIZE   250   // max length of a line in the confix file in characters
+#define BUFFER_SIZE 250   // max length of a line in the confix file in characters
 
 typedef void (Config::* Parser) (char* line);
 struct ModuleEntry {
@@ -65,6 +67,28 @@ void Config::ParseNavigation(char* line)
 
 void Config::ParseTelemetry(char* line)
 {
+  // just in case we get handed a null pointer
+  if (!line) return;
+
+  // convert char* line to c++ style string
+  std::string cpp_line {line};  // NOLINT
+
+  std::istringstream iss(cpp_line);
+  std::vector<std::string> tokens;
+
+  for (std::string s; iss >> s;) {
+    tokens.push_back(s);
+  }
+
+  if (tokens[0] == "IP") {
+    telemetry.IP = tokens[1];
+  } else if (tokens[0] == "Port") {
+    telemetry.Port = tokens[1];
+  }
+}
+
+void Config::ParseSensors(char* line)
+{
   // EXAMPLE line parsing:
   // "char* strtok(line, delimiters)" splits the input line into parts using
   // characters from delimiters. The return value points to a valid split section.
@@ -77,36 +101,6 @@ void Config::ParseTelemetry(char* line)
   // After this, the value can be converted from string to bool/int/string and
   // stored in the corresponding configuration field
 
-  // convert char* line to c++ style string
-  std::string cpp_line {line};  // NOLINT
-
-  // get TOKEN
-  /* char* token = strtok(line, " "); */
-  std::string token = cpp_line.substr(0, cpp_line.find(' '));
-
-  if (token == "IP") {
-    telemetry.IP = cpp_line.substr(cpp_line.find(' '), cpp_line.length());
-  } else if (token == "Port") {
-    telemetry.Port = cpp_line.substr(cpp_line.find(' '), cpp_line.length());
-  }
-
-  /* if (strcmp(token, "IP") == 0) { */
-  /*   char* value = strtok(NULL, " "); */
-  /*   if (value) { */
-  /*     strncpy(telemetry.IP, value, 16); */
-  /*   } */
-  /* } */
-
-  /* if (strcmp(token, "Port") == 0) { */
-  /*   char* value = strtok(NULL, " "); */
-  /*   if (value) { */
-  /*     strncpy(telemetry.Port, value, 4); */
-  /*   } */
-  /* } */
-}
-
-void Config::ParseSensors(char* line)
-{
   char* token = strtok(line, " ");
 
   if (strcmp(token, "ChipSelect") == 0) {

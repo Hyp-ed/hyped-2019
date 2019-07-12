@@ -55,8 +55,6 @@ class Config {
   } navigation;
 
   struct Telemetry {
-    /* char IP[16]; */
-    /* char Port[5]; */
     std::string IP;
     std::string Port;
   } telemetry;
