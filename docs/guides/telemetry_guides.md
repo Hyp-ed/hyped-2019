@@ -134,12 +134,12 @@ Now if you want to run code that uses the telemetry module refer to [this guide]
   - Set `IP Address` to `192.168.1.160`
   - Set `Subnet Mask` to `255.255.255.0`
   - Click `Change` button in bottom right, and apply changes
-- Open up port 9090 by running `sudo ufw allow 9090` - *command is for Ubuntu, use respective command for your OS, also not sure if this is really necessary, just do it in case :)*
 
 ### Beaglebone
 - Now unplug the ethernet cable from the station computer and plug it into the beaglebone
 - Assign the beaglebone ethernet network interface a static ip:
   - `sudo ifconfig eth0 192.168.1.40 netmask 255.255.255.0 up`
   - This is the same address and netmask that we used for the station computer
+  - This command must be run everytime the beaglebone is rebooted
 - Test connection to the access point computer
   - `ping 192.168.1.40`
