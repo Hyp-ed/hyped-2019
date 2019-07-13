@@ -64,6 +64,14 @@ constexpr uint16_t kIdSize      = 5;       // size of id-space of BMS-CAN messag
  * base = kIdBase + (kIdIncrement * id_)
  */
 
+/**
+ * LP: Notches:    0        1        2
+ *     ID:      301-304, 311-314, 321-324
+ *     Hex:     12D-130, 137-13A, 141-144
+ * HP: ID:      1712-13, 1714-15, 1716-17
+ *     Hex:     6B0-6B1, 6B2-6B3, 6B4-6B5
+ */
+
 constexpr uint16_t kHPBase      = 0x6B0;    // CAN id for high power BMSHP
 
 struct Data {

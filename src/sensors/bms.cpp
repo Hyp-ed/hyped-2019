@@ -143,7 +143,6 @@ void BMS::processNewData(utils::io::can::Frame& message)
   last_update_time_ = utils::Timer::getTimeMicros();
 }
 
-
 bool BMS::isOnline()
 {
   // consider online if the data has been updated in the last second
@@ -218,38 +217,31 @@ void BMSHP::getData(BatteryData* battery)
 
 bool BMSHP::hasId(uint32_t id, bool extended)
 {
-  // only accept a single CAN message
-
   // HPBMS
   if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
 
   // Thermistor expansion module
   if (id == 0x1839F380) return true;
 
-  // ignore id == 0x1838F380 || 0x18EEFF80
+  // ignore misc thermistor module messages
   if (id == 0x1838F380 || id == 0x18EEFF80) return true;
   return false;
 }
 
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
-  // thermistor expansion module first to get high_voltage_cell from can_id_
+  // thermistor expansion module
   if (message.id == 0x1839F380) {
     local_data_.low_temperature     = message.data[1];
     local_data_.high_temperature    = message.data[2];
     local_data_.average_temperature = message.data[3];   // main data struct
   }
-  
-  // is this needed???
-  if (message.id == 0x1838F380 || message.id == 0x18EEFF80) {
-    // do nothing
-  }
+
   log_.DBG2("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
     local_data_.high_temperature,
     local_data_.average_temperature,
     local_data_.low_temperature);
 
-  // TODO(Greg, Iain): config main BMSHP message
   // message format is expected to look like this:
   // [ voltageH , volageL , currentH , currentL , charge, lowVoltageCellH , lowVoltageCellL ]
   if (message.id == can_id_) {
@@ -258,10 +250,10 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.charge      = message.data[4];    // TODO(Greg): data needs scaling
     local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]); // TODO(Greg, Iain): scale to correct unit NOLINT
     last_update_time_ = utils::Timer::getTimeMicros();
-  } 
+  }
   
-  // have this separate or part of can_id_ if-else
-  if (message.id == static_cast<uint16_t>(can_id_ + 1)){    // id_base 0x6B1
+  // [ highVoltageCellH , highVoltageCellL ]
+  if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]); // TODO(Greg, Iain): scale to correct unit NOLINT
   }
 
@@ -272,8 +264,4 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.low_voltage_cell,
     local_data_.high_voltage_cell);
 }
-
-
-
-
 }}  // namespace hyped::sensors
