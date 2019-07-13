@@ -159,10 +159,10 @@ void BMS::getData(BatteryData* battery)
   battery->current     = current_ - 0x800000;  // offset provided by datasheet  TODO(Greg, Iain): scale to correct unit NOLINT
 
   // not used, initialised to zero
-  battery->high_temperature = 0;
   battery->low_temperature = 0;
-  battery->low_voltage_cell = 0;
   battery->high_temperature = 0;
+  battery->low_voltage_cell = 0;
+  battery->high_voltage_cell = 0;
 
   // charge calculation
   if (battery->voltage > 240) {                                       // constant high
