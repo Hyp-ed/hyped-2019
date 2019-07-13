@@ -1,5 +1,5 @@
 /*
- * Author: Jack Horsburgh
+ * Author: Gregory Dayao and Jack Horsburgh
  * Organisation: HYPED
  * Date: 20/06/18
  * Description:
@@ -38,23 +38,17 @@ BmsManager::BmsManager(Logger& log)
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
   if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
-    int id_num = 10;
     // create BMS LP
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
       BMS* bms = new BMS(i, log_);
-      // BMS* bms = new BMS(id_num, log_);
       bms->start();
       bms_[i] = bms;
-      id_num++;
     }
     // fake HP for state machine tests
     if (!sys_.fake_highpower) {
       // create BMS HP
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
-        // bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(id_num, log_);
-
-        id_num++;
       }
     } else {
       // fake HP battery only
@@ -74,15 +68,6 @@ BmsManager::BmsManager(Logger& log)
         lp_ssr_[i] = new GPIO(sys_.config->sensors.LPSSR[i], utils::io::gpio::kOut);
         lp_ssr_[i]->set();
         log_.INFO("BMS-MANAGER", "LP SSR %d has been set", i);
-      }
-
-      // IMD and LED initialisation
-      for (int i = 0; i < data::Batteries::kNumIMD; i++) {
-        imd_[i] = new GPIO(sys_.config->sensors.IMD[i], utils::io::gpio::kIn);
-      }
-      for (int i = 0; i < data::Batteries::kNumLED; i++) {
-        green_led_[i] = new GPIO(sys_.config->sensors.LED[i], utils::io::gpio::kOut);
-        green_led_[i]->set();
       }
     }
   } else if (sys_.fake_batteries_fail) {
@@ -125,20 +110,6 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    if (!sys_.battery_test) {
-      if (!(sys_.fake_batteries_fail || sys_.fake_batteries)) {
-        // iterate through imd_ and set LEDs
-        for (GPIO* pin : imd_) {
-          uint8_t val = pin->read();     // will check every cycle of run()
-          if (val) {
-            for (int i = 0; i < data::Batteries::kNumLED; i++) {
-              green_led_[i]->clear();
-              log_.ERR("BMS-MANAGER", "IMD short! Green LED %d cleared", i);
-            }
-          }
-        }
-      }
-    }
     // check health of batteries
     if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
       if (!batteriesInRange()) {

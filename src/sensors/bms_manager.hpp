@@ -1,5 +1,5 @@
 /*
- * Author: Jack Horsburgh
+ * Author: Gregory Dayao and Jack Horsburgh
  * Organisation: HYPED
  * Date: 20/06/18
  * Description:
@@ -62,17 +62,6 @@ class BmsManager: public ManagerInterface  {
    * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared
    */
   GPIO* lp_ssr_[data::Batteries::kNumHPBatteries];
-
-  /**
-   * @brief insulation monitoring device held high if possible battery short
-   */
-  GPIO* imd_[data::Batteries::kNumIMD];
-
-  /**
-   * @brief ON- no short indication from imd_
-   *        OFF- possible short indication from imd_
-   */
-  GPIO* green_led_[data::Batteries::kNumLED];
 
   /**
    * @brief holds LP BatteryData, HP BatteryData, and module_status

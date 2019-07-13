@@ -156,6 +156,7 @@ void BMS::getData(BatteryData* battery)
   battery->voltage    /= 100;  // scale to dV from mV
   battery->average_temperature = data_.temperature;
   battery->current     = (current_ - 0x800000)/100;  // offset provided by datasheet
+  if (battery->current == -18350) battery->current = 0;
 
   // not used, initialised to zero
   battery->low_temperature = 0;
@@ -220,7 +221,12 @@ bool BMSHP::hasId(uint32_t id, bool extended)
   // HPBMS
   if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
 
-  // if (id == 0x36 || id == 0x6D0 || id == 0x70 || id == 0x7E4 || id == 0x7EC || id == 0x80) return true; // NOLINT
+  // unused CAN ID and OBDII ECU ID
+  if (id == 0x36 || id == 0x7E4) return true;
+
+  // unused messages, fault message?
+  if (id == 0x6D0 || id == 0x7EC) return true;
+  if (id == 0x70 || id == 0x80) return true;
 
   // Thermistor expansion module
   if (id == 0x1839F380) return true;
@@ -233,10 +239,10 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
   // thermistor expansion module
-  if (message.id == 0x1839F380) {
+  if (message.id == 0x1839F380) {   // C
     local_data_.low_temperature     = message.data[1];
     local_data_.high_temperature    = message.data[2];
-    local_data_.average_temperature = message.data[3];   // main data struct
+    local_data_.average_temperature = message.data[3];
   }
 
   log_.DBG2("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
@@ -244,39 +250,20 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.average_temperature,
     local_data_.low_temperature);
 
-  // give me dV and dA for voltage and current
-
-  // give me mV for highvolt and lowvolt
-
+  // voltage, current and charge 1:1 configured
+  // low_voltage_cell and high_voltage_cell 10:1 configured
   // message format is expected to look like this:
-  // [ voltageH , volageL , currentH , currentL , charge, lowVoltageCellH , lowVoltageCellL ]
+  // [ voltageH , volageL , currentH , currentL , charge ,
+  // lowVoltageCellH , lowVoltageCellL ] [ highVoltageCellH , highVoltageCellL ]
   if (message.id == can_id_) {
-    local_data_.voltage     = (message.data[0] << 8) | message.data[1]; // dV
-    local_data_.current     = (message.data[2] << 8) | message.data[3]; // dV
-    local_data_.charge      = (message.data[4]) * 0.5;    // %.1f to uint8_t %
-    local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]); // mV (/10)
+    local_data_.voltage     = (message.data[0] << 8) | message.data[1];           // dV
+    local_data_.current     = (message.data[2] << 8) | message.data[3];           // dV
+    local_data_.charge      = (message.data[4]) * 0.5;                            // %
+    local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]);   // mV
+  } else if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
+    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]);   // mV
   }
-  
-  // [ highVoltageCellH , highVoltageCellL ]
-  if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
-    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]); // mV to dV
-  }
-
-  // if (message.id == can_id_) {
-  //   local_data_.voltage     = static_cast<uint16_t>(std::round((message.data[0] << 8) | message.data[1])); // dV NOLINT
-  //   local_data_.current     = static_cast<uint16_t>(std::round((message.data[2] << 8) | message.data[3])); // dV NOLINT
-  //   local_data_.charge      = static_cast<uint8_t>(std::round(message.data[4]));    // %.1f to uint8_t % NOLINT
-  //   local_data_.low_voltage_cell  = static_cast<uint16_t>(std::round(((message.data[5] << 8) | message.data[6])/100)); // mV to dV NOLINT
-  //   last_update_time_ = utils::Timer::getTimeMicros();
-  // }
-
-  // // [ highVoltageCellH , highVoltageCellL ]
-  // if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
-  //   local_data_.high_voltage_cell = static_cast<uint16_t>(std::round(((message.data[0] << 8) | message.data[1])/100)); // mV to dV NOLINT
-  // }
-
   last_update_time_ = utils::Timer::getTimeMicros();
-
 
   log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
