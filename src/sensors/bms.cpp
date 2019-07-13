@@ -220,6 +220,8 @@ bool BMSHP::hasId(uint32_t id, bool extended)
   // HPBMS
   if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
 
+  // if (id == 0x36 || id == 0x6D0 || id == 0x70 || id == 0x7E4 || id == 0x7EC || id == 0x80) return true; // NOLINT
+
   // Thermistor expansion module
   if (id == 0x1839F380) return true;
 
@@ -251,13 +253,13 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   if (message.id == can_id_) {
     local_data_.voltage     = (message.data[0] << 8) | message.data[1]; // dV
     local_data_.current     = (message.data[2] << 8) | message.data[3]; // dV
-    local_data_.charge      = static_cast<uint8_t>(std::round(message.data[4]));    // %.1f to uint8_t %
-    local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6])/100; // mV to dV
+    local_data_.charge      = (message.data[4]) * 0.5;    // %.1f to uint8_t %
+    local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]); // mV (/10)
   }
   
   // [ highVoltageCellH , highVoltageCellL ]
   if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
-    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/100; // mV to dV
+    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]); // mV to dV
   }
 
   // if (message.id == can_id_) {
