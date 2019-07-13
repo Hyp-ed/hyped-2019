@@ -105,6 +105,8 @@ void Main::run()
           if (telem.service_propulsion_go) {
             stateProcessor->servicePropulsion();
             log_.DBG1("MOTOR", "Service propulsion active");
+          } else {
+            stateProcessor->quickStopAll();
           }
     } else if (currentState == State::kFailureStopped) {
           // Enter preoperational

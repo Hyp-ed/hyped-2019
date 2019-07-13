@@ -28,10 +28,7 @@
 #include "propulsion/controller.hpp"
 #include "propulsion/fake_controller.hpp"
 #include "propulsion/RPM_regulator.hpp"
-// #include "propulsion/calculate_RPM.hpp"
 #include "data/data.hpp"
-
-#define SLIPPATH "data/in/oldAcc.txt"
 
 namespace hyped
 {

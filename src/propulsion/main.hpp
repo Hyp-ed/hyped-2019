@@ -43,7 +43,7 @@ using utils::concurrent::Thread;
 namespace motor_control
 {
 
-constexpr int32_t kNumMotors = 6;
+constexpr int32_t kNumMotors = 4;
 
 class Main : public Thread
 {
