@@ -242,20 +242,39 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.average_temperature,
     local_data_.low_temperature);
 
+  // give me dV and dA for voltage and current
+
+  // give me mV for highvolt and lowvolt
+
   // message format is expected to look like this:
   // [ voltageH , volageL , currentH , currentL , charge, lowVoltageCellH , lowVoltageCellL ]
   if (message.id == can_id_) {
-    local_data_.voltage     = (message.data[0] << 8) | message.data[1]; // TODO(Greg, Iain): scale to correct unit NOLINT
-    local_data_.current     = (message.data[2] << 8) | message.data[3]; // TODO(Greg, Iain): scale to correct unit NOLINT
-    local_data_.charge      = message.data[4];    // TODO(Greg): data needs scaling
-    local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]); // TODO(Greg, Iain): scale to correct unit NOLINT
-    last_update_time_ = utils::Timer::getTimeMicros();
+    local_data_.voltage     = (message.data[0] << 8) | message.data[1]; // dV
+    local_data_.current     = (message.data[2] << 8) | message.data[3]; // dV
+    local_data_.charge      = static_cast<uint8_t>(std::round(message.data[4]));    // %.1f to uint8_t %
+    local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6])/100; // mV to dV
   }
   
   // [ highVoltageCellH , highVoltageCellL ]
   if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
-    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]); // TODO(Greg, Iain): scale to correct unit NOLINT
+    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/100; // mV to dV
   }
+
+  // if (message.id == can_id_) {
+  //   local_data_.voltage     = static_cast<uint16_t>(std::round((message.data[0] << 8) | message.data[1])); // dV NOLINT
+  //   local_data_.current     = static_cast<uint16_t>(std::round((message.data[2] << 8) | message.data[3])); // dV NOLINT
+  //   local_data_.charge      = static_cast<uint8_t>(std::round(message.data[4]));    // %.1f to uint8_t % NOLINT
+  //   local_data_.low_voltage_cell  = static_cast<uint16_t>(std::round(((message.data[5] << 8) | message.data[6])/100)); // mV to dV NOLINT
+  //   last_update_time_ = utils::Timer::getTimeMicros();
+  // }
+
+  // // [ highVoltageCellH , highVoltageCellL ]
+  // if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
+  //   local_data_.high_voltage_cell = static_cast<uint16_t>(std::round(((message.data[0] << 8) | message.data[1])/100)); // mV to dV NOLINT
+  // }
+
+  last_update_time_ = utils::Timer::getTimeMicros();
+
 
   log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
