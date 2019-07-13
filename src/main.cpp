@@ -19,6 +19,9 @@
  *    limitations under the License.
  */
 
+#include <fstream>
+#include <string>
+
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "navigation/main.hpp"
@@ -45,6 +48,16 @@ int main(int argc, char* argv[])
   Logger log_sensor(sys.verbose_sensor, sys.debug_sensor);
   Logger log_state(sys.verbose_state, sys.debug_state);
   Logger log_tlm(sys.verbose_tlm, sys.debug_tlm);
+
+  // print HYPED logo at system startup
+  std::ifstream file("main_logo.txt");
+  if (file.is_open()) {
+    std::string line;
+    while (getline(file, line)) {
+        printf("%s\n", line.c_str());
+    }
+    file.close();
+  }
 
   log_system.INFO("MAIN", "Starting BBB with %d modules", 5);
   log_system.DBG("MAIN", "DBG0");
