@@ -135,6 +135,8 @@ void StateProcessor::accelerate()
 
       int32_t rpm = regulator.calculateRPM(velocity, act_rpm, act_current, act_temp);
 
+      log_.INFO("MOTOR", "Sending %d rpm as target", rpm);
+
       for (int i = 0;i < motorAmount; i++) {
         controllers[i]->sendTargetVelocity(rpm);
       }
