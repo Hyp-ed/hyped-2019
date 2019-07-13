@@ -66,6 +66,7 @@ class Config {
     int Thermistor;
     int HPSSR[data::Batteries::kNumHPBatteries];
     int LPSSR[data::Batteries::kNumLPBatteries];
+    int prop_cool;
   } sensors;
 
 //  private:

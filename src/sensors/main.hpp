@@ -28,6 +28,7 @@
 
 #include "sensors/interface.hpp"
 #include "sensors/manager_interface.hpp"
+#include "utils/io/gpio.hpp"
 #include "utils/system.hpp"
 
 namespace hyped {
@@ -80,6 +81,7 @@ class Main: public Thread {
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
     TemperatureInterface*                  temperature_;
+    utils::io::GPIO*                       prop_cool_;
 
     /**
      * @brief update this from GpioCounter::getStripeCounter();

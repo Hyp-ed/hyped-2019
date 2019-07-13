@@ -137,7 +137,7 @@ void Config::ParseSensors(char* line)
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       char* value = strtok(NULL, ",");
       if (value) {
-      sensors.HPSSR[i] = atoi(value);
+        sensors.HPSSR[i] = atoi(value);
       }
     }
   }
@@ -146,8 +146,15 @@ void Config::ParseSensors(char* line)
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
       char* value = strtok(NULL, ",");
       if (value) {
-      sensors.LPSSR[i] = atoi(value);
+        sensors.LPSSR[i] = atoi(value);
       }
+    }
+  }
+
+  if (strcmp(token, "PropCool") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.prop_cool = atoi(value);
     }
   }
 }
