@@ -65,6 +65,7 @@ void printUsage()
     "    --fake_keyence --fake_keyence_fail\n"
     "    --fake_temperature --fake_temperature_fail\n"
     "    --fake_embrakes --fake_motors\n"
+    "    --battery_test  --fake_highpower\n"
     "    To set navigation IDs.\n"
     "    --imu_id, --run_id\n"
     "    To set which IMU axis to be navigated after.\n"
@@ -103,6 +104,8 @@ System::System(int argc, char* argv[])
       fake_batteries_fail(false),
       fake_keyence_fail(false),
       fake_temperature_fail(false),
+      battery_test(false),
+      fake_highpower(false),
       imu_id(DEFAULT_NAV_ID),
       run_id(DEFAULT_NAV_ID),
       axis(0),
@@ -145,6 +148,8 @@ System::System(int argc, char* argv[])
       {"fake_batteries_fail", no_argument, 0, 'J'},
       {"fake_keyence_fail", no_argument, 0, 'K'},
       {"fake_temperature_fail", no_argument, 0, 'L'},
+      {"fake_highpower", no_argument, 0, 'z'},
+      {"battery_test", no_argument, 0, 'Z'},
       {"imu_id", no_argument, 0, 'p'},
       {"run_id", no_argument, 0, 'q'},
       {"axis", required_argument, 0, 'u'},
@@ -265,6 +270,14 @@ System::System(int argc, char* argv[])
       case 'L':   // fake_temeperature_fail
         if (optarg) fake_temperature_fail = atoi(optarg);
         else        fake_temperature_fail = 1;
+        break;
+      case 'z':   // fake_highpower
+        if (optarg) fake_highpower = atoi(optarg);
+        else        fake_highpower = 1;
+        break;
+      case 'Z':   // fake_battery_test
+        if (optarg) battery_test = atoi(optarg);
+        else        battery_test = 1;
         break;
       case 'p':   // imu_id
         if (optarg) imu_id = atoi(optarg);

@@ -66,8 +66,6 @@ class Config {
     int Thermistor;
     int HPSSR[data::Batteries::kNumHPBatteries];
     int LPSSR[data::Batteries::kNumLPBatteries];
-    int IMD[data::Batteries::kNumIMD];
-    int LED[data::Batteries::kNumLED];
   } sensors;
 
 //  private:

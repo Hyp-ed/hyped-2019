@@ -150,24 +150,6 @@ void Config::ParseSensors(char* line)
       }
     }
   }
-
-  if (strcmp(token, "IMD") == 0) {
-    for (int i = 0; i < data::Batteries::kNumIMD; i++) {
-      char* value = strtok(NULL, ",");
-      if (value) {
-      sensors.IMD[i] = atoi(value);
-      }
-    }
-  }
-
-  if (strcmp(token, "LED") == 0) {
-    for (int i = 0; i < data::Batteries::kNumLED; i++) {
-      char* value = strtok(NULL, ",");
-      if (value) {
-      sensors.LED[i] = atoi(value);
-      }
-    }
-  }
 }
 
 Config::Config(char* config_file)
