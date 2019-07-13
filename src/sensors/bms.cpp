@@ -154,9 +154,9 @@ void BMS::getData(BatteryData* battery)
 {
   battery->voltage = 0;
   for (uint16_t v: data_.voltage) battery->voltage += v;
-  // battery->voltage    /= 100;  // scale to 0.1V from mV
+  battery->voltage    /= 100;  // scale to dV from mV
   battery->average_temperature = data_.temperature;
-  battery->current     = current_ - 0x800000;  // offset provided by datasheet  TODO(Greg, Iain): scale to correct unit NOLINT
+  battery->current     = (current_ - 0x800000)/100;  // offset provided by datasheet
 
   // not used, initialised to zero
   battery->low_temperature = 0;
@@ -165,13 +165,17 @@ void BMS::getData(BatteryData* battery)
   battery->high_voltage_cell = 0;
 
   // charge calculation
-  if (battery->voltage > 240) {                                       // constant high
+  if (battery->voltage >= 252) {                                     // constant high
     battery->charge = 95;
-  } else if (240 >= battery->voltage && battery->voltage >= 180) {    // linear high
-    battery->charge = battery->voltage / 0.75 - 225;
-  } else if (180 >= battery->voltage && battery->voltage >= 150) {    // linear low
-    battery->charge = battery->voltage / 2 - 75;
-  } else {                                                            // constant low
+  } else if (252 > battery->voltage && battery->voltage >= 210) {    // linear high
+    battery->charge = static_cast<uint8_t>(std::round((battery->voltage - 198.8) * (25/14)));
+  } else if (210 > battery->voltage && battery->voltage >= 207) {    // binomial low
+    battery->charge = 15;
+  } else if (207 > battery->voltage && battery->voltage >= 200) {    // binomial low
+    battery->charge = 10;
+  } else if (200 > battery->voltage && battery->voltage >= 189) {    // binomial low
+    battery->charge = 5;
+  } else {                                                           // constant low
     battery->charge = 0;
   }
 }
@@ -230,7 +234,7 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
   // thermistor expansion module first to get high_voltage_cell from can_id_
-  if (message.id == 0x1839F380) {   // 0x1838F380 or 0x18EEFF80
+  if (message.id == 0x1839F380) {
     local_data_.low_temperature     = message.data[1];
     local_data_.high_temperature    = message.data[2];
     local_data_.average_temperature = message.data[3];   // main data struct
@@ -256,6 +260,7 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     last_update_time_ = utils::Timer::getTimeMicros();
   } 
   
+  // have this separate or part of can_id_ if-else
   if (message.id == static_cast<uint16_t>(can_id_ + 1)){    // id_base 0x6B1
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]); // TODO(Greg, Iain): scale to correct unit NOLINT
   }
