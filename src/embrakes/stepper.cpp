@@ -38,7 +38,7 @@ stepper_period       = 0x28;
 isEnabled            = 0x0; // is true (or set to anything above 0) if brakes to be retracted
 isHome               = 0x0; // is true (equal to 1) if button is pressed (if brakes are retracted)
 
-message_to_send.id       = kSdoReceive + node_id_;
+message_to_send.id       = node_id_;
 message_to_send.extended = false;
 message_to_send.len      = 8;    
 }
@@ -51,7 +51,8 @@ void Stepper::registerStepper()
 void Stepper::processNewData(utils::io::can::Frame &message)
 {
   uint32_t id = message.id;
-  if(id == kSdoTransmit + node_id_) {
+  uint8_t ex = message.extended;
+  if(hasId(id, ex)) {
     uint8_t isEnabled = message.data[0];
     uint8_t stepper_position_LSB = message.data[1];
     uint8_t stepper_position_MSB = message.data[2];
@@ -68,10 +69,8 @@ void Stepper::processNewData(utils::io::can::Frame &message)
 
 bool Stepper::hasId(uint32_t id, bool extended)
 {
-  for (uint32_t canID : canIds) {
-    if (canID + node_id_ == id) {
-      return true;
-    }
+  if (node_id_ == id) {
+    return true;
   }
   return false;
 }
@@ -92,9 +91,10 @@ void Stepper::checkHome(uint8_t button)
 void Stepper::sendRetract(uint8_t LSB, uint8_t MSB, uint8_t period){
   log_.INFO("Brakes", "Sending a retract message");
   message_to_send.data[0] = 0x1;
+  message_to_send.data[1] = MSB;
+  message_to_send.data[2] = LSB;
   message_to_send.data[3] = period;
-  message_to_send.data[2] = MSB;
-  message_to_send.data[1] = LSB;
+  
 
   can_.send(message_to_send);
   

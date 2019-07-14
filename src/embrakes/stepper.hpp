@@ -36,13 +36,6 @@ using utils::io::CanProccesor;
 
 namespace embrakes {
 
-// Types of CANopen messages, these are used for CAN ID's
-
-constexpr uint32_t kSdoReceive = 0x600;
-constexpr uint32_t kSdoTransmit = 0x580;
-
-constexpr uint32_t canIds[13] {0x600, 0x580};
-
 class Stepper :public CanProccesor {
   public:
   /**
