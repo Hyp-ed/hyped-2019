@@ -326,7 +326,7 @@ void Navigation::queryKeyence()
    * three stripes have been missed then, which throws kCriticalFailure. */
   if (distance_.value - stripe_counter_.value*kStripeDistance > 4 * kStripeDistance) {
     status_ = ModuleStatus::kCriticalFailure;
-    log_.ERR("NAV", "IMU calculated distance at least 3 * kStripeDistance ahead.");
+    log_.ERR("NAV", "IMU distance at least 3 * kStripeDistance ahead, entering kCriticalFailure.");
   }
   // Update old keyence readings with current ones
   prev_keyence_readings_ = keyence_readings_;
