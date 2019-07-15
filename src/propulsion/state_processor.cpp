@@ -80,14 +80,17 @@ void StateProcessor::initMotors()
       break;
     }
   }
-
   if (!error) {
-    prepareMotors();
     initialized = true;
   } else {
     criticalError = true;
   }
 }
+
+  void StateProcessor::sendOperationalCommand()
+  {
+    prepareMotors();
+  }
 
 void StateProcessor::registerControllers()
 {

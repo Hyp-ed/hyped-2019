@@ -96,6 +96,11 @@ class StateProcessor : public StateProcessorInterface
      * */
     bool isCriticalFailure() override;
 
+    /**
+     * @brief sends the enter operational command
+     */
+    void sendOperationalCommand();
+
   protected:
     /**
      * @brief { Registers the controllers to handle CAN transmissions }
