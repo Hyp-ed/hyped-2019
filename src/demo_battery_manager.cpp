@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
   bms_manager.start();
   Thread::sleep(500);
   StateMachine state_machine = data_.getStateMachineData();
-  state_machine.current_state = State::kAccelerating;
+  state_machine.current_state = State::kEmergencyBraking;
   data_.setStateMachineData(state_machine);
   Batteries batteries = data_.getBatteriesData();
 

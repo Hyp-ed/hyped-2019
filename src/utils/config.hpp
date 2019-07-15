@@ -64,8 +64,10 @@ class Config {
     int KeyenceL;
     int KeyenceR;
     int Thermistor;
+    int hp_master;
     int HPSSR[data::Batteries::kNumHPBatteries];
-    int LPSSR[data::Batteries::kNumLPBatteries];
+    int prop_cool;
+    int LPSSR;
   } sensors;
 
 //  private:
