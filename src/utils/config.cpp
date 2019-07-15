@@ -133,6 +133,13 @@ void Config::ParseSensors(char* line)
     }
   }
 
+  if (strcmp(token, "HPMaster") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.hp_master= atoi(value);
+    }
+  }
+
   if (strcmp(token, "HPSSR") == 0) {
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       char* value = strtok(NULL, ",");
@@ -142,19 +149,17 @@ void Config::ParseSensors(char* line)
     }
   }
 
-  if (strcmp(token, "LPSSR") == 0) {
-    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
-      char* value = strtok(NULL, ",");
-      if (value) {
-        sensors.LPSSR[i] = atoi(value);
-      }
-    }
-  }
-
   if (strcmp(token, "PropCool") == 0) {
     char* value = strtok(NULL, " ");
     if (value) {
       sensors.prop_cool = atoi(value);
+    }
+  }
+
+  if (strcmp(token, "LPSSR") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.LPSSR = atoi(value);
     }
   }
 }

@@ -71,11 +71,7 @@ Main::Main(uint8_t id, utils::Logger& log)
   } else {
     temperature_ = new FakeTemperature(log_, false);
   }
-  if (!sys_.fake_motors) {
-    // propulsion cooling module
-    prop_cool_ = new GPIO(sys_.config->sensors.prop_cool, utils::io::gpio::kOut);
-    prop_cool_->set();
-  }
+
   // kInit for SM transition
   sensors_ = data_.getSensorsData();
   sensors_.module_status = data::ModuleStatus::kInit;
