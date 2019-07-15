@@ -33,8 +33,8 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
-           calibration_limits_({0.05, 0.05, 0.05}),
-           imu_reliable_ {true, true, true, true},
+           calibration_limits_ {{0.05, 0.05, 0.05}},
+           imu_reliable_ {{true, true, true, true}},
            nOutlierImus_(0),
            stripe_counter_(0, 0),
            keyence_used_(true),
@@ -94,12 +94,12 @@ NavigationType Navigation::getBrakingDistance() const
   // A polynomial fit for the braking distance at a specific (normalised) velocity, where
   // kCoeffSlow for < 50m/s and kCoeffFast for > 50m/s because kCoeffFast is inaccurate
   // at < 10m/s but they both agree between ~10 and ~50m/s.
-  static constexpr std::array<NavigationType, 16> kCoeffSlow = {
-       136.3132, 158.9403,  63.6093, -35.4894, -149.2755, 152.6967, 502.5464, -218.4689,
-      -779.534,   95.7285, 621.1013,  50.4598, -245.099,  -54.5,     38.0642,   12.3548};
-  static constexpr std::array<NavigationType, 16> kCoeffFast = {
-       258.6,  299.2,  115.2, -104.7, -260.9, 488.5, 940.8, -808.5, -1551.9,  551.7,
-      1315.7,  -61.4, -551.4,  -84.5,   90.7,  26.2};
+  static constexpr std::array<NavigationType, 16> kCoeffSlow = {{
+        136.3132, 158.9403,  63.6093, -35.4894, -149.2755, 152.6967, 502.5464, -218.4689,
+            -779.534,   95.7285, 621.1013,  50.4598, -245.099,  -54.5,     38.0642,   12.3548}};
+  static constexpr std::array<NavigationType, 16> kCoeffFast = {{
+      258.6,  299.2,  115.2, -104.7, -260.9, 488.5, 940.8, -808.5, -1551.9,  551.7,
+          1315.7,  -61.4, -551.4,  -84.5,   90.7,  26.2}};
 
   NavigationType braking_distance = 2.0;
   NavigationType var = 1.0;
@@ -128,10 +128,10 @@ void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
   std::array<RollingStatistics<NavigationVector>, data::Sensors::kNumImus> online_array =
-    {RollingStatistics<NavigationVector>(kCalibrationQueries),
-     RollingStatistics<NavigationVector>(kCalibrationQueries),
-     RollingStatistics<NavigationVector>(kCalibrationQueries),
-     RollingStatistics<NavigationVector>(kCalibrationQueries)};
+    {{ RollingStatistics<NavigationVector>(kCalibrationQueries),
+       RollingStatistics<NavigationVector>(kCalibrationQueries),
+       RollingStatistics<NavigationVector>(kCalibrationQueries),
+       RollingStatistics<NavigationVector>(kCalibrationQueries) }};
   bool calibration_successful = false;
   int calibration_attempts = 0;
 
@@ -372,13 +372,13 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
     // select non-outlier values
     NavigationArrayOneFaulty data_array_faulty;
     if (!imu_reliable_[0]) {
-      data_array_faulty = {data_array[1], data_array[2], data_array[3]};
+      data_array_faulty = {{data_array[1], data_array[2], data_array[3]}};
     } else if (!imu_reliable_[1]) {
-      data_array_faulty = {data_array[0], data_array[2], data_array[3]};
+      data_array_faulty = {{data_array[0], data_array[2], data_array[3]}};
     } else if (!imu_reliable_[2]) {
-      data_array_faulty = {data_array[0], data_array[1], data_array[3]};
+      data_array_faulty = {{data_array[0], data_array[1], data_array[3]}};
     } else if (!imu_reliable_[3]) {
-      data_array_faulty = {data_array[0], data_array[1], data_array[2]};
+      data_array_faulty = {{data_array[0], data_array[1], data_array[2]}};
     }
     std::sort(data_array_faulty.begin(), data_array_faulty.end());
     q1 = (data_array_faulty[0] + data_array_faulty[1]) / 2.;
