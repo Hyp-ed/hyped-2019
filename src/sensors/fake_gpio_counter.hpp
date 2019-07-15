@@ -66,23 +66,9 @@ class FakeGpioCounter : public GpioInterface {
    * @brief turns sensor offline if max time reached between stripes by analysing timestamps
    */
   void checkData();
-
-  bool timeout(StripeCounter stripe_data);    // if needs to break out
   void readFromFile(std::vector<StripeCounter>& data);
   Logger& log_;
   Data& data_;
-
-  /**
-   * @brief check if 5 seconds have passed to start comparing navigation data with stripe counter
-   */
-  uint64_t start_time_;
-
-  /**
-   * @brief minimum time between stripes ().358588 seconds, max speeed 85 m/s)
-   * make sure not to miss two stripes in a row
-   *
-   */
-  uint64_t check_time_ = 358588;
 
   /**
    * @brief current stripe data
@@ -101,8 +87,13 @@ class FakeGpioCounter : public GpioInterface {
    */
   std::vector<StripeCounter> stripe_data_;
   bool is_from_file_;
-  uint64_t accel_ref_time_;
+  uint64_t accel_start_time_;
   bool acc_ref_init_;
+
+  /**
+   * @brief used to compare previous stripes if missed stripe
+   */
+  uint64_t stripe_file_timestamp_;
 };
 
 }}  // namespace hyped::sensors

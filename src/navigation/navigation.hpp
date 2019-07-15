@@ -132,9 +132,23 @@ namespace navigation {
        */
       void initTimestamps();
       /**
+       * @brief Used to check whether initial timestamps have been set
+       *
+       * @return Boolean whether init timestamps have been set
+       */
+      bool getHasInit();
+      /*
+       * @brief Set initialisation of timestamps to true
+       */
+      void setHasInit();
+      /**
        * @brief Disable keyence readings to have any impact on the run.
        */
       void disableKeyenceUsage();
+      /**
+       * @brief Set the keyence used to fake, so the system knows to use central timestamps.
+       */
+      void setKeyenceFake();
 
     private:
       static constexpr int kCalibrationAttempts = 3;
@@ -144,6 +158,8 @@ namespace navigation {
       static constexpr NavigationType kEmergencyDeceleration = 24;
       static constexpr float kTukeyThreshold = 1;  // 0.75
       static constexpr float kTukeyIQRBound = 3;
+
+      static constexpr NavigationType kStripeDistance = 30.48;
 
       // System communication
       Logger& log_;
@@ -177,6 +193,8 @@ namespace navigation {
       KeyenceDataArray prev_keyence_readings_;
       // Are the keyence sensors used or ignored?
       bool keyence_used_;
+      // Is the keyence used fake or real?
+      bool keyence_real_;
       // This counts the number of times the keyence readings disagree with the IMU data more than
       // allowed due to uncertainty. It is used at the moment to check if the calculated
       // uncertainty is acceptable.
@@ -202,6 +220,8 @@ namespace navigation {
       NavigationType prev_acc_;
       // Previous velocity measurement
       NavigationType prev_vel_;
+      // Have initial timestamps been set?
+      bool init_time_set_;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity

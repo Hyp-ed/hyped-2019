@@ -17,7 +17,7 @@ ChipSelect  47,22,36,86
 KeyenceL    72
 KeyenceR    74
 Thermistor  3
-HPSSR       46,26,44
-LPSSR       68,67,35
-IMD         11,89,88,61,33,37
-LED         63,65
+HPMaster    46
+HPSSR       26,44
+PropCool    46
+LPSSR       67

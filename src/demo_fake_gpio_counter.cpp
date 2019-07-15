@@ -14,7 +14,7 @@ using hyped::data::StripeCounter;
 using hyped::data::Data;
 using hyped::data::State;
 
-uint8_t kStripeNum = 30;
+uint8_t kStripeNum = 41;
 
 int main(int argc, char* argv[]) {
   hyped::utils::System::parseArgs(argc, argv);

@@ -1,5 +1,5 @@
 /*
- * Author: Jack Horsburgh
+ * Author: Gregory Dayao and Jack Horsburgh
  * Organisation: HYPED
  * Date: 20/06/18
  * Description:
@@ -37,7 +37,6 @@ BmsManager::BmsManager(Logger& log)
       data_(Data::getInstance())
 {
   old_timestamp_ = utils::Timer::getTimeMicros();
-
   if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
     // create BMS LP
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -45,30 +44,38 @@ BmsManager::BmsManager(Logger& log)
       bms->start();
       bms_[i] = bms;
     }
-    // create BMS HP
-    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-      bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
+    // fake HP for state machine tests
+    if (!sys_.fake_highpower) {
+      // create BMS HP
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        bms_[i + data::Batteries::kNumLPBatteries] = new BMSHP(i, log_);
+      }
+    } else {
+      // fake HP battery only
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log_, false, false);
+      }
     }
 
-    // Set SSR switches for real system
-    for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
-      hp_ssr_[i] = new GPIO(sys_.config->sensors.HPSSR[i], utils::io::gpio::kOut);
-      hp_ssr_[i]->set();
-      log_.INFO("BMS-MANAGER", "HP SSR %d has been set", i);
-    }
-    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
-      lp_ssr_[i] = new GPIO(sys_.config->sensors.LPSSR[i], utils::io::gpio::kOut);
-      lp_ssr_[i]->set();
-      log_.INFO("BMS-MANAGER", "LP SSR %d has been set", i);
-    }
+    if (!sys_.battery_test) {
+      // Set SSR switches for real system
 
-    // IMD and LED initialisation
-    for (int i = 0; i < data::Batteries::kNumIMD; i++) {
-      imd_[i] = new GPIO(sys_.config->sensors.IMD[i], utils::io::gpio::kIn);
-    }
-    for (int i = 0; i < data::Batteries::kNumLED; i++) {
-      green_led_[i] = new GPIO(sys_.config->sensors.LED[i], utils::io::gpio::kOut);
-      green_led_[i]->set();
+      // clear HPSSRs if default is high
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        hp_ssr_[i] = new GPIO(sys_.config->sensors.HPSSR[i], utils::io::gpio::kOut);
+        hp_ssr_[i]->clear();      // HP off until kReady State
+        log_.INFO("BMS-MANAGER", "HP SSR %d has been initialised CLEAR", i);
+      }
+      hp_master_ = new GPIO(sys_.config->sensors.hp_master, utils::io::gpio::kOut);
+      hp_master_->clear();
+      prop_cool_ = new GPIO(sys_.config->sensors.prop_cool, utils::io::gpio::kOut);
+      prop_cool_->clear();
+      log_.INFO("BMS-MANAGER", "HP SSRs has been initialised CLEAR");
+
+      // Set LPSSR manual switch
+      lp_ssr_ = new GPIO(sys_.config->sensors.LPSSR, utils::io::gpio::kOut);
+      lp_ssr_->set();
+      log_.INFO("BMS-MANAGER", "LP SSR has been set");
     }
   } else if (sys_.fake_batteries_fail) {
     // fake batteries fail here
@@ -95,6 +102,32 @@ BmsManager::BmsManager(Logger& log)
   log_.INFO("BMS-MANAGER", "batteries data has been initialised");
 }
 
+void BmsManager::clearHP()
+{
+  if (!sys_.battery_test) {
+    if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
+      hp_master_->clear();  // important to clear this first
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        hp_ssr_[i]->clear();      // HP off until kReady State
+      }
+      prop_cool_->clear();
+    }
+  }
+}
+
+void BmsManager::setHP()
+{
+  if (!sys_.battery_test) {
+    if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        hp_ssr_[i]->set();
+      }
+      hp_master_->set();
+      prop_cool_->set();
+    }
+  }
+}
+
 void BmsManager::run()
 {
   while (sys_.running_) {
@@ -110,29 +143,12 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    if (!(sys_.fake_batteries_fail || sys_.fake_batteries)) {
-      // iterate through imd_ and set LEDs
-      for (GPIO* pin : imd_) {
-        uint8_t val = pin->read();     // will check every cycle of run()
-        if (val) {
-          for (int i = 0; i < data::Batteries::kNumLED; i++) {
-            green_led_[i]->clear();
-            log_.ERR("BMS-MANAGER", "IMD short! Green LED %d cleared", i);
-          }
-        }
-      }
-    }
     // check health of batteries
     if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
       if (!batteriesInRange()) {
         log_.ERR("BMS-MANAGER", "battery failure detected");
         batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-        if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
-          for (GPIO* pin : hp_ssr_) {
-            pin->clear();
-            log_.ERR("BMS-MANAGER", "Batteries Critical! HP SSR cleared");
-          }
-        }
+        clearHP();
       }
     }
     // publish the new data
@@ -140,12 +156,14 @@ void BmsManager::run()
 
     data::State state = data_.getStateMachineData().current_state;
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
-      if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
-        for (GPIO* pin : hp_ssr_) {
-          pin->clear();
-          log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
-        }
-      }
+      clearHP();
+      log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
+    } else if (state == data::State::kFinished) {
+      clearHP();
+      log_.INFO("BMS-MANAGER", "kFinished reached...HP off");
+    } else if (state == data::State::kReady) {
+      setHP();
+      log_.INFO("BMS-MANAGER", "kReady...HP SSR set and HP on");
     }
     sleep(100);
   }
@@ -166,7 +184,7 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.average_temperature < 10 || battery.average_temperature > 60) {  // NOLINT[whitespace/line_length] temperature in 10C to 60C
+    if (battery.average_temperature < 10 || battery.average_temperature > 60) {  // temperature in 10C to 60C NOLINT[whitespace/line_length]
       log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
@@ -190,7 +208,7 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.average_temperature < 10 || battery.average_temperature > 65) {  // NOLINT[whitespace/line_length] temperature in 10C to 65C
+    if (battery.average_temperature < 10 || battery.average_temperature > 65) {  // temperature in 10C to 65C NOLINT[whitespace/line_length]
       log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
@@ -205,7 +223,6 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    // TODO(Greg): HP Charge scaling needs to be tested
     if (battery.charge < 20 || battery.charge > 100) {  // charge in 20% to 100%
       log_.ERR("BMS-MANAGER", "BMS HP %d charge out of range: %d", i, battery.charge);
       return false;

@@ -34,6 +34,7 @@ using utils::System;
 using data::Data;
 using data::Sensors;
 using data::StripeCounter;
+using utils::io::GPIO;
 
 namespace sensors {
 
@@ -70,6 +71,7 @@ Main::Main(uint8_t id, utils::Logger& log)
   } else {
     temperature_ = new FakeTemperature(log_, false);
   }
+
   // kInit for SM transition
   sensors_ = data_.getSensorsData();
   sensors_.module_status = data::ModuleStatus::kInit;
@@ -86,27 +88,12 @@ bool Main::keyencesUpdated()
   return false;
 }
 
-bool Main::temperatureInRange()    // TODO(anyone): add true nominal temperature range of PCB
-{
-  auto temperature = data_.getTemperature();
-  log_.DBG1("Sensors", "Temperature from data struct: %d", temperature);
-  if (temperature < -10 || temperature > 60) {  // temperature in -10C to 60C
-    log_.ERR("Sensors", "Temperature out of range: %d", temperature);
-    return false;
-  }
-  return true;
-}
-
 void Main::checkTemperature()
 {
   temperature_->run();               // not a thread
   data_.setTemperature(temperature_->getData());
-  if (!temperatureInRange()) {
-    log_.ERR("Sensors", "Temperature out of range: Critical Failure!");
-    auto status = data_.getSensorsData();
-    status.module_status = data::ModuleStatus::kCriticalFailure;
-    data_.setSensorsData(status);    // critical PCB temperature would make sensors unreliable
-  }
+  if (data_.getTemperature() > 50)
+    log_.INFO("Sensors", "PCB temperature is getting a wee high...sorry Cheng");
 }
 
 void Main::run()
@@ -135,6 +122,8 @@ void Main::run()
     temp_count++;
     if (temp_count % 20 == 0) {       // check every 20 cycles of main
       checkTemperature();
+      // So that temp_count does not get huge
+      temp_count = 0;
     }
   }
 

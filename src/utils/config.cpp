@@ -19,17 +19,18 @@
  */
 
 #include "utils/config.hpp"
-
 #include <cstdio>
 #include <cstring>
-
+#include <string>  // redundant includes to make linter stop complaining
+#include <vector>
+#include <sstream>
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 
 namespace hyped {
 namespace utils {
 
-#define BUFFER_SIZE   250   // max length of a line in the confix file in characters
+#define BUFFER_SIZE 250   // max length of a line in the confix file in characters
 
 typedef void (Config::* Parser) (char* line);
 struct ModuleEntry {
@@ -37,7 +38,6 @@ struct ModuleEntry {
   char      name[20];   // no module name should exceed 20 characters
   Parser    parse;
 };
-
 
 /**
  * Update this table to register new config mapping. Each row corresponds
@@ -67,6 +67,28 @@ void Config::ParseNavigation(char* line)
 
 void Config::ParseTelemetry(char* line)
 {
+  // just in case we get handed a null pointer
+  if (!line) return;
+
+  // convert char* line to c++ style string
+  std::string cpp_line {line};  // NOLINT
+
+  std::istringstream iss(cpp_line);
+  std::vector<std::string> tokens;
+
+  for (std::string s; iss >> s;) {
+    tokens.push_back(s);
+  }
+
+  if (tokens[0] == "IP") {
+    telemetry.IP = tokens[1];
+  } else if (tokens[0] == "Port") {
+    telemetry.Port = tokens[1];
+  }
+}
+
+void Config::ParseSensors(char* line)
+{
   // EXAMPLE line parsing:
   // "char* strtok(line, delimiters)" splits the input line into parts using
   // characters from delimiters. The return value points to a valid split section.
@@ -79,26 +101,6 @@ void Config::ParseTelemetry(char* line)
   // After this, the value can be converted from string to bool/int/string and
   // stored in the corresponding configuration field
 
-  // get TOKEN
-  char* token = strtok(line, " ");
-
-  if (strcmp(token, "IP") == 0) {
-    char* value = strtok(NULL, " ");
-    if (value) {
-      strncpy(telemetry.IP, value, 16);
-    }
-  }
-
-  if (strcmp(token, "Port") == 0) {
-    char* value = strtok(NULL, " ");
-    if (value) {
-      strncpy(telemetry.Port, value, 4);
-    }
-  }
-}
-
-void Config::ParseSensors(char* line)
-{
   char* token = strtok(line, " ");
 
   if (strcmp(token, "ChipSelect") == 0) {
@@ -131,39 +133,33 @@ void Config::ParseSensors(char* line)
     }
   }
 
+  if (strcmp(token, "HPMaster") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.hp_master= atoi(value);
+    }
+  }
+
   if (strcmp(token, "HPSSR") == 0) {
     for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
       char* value = strtok(NULL, ",");
       if (value) {
-      sensors.HPSSR[i] = atoi(value);
+        sensors.HPSSR[i] = atoi(value);
       }
+    }
+  }
+
+  if (strcmp(token, "PropCool") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.prop_cool = atoi(value);
     }
   }
 
   if (strcmp(token, "LPSSR") == 0) {
-    for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
-      char* value = strtok(NULL, ",");
-      if (value) {
-      sensors.LPSSR[i] = atoi(value);
-      }
-    }
-  }
-
-  if (strcmp(token, "IMD") == 0) {
-    for (int i = 0; i < data::Batteries::kNumIMD; i++) {
-      char* value = strtok(NULL, ",");
-      if (value) {
-      sensors.IMD[i] = atoi(value);
-      }
-    }
-  }
-
-  if (strcmp(token, "LED") == 0) {
-    for (int i = 0; i < data::Batteries::kNumLED; i++) {
-      char* value = strtok(NULL, ",");
-      if (value) {
-      sensors.LED[i] = atoi(value);
-      }
+    char* value = strtok(NULL, " ");
+    if (value) {
+      sensors.LPSSR = atoi(value);
     }
   }
 }
@@ -184,10 +180,11 @@ Config::Config(char* config_file)
   // allocate line buffer, read and parse file line by line
   char line[BUFFER_SIZE];
   ModuleEntry* current_module = &module_map[0];
+
   while (fgets(line, sizeof(line), file) != NULL) {
     // remove new line character
-    for (char& value:line) {
-      if (value == '\n')  value = '\0';
+    for (char& value : line) {
+      if (value == '\n') value = '\0';
     }
 
     // '>' character marks change for submodule
@@ -204,6 +201,7 @@ Config::Config(char* config_file)
             break;
           }
         }
+
         if (prev_module == current_module) {
           log.ERR("CONFIG", "module name \"%s\" not found, keeping to module \"%s\""
                   , line+1
@@ -211,6 +209,7 @@ Config::Config(char* config_file)
         } else {
           log.INFO("CONFIG", "changing module to \"%s\"", current_module->name);
         }
+
         break;
       }
       default: {
@@ -219,6 +218,7 @@ Config::Config(char* config_file)
       }
     }
   }
+
   log.DBG("CONFIG", "configuration file %s loaded", config_file);
   fclose(file);
 }

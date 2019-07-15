@@ -56,11 +56,11 @@ class Main : public Thread
     void run() override;
 
   private:
-    bool isRunning;
+    bool is_running_;
     Logger &log_;
-    StateProcessor *stateProcessor;
-    State currentState;
-    State previousState;
+    StateProcessor *state_processor_;
+    State current_state_;
+    State previous_state_;
     Data& data_;
 };
 

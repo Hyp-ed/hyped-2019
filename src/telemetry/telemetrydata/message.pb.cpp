@@ -6,333 +6,303 @@
 #include <algorithm>
 
 #include <google/protobuf/stubs/common.h>
-#include <google/protobuf/stubs/port.h>
 #include <google/protobuf/io/coded_stream.h>
-#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/extension_set.h>
+#include <google/protobuf/wire_format_lite.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/generated_message_reflection.h>
 #include <google/protobuf/reflection_ops.h>
 #include <google/protobuf/wire_format.h>
-// This is a temporary google only hack
-#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
-#include "third_party/protobuf/version.h"
-#endif
 // @@protoc_insertion_point(includes)
-
-namespace protobuf_message_2eproto {
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Batteries_BatteryData;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_EmergencyBrakes;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Motors;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Navigation;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Sensors_ImuData;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_StateMachine;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_ClientToServer_Batteries;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_message_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_ClientToServer_Sensors;
-}  // namespace protobuf_message_2eproto
+#include <google/protobuf/port_def.inc>
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ClientToServer_Batteries_message_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Batteries_BatteryData_message_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_EmergencyBrakes_message_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Motors_message_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Navigation_message_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ClientToServer_Sensors_message_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Sensors_ImuData_message_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_StateMachine_message_2eproto;
 namespace telemetry_data {
 class ServerToClientDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ServerToClient>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ServerToClient> _instance;
 } _ServerToClient_default_instance_;
 class ClientToServer_NavigationDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_Navigation>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_Navigation> _instance;
 } _ClientToServer_Navigation_default_instance_;
 class ClientToServer_StateMachineDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_StateMachine>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_StateMachine> _instance;
 } _ClientToServer_StateMachine_default_instance_;
 class ClientToServer_MotorsDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_Motors>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_Motors> _instance;
 } _ClientToServer_Motors_default_instance_;
 class ClientToServer_Batteries_BatteryDataDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_Batteries_BatteryData>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_Batteries_BatteryData> _instance;
 } _ClientToServer_Batteries_BatteryData_default_instance_;
 class ClientToServer_BatteriesDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_Batteries>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_Batteries> _instance;
 } _ClientToServer_Batteries_default_instance_;
 class ClientToServer_Sensors_ImuDataDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_Sensors_ImuData>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_Sensors_ImuData> _instance;
 } _ClientToServer_Sensors_ImuData_default_instance_;
 class ClientToServer_SensorsDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_Sensors>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_Sensors> _instance;
 } _ClientToServer_Sensors_default_instance_;
 class ClientToServer_EmergencyBrakesDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer_EmergencyBrakes>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_EmergencyBrakes> _instance;
 } _ClientToServer_EmergencyBrakes_default_instance_;
 class ClientToServerDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ClientToServer>
-      _instance;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer> _instance;
 } _ClientToServer_default_instance_;
 }  // namespace telemetry_data
-namespace protobuf_message_2eproto {
-static void InitDefaultsServerToClient() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ServerToClient_default_instance_;
-    new (ptr) ::telemetry_data::ServerToClient();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ServerToClient::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<0> scc_info_ServerToClient =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsServerToClient}, {}};
-
-static void InitDefaultsClientToServer_Navigation() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ClientToServer_Navigation_default_instance_;
-    new (ptr) ::telemetry_data::ClientToServer_Navigation();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ClientToServer_Navigation::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Navigation =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_Navigation}, {}};
-
-static void InitDefaultsClientToServer_StateMachine() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ClientToServer_StateMachine_default_instance_;
-    new (ptr) ::telemetry_data::ClientToServer_StateMachine();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ClientToServer_StateMachine::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_StateMachine =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_StateMachine}, {}};
-
-static void InitDefaultsClientToServer_Motors() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ClientToServer_Motors_default_instance_;
-    new (ptr) ::telemetry_data::ClientToServer_Motors();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ClientToServer_Motors::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Motors =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_Motors}, {}};
-
-static void InitDefaultsClientToServer_Batteries_BatteryData() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ClientToServer_Batteries_BatteryData_default_instance_;
-    new (ptr) ::telemetry_data::ClientToServer_Batteries_BatteryData();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ClientToServer_Batteries_BatteryData::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Batteries_BatteryData =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_Batteries_BatteryData}, {}};
-
-static void InitDefaultsClientToServer_Batteries() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ClientToServer_Batteries_default_instance_;
-    new (ptr) ::telemetry_data::ClientToServer_Batteries();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ClientToServer_Batteries::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<1> scc_info_ClientToServer_Batteries =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsClientToServer_Batteries}, {
-      &protobuf_message_2eproto::scc_info_ClientToServer_Batteries_BatteryData.base,}};
-
-static void InitDefaultsClientToServer_Sensors_ImuData() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ClientToServer_Sensors_ImuData_default_instance_;
-    new (ptr) ::telemetry_data::ClientToServer_Sensors_ImuData();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ClientToServer_Sensors_ImuData::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_Sensors_ImuData =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_Sensors_ImuData}, {}};
-
-static void InitDefaultsClientToServer_Sensors() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ClientToServer_Sensors_default_instance_;
-    new (ptr) ::telemetry_data::ClientToServer_Sensors();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ClientToServer_Sensors::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<1> scc_info_ClientToServer_Sensors =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsClientToServer_Sensors}, {
-      &protobuf_message_2eproto::scc_info_ClientToServer_Sensors_ImuData.base,}};
-
-static void InitDefaultsClientToServer_EmergencyBrakes() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::telemetry_data::_ClientToServer_EmergencyBrakes_default_instance_;
-    new (ptr) ::telemetry_data::ClientToServer_EmergencyBrakes();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::telemetry_data::ClientToServer_EmergencyBrakes::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<0> scc_info_ClientToServer_EmergencyBrakes =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsClientToServer_EmergencyBrakes}, {}};
-
-static void InitDefaultsClientToServer() {
+static void InitDefaultsscc_info_ClientToServer_message_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
     void* ptr = &::telemetry_data::_ClientToServer_default_instance_;
     new (ptr) ::telemetry_data::ClientToServer();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
   }
   ::telemetry_data::ClientToServer::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<6> scc_info_ClientToServer =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 6, InitDefaultsClientToServer}, {
-      &protobuf_message_2eproto::scc_info_ClientToServer_Navigation.base,
-      &protobuf_message_2eproto::scc_info_ClientToServer_StateMachine.base,
-      &protobuf_message_2eproto::scc_info_ClientToServer_Motors.base,
-      &protobuf_message_2eproto::scc_info_ClientToServer_Batteries.base,
-      &protobuf_message_2eproto::scc_info_ClientToServer_Sensors.base,
-      &protobuf_message_2eproto::scc_info_ClientToServer_EmergencyBrakes.base,}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<6> scc_info_ClientToServer_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 6, InitDefaultsscc_info_ClientToServer_message_2eproto}, {
+      &scc_info_ClientToServer_Navigation_message_2eproto.base,
+      &scc_info_ClientToServer_StateMachine_message_2eproto.base,
+      &scc_info_ClientToServer_Motors_message_2eproto.base,
+      &scc_info_ClientToServer_Batteries_message_2eproto.base,
+      &scc_info_ClientToServer_Sensors_message_2eproto.base,
+      &scc_info_ClientToServer_EmergencyBrakes_message_2eproto.base,}};
 
-void InitDefaults() {
-  ::google::protobuf::internal::InitSCC(&scc_info_ServerToClient.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_Navigation.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_StateMachine.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_Motors.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_Batteries_BatteryData.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_Batteries.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_Sensors_ImuData.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_Sensors.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer_EmergencyBrakes.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ClientToServer.base);
+static void InitDefaultsscc_info_ClientToServer_Batteries_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Batteries_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Batteries();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Batteries::InitAsDefaultInstance();
 }
 
-::google::protobuf::Metadata file_level_metadata[10];
-const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[3];
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ClientToServer_Batteries_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsscc_info_ClientToServer_Batteries_message_2eproto}, {
+      &scc_info_ClientToServer_Batteries_BatteryData_message_2eproto.base,}};
 
-const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
+static void InitDefaultsscc_info_ClientToServer_Batteries_BatteryData_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Batteries_BatteryData_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Batteries_BatteryData();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Batteries_BatteryData::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Batteries_BatteryData_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ClientToServer_Batteries_BatteryData_message_2eproto}, {}};
+
+static void InitDefaultsscc_info_ClientToServer_EmergencyBrakes_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_EmergencyBrakes_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_EmergencyBrakes();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_EmergencyBrakes::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_EmergencyBrakes_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ClientToServer_EmergencyBrakes_message_2eproto}, {}};
+
+static void InitDefaultsscc_info_ClientToServer_Motors_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Motors_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Motors();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Motors::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Motors_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ClientToServer_Motors_message_2eproto}, {}};
+
+static void InitDefaultsscc_info_ClientToServer_Navigation_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Navigation_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Navigation();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Navigation::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Navigation_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ClientToServer_Navigation_message_2eproto}, {}};
+
+static void InitDefaultsscc_info_ClientToServer_Sensors_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Sensors_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Sensors();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Sensors::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ClientToServer_Sensors_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsscc_info_ClientToServer_Sensors_message_2eproto}, {
+      &scc_info_ClientToServer_Sensors_ImuData_message_2eproto.base,}};
+
+static void InitDefaultsscc_info_ClientToServer_Sensors_ImuData_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Sensors_ImuData_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Sensors_ImuData();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Sensors_ImuData::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Sensors_ImuData_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ClientToServer_Sensors_ImuData_message_2eproto}, {}};
+
+static void InitDefaultsscc_info_ClientToServer_StateMachine_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_StateMachine_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_StateMachine();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_StateMachine::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_StateMachine_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ClientToServer_StateMachine_message_2eproto}, {}};
+
+static void InitDefaultsscc_info_ServerToClient_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ServerToClient_default_instance_;
+    new (ptr) ::telemetry_data::ServerToClient();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ServerToClient::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ServerToClient_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ServerToClient_message_2eproto}, {}};
+
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_message_2eproto[10];
+static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_message_2eproto[3];
+static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_message_2eproto = nullptr;
+
+const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_message_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ServerToClient, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ServerToClient, command_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ServerToClient, command_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, module_status_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, distance_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, velocity_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, acceleration_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, module_status_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, distance_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, velocity_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Navigation, acceleration_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_StateMachine, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_StateMachine, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_StateMachine, current_state_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_StateMachine, current_state_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, module_status_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_1_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_2_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_3_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_4_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_5_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_6_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, module_status_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_1_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_2_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_3_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_4_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_5_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_6_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, voltage_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, current_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, charge_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, temperature_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, low_voltage_cell_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, high_voltage_cell_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, voltage_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, current_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, charge_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, temperature_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, low_voltage_cell_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, high_voltage_cell_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, module_status_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, low_power_batteries_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, high_power_batteries_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, module_status_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, low_power_batteries_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, high_power_batteries_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors_ImuData, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors_ImuData, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors_ImuData, operational_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors_ImuData, acc_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors_ImuData, operational_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors_ImuData, acc_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors, module_status_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors, imu_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors, module_status_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors, imu_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, front_brakes_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, rear_brakes_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, brakes_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, navigation_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, state_machine_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, motors_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, batteries_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, sensors_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::telemetry_data::ClientToServer, emergency_brakes_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, navigation_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, state_machine_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, motors_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, batteries_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, sensors_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, emergency_brakes_),
 };
-static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
+static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::telemetry_data::ServerToClient)},
   { 6, -1, sizeof(::telemetry_data::ClientToServer_Navigation)},
   { 15, -1, sizeof(::telemetry_data::ClientToServer_StateMachine)},
@@ -342,116 +312,103 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 52, -1, sizeof(::telemetry_data::ClientToServer_Sensors_ImuData)},
   { 59, -1, sizeof(::telemetry_data::ClientToServer_Sensors)},
   { 66, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
-  { 73, -1, sizeof(::telemetry_data::ClientToServer)},
+  { 72, -1, sizeof(::telemetry_data::ClientToServer)},
 };
 
-static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ServerToClient_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_Navigation_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_StateMachine_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_Motors_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_Batteries_BatteryData_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_Batteries_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_Sensors_ImuData_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_Sensors_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_EmergencyBrakes_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::telemetry_data::_ClientToServer_default_instance_),
+static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ServerToClient_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Navigation_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_StateMachine_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Motors_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Batteries_BatteryData_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Batteries_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Sensors_ImuData_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Sensors_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_EmergencyBrakes_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_default_instance_),
 };
 
-void protobuf_AssignDescriptors() {
-  AddDescriptors();
-  AssignDescriptors(
-      "message.proto", schemas, file_default_instances, TableStruct::offsets,
-      file_level_metadata, file_level_enum_descriptors, NULL);
-}
+const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
+  "\n\rmessage.proto\022\016telemetry_data\"\333\001\n\016Serv"
+  "erToClient\0227\n\007command\030\001 \001(\0162&.telemetry_"
+  "data.ServerToClient.Command\"\217\001\n\007Command\022"
+  "\007\n\003ACK\020\000\022\010\n\004STOP\020\001\022\r\n\tCALIBRATE\020\002\022\n\n\006LAU"
+  "NCH\020\003\022\t\n\005RESET\020\004\022\031\n\025SERVICE_PROPULSION_G"
+  "O\020\005\022\033\n\027SERVICE_PROPULSION_STOP\020\006\022\023\n\017NOMI"
+  "NAL_BRAKING\020\007\"\236\r\n\016ClientToServer\022=\n\nnavi"
+  "gation\030\001 \001(\0132).telemetry_data.ClientToSe"
+  "rver.Navigation\022B\n\rstate_machine\030\002 \001(\0132+"
+  ".telemetry_data.ClientToServer.StateMach"
+  "ine\0225\n\006motors\030\003 \001(\0132%.telemetry_data.Cli"
+  "entToServer.Motors\022;\n\tbatteries\030\004 \001(\0132(."
+  "telemetry_data.ClientToServer.Batteries\022"
+  "7\n\007sensors\030\005 \001(\0132&.telemetry_data.Client"
+  "ToServer.Sensors\022H\n\020emergency_brakes\030\006 \001"
+  "(\0132..telemetry_data.ClientToServer.Emerg"
+  "encyBrakes\032\212\001\n\nNavigation\022B\n\rmodule_stat"
+  "us\030\001 \001(\0162+.telemetry_data.ClientToServer"
+  ".ModuleStatus\022\020\n\010distance\030\002 \001(\002\022\020\n\010veloc"
+  "ity\030\003 \001(\002\022\024\n\014acceleration\030\004 \001(\002\032\225\002\n\014Stat"
+  "eMachine\022H\n\rcurrent_state\030\002 \001(\01621.teleme"
+  "try_data.ClientToServer.StateMachine.Sta"
+  "te\"\272\001\n\005State\022\013\n\007INVALID\020\000\022\010\n\004IDLE\020\001\022\017\n\013C"
+  "ALIBRATING\020\002\022\t\n\005READY\020\003\022\020\n\014ACCELERATING\020"
+  "\004\022\023\n\017NOMINAL_BRAKING\020\005\022\025\n\021EMERGENCY_BRAK"
+  "ING\020\006\022\020\n\014RUN_COMPLETE\020\007\022\023\n\017FAILURE_STOPP"
+  "ED\020\010\022\013\n\007EXITING\020\t\022\014\n\010FINISHED\020\n\032\304\001\n\006Moto"
+  "rs\022B\n\rmodule_status\030\001 \001(\0162+.telemetry_da"
+  "ta.ClientToServer.ModuleStatus\022\022\n\nveloci"
+  "ty_1\030\002 \001(\021\022\022\n\nvelocity_2\030\003 \001(\021\022\022\n\nveloci"
+  "ty_3\030\004 \001(\021\022\022\n\nvelocity_4\030\005 \001(\021\022\022\n\nveloci"
+  "ty_5\030\006 \001(\021\022\022\n\nvelocity_6\030\007 \001(\021\032\202\003\n\tBatte"
+  "ries\022B\n\rmodule_status\030\001 \001(\0162+.telemetry_"
+  "data.ClientToServer.ModuleStatus\022Q\n\023low_"
+  "power_batteries\030\002 \003(\01324.telemetry_data.C"
+  "lientToServer.Batteries.BatteryData\022R\n\024h"
+  "igh_power_batteries\030\003 \003(\01324.telemetry_da"
+  "ta.ClientToServer.Batteries.BatteryData\032"
+  "\211\001\n\013BatteryData\022\017\n\007voltage\030\001 \001(\r\022\017\n\007curr"
+  "ent\030\002 \001(\021\022\016\n\006charge\030\003 \001(\r\022\023\n\013temperature"
+  "\030\004 \001(\005\022\030\n\020low_voltage_cell\030\005 \001(\r\022\031\n\021high"
+  "_voltage_cell\030\006 \001(\r\032\267\001\n\007Sensors\022B\n\rmodul"
+  "e_status\030\001 \001(\0162+.telemetry_data.ClientTo"
+  "Server.ModuleStatus\022;\n\003imu\030\002 \003(\0132..telem"
+  "etry_data.ClientToServer.Sensors.ImuData"
+  "\032+\n\007ImuData\022\023\n\013operational\030\001 \001(\010\022\013\n\003acc\030"
+  "\002 \003(\002\032!\n\017EmergencyBrakes\022\016\n\006brakes\030\001 \003(\010"
+  "\"D\n\014ModuleStatus\022\t\n\005START\020\000\022\010\n\004INIT\020\001\022\t\n"
+  "\005READY\020\002\022\024\n\020CRITICAL_FAILURE\020\003B\036\n\rteleme"
+  "trydataB\rTelemetryDatab\006proto3"
+  ;
+static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_message_2eproto_deps[1] = {
+};
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_message_2eproto_sccs[10] = {
+  &scc_info_ClientToServer_message_2eproto.base,
+  &scc_info_ClientToServer_Batteries_message_2eproto.base,
+  &scc_info_ClientToServer_Batteries_BatteryData_message_2eproto.base,
+  &scc_info_ClientToServer_EmergencyBrakes_message_2eproto.base,
+  &scc_info_ClientToServer_Motors_message_2eproto.base,
+  &scc_info_ClientToServer_Navigation_message_2eproto.base,
+  &scc_info_ClientToServer_Sensors_message_2eproto.base,
+  &scc_info_ClientToServer_Sensors_ImuData_message_2eproto.base,
+  &scc_info_ClientToServer_StateMachine_message_2eproto.base,
+  &scc_info_ServerToClient_message_2eproto.base,
+};
+static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_message_2eproto_once;
+static bool descriptor_table_message_2eproto_initialized = false;
+const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_message_2eproto = {
+  &descriptor_table_message_2eproto_initialized, descriptor_table_protodef_message_2eproto, "message.proto", 1990,
+  &descriptor_table_message_2eproto_once, descriptor_table_message_2eproto_sccs, descriptor_table_message_2eproto_deps, 10, 0,
+  schemas, file_default_instances, TableStruct_message_2eproto::offsets,
+  file_level_metadata_message_2eproto, 10, file_level_enum_descriptors_message_2eproto, file_level_service_descriptors_message_2eproto,
+};
 
-void protobuf_AssignDescriptorsOnce() {
-  static ::google::protobuf::internal::once_flag once;
-  ::google::protobuf::internal::call_once(once, protobuf_AssignDescriptors);
-}
-
-void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
-void protobuf_RegisterTypes(const ::std::string&) {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 10);
-}
-
-void AddDescriptorsImpl() {
-  InitDefaults();
-  static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\rmessage.proto\022\016telemetry_data\"\333\001\n\016Serv"
-      "erToClient\0227\n\007command\030\001 \001(\0162&.telemetry_"
-      "data.ServerToClient.Command\"\217\001\n\007Command\022"
-      "\007\n\003ACK\020\000\022\010\n\004STOP\020\001\022\r\n\tCALIBRATE\020\002\022\n\n\006LAU"
-      "NCH\020\003\022\t\n\005RESET\020\004\022\031\n\025SERVICE_PROPULSION_G"
-      "O\020\005\022\033\n\027SERVICE_PROPULSION_STOP\020\006\022\023\n\017NOMI"
-      "NAL_BRAKING\020\007\"\271\r\n\016ClientToServer\022=\n\nnavi"
-      "gation\030\001 \001(\0132).telemetry_data.ClientToSe"
-      "rver.Navigation\022B\n\rstate_machine\030\002 \001(\0132+"
-      ".telemetry_data.ClientToServer.StateMach"
-      "ine\0225\n\006motors\030\003 \001(\0132%.telemetry_data.Cli"
-      "entToServer.Motors\022;\n\tbatteries\030\004 \001(\0132(."
-      "telemetry_data.ClientToServer.Batteries\022"
-      "7\n\007sensors\030\005 \001(\0132&.telemetry_data.Client"
-      "ToServer.Sensors\022H\n\020emergency_brakes\030\006 \001"
-      "(\0132..telemetry_data.ClientToServer.Emerg"
-      "encyBrakes\032\212\001\n\nNavigation\022B\n\rmodule_stat"
-      "us\030\001 \001(\0162+.telemetry_data.ClientToServer"
-      ".ModuleStatus\022\020\n\010distance\030\002 \001(\002\022\020\n\010veloc"
-      "ity\030\003 \001(\002\022\024\n\014acceleration\030\004 \001(\002\032\225\002\n\014Stat"
-      "eMachine\022H\n\rcurrent_state\030\002 \001(\01621.teleme"
-      "try_data.ClientToServer.StateMachine.Sta"
-      "te\"\272\001\n\005State\022\013\n\007INVALID\020\000\022\010\n\004IDLE\020\001\022\017\n\013C"
-      "ALIBRATING\020\002\022\t\n\005READY\020\003\022\020\n\014ACCELERATING\020"
-      "\004\022\023\n\017NOMINAL_BRAKING\020\005\022\025\n\021EMERGENCY_BRAK"
-      "ING\020\006\022\020\n\014RUN_COMPLETE\020\007\022\023\n\017FAILURE_STOPP"
-      "ED\020\010\022\013\n\007EXITING\020\t\022\014\n\010FINISHED\020\n\032\304\001\n\006Moto"
-      "rs\022B\n\rmodule_status\030\001 \001(\0162+.telemetry_da"
-      "ta.ClientToServer.ModuleStatus\022\022\n\nveloci"
-      "ty_1\030\002 \001(\021\022\022\n\nvelocity_2\030\003 \001(\021\022\022\n\nveloci"
-      "ty_3\030\004 \001(\021\022\022\n\nvelocity_4\030\005 \001(\021\022\022\n\nveloci"
-      "ty_5\030\006 \001(\021\022\022\n\nvelocity_6\030\007 \001(\021\032\202\003\n\tBatte"
-      "ries\022B\n\rmodule_status\030\001 \001(\0162+.telemetry_"
-      "data.ClientToServer.ModuleStatus\022Q\n\023low_"
-      "power_batteries\030\002 \003(\01324.telemetry_data.C"
-      "lientToServer.Batteries.BatteryData\022R\n\024h"
-      "igh_power_batteries\030\003 \003(\01324.telemetry_da"
-      "ta.ClientToServer.Batteries.BatteryData\032"
-      "\211\001\n\013BatteryData\022\017\n\007voltage\030\001 \001(\r\022\017\n\007curr"
-      "ent\030\002 \001(\021\022\016\n\006charge\030\003 \001(\r\022\023\n\013temperature"
-      "\030\004 \001(\005\022\030\n\020low_voltage_cell\030\005 \001(\r\022\031\n\021high"
-      "_voltage_cell\030\006 \001(\r\032\267\001\n\007Sensors\022B\n\rmodul"
-      "e_status\030\001 \001(\0162+.telemetry_data.ClientTo"
-      "Server.ModuleStatus\022;\n\003imu\030\002 \003(\0132..telem"
-      "etry_data.ClientToServer.Sensors.ImuData"
-      "\032+\n\007ImuData\022\023\n\013operational\030\001 \001(\010\022\013\n\003acc\030"
-      "\002 \003(\002\032<\n\017EmergencyBrakes\022\024\n\014front_brakes"
-      "\030\001 \001(\010\022\023\n\013rear_brakes\030\002 \001(\010\"D\n\014ModuleSta"
-      "tus\022\t\n\005START\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020C"
-      "RITICAL_FAILURE\020\003B\036\n\rtelemetrydataB\rTele"
-      "metryDatab\006proto3"
-  };
-  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 2017);
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
-    "message.proto", &protobuf_RegisterTypes);
-}
-
-void AddDescriptors() {
-  static ::google::protobuf::internal::once_flag once;
-  ::google::protobuf::internal::call_once(once, AddDescriptorsImpl);
-}
-// Force AddDescriptors() to be called at dynamic initialization time.
-struct StaticDescriptorInitializer {
-  StaticDescriptorInitializer() {
-    AddDescriptors();
-  }
-} static_descriptor_initializer;
-}  // namespace protobuf_message_2eproto
+// Force running AddDescriptors() at dynamic initialization time.
+static bool dynamic_init_dummy_message_2eproto = (  ::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_message_2eproto), true);
 namespace telemetry_data {
-const ::google::protobuf::EnumDescriptor* ServerToClient_Command_descriptor() {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_message_2eproto::file_level_enum_descriptors[0];
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ServerToClient_Command_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
+  return file_level_enum_descriptors_message_2eproto[0];
 }
 bool ServerToClient_Command_IsValid(int value) {
   switch (value) {
@@ -469,22 +426,22 @@ bool ServerToClient_Command_IsValid(int value) {
   }
 }
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const ServerToClient_Command ServerToClient::ACK;
-const ServerToClient_Command ServerToClient::STOP;
-const ServerToClient_Command ServerToClient::CALIBRATE;
-const ServerToClient_Command ServerToClient::LAUNCH;
-const ServerToClient_Command ServerToClient::RESET;
-const ServerToClient_Command ServerToClient::SERVICE_PROPULSION_GO;
-const ServerToClient_Command ServerToClient::SERVICE_PROPULSION_STOP;
-const ServerToClient_Command ServerToClient::NOMINAL_BRAKING;
-const ServerToClient_Command ServerToClient::Command_MIN;
-const ServerToClient_Command ServerToClient::Command_MAX;
-const int ServerToClient::Command_ARRAYSIZE;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-const ::google::protobuf::EnumDescriptor* ClientToServer_StateMachine_State_descriptor() {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_message_2eproto::file_level_enum_descriptors[1];
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+constexpr ServerToClient_Command ServerToClient::ACK;
+constexpr ServerToClient_Command ServerToClient::STOP;
+constexpr ServerToClient_Command ServerToClient::CALIBRATE;
+constexpr ServerToClient_Command ServerToClient::LAUNCH;
+constexpr ServerToClient_Command ServerToClient::RESET;
+constexpr ServerToClient_Command ServerToClient::SERVICE_PROPULSION_GO;
+constexpr ServerToClient_Command ServerToClient::SERVICE_PROPULSION_STOP;
+constexpr ServerToClient_Command ServerToClient::NOMINAL_BRAKING;
+constexpr ServerToClient_Command ServerToClient::Command_MIN;
+constexpr ServerToClient_Command ServerToClient::Command_MAX;
+constexpr int ServerToClient::Command_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ClientToServer_StateMachine_State_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
+  return file_level_enum_descriptors_message_2eproto[1];
 }
 bool ClientToServer_StateMachine_State_IsValid(int value) {
   switch (value) {
@@ -505,25 +462,25 @@ bool ClientToServer_StateMachine_State_IsValid(int value) {
   }
 }
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::INVALID;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::IDLE;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::CALIBRATING;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::READY;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::ACCELERATING;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::NOMINAL_BRAKING;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::EMERGENCY_BRAKING;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::RUN_COMPLETE;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::FAILURE_STOPPED;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::EXITING;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::FINISHED;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::State_MIN;
-const ClientToServer_StateMachine_State ClientToServer_StateMachine::State_MAX;
-const int ClientToServer_StateMachine::State_ARRAYSIZE;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-const ::google::protobuf::EnumDescriptor* ClientToServer_ModuleStatus_descriptor() {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_message_2eproto::file_level_enum_descriptors[2];
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::INVALID;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::IDLE;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::CALIBRATING;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::READY;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::ACCELERATING;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::NOMINAL_BRAKING;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::EMERGENCY_BRAKING;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::RUN_COMPLETE;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::FAILURE_STOPPED;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::EXITING;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::FINISHED;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::State_MIN;
+constexpr ClientToServer_StateMachine_State ClientToServer_StateMachine::State_MAX;
+constexpr int ClientToServer_StateMachine::State_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ClientToServer_ModuleStatus_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_message_2eproto);
+  return file_level_enum_descriptors_message_2eproto[2];
 }
 bool ClientToServer_ModuleStatus_IsValid(int value) {
   switch (value) {
@@ -537,34 +494,36 @@ bool ClientToServer_ModuleStatus_IsValid(int value) {
   }
 }
 
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const ClientToServer_ModuleStatus ClientToServer::START;
-const ClientToServer_ModuleStatus ClientToServer::INIT;
-const ClientToServer_ModuleStatus ClientToServer::READY;
-const ClientToServer_ModuleStatus ClientToServer::CRITICAL_FAILURE;
-const ClientToServer_ModuleStatus ClientToServer::ModuleStatus_MIN;
-const ClientToServer_ModuleStatus ClientToServer::ModuleStatus_MAX;
-const int ClientToServer::ModuleStatus_ARRAYSIZE;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+constexpr ClientToServer_ModuleStatus ClientToServer::START;
+constexpr ClientToServer_ModuleStatus ClientToServer::INIT;
+constexpr ClientToServer_ModuleStatus ClientToServer::READY;
+constexpr ClientToServer_ModuleStatus ClientToServer::CRITICAL_FAILURE;
+constexpr ClientToServer_ModuleStatus ClientToServer::ModuleStatus_MIN;
+constexpr ClientToServer_ModuleStatus ClientToServer::ModuleStatus_MAX;
+constexpr int ClientToServer::ModuleStatus_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
 
 // ===================================================================
 
 void ServerToClient::InitAsDefaultInstance() {
 }
+class ServerToClient::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ServerToClient::kCommandFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ServerToClient::ServerToClient()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ServerToClient.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ServerToClient)
 }
 ServerToClient::ServerToClient(const ServerToClient& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   command_ = from.command_;
   // @@protoc_insertion_point(copy_constructor:telemetry_data.ServerToClient)
@@ -585,20 +544,15 @@ void ServerToClient::SharedDtor() {
 void ServerToClient::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ServerToClient::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ServerToClient& ServerToClient::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ServerToClient.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ServerToClient_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ServerToClient::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ServerToClient)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -606,23 +560,58 @@ void ServerToClient::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ServerToClient::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // .telemetry_data.ServerToClient.Command command = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+          set_command(static_cast<::telemetry_data::ServerToClient_Command>(val));
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ServerToClient::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ServerToClient)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .telemetry_data.ServerToClient.Command command = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
+          int value = 0;
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
           set_command(static_cast< ::telemetry_data::ServerToClient_Command >(value));
         } else {
@@ -636,7 +625,7 @@ bool ServerToClient::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -650,42 +639,42 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ServerToClient::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ServerToClient)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ServerToClient.Command command = 1;
   if (this->command() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
       1, this->command(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ServerToClient)
 }
 
-::google::protobuf::uint8* ServerToClient::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ServerToClient::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ServerToClient)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ServerToClient.Command command = 1;
   if (this->command() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       1, this->command(), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ServerToClient)
   return target;
@@ -695,31 +684,35 @@ size_t ServerToClient::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ServerToClient)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // .telemetry_data.ServerToClient.Command command = 1;
   if (this->command() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->command());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->command());
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ServerToClient::MergeFrom(const ::google::protobuf::Message& from) {
+void ServerToClient::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ServerToClient)
   GOOGLE_DCHECK_NE(&from, this);
   const ServerToClient* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ServerToClient>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ServerToClient>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ServerToClient)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ServerToClient)
     MergeFrom(*source);
@@ -730,7 +723,7 @@ void ServerToClient::MergeFrom(const ServerToClient& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ServerToClient)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.command() != 0) {
@@ -738,7 +731,7 @@ void ServerToClient::MergeFrom(const ServerToClient& from) {
   }
 }
 
-void ServerToClient::CopyFrom(const ::google::protobuf::Message& from) {
+void ServerToClient::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ServerToClient)
   if (&from == this) return;
   Clear();
@@ -762,13 +755,12 @@ void ServerToClient::Swap(ServerToClient* other) {
 }
 void ServerToClient::InternalSwap(ServerToClient* other) {
   using std::swap;
-  swap(command_, other->command_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(command_, other->command_);
 }
 
-::google::protobuf::Metadata ServerToClient::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ServerToClient::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -776,6 +768,10 @@ void ServerToClient::InternalSwap(ServerToClient* other) {
 
 void ClientToServer_Navigation::InitAsDefaultInstance() {
 }
+class ClientToServer_Navigation::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer_Navigation::kModuleStatusFieldNumber;
 const int ClientToServer_Navigation::kDistanceFieldNumber;
@@ -784,15 +780,13 @@ const int ClientToServer_Navigation::kAccelerationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_Navigation::ClientToServer_Navigation()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer_Navigation.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Navigation)
 }
 ClientToServer_Navigation::ClientToServer_Navigation(const ClientToServer_Navigation& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&module_status_, &from.module_status_,
     static_cast<size_t>(reinterpret_cast<char*>(&acceleration_) -
@@ -817,20 +811,15 @@ void ClientToServer_Navigation::SharedDtor() {
 void ClientToServer_Navigation::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer_Navigation::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer_Navigation& ClientToServer_Navigation::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_Navigation.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_Navigation_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer_Navigation::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Navigation)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -840,23 +829,79 @@ void ClientToServer_Navigation::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_Navigation::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+          set_module_status(static_cast<::telemetry_data::ClientToServer_ModuleStatus>(val));
+        } else goto handle_unusual;
+        continue;
+      // float distance = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 21)) {
+          distance_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else goto handle_unusual;
+        continue;
+      // float velocity = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 29)) {
+          velocity_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else goto handle_unusual;
+        continue;
+      // float acceleration = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 37)) {
+          acceleration_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer_Navigation::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Navigation)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
+          int value = 0;
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
           set_module_status(static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(value));
         } else {
@@ -867,11 +912,10 @@ bool ClientToServer_Navigation::MergePartialFromCodedStream(
 
       // float distance = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(21u /* 21 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (21 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   float, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_FLOAT>(
                  input, &distance_)));
         } else {
           goto handle_unusual;
@@ -881,11 +925,10 @@ bool ClientToServer_Navigation::MergePartialFromCodedStream(
 
       // float velocity = 3;
       case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(29u /* 29 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (29 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   float, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_FLOAT>(
                  input, &velocity_)));
         } else {
           goto handle_unusual;
@@ -895,11 +938,10 @@ bool ClientToServer_Navigation::MergePartialFromCodedStream(
 
       // float acceleration = 4;
       case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(37u /* 37 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (37 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   float, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_FLOAT>(
                  input, &acceleration_)));
         } else {
           goto handle_unusual;
@@ -912,7 +954,7 @@ bool ClientToServer_Navigation::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -926,72 +968,72 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer_Navigation::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Navigation)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
       1, this->module_status(), output);
   }
 
   // float distance = 2;
-  if (this->distance() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->distance(), output);
+  if (!(this->distance() <= 0 && this->distance() >= 0)) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloat(2, this->distance(), output);
   }
 
   // float velocity = 3;
-  if (this->velocity() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->velocity(), output);
+  if (!(this->velocity() <= 0 && this->velocity() >= 0)) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloat(3, this->velocity(), output);
   }
 
   // float acceleration = 4;
-  if (this->acceleration() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->acceleration(), output);
+  if (!(this->acceleration() <= 0 && this->acceleration() >= 0)) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloat(4, this->acceleration(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Navigation)
 }
 
-::google::protobuf::uint8* ClientToServer_Navigation::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_Navigation::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Navigation)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       1, this->module_status(), target);
   }
 
   // float distance = 2;
-  if (this->distance() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->distance(), target);
+  if (!(this->distance() <= 0 && this->distance() >= 0)) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(2, this->distance(), target);
   }
 
   // float velocity = 3;
-  if (this->velocity() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->velocity(), target);
+  if (!(this->velocity() <= 0 && this->velocity() >= 0)) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(3, this->velocity(), target);
   }
 
   // float acceleration = 4;
-  if (this->acceleration() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->acceleration(), target);
+  if (!(this->acceleration() <= 0 && this->acceleration() >= 0)) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(4, this->acceleration(), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Navigation)
   return target;
@@ -1001,46 +1043,50 @@ size_t ClientToServer_Navigation::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Navigation)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->module_status());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->module_status());
   }
 
   // float distance = 2;
-  if (this->distance() != 0) {
+  if (!(this->distance() <= 0 && this->distance() >= 0)) {
     total_size += 1 + 4;
   }
 
   // float velocity = 3;
-  if (this->velocity() != 0) {
+  if (!(this->velocity() <= 0 && this->velocity() >= 0)) {
     total_size += 1 + 4;
   }
 
   // float acceleration = 4;
-  if (this->acceleration() != 0) {
+  if (!(this->acceleration() <= 0 && this->acceleration() >= 0)) {
     total_size += 1 + 4;
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer_Navigation::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Navigation::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Navigation)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer_Navigation* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_Navigation>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_Navigation>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Navigation)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Navigation)
     MergeFrom(*source);
@@ -1051,24 +1097,24 @@ void ClientToServer_Navigation::MergeFrom(const ClientToServer_Navigation& from)
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Navigation)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.module_status() != 0) {
     set_module_status(from.module_status());
   }
-  if (from.distance() != 0) {
+  if (!(from.distance() <= 0 && from.distance() >= 0)) {
     set_distance(from.distance());
   }
-  if (from.velocity() != 0) {
+  if (!(from.velocity() <= 0 && from.velocity() >= 0)) {
     set_velocity(from.velocity());
   }
-  if (from.acceleration() != 0) {
+  if (!(from.acceleration() <= 0 && from.acceleration() >= 0)) {
     set_acceleration(from.acceleration());
   }
 }
 
-void ClientToServer_Navigation::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Navigation::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Navigation)
   if (&from == this) return;
   Clear();
@@ -1092,16 +1138,15 @@ void ClientToServer_Navigation::Swap(ClientToServer_Navigation* other) {
 }
 void ClientToServer_Navigation::InternalSwap(ClientToServer_Navigation* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(module_status_, other->module_status_);
   swap(distance_, other->distance_);
   swap(velocity_, other->velocity_);
   swap(acceleration_, other->acceleration_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata ClientToServer_Navigation::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_Navigation::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -1109,20 +1154,22 @@ void ClientToServer_Navigation::InternalSwap(ClientToServer_Navigation* other) {
 
 void ClientToServer_StateMachine::InitAsDefaultInstance() {
 }
+class ClientToServer_StateMachine::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer_StateMachine::kCurrentStateFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_StateMachine::ClientToServer_StateMachine()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer_StateMachine.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.StateMachine)
 }
 ClientToServer_StateMachine::ClientToServer_StateMachine(const ClientToServer_StateMachine& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   current_state_ = from.current_state_;
   // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.StateMachine)
@@ -1143,20 +1190,15 @@ void ClientToServer_StateMachine::SharedDtor() {
 void ClientToServer_StateMachine::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer_StateMachine::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer_StateMachine& ClientToServer_StateMachine::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_StateMachine.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_StateMachine_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer_StateMachine::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.StateMachine)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -1164,23 +1206,58 @@ void ClientToServer_StateMachine::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_StateMachine::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+          set_current_state(static_cast<::telemetry_data::ClientToServer_StateMachine_State>(val));
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer_StateMachine::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.StateMachine)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
+          int value = 0;
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
           set_current_state(static_cast< ::telemetry_data::ClientToServer_StateMachine_State >(value));
         } else {
@@ -1194,7 +1271,7 @@ bool ClientToServer_StateMachine::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -1208,42 +1285,42 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer_StateMachine::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.StateMachine)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
   if (this->current_state() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
       2, this->current_state(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.StateMachine)
 }
 
-::google::protobuf::uint8* ClientToServer_StateMachine::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_StateMachine::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.StateMachine)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
   if (this->current_state() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       2, this->current_state(), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.StateMachine)
   return target;
@@ -1253,31 +1330,35 @@ size_t ClientToServer_StateMachine::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.StateMachine)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // .telemetry_data.ClientToServer.StateMachine.State current_state = 2;
   if (this->current_state() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->current_state());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->current_state());
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer_StateMachine::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_StateMachine::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.StateMachine)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer_StateMachine* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_StateMachine>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_StateMachine>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.StateMachine)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.StateMachine)
     MergeFrom(*source);
@@ -1288,7 +1369,7 @@ void ClientToServer_StateMachine::MergeFrom(const ClientToServer_StateMachine& f
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.StateMachine)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.current_state() != 0) {
@@ -1296,7 +1377,7 @@ void ClientToServer_StateMachine::MergeFrom(const ClientToServer_StateMachine& f
   }
 }
 
-void ClientToServer_StateMachine::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_StateMachine::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.StateMachine)
   if (&from == this) return;
   Clear();
@@ -1320,13 +1401,12 @@ void ClientToServer_StateMachine::Swap(ClientToServer_StateMachine* other) {
 }
 void ClientToServer_StateMachine::InternalSwap(ClientToServer_StateMachine* other) {
   using std::swap;
-  swap(current_state_, other->current_state_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(current_state_, other->current_state_);
 }
 
-::google::protobuf::Metadata ClientToServer_StateMachine::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_StateMachine::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -1334,6 +1414,10 @@ void ClientToServer_StateMachine::InternalSwap(ClientToServer_StateMachine* othe
 
 void ClientToServer_Motors::InitAsDefaultInstance() {
 }
+class ClientToServer_Motors::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer_Motors::kModuleStatusFieldNumber;
 const int ClientToServer_Motors::kVelocity1FieldNumber;
@@ -1345,15 +1429,13 @@ const int ClientToServer_Motors::kVelocity6FieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_Motors::ClientToServer_Motors()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer_Motors.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Motors)
 }
 ClientToServer_Motors::ClientToServer_Motors(const ClientToServer_Motors& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&module_status_, &from.module_status_,
     static_cast<size_t>(reinterpret_cast<char*>(&velocity_6_) -
@@ -1378,20 +1460,15 @@ void ClientToServer_Motors::SharedDtor() {
 void ClientToServer_Motors::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer_Motors::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer_Motors& ClientToServer_Motors::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_Motors.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_Motors_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer_Motors::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Motors)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -1401,23 +1478,100 @@ void ClientToServer_Motors::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_Motors::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+          set_module_status(static_cast<::telemetry_data::ClientToServer_ModuleStatus>(val));
+        } else goto handle_unusual;
+        continue;
+      // sint32 velocity_1 = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          velocity_1_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // sint32 velocity_2 = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          velocity_2_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // sint32 velocity_3 = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          velocity_3_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // sint32 velocity_4 = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+          velocity_4_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // sint32 velocity_5 = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+          velocity_5_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // sint32 velocity_6 = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
+          velocity_6_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer_Motors::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Motors)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
+          int value = 0;
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
           set_module_status(static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(value));
         } else {
@@ -1428,11 +1582,10 @@ bool ClientToServer_Motors::MergePartialFromCodedStream(
 
       // sint32 velocity_1 = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
                  input, &velocity_1_)));
         } else {
           goto handle_unusual;
@@ -1442,11 +1595,10 @@ bool ClientToServer_Motors::MergePartialFromCodedStream(
 
       // sint32 velocity_2 = 3;
       case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (24 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
                  input, &velocity_2_)));
         } else {
           goto handle_unusual;
@@ -1456,11 +1608,10 @@ bool ClientToServer_Motors::MergePartialFromCodedStream(
 
       // sint32 velocity_3 = 4;
       case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(32u /* 32 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
                  input, &velocity_3_)));
         } else {
           goto handle_unusual;
@@ -1470,11 +1621,10 @@ bool ClientToServer_Motors::MergePartialFromCodedStream(
 
       // sint32 velocity_4 = 5;
       case 5: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(40u /* 40 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
                  input, &velocity_4_)));
         } else {
           goto handle_unusual;
@@ -1484,11 +1634,10 @@ bool ClientToServer_Motors::MergePartialFromCodedStream(
 
       // sint32 velocity_5 = 6;
       case 6: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(48u /* 48 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
                  input, &velocity_5_)));
         } else {
           goto handle_unusual;
@@ -1498,11 +1647,10 @@ bool ClientToServer_Motors::MergePartialFromCodedStream(
 
       // sint32 velocity_6 = 7;
       case 7: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(56u /* 56 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (56 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
                  input, &velocity_6_)));
         } else {
           goto handle_unusual;
@@ -1515,7 +1663,7 @@ bool ClientToServer_Motors::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -1529,102 +1677,102 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer_Motors::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Motors)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
       1, this->module_status(), output);
   }
 
   // sint32 velocity_1 = 2;
   if (this->velocity_1() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteSInt32(2, this->velocity_1(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(2, this->velocity_1(), output);
   }
 
   // sint32 velocity_2 = 3;
   if (this->velocity_2() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteSInt32(3, this->velocity_2(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(3, this->velocity_2(), output);
   }
 
   // sint32 velocity_3 = 4;
   if (this->velocity_3() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteSInt32(4, this->velocity_3(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(4, this->velocity_3(), output);
   }
 
   // sint32 velocity_4 = 5;
   if (this->velocity_4() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteSInt32(5, this->velocity_4(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(5, this->velocity_4(), output);
   }
 
   // sint32 velocity_5 = 6;
   if (this->velocity_5() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteSInt32(6, this->velocity_5(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(6, this->velocity_5(), output);
   }
 
   // sint32 velocity_6 = 7;
   if (this->velocity_6() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteSInt32(7, this->velocity_6(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(7, this->velocity_6(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Motors)
 }
 
-::google::protobuf::uint8* ClientToServer_Motors::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_Motors::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Motors)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       1, this->module_status(), target);
   }
 
   // sint32 velocity_1 = 2;
   if (this->velocity_1() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(2, this->velocity_1(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(2, this->velocity_1(), target);
   }
 
   // sint32 velocity_2 = 3;
   if (this->velocity_2() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(3, this->velocity_2(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(3, this->velocity_2(), target);
   }
 
   // sint32 velocity_3 = 4;
   if (this->velocity_3() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(4, this->velocity_3(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(4, this->velocity_3(), target);
   }
 
   // sint32 velocity_4 = 5;
   if (this->velocity_4() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(5, this->velocity_4(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(5, this->velocity_4(), target);
   }
 
   // sint32 velocity_5 = 6;
   if (this->velocity_5() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(6, this->velocity_5(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(6, this->velocity_5(), target);
   }
 
   // sint32 velocity_6 = 7;
   if (this->velocity_6() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(7, this->velocity_6(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(7, this->velocity_6(), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Motors)
   return target;
@@ -1634,73 +1782,77 @@ size_t ClientToServer_Motors::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Motors)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->module_status());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->module_status());
   }
 
   // sint32 velocity_1 = 2;
   if (this->velocity_1() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
         this->velocity_1());
   }
 
   // sint32 velocity_2 = 3;
   if (this->velocity_2() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
         this->velocity_2());
   }
 
   // sint32 velocity_3 = 4;
   if (this->velocity_3() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
         this->velocity_3());
   }
 
   // sint32 velocity_4 = 5;
   if (this->velocity_4() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
         this->velocity_4());
   }
 
   // sint32 velocity_5 = 6;
   if (this->velocity_5() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
         this->velocity_5());
   }
 
   // sint32 velocity_6 = 7;
   if (this->velocity_6() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
         this->velocity_6());
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer_Motors::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Motors::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Motors)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer_Motors* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_Motors>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_Motors>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Motors)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Motors)
     MergeFrom(*source);
@@ -1711,7 +1863,7 @@ void ClientToServer_Motors::MergeFrom(const ClientToServer_Motors& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Motors)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.module_status() != 0) {
@@ -1737,7 +1889,7 @@ void ClientToServer_Motors::MergeFrom(const ClientToServer_Motors& from) {
   }
 }
 
-void ClientToServer_Motors::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Motors::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Motors)
   if (&from == this) return;
   Clear();
@@ -1761,6 +1913,7 @@ void ClientToServer_Motors::Swap(ClientToServer_Motors* other) {
 }
 void ClientToServer_Motors::InternalSwap(ClientToServer_Motors* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(module_status_, other->module_status_);
   swap(velocity_1_, other->velocity_1_);
   swap(velocity_2_, other->velocity_2_);
@@ -1768,12 +1921,10 @@ void ClientToServer_Motors::InternalSwap(ClientToServer_Motors* other) {
   swap(velocity_4_, other->velocity_4_);
   swap(velocity_5_, other->velocity_5_);
   swap(velocity_6_, other->velocity_6_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata ClientToServer_Motors::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_Motors::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -1781,6 +1932,10 @@ void ClientToServer_Motors::InternalSwap(ClientToServer_Motors* other) {
 
 void ClientToServer_Batteries_BatteryData::InitAsDefaultInstance() {
 }
+class ClientToServer_Batteries_BatteryData::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer_Batteries_BatteryData::kVoltageFieldNumber;
 const int ClientToServer_Batteries_BatteryData::kCurrentFieldNumber;
@@ -1791,15 +1946,13 @@ const int ClientToServer_Batteries_BatteryData::kHighVoltageCellFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_Batteries_BatteryData::ClientToServer_Batteries_BatteryData()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer_Batteries_BatteryData.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Batteries.BatteryData)
 }
 ClientToServer_Batteries_BatteryData::ClientToServer_Batteries_BatteryData(const ClientToServer_Batteries_BatteryData& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&voltage_, &from.voltage_,
     static_cast<size_t>(reinterpret_cast<char*>(&high_voltage_cell_) -
@@ -1824,20 +1977,15 @@ void ClientToServer_Batteries_BatteryData::SharedDtor() {
 void ClientToServer_Batteries_BatteryData::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer_Batteries_BatteryData::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer_Batteries_BatteryData& ClientToServer_Batteries_BatteryData::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_Batteries_BatteryData.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_Batteries_BatteryData_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer_Batteries_BatteryData::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Batteries.BatteryData)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -1847,23 +1995,92 @@ void ClientToServer_Batteries_BatteryData::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_Batteries_BatteryData::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // uint32 voltage = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          voltage_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // sint32 current = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          current_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 charge = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          charge_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 temperature = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 low_voltage_cell = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+          low_voltage_cell_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 high_voltage_cell = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+          high_voltage_cell_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Batteries.BatteryData)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // uint32 voltage = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
                  input, &voltage_)));
         } else {
           goto handle_unusual;
@@ -1873,11 +2090,10 @@ bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
 
       // sint32 current = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_SINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
                  input, &current_)));
         } else {
           goto handle_unusual;
@@ -1887,11 +2103,10 @@ bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
 
       // uint32 charge = 3;
       case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (24 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
                  input, &charge_)));
         } else {
           goto handle_unusual;
@@ -1901,11 +2116,10 @@ bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
 
       // int32 temperature = 4;
       case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(32u /* 32 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
                  input, &temperature_)));
         } else {
           goto handle_unusual;
@@ -1915,11 +2129,10 @@ bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
 
       // uint32 low_voltage_cell = 5;
       case 5: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(40u /* 40 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
                  input, &low_voltage_cell_)));
         } else {
           goto handle_unusual;
@@ -1929,11 +2142,10 @@ bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
 
       // uint32 high_voltage_cell = 6;
       case 6: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(48u /* 48 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
                  input, &high_voltage_cell_)));
         } else {
           goto handle_unusual;
@@ -1946,7 +2158,7 @@ bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -1960,90 +2172,90 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer_Batteries_BatteryData::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Batteries.BatteryData)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // uint32 voltage = 1;
   if (this->voltage() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->voltage(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(1, this->voltage(), output);
   }
 
   // sint32 current = 2;
   if (this->current() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteSInt32(2, this->current(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(2, this->current(), output);
   }
 
   // uint32 charge = 3;
   if (this->charge() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->charge(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(3, this->charge(), output);
   }
 
   // int32 temperature = 4;
   if (this->temperature() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->temperature(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(4, this->temperature(), output);
   }
 
   // uint32 low_voltage_cell = 5;
   if (this->low_voltage_cell() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->low_voltage_cell(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(5, this->low_voltage_cell(), output);
   }
 
   // uint32 high_voltage_cell = 6;
   if (this->high_voltage_cell() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(6, this->high_voltage_cell(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(6, this->high_voltage_cell(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Batteries.BatteryData)
 }
 
-::google::protobuf::uint8* ClientToServer_Batteries_BatteryData::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_Batteries_BatteryData::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Batteries.BatteryData)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // uint32 voltage = 1;
   if (this->voltage() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->voltage(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->voltage(), target);
   }
 
   // sint32 current = 2;
   if (this->current() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteSInt32ToArray(2, this->current(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(2, this->current(), target);
   }
 
   // uint32 charge = 3;
   if (this->charge() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->charge(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->charge(), target);
   }
 
   // int32 temperature = 4;
   if (this->temperature() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->temperature(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->temperature(), target);
   }
 
   // uint32 low_voltage_cell = 5;
   if (this->low_voltage_cell() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->low_voltage_cell(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->low_voltage_cell(), target);
   }
 
   // uint32 high_voltage_cell = 6;
   if (this->high_voltage_cell() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(6, this->high_voltage_cell(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->high_voltage_cell(), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Batteries.BatteryData)
   return target;
@@ -2053,67 +2265,71 @@ size_t ClientToServer_Batteries_BatteryData::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Batteries.BatteryData)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // uint32 voltage = 1;
   if (this->voltage() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->voltage());
   }
 
   // sint32 current = 2;
   if (this->current() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::SInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
         this->current());
   }
 
   // uint32 charge = 3;
   if (this->charge() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->charge());
   }
 
   // int32 temperature = 4;
   if (this->temperature() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
         this->temperature());
   }
 
   // uint32 low_voltage_cell = 5;
   if (this->low_voltage_cell() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->low_voltage_cell());
   }
 
   // uint32 high_voltage_cell = 6;
   if (this->high_voltage_cell() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->high_voltage_cell());
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer_Batteries_BatteryData::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Batteries_BatteryData::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Batteries.BatteryData)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer_Batteries_BatteryData* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_Batteries_BatteryData>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_Batteries_BatteryData>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Batteries.BatteryData)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Batteries.BatteryData)
     MergeFrom(*source);
@@ -2124,7 +2340,7 @@ void ClientToServer_Batteries_BatteryData::MergeFrom(const ClientToServer_Batter
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Batteries.BatteryData)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.voltage() != 0) {
@@ -2147,7 +2363,7 @@ void ClientToServer_Batteries_BatteryData::MergeFrom(const ClientToServer_Batter
   }
 }
 
-void ClientToServer_Batteries_BatteryData::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Batteries_BatteryData::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Batteries.BatteryData)
   if (&from == this) return;
   Clear();
@@ -2171,18 +2387,17 @@ void ClientToServer_Batteries_BatteryData::Swap(ClientToServer_Batteries_Battery
 }
 void ClientToServer_Batteries_BatteryData::InternalSwap(ClientToServer_Batteries_BatteryData* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(voltage_, other->voltage_);
   swap(current_, other->current_);
   swap(charge_, other->charge_);
   swap(temperature_, other->temperature_);
   swap(low_voltage_cell_, other->low_voltage_cell_);
   swap(high_voltage_cell_, other->high_voltage_cell_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata ClientToServer_Batteries_BatteryData::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_Batteries_BatteryData::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -2190,6 +2405,10 @@ void ClientToServer_Batteries_BatteryData::InternalSwap(ClientToServer_Batteries
 
 void ClientToServer_Batteries::InitAsDefaultInstance() {
 }
+class ClientToServer_Batteries::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer_Batteries::kModuleStatusFieldNumber;
 const int ClientToServer_Batteries::kLowPowerBatteriesFieldNumber;
@@ -2197,15 +2416,13 @@ const int ClientToServer_Batteries::kHighPowerBatteriesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_Batteries::ClientToServer_Batteries()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer_Batteries.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Batteries)
 }
 ClientToServer_Batteries::ClientToServer_Batteries(const ClientToServer_Batteries& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL),
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr),
       low_power_batteries_(from.low_power_batteries_),
       high_power_batteries_(from.high_power_batteries_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -2214,6 +2431,7 @@ ClientToServer_Batteries::ClientToServer_Batteries(const ClientToServer_Batterie
 }
 
 void ClientToServer_Batteries::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ClientToServer_Batteries_message_2eproto.base);
   module_status_ = 0;
 }
 
@@ -2228,20 +2446,15 @@ void ClientToServer_Batteries::SharedDtor() {
 void ClientToServer_Batteries::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer_Batteries::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer_Batteries& ClientToServer_Batteries::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_Batteries.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_Batteries_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer_Batteries::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Batteries)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -2251,23 +2464,82 @@ void ClientToServer_Batteries::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_Batteries::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+          set_module_status(static_cast<::telemetry_data::ClientToServer_ModuleStatus>(val));
+        } else goto handle_unusual;
+        continue;
+      // repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(add_low_power_batteries(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 18);
+        } else goto handle_unusual;
+        continue;
+      // repeated .telemetry_data.ClientToServer.Batteries.BatteryData high_power_batteries = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(add_high_power_batteries(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 26);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer_Batteries::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Batteries)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
+          int value = 0;
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
           set_module_status(static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(value));
         } else {
@@ -2278,9 +2550,8 @@ bool ClientToServer_Batteries::MergePartialFromCodedStream(
 
       // repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (18 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                 input, add_low_power_batteries()));
         } else {
           goto handle_unusual;
@@ -2290,9 +2561,8 @@ bool ClientToServer_Batteries::MergePartialFromCodedStream(
 
       // repeated .telemetry_data.ClientToServer.Batteries.BatteryData high_power_batteries = 3;
       case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(26u /* 26 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (26 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                 input, add_high_power_batteries()));
         } else {
           goto handle_unusual;
@@ -2305,7 +2575,7 @@ bool ClientToServer_Batteries::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -2319,23 +2589,24 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer_Batteries::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Batteries)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
       1, this->module_status(), output);
   }
 
   // repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->low_power_batteries_size()); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
       2,
       this->low_power_batteries(static_cast<int>(i)),
       output);
@@ -2344,51 +2615,50 @@ void ClientToServer_Batteries::SerializeWithCachedSizes(
   // repeated .telemetry_data.ClientToServer.Batteries.BatteryData high_power_batteries = 3;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->high_power_batteries_size()); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
       3,
       this->high_power_batteries(static_cast<int>(i)),
       output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Batteries)
 }
 
-::google::protobuf::uint8* ClientToServer_Batteries::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_Batteries::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Batteries)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       1, this->module_status(), target);
   }
 
   // repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->low_power_batteries_size()); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        2, this->low_power_batteries(static_cast<int>(i)), deterministic, target);
+        2, this->low_power_batteries(static_cast<int>(i)), target);
   }
 
   // repeated .telemetry_data.ClientToServer.Batteries.BatteryData high_power_batteries = 3;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->high_power_batteries_size()); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        3, this->high_power_batteries(static_cast<int>(i)), deterministic, target);
+        3, this->high_power_batteries(static_cast<int>(i)), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Batteries)
   return target;
@@ -2398,18 +2668,22 @@ size_t ClientToServer_Batteries::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Batteries)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // repeated .telemetry_data.ClientToServer.Batteries.BatteryData low_power_batteries = 2;
   {
     unsigned int count = static_cast<unsigned int>(this->low_power_batteries_size());
     total_size += 1UL * count;
     for (unsigned int i = 0; i < count; i++) {
       total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSize(
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
           this->low_power_batteries(static_cast<int>(i)));
     }
   }
@@ -2420,7 +2694,7 @@ size_t ClientToServer_Batteries::ByteSizeLong() const {
     total_size += 1UL * count;
     for (unsigned int i = 0; i < count; i++) {
       total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSize(
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
           this->high_power_batteries(static_cast<int>(i)));
     }
   }
@@ -2428,23 +2702,23 @@ size_t ClientToServer_Batteries::ByteSizeLong() const {
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->module_status());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->module_status());
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer_Batteries::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Batteries::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Batteries)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer_Batteries* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_Batteries>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_Batteries>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Batteries)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Batteries)
     MergeFrom(*source);
@@ -2455,7 +2729,7 @@ void ClientToServer_Batteries::MergeFrom(const ClientToServer_Batteries& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Batteries)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   low_power_batteries_.MergeFrom(from.low_power_batteries_);
@@ -2465,7 +2739,7 @@ void ClientToServer_Batteries::MergeFrom(const ClientToServer_Batteries& from) {
   }
 }
 
-void ClientToServer_Batteries::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Batteries::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Batteries)
   if (&from == this) return;
   Clear();
@@ -2489,15 +2763,14 @@ void ClientToServer_Batteries::Swap(ClientToServer_Batteries* other) {
 }
 void ClientToServer_Batteries::InternalSwap(ClientToServer_Batteries* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   CastToBase(&low_power_batteries_)->InternalSwap(CastToBase(&other->low_power_batteries_));
   CastToBase(&high_power_batteries_)->InternalSwap(CastToBase(&other->high_power_batteries_));
   swap(module_status_, other->module_status_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata ClientToServer_Batteries::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_Batteries::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -2505,21 +2778,23 @@ void ClientToServer_Batteries::InternalSwap(ClientToServer_Batteries* other) {
 
 void ClientToServer_Sensors_ImuData::InitAsDefaultInstance() {
 }
+class ClientToServer_Sensors_ImuData::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer_Sensors_ImuData::kOperationalFieldNumber;
 const int ClientToServer_Sensors_ImuData::kAccFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_Sensors_ImuData::ClientToServer_Sensors_ImuData()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer_Sensors_ImuData.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Sensors.ImuData)
 }
 ClientToServer_Sensors_ImuData::ClientToServer_Sensors_ImuData(const ClientToServer_Sensors_ImuData& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL),
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr),
       acc_(from.acc_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   operational_ = from.operational_;
@@ -2541,20 +2816,15 @@ void ClientToServer_Sensors_ImuData::SharedDtor() {
 void ClientToServer_Sensors_ImuData::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer_Sensors_ImuData::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer_Sensors_ImuData& ClientToServer_Sensors_ImuData::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_Sensors_ImuData.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_Sensors_ImuData_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer_Sensors_ImuData::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Sensors.ImuData)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -2563,23 +2833,67 @@ void ClientToServer_Sensors_ImuData::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_Sensors_ImuData::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // bool operational = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          operational_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // repeated float acc = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedFloatParser(mutable_acc(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 21) {
+          add_acc(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr));
+          ptr += sizeof(float);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer_Sensors_ImuData::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Sensors.ImuData)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // bool operational = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
 
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_BOOL>(
                  input, &operational_)));
         } else {
           goto handle_unusual;
@@ -2589,16 +2903,13 @@ bool ClientToServer_Sensors_ImuData::MergePartialFromCodedStream(
 
       // repeated float acc = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (18 & 0xFF)) {
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPackedPrimitive<
+                   float, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_FLOAT>(
                  input, this->mutable_acc())));
-        } else if (
-            static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(21u /* 21 & 0xFF */)) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+        } else if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (21 & 0xFF)) {
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   float, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_FLOAT>(
                  1, 18u, input, this->mutable_acc())));
         } else {
           goto handle_unusual;
@@ -2611,7 +2922,7 @@ bool ClientToServer_Sensors_ImuData::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -2625,62 +2936,62 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer_Sensors_ImuData::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Sensors.ImuData)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // bool operational = 1;
   if (this->operational() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->operational(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBool(1, this->operational(), output);
   }
 
   // repeated float acc = 2;
   if (this->acc_size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
-    output->WriteVarint32(static_cast< ::google::protobuf::uint32>(
-        _acc_cached_byte_size_));
-    ::google::protobuf::internal::WireFormatLite::WriteFloatArray(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteTag(2, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_acc_cached_byte_size_.load(
+        std::memory_order_relaxed));
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatArray(
       this->acc().data(), this->acc_size(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Sensors.ImuData)
 }
 
-::google::protobuf::uint8* ClientToServer_Sensors_ImuData::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_Sensors_ImuData::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Sensors.ImuData)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // bool operational = 1;
   if (this->operational() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->operational(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(1, this->operational(), target);
   }
 
   // repeated float acc = 2;
   if (this->acc_size() > 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteTagToArray(
       2,
-      ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
       target);
-    target = ::google::protobuf::io::CodedOutputStream::WriteVarint32ToArray(
-        static_cast< ::google::protobuf::int32>(
-            _acc_cached_byte_size_), target);
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream::WriteVarint32ToArray(
+        _acc_cached_byte_size_.load(std::memory_order_relaxed),
+         target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       WriteFloatNoTagToArray(this->acc_, target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Sensors.ImuData)
   return target;
@@ -2690,24 +3001,27 @@ size_t ClientToServer_Sensors_ImuData::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Sensors.ImuData)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // repeated float acc = 2;
   {
     unsigned int count = static_cast<unsigned int>(this->acc_size());
     size_t data_size = 4UL * count;
     if (data_size > 0) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-            static_cast< ::google::protobuf::int32>(data_size));
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
     }
-    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
-    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-    _acc_cached_byte_size_ = cached_size;
-    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _acc_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
     total_size += data_size;
   }
 
@@ -2716,20 +3030,20 @@ size_t ClientToServer_Sensors_ImuData::ByteSizeLong() const {
     total_size += 1 + 1;
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer_Sensors_ImuData::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Sensors_ImuData::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Sensors.ImuData)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer_Sensors_ImuData* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_Sensors_ImuData>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_Sensors_ImuData>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Sensors.ImuData)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Sensors.ImuData)
     MergeFrom(*source);
@@ -2740,7 +3054,7 @@ void ClientToServer_Sensors_ImuData::MergeFrom(const ClientToServer_Sensors_ImuD
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Sensors.ImuData)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   acc_.MergeFrom(from.acc_);
@@ -2749,7 +3063,7 @@ void ClientToServer_Sensors_ImuData::MergeFrom(const ClientToServer_Sensors_ImuD
   }
 }
 
-void ClientToServer_Sensors_ImuData::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Sensors_ImuData::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Sensors.ImuData)
   if (&from == this) return;
   Clear();
@@ -2773,14 +3087,13 @@ void ClientToServer_Sensors_ImuData::Swap(ClientToServer_Sensors_ImuData* other)
 }
 void ClientToServer_Sensors_ImuData::InternalSwap(ClientToServer_Sensors_ImuData* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   acc_.InternalSwap(&other->acc_);
   swap(operational_, other->operational_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata ClientToServer_Sensors_ImuData::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_Sensors_ImuData::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -2788,21 +3101,23 @@ void ClientToServer_Sensors_ImuData::InternalSwap(ClientToServer_Sensors_ImuData
 
 void ClientToServer_Sensors::InitAsDefaultInstance() {
 }
+class ClientToServer_Sensors::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer_Sensors::kModuleStatusFieldNumber;
 const int ClientToServer_Sensors::kImuFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_Sensors::ClientToServer_Sensors()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer_Sensors.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Sensors)
 }
 ClientToServer_Sensors::ClientToServer_Sensors(const ClientToServer_Sensors& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL),
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr),
       imu_(from.imu_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   module_status_ = from.module_status_;
@@ -2810,6 +3125,7 @@ ClientToServer_Sensors::ClientToServer_Sensors(const ClientToServer_Sensors& fro
 }
 
 void ClientToServer_Sensors::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ClientToServer_Sensors_message_2eproto.base);
   module_status_ = 0;
 }
 
@@ -2824,20 +3140,15 @@ void ClientToServer_Sensors::SharedDtor() {
 void ClientToServer_Sensors::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer_Sensors::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer_Sensors& ClientToServer_Sensors::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_Sensors.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_Sensors_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer_Sensors::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Sensors)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -2846,23 +3157,70 @@ void ClientToServer_Sensors::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_Sensors::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+          set_module_status(static_cast<::telemetry_data::ClientToServer_ModuleStatus>(val));
+        } else goto handle_unusual;
+        continue;
+      // repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(add_imu(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 18);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer_Sensors::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Sensors)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
+          int value = 0;
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
           set_module_status(static_cast< ::telemetry_data::ClientToServer_ModuleStatus >(value));
         } else {
@@ -2873,9 +3231,8 @@ bool ClientToServer_Sensors::MergePartialFromCodedStream(
 
       // repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (18 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                 input, add_imu()));
         } else {
           goto handle_unusual;
@@ -2888,7 +3245,7 @@ bool ClientToServer_Sensors::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -2902,59 +3259,59 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer_Sensors::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Sensors)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
       1, this->module_status(), output);
   }
 
   // repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->imu_size()); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
       2,
       this->imu(static_cast<int>(i)),
       output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Sensors)
 }
 
-::google::protobuf::uint8* ClientToServer_Sensors::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_Sensors::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Sensors)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       1, this->module_status(), target);
   }
 
   // repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->imu_size()); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        2, this->imu(static_cast<int>(i)), deterministic, target);
+        2, this->imu(static_cast<int>(i)), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Sensors)
   return target;
@@ -2964,18 +3321,22 @@ size_t ClientToServer_Sensors::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Sensors)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // repeated .telemetry_data.ClientToServer.Sensors.ImuData imu = 2;
   {
     unsigned int count = static_cast<unsigned int>(this->imu_size());
     total_size += 1UL * count;
     for (unsigned int i = 0; i < count; i++) {
       total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSize(
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
           this->imu(static_cast<int>(i)));
     }
   }
@@ -2983,23 +3344,23 @@ size_t ClientToServer_Sensors::ByteSizeLong() const {
   // .telemetry_data.ClientToServer.ModuleStatus module_status = 1;
   if (this->module_status() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->module_status());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->module_status());
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer_Sensors::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Sensors::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Sensors)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer_Sensors* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_Sensors>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_Sensors>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Sensors)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Sensors)
     MergeFrom(*source);
@@ -3010,7 +3371,7 @@ void ClientToServer_Sensors::MergeFrom(const ClientToServer_Sensors& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Sensors)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   imu_.MergeFrom(from.imu_);
@@ -3019,7 +3380,7 @@ void ClientToServer_Sensors::MergeFrom(const ClientToServer_Sensors& from) {
   }
 }
 
-void ClientToServer_Sensors::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_Sensors::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Sensors)
   if (&from == this) return;
   Clear();
@@ -3043,14 +3404,13 @@ void ClientToServer_Sensors::Swap(ClientToServer_Sensors* other) {
 }
 void ClientToServer_Sensors::InternalSwap(ClientToServer_Sensors* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   CastToBase(&imu_)->InternalSwap(CastToBase(&other->imu_));
   swap(module_status_, other->module_status_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata ClientToServer_Sensors::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_Sensors::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -3058,32 +3418,28 @@ void ClientToServer_Sensors::InternalSwap(ClientToServer_Sensors* other) {
 
 void ClientToServer_EmergencyBrakes::InitAsDefaultInstance() {
 }
+class ClientToServer_EmergencyBrakes::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ClientToServer_EmergencyBrakes::kFrontBrakesFieldNumber;
-const int ClientToServer_EmergencyBrakes::kRearBrakesFieldNumber;
+const int ClientToServer_EmergencyBrakes::kBrakesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_EmergencyBrakes::ClientToServer_EmergencyBrakes()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer_EmergencyBrakes.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.EmergencyBrakes)
 }
 ClientToServer_EmergencyBrakes::ClientToServer_EmergencyBrakes(const ClientToServer_EmergencyBrakes& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr),
+      brakes_(from.brakes_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::memcpy(&front_brakes_, &from.front_brakes_,
-    static_cast<size_t>(reinterpret_cast<char*>(&rear_brakes_) -
-    reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
   // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.EmergencyBrakes)
 }
 
 void ClientToServer_EmergencyBrakes::SharedCtor() {
-  ::memset(&front_brakes_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&rear_brakes_) -
-      reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
 }
 
 ClientToServer_EmergencyBrakes::~ClientToServer_EmergencyBrakes() {
@@ -3097,61 +3453,80 @@ void ClientToServer_EmergencyBrakes::SharedDtor() {
 void ClientToServer_EmergencyBrakes::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer_EmergencyBrakes::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer_EmergencyBrakes& ClientToServer_EmergencyBrakes::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer_EmergencyBrakes.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_EmergencyBrakes_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer_EmergencyBrakes::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.EmergencyBrakes)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&front_brakes_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&rear_brakes_) -
-      reinterpret_cast<char*>(&front_brakes_)) + sizeof(rear_brakes_));
+  brakes_.Clear();
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_EmergencyBrakes::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // repeated bool brakes = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedBoolParser(mutable_brakes(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8) {
+          add_brakes(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer_EmergencyBrakes::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.EmergencyBrakes)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // bool front_brakes = 1;
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated bool brakes = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &front_brakes_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // bool rear_brakes = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &rear_brakes_)));
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (10 & 0xFF)) {
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPackedPrimitive<
+                   bool, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_BOOL>(
+                 input, this->mutable_brakes())));
+        } else if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   bool, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_BOOL>(
+                 1, 10u, input, this->mutable_brakes())));
         } else {
           goto handle_unusual;
         }
@@ -3163,7 +3538,7 @@ bool ClientToServer_EmergencyBrakes::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -3177,50 +3552,52 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer_EmergencyBrakes::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.EmergencyBrakes)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // bool front_brakes = 1;
-  if (this->front_brakes() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->front_brakes(), output);
+  // repeated bool brakes = 1;
+  if (this->brakes_size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteTag(1, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_brakes_cached_byte_size_.load(
+        std::memory_order_relaxed));
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolArray(
+      this->brakes().data(), this->brakes_size(), output);
   }
 
-  // bool rear_brakes = 2;
-  if (this->rear_brakes() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->rear_brakes(), output);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.EmergencyBrakes)
 }
 
-::google::protobuf::uint8* ClientToServer_EmergencyBrakes::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_EmergencyBrakes::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.EmergencyBrakes)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // bool front_brakes = 1;
-  if (this->front_brakes() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->front_brakes(), target);
+  // repeated bool brakes = 1;
+  if (this->brakes_size() > 0) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteTagToArray(
+      1,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
+      target);
+    target = ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream::WriteVarint32ToArray(
+        _brakes_cached_byte_size_.load(std::memory_order_relaxed),
+         target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      WriteBoolNoTagToArray(this->brakes_, target);
   }
 
-  // bool rear_brakes = 2;
-  if (this->rear_brakes() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->rear_brakes(), target);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.EmergencyBrakes)
   return target;
@@ -3230,35 +3607,44 @@ size_t ClientToServer_EmergencyBrakes::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.EmergencyBrakes)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
-  // bool front_brakes = 1;
-  if (this->front_brakes() != 0) {
-    total_size += 1 + 1;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated bool brakes = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->brakes_size());
+    size_t data_size = 1UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _brakes_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
   }
 
-  // bool rear_brakes = 2;
-  if (this->rear_brakes() != 0) {
-    total_size += 1 + 1;
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer_EmergencyBrakes::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_EmergencyBrakes::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.EmergencyBrakes)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer_EmergencyBrakes* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer_EmergencyBrakes>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_EmergencyBrakes>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.EmergencyBrakes)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.EmergencyBrakes)
     MergeFrom(*source);
@@ -3269,18 +3655,13 @@ void ClientToServer_EmergencyBrakes::MergeFrom(const ClientToServer_EmergencyBra
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.EmergencyBrakes)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.front_brakes() != 0) {
-    set_front_brakes(from.front_brakes());
-  }
-  if (from.rear_brakes() != 0) {
-    set_rear_brakes(from.rear_brakes());
-  }
+  brakes_.MergeFrom(from.brakes_);
 }
 
-void ClientToServer_EmergencyBrakes::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer_EmergencyBrakes::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.EmergencyBrakes)
   if (&from == this) return;
   Clear();
@@ -3304,14 +3685,12 @@ void ClientToServer_EmergencyBrakes::Swap(ClientToServer_EmergencyBrakes* other)
 }
 void ClientToServer_EmergencyBrakes::InternalSwap(ClientToServer_EmergencyBrakes* other) {
   using std::swap;
-  swap(front_brakes_, other->front_brakes_);
-  swap(rear_brakes_, other->rear_brakes_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  brakes_.InternalSwap(&other->brakes_);
 }
 
-::google::protobuf::Metadata ClientToServer_EmergencyBrakes::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_EmergencyBrakes::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
@@ -3331,6 +3710,40 @@ void ClientToServer::InitAsDefaultInstance() {
   ::telemetry_data::_ClientToServer_default_instance_._instance.get_mutable()->emergency_brakes_ = const_cast< ::telemetry_data::ClientToServer_EmergencyBrakes*>(
       ::telemetry_data::ClientToServer_EmergencyBrakes::internal_default_instance());
 }
+class ClientToServer::HasBitSetters {
+ public:
+  static const ::telemetry_data::ClientToServer_Navigation& navigation(const ClientToServer* msg);
+  static const ::telemetry_data::ClientToServer_StateMachine& state_machine(const ClientToServer* msg);
+  static const ::telemetry_data::ClientToServer_Motors& motors(const ClientToServer* msg);
+  static const ::telemetry_data::ClientToServer_Batteries& batteries(const ClientToServer* msg);
+  static const ::telemetry_data::ClientToServer_Sensors& sensors(const ClientToServer* msg);
+  static const ::telemetry_data::ClientToServer_EmergencyBrakes& emergency_brakes(const ClientToServer* msg);
+};
+
+const ::telemetry_data::ClientToServer_Navigation&
+ClientToServer::HasBitSetters::navigation(const ClientToServer* msg) {
+  return *msg->navigation_;
+}
+const ::telemetry_data::ClientToServer_StateMachine&
+ClientToServer::HasBitSetters::state_machine(const ClientToServer* msg) {
+  return *msg->state_machine_;
+}
+const ::telemetry_data::ClientToServer_Motors&
+ClientToServer::HasBitSetters::motors(const ClientToServer* msg) {
+  return *msg->motors_;
+}
+const ::telemetry_data::ClientToServer_Batteries&
+ClientToServer::HasBitSetters::batteries(const ClientToServer* msg) {
+  return *msg->batteries_;
+}
+const ::telemetry_data::ClientToServer_Sensors&
+ClientToServer::HasBitSetters::sensors(const ClientToServer* msg) {
+  return *msg->sensors_;
+}
+const ::telemetry_data::ClientToServer_EmergencyBrakes&
+ClientToServer::HasBitSetters::emergency_brakes(const ClientToServer* msg) {
+  return *msg->emergency_brakes_;
+}
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer::kNavigationFieldNumber;
 const int ClientToServer::kStateMachineFieldNumber;
@@ -3341,50 +3754,49 @@ const int ClientToServer::kEmergencyBrakesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer::ClientToServer()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_message_2eproto::scc_info_ClientToServer.base);
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer)
 }
 ClientToServer::ClientToServer(const ClientToServer& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   if (from.has_navigation()) {
     navigation_ = new ::telemetry_data::ClientToServer_Navigation(*from.navigation_);
   } else {
-    navigation_ = NULL;
+    navigation_ = nullptr;
   }
   if (from.has_state_machine()) {
     state_machine_ = new ::telemetry_data::ClientToServer_StateMachine(*from.state_machine_);
   } else {
-    state_machine_ = NULL;
+    state_machine_ = nullptr;
   }
   if (from.has_motors()) {
     motors_ = new ::telemetry_data::ClientToServer_Motors(*from.motors_);
   } else {
-    motors_ = NULL;
+    motors_ = nullptr;
   }
   if (from.has_batteries()) {
     batteries_ = new ::telemetry_data::ClientToServer_Batteries(*from.batteries_);
   } else {
-    batteries_ = NULL;
+    batteries_ = nullptr;
   }
   if (from.has_sensors()) {
     sensors_ = new ::telemetry_data::ClientToServer_Sensors(*from.sensors_);
   } else {
-    sensors_ = NULL;
+    sensors_ = nullptr;
   }
   if (from.has_emergency_brakes()) {
     emergency_brakes_ = new ::telemetry_data::ClientToServer_EmergencyBrakes(*from.emergency_brakes_);
   } else {
-    emergency_brakes_ = NULL;
+    emergency_brakes_ = nullptr;
   }
   // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer)
 }
 
 void ClientToServer::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ClientToServer_message_2eproto.base);
   ::memset(&navigation_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&emergency_brakes_) -
       reinterpret_cast<char*>(&navigation_)) + sizeof(emergency_brakes_));
@@ -3407,65 +3819,129 @@ void ClientToServer::SharedDtor() {
 void ClientToServer::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* ClientToServer::descriptor() {
-  ::protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ClientToServer& ClientToServer::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_message_2eproto::scc_info_ClientToServer.base);
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_message_2eproto.base);
   return *internal_default_instance();
 }
 
 
 void ClientToServer::Clear() {
 // @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaNoVirtual() == NULL && navigation_ != NULL) {
+  if (GetArenaNoVirtual() == nullptr && navigation_ != nullptr) {
     delete navigation_;
   }
-  navigation_ = NULL;
-  if (GetArenaNoVirtual() == NULL && state_machine_ != NULL) {
+  navigation_ = nullptr;
+  if (GetArenaNoVirtual() == nullptr && state_machine_ != nullptr) {
     delete state_machine_;
   }
-  state_machine_ = NULL;
-  if (GetArenaNoVirtual() == NULL && motors_ != NULL) {
+  state_machine_ = nullptr;
+  if (GetArenaNoVirtual() == nullptr && motors_ != nullptr) {
     delete motors_;
   }
-  motors_ = NULL;
-  if (GetArenaNoVirtual() == NULL && batteries_ != NULL) {
+  motors_ = nullptr;
+  if (GetArenaNoVirtual() == nullptr && batteries_ != nullptr) {
     delete batteries_;
   }
-  batteries_ = NULL;
-  if (GetArenaNoVirtual() == NULL && sensors_ != NULL) {
+  batteries_ = nullptr;
+  if (GetArenaNoVirtual() == nullptr && sensors_ != nullptr) {
     delete sensors_;
   }
-  sensors_ = NULL;
-  if (GetArenaNoVirtual() == NULL && emergency_brakes_ != NULL) {
+  sensors_ = nullptr;
+  if (GetArenaNoVirtual() == nullptr && emergency_brakes_ != nullptr) {
     delete emergency_brakes_;
   }
-  emergency_brakes_ = NULL;
+  emergency_brakes_ = nullptr;
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // .telemetry_data.ClientToServer.Navigation navigation = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(mutable_navigation(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(mutable_state_machine(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .telemetry_data.ClientToServer.Motors motors = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ctx->ParseMessage(mutable_motors(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .telemetry_data.ClientToServer.Batteries batteries = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr = ctx->ParseMessage(mutable_batteries(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .telemetry_data.ClientToServer.Sensors sensors = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 42)) {
+          ptr = ctx->ParseMessage(mutable_sensors(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 50)) {
+          ptr = ctx->ParseMessage(mutable_emergency_brakes(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool ClientToServer::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .telemetry_data.ClientToServer.Navigation navigation = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (10 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                input, mutable_navigation()));
         } else {
           goto handle_unusual;
@@ -3475,9 +3951,8 @@ bool ClientToServer::MergePartialFromCodedStream(
 
       // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (18 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                input, mutable_state_machine()));
         } else {
           goto handle_unusual;
@@ -3487,9 +3962,8 @@ bool ClientToServer::MergePartialFromCodedStream(
 
       // .telemetry_data.ClientToServer.Motors motors = 3;
       case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(26u /* 26 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (26 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                input, mutable_motors()));
         } else {
           goto handle_unusual;
@@ -3499,9 +3973,8 @@ bool ClientToServer::MergePartialFromCodedStream(
 
       // .telemetry_data.ClientToServer.Batteries batteries = 4;
       case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (34 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                input, mutable_batteries()));
         } else {
           goto handle_unusual;
@@ -3511,9 +3984,8 @@ bool ClientToServer::MergePartialFromCodedStream(
 
       // .telemetry_data.ClientToServer.Sensors sensors = 5;
       case 5: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(42u /* 42 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (42 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                input, mutable_sensors()));
         } else {
           goto handle_unusual;
@@ -3523,9 +3995,8 @@ bool ClientToServer::MergePartialFromCodedStream(
 
       // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
       case 6: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(50u /* 50 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (50 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                input, mutable_emergency_brakes()));
         } else {
           goto handle_unusual;
@@ -3538,7 +4009,7 @@ bool ClientToServer::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
               input, tag, _internal_metadata_.mutable_unknown_fields()));
         break;
       }
@@ -3552,108 +4023,108 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void ClientToServer::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.Navigation navigation = 1;
   if (this->has_navigation()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_navigation(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, HasBitSetters::navigation(this), output);
   }
 
   // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
   if (this->has_state_machine()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      2, this->_internal_state_machine(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2, HasBitSetters::state_machine(this), output);
   }
 
   // .telemetry_data.ClientToServer.Motors motors = 3;
   if (this->has_motors()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      3, this->_internal_motors(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
+      3, HasBitSetters::motors(this), output);
   }
 
   // .telemetry_data.ClientToServer.Batteries batteries = 4;
   if (this->has_batteries()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      4, this->_internal_batteries(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, HasBitSetters::batteries(this), output);
   }
 
   // .telemetry_data.ClientToServer.Sensors sensors = 5;
   if (this->has_sensors()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      5, this->_internal_sensors(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, HasBitSetters::sensors(this), output);
   }
 
   // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
   if (this->has_emergency_brakes()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      6, this->_internal_emergency_brakes(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
+      6, HasBitSetters::emergency_brakes(this), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer)
 }
 
-::google::protobuf::uint8* ClientToServer::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer)
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .telemetry_data.ClientToServer.Navigation navigation = 1;
   if (this->has_navigation()) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, this->_internal_navigation(), deterministic, target);
+        1, HasBitSetters::navigation(this), target);
   }
 
   // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
   if (this->has_state_machine()) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        2, this->_internal_state_machine(), deterministic, target);
+        2, HasBitSetters::state_machine(this), target);
   }
 
   // .telemetry_data.ClientToServer.Motors motors = 3;
   if (this->has_motors()) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        3, this->_internal_motors(), deterministic, target);
+        3, HasBitSetters::motors(this), target);
   }
 
   // .telemetry_data.ClientToServer.Batteries batteries = 4;
   if (this->has_batteries()) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        4, this->_internal_batteries(), deterministic, target);
+        4, HasBitSetters::batteries(this), target);
   }
 
   // .telemetry_data.ClientToServer.Sensors sensors = 5;
   if (this->has_sensors()) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        5, this->_internal_sensors(), deterministic, target);
+        5, HasBitSetters::sensors(this), target);
   }
 
   // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
   if (this->has_emergency_brakes()) {
-    target = ::google::protobuf::internal::WireFormatLite::
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        6, this->_internal_emergency_brakes(), deterministic, target);
+        6, HasBitSetters::emergency_brakes(this), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer)
   return target;
@@ -3663,67 +4134,71 @@ size_t ClientToServer::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
   }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // .telemetry_data.ClientToServer.Navigation navigation = 1;
   if (this->has_navigation()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *navigation_);
   }
 
   // .telemetry_data.ClientToServer.StateMachine state_machine = 2;
   if (this->has_state_machine()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *state_machine_);
   }
 
   // .telemetry_data.ClientToServer.Motors motors = 3;
   if (this->has_motors()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *motors_);
   }
 
   // .telemetry_data.ClientToServer.Batteries batteries = 4;
   if (this->has_batteries()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *batteries_);
   }
 
   // .telemetry_data.ClientToServer.Sensors sensors = 5;
   if (this->has_sensors()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *sensors_);
   }
 
   // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
   if (this->has_emergency_brakes()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *emergency_brakes_);
   }
 
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void ClientToServer::MergeFrom(const ::google::protobuf::Message& from) {
+void ClientToServer::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer)
   GOOGLE_DCHECK_NE(&from, this);
   const ClientToServer* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ClientToServer>(
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
   // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer)
     MergeFrom(*source);
@@ -3734,7 +4209,7 @@ void ClientToServer::MergeFrom(const ClientToServer& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.has_navigation()) {
@@ -3757,7 +4232,7 @@ void ClientToServer::MergeFrom(const ClientToServer& from) {
   }
 }
 
-void ClientToServer::CopyFrom(const ::google::protobuf::Message& from) {
+void ClientToServer::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
 // @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer)
   if (&from == this) return;
   Clear();
@@ -3781,56 +4256,54 @@ void ClientToServer::Swap(ClientToServer* other) {
 }
 void ClientToServer::InternalSwap(ClientToServer* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(navigation_, other->navigation_);
   swap(state_machine_, other->state_machine_);
   swap(motors_, other->motors_);
   swap(batteries_, other->batteries_);
   swap(sensors_, other->sensors_);
   swap(emergency_brakes_, other->emergency_brakes_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata ClientToServer::GetMetadata() const {
-  protobuf_message_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_message_2eproto::file_level_metadata[kIndexInFileMessages];
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer::GetMetadata() const {
+  return GetMetadataStatic();
 }
 
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace telemetry_data
-namespace google {
-namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage< ::telemetry_data::ServerToClient >(Arena* arena) {
+PROTOBUF_NAMESPACE_OPEN
+template<> PROTOBUF_NOINLINE ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage< ::telemetry_data::ServerToClient >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ServerToClient >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_Navigation* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Navigation >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Navigation* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Navigation >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_Navigation >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_StateMachine* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_StateMachine >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_StateMachine* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_StateMachine >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_StateMachine >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_Motors* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Motors >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Motors* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Motors >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_Motors >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_Batteries_BatteryData* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Batteries_BatteryData >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Batteries_BatteryData* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Batteries_BatteryData >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_Batteries_BatteryData >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_Batteries* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Batteries >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Batteries* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Batteries >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_Batteries >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_Sensors_ImuData* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Sensors_ImuData >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Sensors_ImuData* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Sensors_ImuData >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_Sensors_ImuData >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_Sensors* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Sensors >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Sensors* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Sensors >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_Sensors >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer_EmergencyBrakes* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_EmergencyBrakes >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_EmergencyBrakes* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_EmergencyBrakes >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_EmergencyBrakes >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::telemetry_data::ClientToServer* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer >(arena);
 }
-}  // namespace protobuf
-}  // namespace google
+PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)
+#include <google/protobuf/port_undef.inc>

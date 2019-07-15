@@ -19,6 +19,9 @@
  *    limitations under the License.
  */
 
+#include <fstream>
+#include <string>
+
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "navigation/main.hpp"
@@ -46,6 +49,16 @@ int main(int argc, char* argv[])
   Logger log_state(sys.verbose_state, sys.debug_state);
   Logger log_tlm(sys.verbose_tlm, sys.debug_tlm);
 
+  // print HYPED logo at system startup
+  std::ifstream file("main_logo.txt");
+  if (file.is_open()) {
+    std::string line;
+    while (getline(file, line)) {
+        printf("%s\n", line.c_str());
+    }
+    file.close();
+  }
+
   log_system.INFO("MAIN", "Starting BBB with %d modules", 5);
   log_system.DBG("MAIN", "DBG0");
   log_system.DBG1("MAIN", "DBG1");
@@ -57,7 +70,7 @@ int main(int argc, char* argv[])
   Thread* embrakes = new hyped::embrakes::Main(1, log_embrakes);
   Thread* motors = new hyped::motor_control::Main(2, log_motor);
   Thread* state_machine = new hyped::state_machine::Main(4, log_state);
-  Thread* nav     = new hyped::navigation::Main(1, log_nav);
+  Thread* nav     = new hyped::navigation::Main(5, log_nav);
 
   // Start the threads here
   sensors->start();

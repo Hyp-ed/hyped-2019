@@ -88,9 +88,13 @@ message ClientToServer {
         repeated ImuData imu = 2;
     }
 
+    message Temperature {
+        // not uint32 becuase temp *just might maybe* be negative, however unlikely
+        sint32 temperature = 1;
+    }
+
     message EmergencyBrakes {
-        bool front_brakes = 1;
-        bool rear_brakes = 2;
+        repeated bool brakes = 1;
     }
 
     Navigation navigation = 1;
@@ -98,5 +102,6 @@ message ClientToServer {
     Motors motors = 3;
     Batteries batteries = 4;
     Sensors sensors = 5;
-    EmergencyBrakes emergency_brakes = 6;
+    Temperature temperature = 6;
+    EmergencyBrakes emergency_brakes = 7;
 }

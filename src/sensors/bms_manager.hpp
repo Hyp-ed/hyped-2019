@@ -1,5 +1,5 @@
 /*
- * Author: Jack Horsburgh
+ * Author: Gregory Dayao and Jack Horsburgh
  * Organisation: HYPED
  * Date: 20/06/18
  * Description:
@@ -47,10 +47,26 @@ class BmsManager: public ManagerInterface  {
  private:
   BMSInterface*   bms_[data::Batteries::kNumLPBatteries+data::Batteries::kNumHPBatteries];
   utils::System&  sys_;
+
+  /**
+   * @brief for hp_master_, hp_ssr_, and prop_cool_
+   */
+  void clearHP();
+
+  /**
+   * @brief for hp_master_, hp_ssr_, and prop_cool_
+   */
+  void setHP();
+
   /**
    * @brief needs to be references because run() passes directly to data struct
    */
   data::Data&     data_;
+
+  /*
+   * @brief SSR that controls objects in hp_ssr_ array
+   */
+  GPIO* hp_master_;
 
   /**
    * @brief HPSSR held high in nominal states, cleared when module failure or pod emergency state
@@ -60,19 +76,14 @@ class BmsManager: public ManagerInterface  {
 
   /**
    * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared
+   *        holds SSR high, which is manually set at pod startup
    */
-  GPIO* lp_ssr_[data::Batteries::kNumHPBatteries];
+  GPIO* lp_ssr_;
 
   /**
-   * @brief insulation monitoring device held high if possible battery short
+   * @brief propulsion cooling module
    */
-  GPIO* imd_[data::Batteries::kNumIMD];
-
-  /**
-   * @brief ON- no short indication from imd_
-   *        OFF- possible short indication from imd_
-   */
-  GPIO* green_led_[data::Batteries::kNumLED];
+  GPIO* prop_cool_;
 
   /**
    * @brief holds LP BatteryData, HP BatteryData, and module_status

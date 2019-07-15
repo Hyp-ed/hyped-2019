@@ -38,12 +38,14 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            nOutlierImus_(0),
            stripe_counter_(0, 0),
            keyence_used_(true),
+           keyence_real_(true),
            keyence_failure_counter_(0),
            acceleration_(0, 0.),
            velocity_(0, 0.),
            distance_(0, 0.),
            distance_uncertainty_(0.),
            velocity_uncertainty_(0.),
+           init_time_set_(false),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -186,7 +188,7 @@ void Navigation::calibrateGravity()
     }
     status_ = ModuleStatus::kCriticalFailure;
     updateData();
-    log_.INFO("NAV", "Navigation module failed on calibration");
+    log_.ERR("NAV", "Navigation module failed on calibration");
   }
 }
 
@@ -257,7 +259,7 @@ void Navigation::updateUncertainty()
 
 void Navigation::queryKeyence()
 {
-  // initialise the keyence readings with the data from the central data struct
+  // set the keyence readings with the data from the central data struct
   keyence_readings_ = data_.getSensorsKeyenceData();
   for (int i = 0; i < data::Sensors::kNumKeyence; i++) {
     // Checks whether the stripe count has been updated and if it has not been
@@ -266,34 +268,45 @@ void Navigation::queryKeyence()
          keyence_readings_[i].count.timestamp - stripe_counter_.timestamp > 1e5) {
       stripe_counter_.value++;
       stripe_counter_.timestamp = keyence_readings_[i].count.timestamp;
+      if (!keyence_real_) stripe_counter_.timestamp = utils::Timer::getTimeMicros();
 
       // Allow up to one missed stripe.
-      // There must be some uncertainty in distance around the missed 30.48m.
-      double allowed_uncertainty = distance_uncertainty_;  // Temporary value
-      NavigationType distance_change = distance_.value - stripe_counter_.value*30.48;
-      if (distance_change > 30.48 - allowed_uncertainty &&
-          distance_change < 30.48 + allowed_uncertainty &&
-          distance_.value > stripe_counter_.value*30.48 + 0.5*30.48) {
+      // There must be some uncertainty in distance around the missed 30.48m (kStripeDistance).
+      NavigationType allowed_uncertainty = distance_uncertainty_;
+      /* If the uncertainty is too small, it is set to a relatively small value so that we do
+       * not get an error just because the uncertainty is tiny. */
+      NavigationType minimum_uncertainty = kStripeDistance / 10.;
+      if (distance_uncertainty_ < minimum_uncertainty) allowed_uncertainty = minimum_uncertainty;
+      NavigationType distance_change = distance_.value - stripe_counter_.value*kStripeDistance;
+      /* There should only be an updated stripe count if the IMU determined distance is closer
+       * to the the next stripe than the current. It should not just lie within the uncertainty,
+       * otherwise we might count way more stripes than there are as soon as the uncertainty gets
+       * fairly large (>15m). */
+      if (distance_change > kStripeDistance - allowed_uncertainty &&
+          distance_change < kStripeDistance + allowed_uncertainty &&
+          distance_.value > stripe_counter_.value*kStripeDistance + 0.5*kStripeDistance) {
         stripe_counter_.value++;
-        distance_change -= 30.48;
+        distance_change -= kStripeDistance;
       }
       /* Error handling: If distance from keyence still deviates more than the allowed
       uncertainty, then the measurements are no longer believable. Important that this
       is only checked in an update, otherwise we might throw an error in between stripes.
       The first stripe is very uncertain, since it takes the longest, thus we ignore it.
       Even if the first stripe is missed, error handling will catch it when the second is seen.*/
-      if ((distance_change < -allowed_uncertainty  ||
-           distance_change >  allowed_uncertainty) &&
-           stripe_counter_.value > 1) {
+      if ((distance_change < -allowed_uncertainty) ||
+          (distance_change >  allowed_uncertainty))
+      {
         keyence_failure_counter_++;
+        keyence_failure_counter_ += floor(abs(distance_change) / kStripeDistance);
       }
       // If there is more than one disagreement, we get kCriticalFailure
-      if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
-      // Lower the uncertainty in velocity:
-      velocity_uncertainty_ -= abs(distance_change*1e6/(2*
-                               (stripe_counter_.timestamp - init_timestamp_)));
-      log_.INFO("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
-      log_.INFO("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
+      // Lower the uncertainty in velocity (based on sinuisoidal distribution):
+      velocity_uncertainty_ -= abs(distance_change*1e6/
+                               (stripe_counter_.timestamp - init_timestamp_));
+      log_.DBG("NAV", "Stripe detected!");
+      log_.DBG1("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
+      log_.DBG1("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
+
       // Make sure velocity uncertainty is positive.
       velocity_uncertainty_ = abs(velocity_uncertainty_);
       // The uncertainty in distance is not changed from this because the impact is far too large
@@ -304,6 +317,15 @@ void Navigation::queryKeyence()
       break;
     }
   }
+  // If more than one disagreement occurs then we enter the kCriticalFailure state
+  if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
+  /* Similarly, if the current IMU distance is larger than four times the distance between
+   * two stripes, then we know that the two can no longer agree. That is because at least
+   * three stripes have been missed then, which throws kCriticalFailure. */
+  if (distance_.value - stripe_counter_.value*kStripeDistance > 4 * kStripeDistance) {
+    status_ = ModuleStatus::kCriticalFailure;
+  }
+  // Update old keyence readings with current ones
   prev_keyence_readings_ = keyence_readings_;
 }
 
@@ -312,7 +334,21 @@ void Navigation::disableKeyenceUsage()
   keyence_used_ = false;
 }
 
-// TODO(Neil) - update to method suitable in general (assumes 4 IMUs)
+void Navigation::setKeyenceFake()
+{
+  keyence_real_ = false;
+}
+
+bool Navigation::getHasInit()
+{
+  return init_time_set_;
+}
+
+void Navigation::setHasInit()
+{
+  init_time_set_ = true;
+}
+
 void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
 {
   // Define the quartiles first:
@@ -373,15 +409,15 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
   // replace any outliers with the median
   for (int i = 0; i < data::Sensors::kNumImus; ++i) {
     if ((data_array[i] < lower_limit or data_array[i] > upper_limit) && imu_reliable_[i]) {
-      log_.INFO("NAV", "Outlier detected in IMU %d, reading: %.3f not in [%.3f, %.3f]. Updated to %.3f", //NOLINT
+      log_.DBG3("NAV", "Outlier detected in IMU %d, reading: %.3f not in [%.3f, %.3f]. Updated to %.3f", //NOLINT
                 i+1, data_array[i], lower_limit, upper_limit, q2);
-      // log_.INFO("NAV", "Outlier detected with quantiles: %.3f, %.3f, %.3f", q1, q2, q3);
+      // log_.DBG3("NAV", "Outlier detected with quantiles: %.3f, %.3f, %.3f", q1, q2, q3);
 
       data_array[i] = q2;
       imu_outlier_counter_[i]++;
       // If this counter exceeds some threshold then that IMU is deemed unreliable
       if (imu_outlier_counter_[i] > 1000 && imu_reliable_[i]) {
-        // log_.INFO("NAV", "IMU%d is an outlier!", i + 1);
+        // log_.DBG3("NAV", "IMU%d is an outlier!", i + 1);
         imu_reliable_[i] = false;
         nOutlierImus_++;
       }
@@ -390,7 +426,7 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
       imu_outlier_counter_[i] = 0;
       if (counter_ % 100 == 0 && imu_reliable_[i]) {
         /*
-         * log_.INFO("NAV", "No Outlier detected in IMU %d, reading: %.3f in [%.3f, %.3f]",
+         * log_.DBG3("NAV", "No Outlier detected in IMU %d, reading: %.3f in [%.3f, %.3f]",
          *           i+1, data_array[i], lower_limit, upper_limit);
          */
       }
@@ -398,9 +434,9 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
   }
   /*
    * if (counter_ % 100 == 0) {
-   *   log_.INFO("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
+   *   log_.DBG3("NAV", "Outliers: IMU1: %d, IMU2: %d, IMU3: %d, IMU4: %d", imu_outlier_counter_[0],
    *    imu_outlier_counter_[1], imu_outlier_counter_[2], imu_outlier_counter_[3]);
-   *   log_.INFO("NAV", "Number of outliers: %d", nOutlierImus_);
+   *   log_.DBG3("NAV", "Number of outliers: %d", nOutlierImus_);
    * }
    */
 }
@@ -413,15 +449,15 @@ void Navigation::updateData()
   nav_data.velocity                   = getVelocity();
   nav_data.acceleration               = getAcceleration();
   nav_data.emergency_braking_distance = getEmergencyBrakingDistance();
-  nav_data.braking_distance           = getBrakingDistance();
+  nav_data.braking_distance           = 1.2 * getEmergencyBrakingDistance();
 
   data_.setNavigationData(nav_data);
 
   if (counter_ % 100 == 0) {  // kPrintFreq
-    log_.INFO("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
+    log_.DBG("NAV", "%d: Data Update: a=%.3f, v=%.3f, d=%.3f, d(gpio)=%.3f", //NOLINT
                counter_, nav_data.acceleration, nav_data.velocity, nav_data.distance,
-               stripe_counter_.value*30.48);
-    log_.INFO("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
+               stripe_counter_.value*kStripeDistance);
+    log_.DBG("NAV", "%d: Data Update: v(unc)=%.3f, d(unc)=%.3f, keyence failures: %d",
                counter_, velocity_uncertainty_, distance_uncertainty_, keyence_failure_counter_);
   }
   counter_++;
@@ -435,7 +471,7 @@ void Navigation::navigate()
 {
   queryImus();
   if (keyence_used_) queryKeyence();
-  updateUncertainty();
+  if (counter_ > 1000) updateUncertainty();
   updateData();
 }
 
@@ -448,7 +484,7 @@ void Navigation::initTimestamps()
   prev_acc_ = getAcceleration();
   prev_vel_ = getVelocity();
   init_timestamp_ = utils::Timer::getTimeMicros();
-  log_.INFO("NAV", "Initial timestamp:%d", init_timestamp_);
+  log_.DBG3("NAV", "Initial timestamp:%d", init_timestamp_);
   prev_timestamp_ = utils::Timer::getTimeMicros();
   // First iteration --> get initial keyence data
   // (should be zero counters and corresponding timestamp)
