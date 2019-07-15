@@ -80,6 +80,7 @@ class Main: public Thread {
     std::unique_ptr<ImuManagerInterface>   imu_manager_;
     std::unique_ptr<ManagerInterface>      battery_manager_;
     TemperatureInterface*                  temperature_;
+    bool                                   log_error_ = false;  
 
     /**
      * @brief update this from GpioCounter::getStripeCounter();
