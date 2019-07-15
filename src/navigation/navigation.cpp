@@ -273,6 +273,8 @@ void Navigation::queryKeyence()
       // Allow up to one missed stripe.
       // There must be some uncertainty in distance around the missed 30.48m (kStripeDistance).
       NavigationType allowed_uncertainty = distance_uncertainty_;
+      /* If the uncertainty is too small, it is set to a relatively small value so that we do
+       * not get an error just because the uncertainty is tiny. */ 
       if (distance_uncertainty_ < 5) allowed_uncertainty = 5.;
       NavigationType distance_change = distance_.value - stripe_counter_.value*kStripeDistance;
       /* There should only be an updated stripe count if the IMU determined distance is closer
@@ -290,9 +292,8 @@ void Navigation::queryKeyence()
       is only checked in an update, otherwise we might throw an error in between stripes.
       The first stripe is very uncertain, since it takes the longest, thus we ignore it.
       Even if the first stripe is missed, error handling will catch it when the second is seen.*/
-      if ((distance_change < -allowed_uncertainty  ||
-           distance_change >  allowed_uncertainty) &&
-           stripe_counter_.value > 1) {
+      if (distance_change < -allowed_uncertainty  ||
+          distance_change >  allowed_uncertainty) {
         keyence_failure_counter_++;
         keyence_failure_counter_ += floor(distance_change / kStripeDistance);
       }
@@ -313,7 +314,15 @@ void Navigation::queryKeyence()
       break;
     }
   }
+  // If more than one disagreement occurs then we enter the kCriticalFailure state
   if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
+  /* Similarly, if the current IMU distance is larger than four times the distance between
+   * two stripes, then we know that the two can no longer agree. That is because at least
+   * three stripes have been missed then, which throws kCriticalFailure. */
+  if (distance_.value - stripe_counter_.value*kStripeDistance > 4 * kStripeDistance) {
+    status_ = ModuleStatus::kCriticalFailure;
+  }
+  // Update old keyence readings with current ones
   prev_keyence_readings_ = keyence_readings_;
 }
 
