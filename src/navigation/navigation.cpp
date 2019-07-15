@@ -319,15 +319,14 @@ void Navigation::queryKeyence()
   // If more than one disagreement occurs then we enter the kCriticalFailure state
   if (keyence_failure_counter_ > 1) {
     status_ = ModuleStatus::kCriticalFailure;
-    log_.ERR("NAV", "At least two significant IMU/Keyence disagreements after error handling.");
+    log_.ERR("NAV", "More than one large IMU/Keyence disagreement, entering kCriticalFailure");
   }
   /* Similarly, if the current IMU distance is larger than four times the distance between
    * two stripes, then we know that the two can no longer agree. That is because at least
    * three stripes have been missed then, which throws kCriticalFailure. */
   if (distance_.value - stripe_counter_.value*kStripeDistance > 4 * kStripeDistance) {
     status_ = ModuleStatus::kCriticalFailure;
-    log_.ERR("NAV", "IMU calculated distance is at least 3 stripe distances ahead.");
-    log_.ERR("NAV", "Likely missed three stripes in a row.");
+    log_.ERR("NAV", "IMU calculated distance at least 3 * kStripeDistance ahead.");
   }
   // Update old keyence readings with current ones
   prev_keyence_readings_ = keyence_readings_;
@@ -427,7 +426,7 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
       }
       if (nOutlierImus_ > 1) {
         status_ = ModuleStatus::kCriticalFailure;
-        log_.ERR("NAV", "At least two IMUs are no longer reliable, entering kCriticalFailure.");
+        log_.ERR("NAV", "At least two IMUs no longer reliable, entering kCriticalFailure.");
       }
     } else {
       imu_outlier_counter_[i] = 0;
