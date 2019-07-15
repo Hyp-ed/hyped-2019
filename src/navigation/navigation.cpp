@@ -274,8 +274,9 @@ void Navigation::queryKeyence()
       // There must be some uncertainty in distance around the missed 30.48m (kStripeDistance).
       NavigationType allowed_uncertainty = distance_uncertainty_;
       /* If the uncertainty is too small, it is set to a relatively small value so that we do
-       * not get an error just because the uncertainty is tiny. */ 
-      if (distance_uncertainty_ < 5) allowed_uncertainty = 5.;
+       * not get an error just because the uncertainty is tiny. */
+      NavigationType minimum_uncertainty = kStripeDistance / 10.;
+      if (distance_uncertainty_ < minimum_uncertainty) allowed_uncertainty = minimum_uncertainty;
       NavigationType distance_change = distance_.value - stripe_counter_.value*kStripeDistance;
       /* There should only be an updated stripe count if the IMU determined distance is closer
        * to the the next stripe than the current. It should not just lie within the uncertainty,
@@ -292,10 +293,11 @@ void Navigation::queryKeyence()
       is only checked in an update, otherwise we might throw an error in between stripes.
       The first stripe is very uncertain, since it takes the longest, thus we ignore it.
       Even if the first stripe is missed, error handling will catch it when the second is seen.*/
-      if (distance_change < -allowed_uncertainty  ||
-          distance_change >  allowed_uncertainty) {
+      if ((distance_change < -allowed_uncertainty) ||
+          (distance_change >  allowed_uncertainty))
+      {
         keyence_failure_counter_++;
-        keyence_failure_counter_ += floor(distance_change / kStripeDistance);
+        keyence_failure_counter_ += floor(abs(distance_change) / kStripeDistance);
       }
       // If there is more than one disagreement, we get kCriticalFailure
       // Lower the uncertainty in velocity (based on sinuisoidal distribution):
@@ -304,6 +306,7 @@ void Navigation::queryKeyence()
       log_.DBG("NAV", "Stripe detected!");
       log_.DBG1("NAV", "Timestamp difference: %d", stripe_counter_.timestamp - init_timestamp_);
       log_.DBG1("NAV", "Timestamp currently:  %d", stripe_counter_.timestamp);
+
       // Make sure velocity uncertainty is positive.
       velocity_uncertainty_ = abs(velocity_uncertainty_);
       // The uncertainty in distance is not changed from this because the impact is far too large
