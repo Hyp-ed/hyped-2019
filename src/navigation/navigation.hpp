@@ -221,7 +221,7 @@ namespace navigation {
       // Previous velocity measurement
       NavigationType prev_vel_;
       // Have initial timestamps been set?
-      bool initTimeSet;
+      bool init_time_set_;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity

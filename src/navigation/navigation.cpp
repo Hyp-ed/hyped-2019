@@ -45,7 +45,7 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            distance_(0, 0.),
            distance_uncertainty_(0.),
            velocity_uncertainty_(0.),
-           initTimeSet(false),
+           init_time_set_(false),
            acceleration_integrator_(&velocity_),
            velocity_integrator_(&distance_)
 {
@@ -341,12 +341,12 @@ void Navigation::setKeyenceFake()
 
 bool Navigation::getHasInit()
 {
-  return initTimeSet;
+  return init_time_set_;
 }
 
 void Navigation::setHasInit()
 {
-  initTimeSet = true;
+  init_time_set_ = true;
 }
 
 void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
