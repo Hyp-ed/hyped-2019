@@ -79,7 +79,7 @@ struct StripeCounter : public Sensor {
 };
 
 struct TemperatureData : public Sensor {
-  int temp;
+  int temp;   // C
 };
 
 struct Sensors : public Module {

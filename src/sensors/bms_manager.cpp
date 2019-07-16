@@ -94,6 +94,8 @@ BmsManager::BmsManager(Logger& log)
       bms_[i + data::Batteries::kNumLPBatteries] = new FakeBatteries(log_, false, false);
     }
   }
+
+  previous_state_ = data_.getStateMachineData().current_state;
   // kInit for SM transition
   batteries_ = data_.getBatteriesData();
   batteries_.module_status = data::ModuleStatus::kInit;
@@ -146,10 +148,12 @@ void BmsManager::run()
     // check health of batteries
     if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
       if (!batteriesInRange()) {
-        log_.ERR("BMS-MANAGER", "battery failure detected");
+        if (batteries_.module_status != previous_status_)
+          log_.ERR("BMS-MANAGER", "battery failure detected");
         batteries_.module_status = data::ModuleStatus::kCriticalFailure;
         clearHP();
       }
+      previous_status_ = batteries_.module_status;
     }
     // publish the new data
     data_.setBatteriesData(batteries_);
@@ -157,14 +161,18 @@ void BmsManager::run()
     data::State state = data_.getStateMachineData().current_state;
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       clearHP();
-      log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
+      if (state != previous_state_)
+        log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
     } else if (state == data::State::kFinished) {
       clearHP();
-      log_.INFO("BMS-MANAGER", "kFinished reached...HP off");
+      if (state != previous_state_)
+        log_.INFO("BMS-MANAGER", "kFinished reached...HP off");
     } else if (state == data::State::kReady) {
       setHP();
-      log_.INFO("BMS-MANAGER", "kReady...HP SSR set and HP on");
+      if (state != previous_state_)
+        log_.INFO("BMS-MANAGER", "kReady...HP SSR set and HP on");
     }
+    previous_state_ = state;
     sleep(100);
   }
 }
@@ -175,22 +183,26 @@ bool BmsManager::batteriesInRange()
   for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
     auto& battery = batteries_.low_power_batteries[i];      // reference batteries individually
     if (battery.voltage < 175 || battery.voltage > 294) {   // voltage in 17.5V to 29.4V
-      log_.ERR("BMS-MANAGER", "BMS LP %d voltage out of range: %d", i, battery.voltage);
+      if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS LP %d voltage out of range: %d", i, battery.voltage);
       return false;
     }
 
     if (battery.current < 50 || battery.current > 500) {       // current in 5A to 50A
-      log_.ERR("BMS-MANAGER", "BMS LP %d current out of range: %d", i, battery.current);
+       if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS LP %d current out of range: %d", i, battery.current);
       return false;
     }
 
     if (battery.average_temperature < 10 || battery.average_temperature > 60) {  // temperature in 10C to 60C NOLINT[whitespace/line_length]
-      log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
+       if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS LP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
 
     if (battery.charge < 20 || battery.charge > 100) {  // charge in 20% to 100%
-      log_.ERR("BMS-MANAGER", "BMS LP %d charge out of range: %d", i, battery.charge);
+      if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS LP %d charge out of range: %d", i, battery.charge);
       return false;
     }
   }
@@ -199,32 +211,38 @@ bool BmsManager::batteriesInRange()
   for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
     auto& battery = batteries_.high_power_batteries[i];     // reference battereis individually
     if (battery.voltage < 1000 || battery.voltage > 1296) {   // voltage in 100V to 129.6V
-      log_.ERR("BMS-MANAGER", "BMS HP %d voltage out of range: %d", i, battery.voltage);
+      if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS HP %d voltage out of range: %d", i, battery.voltage);
       return false;
     }
 
     if (battery.current < 0 || battery.current > 3500) {  // current in 0A to 350A
-      log_.ERR("BMS-MANAGER", "BMS HP %d current out of range: %d", i, battery.current);
+      if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS HP %d current out of range: %d", i, battery.current);
       return false;
     }
 
     if (battery.average_temperature < 10 || battery.average_temperature > 65) {  // temperature in 10C to 65C NOLINT[whitespace/line_length]
-      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
+      if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.average_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
 
     if (battery.low_temperature < 10) {
-      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.low_temperature); // NOLINT[whitespace/line_length]
+      if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.low_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
 
     if (battery.high_temperature > 65) {
-      log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.high_temperature); // NOLINT[whitespace/line_length]
+      if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS HP %d temperature out of range: %d", i, battery.high_temperature); // NOLINT[whitespace/line_length]
       return false;
     }
 
     if (battery.charge < 20 || battery.charge > 100) {  // charge in 20% to 100%
-      log_.ERR("BMS-MANAGER", "BMS HP %d charge out of range: %d", i, battery.charge);
+      if (batteries_.module_status != previous_status_)
+        log_.ERR("BMS-MANAGER", "BMS HP %d charge out of range: %d", i, battery.charge);
       return false;
     }
   }
