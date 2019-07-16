@@ -24,7 +24,7 @@
 
 #define MAX_RPM 10000  // todo(Iain): update for actual run
 #define MAX_TEMP 100  // todo(Iain): find out actual value.
-#define MAX_CURRENT 30  // todo(Iain): replace this with an actual function.
+#define MAX_CURRENT 200  // todo(Iain): replace this with an actual function.
 
 #include <cstdlib>
 #include <vector>
