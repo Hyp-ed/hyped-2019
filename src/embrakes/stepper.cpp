@@ -102,12 +102,55 @@ void Stepper::sendRetract(uint8_t LSB, uint8_t MSB, uint8_t period){
 
 void Stepper::sendClamp(){
   log_.INFO("Brakes", "Calmping the brakes");
-  message_to_send.data[0] = 0x0;
-  message_to_send.data[3] = stepper_period;
-  message_to_send.data[2] = stepper_position_MSB;
-  message_to_send.data[1] = stepper_position_LSB;
+  sendingClamp = true;
 
+  message_to_send.data[0] = 0x01;
+  message_to_send.data[1] = 0x13;
+  message_to_send.data[2] = 0x88;
+  message_to_send.data[3] = 0x28;
   can_.send(message_to_send);
+  
+  timer.start();
+  clampTimer = timer.getTimeMicros();
+
+  while(sendingClamp){
+    if(clampTimer + 100000 == timer.getTimeMicros()){
+      message_to_send.data[3] = 0x19;
+      can_.send(message_to_send);
+    }
+    if(clampTimer + 200000 == timer.getTimeMicros()){
+      message_to_send.data[3] = 0x16;
+      can_.send(message_to_send);
+    }
+    if(clampTimer + 300000 == timer.getTimeMicros()){
+      message_to_send.data[3] = 0x14;
+      can_.send(message_to_send);
+    }
+    if(clampTimer + 400000 == timer.getTimeMicros()){
+      message_to_send.data[3] = 0x11;
+      can_.send(message_to_send);
+    }
+    if(clampTimer + 500000 == timer.getTimeMicros()){
+      message_to_send.data[3] = 0x0f;
+      can_.send(message_to_send);
+    }
+    if(clampTimer + 600000 == timer.getTimeMicros()){
+      message_to_send.data[3] = 0x1c;
+      can_.send(message_to_send);
+    }
+    if(clampTimer + 750000 == timer.getTimeMicros()){
+      message_to_send.data[3] = 0x0a;
+      can_.send(message_to_send);
+    }
+    if(clampTimer + 900000 == timer.getTimeMicros()){
+      message_to_send.data[3] = 0x19;
+      can_.send(message_to_send);
+    }
+    if(clampTimer + 1100000 == timer.getTimeMicros()){
+      message_to_send.data[1] = 0x00;
+      can_.send(message_to_send);
+    }
+  }
 }
 
 }}  // namespace hyped::embrakes
