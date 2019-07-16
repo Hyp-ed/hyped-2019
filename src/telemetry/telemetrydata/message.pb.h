@@ -48,7 +48,7 @@ struct TableStruct_message_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[10]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[11]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -83,6 +83,9 @@ extern ClientToServer_Sensors_ImuDataDefaultTypeInternal _ClientToServer_Sensors
 class ClientToServer_StateMachine;
 class ClientToServer_StateMachineDefaultTypeInternal;
 extern ClientToServer_StateMachineDefaultTypeInternal _ClientToServer_StateMachine_default_instance_;
+class ClientToServer_Temperature;
+class ClientToServer_TemperatureDefaultTypeInternal;
+extern ClientToServer_TemperatureDefaultTypeInternal _ClientToServer_Temperature_default_instance_;
 class ServerToClient;
 class ServerToClientDefaultTypeInternal;
 extern ServerToClientDefaultTypeInternal _ServerToClient_default_instance_;
@@ -97,6 +100,7 @@ template<> ::telemetry_data::ClientToServer_Navigation* Arena::CreateMaybeMessag
 template<> ::telemetry_data::ClientToServer_Sensors* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Sensors>(Arena*);
 template<> ::telemetry_data::ClientToServer_Sensors_ImuData* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Sensors_ImuData>(Arena*);
 template<> ::telemetry_data::ClientToServer_StateMachine* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_StateMachine>(Arena*);
+template<> ::telemetry_data::ClientToServer_Temperature* Arena::CreateMaybeMessage<::telemetry_data::ClientToServer_Temperature>(Arena*);
 template<> ::telemetry_data::ServerToClient* Arena::CreateMaybeMessage<::telemetry_data::ServerToClient>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace telemetry_data {
@@ -1448,6 +1452,132 @@ class ClientToServer_Sensors :
 };
 // -------------------------------------------------------------------
 
+class ClientToServer_Temperature :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.Temperature) */ {
+ public:
+  ClientToServer_Temperature();
+  virtual ~ClientToServer_Temperature();
+
+  ClientToServer_Temperature(const ClientToServer_Temperature& from);
+  ClientToServer_Temperature(ClientToServer_Temperature&& from) noexcept
+    : ClientToServer_Temperature() {
+    *this = ::std::move(from);
+  }
+
+  inline ClientToServer_Temperature& operator=(const ClientToServer_Temperature& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ClientToServer_Temperature& operator=(ClientToServer_Temperature&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const ClientToServer_Temperature& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ClientToServer_Temperature* internal_default_instance() {
+    return reinterpret_cast<const ClientToServer_Temperature*>(
+               &_ClientToServer_Temperature_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  void Swap(ClientToServer_Temperature* other);
+  friend void swap(ClientToServer_Temperature& a, ClientToServer_Temperature& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ClientToServer_Temperature* New() const final {
+    return CreateMaybeMessage<ClientToServer_Temperature>(nullptr);
+  }
+
+  ClientToServer_Temperature* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<ClientToServer_Temperature>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const ClientToServer_Temperature& from);
+  void MergeFrom(const ClientToServer_Temperature& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  #else
+  bool MergePartialFromCodedStream(
+      ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) final;
+  #endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+  void SerializeWithCachedSizes(
+      ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClientToServer_Temperature* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "telemetry_data.ClientToServer.Temperature";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_message_2eproto);
+    return ::descriptor_table_message_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // sint32 temperature = 1;
+  void clear_temperature();
+  static const int kTemperatureFieldNumber = 1;
+  ::PROTOBUF_NAMESPACE_ID::int32 temperature() const;
+  void set_temperature(::PROTOBUF_NAMESPACE_ID::int32 value);
+
+  // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Temperature)
+ private:
+  class HasBitSetters;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::int32 temperature_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_message_2eproto;
+};
+// -------------------------------------------------------------------
+
 class ClientToServer_EmergencyBrakes :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:telemetry_data.ClientToServer.EmergencyBrakes) */ {
  public:
@@ -1490,7 +1620,7 @@ class ClientToServer_EmergencyBrakes :
                &_ClientToServer_EmergencyBrakes_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   void Swap(ClientToServer_EmergencyBrakes* other);
   friend void swap(ClientToServer_EmergencyBrakes& a, ClientToServer_EmergencyBrakes& b) {
@@ -1623,7 +1753,7 @@ class ClientToServer :
                &_ClientToServer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   void Swap(ClientToServer* other);
   friend void swap(ClientToServer& a, ClientToServer& b) {
@@ -1693,6 +1823,7 @@ class ClientToServer :
   typedef ClientToServer_Motors Motors;
   typedef ClientToServer_Batteries Batteries;
   typedef ClientToServer_Sensors Sensors;
+  typedef ClientToServer_Temperature Temperature;
   typedef ClientToServer_EmergencyBrakes EmergencyBrakes;
 
   typedef ClientToServer_ModuleStatus ModuleStatus;
@@ -1776,10 +1907,19 @@ class ClientToServer :
   ::telemetry_data::ClientToServer_Sensors* mutable_sensors();
   void set_allocated_sensors(::telemetry_data::ClientToServer_Sensors* sensors);
 
-  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+  // .telemetry_data.ClientToServer.Temperature temperature = 6;
+  bool has_temperature() const;
+  void clear_temperature();
+  static const int kTemperatureFieldNumber = 6;
+  const ::telemetry_data::ClientToServer_Temperature& temperature() const;
+  ::telemetry_data::ClientToServer_Temperature* release_temperature();
+  ::telemetry_data::ClientToServer_Temperature* mutable_temperature();
+  void set_allocated_temperature(::telemetry_data::ClientToServer_Temperature* temperature);
+
+  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 7;
   bool has_emergency_brakes() const;
   void clear_emergency_brakes();
-  static const int kEmergencyBrakesFieldNumber = 6;
+  static const int kEmergencyBrakesFieldNumber = 7;
   const ::telemetry_data::ClientToServer_EmergencyBrakes& emergency_brakes() const;
   ::telemetry_data::ClientToServer_EmergencyBrakes* release_emergency_brakes();
   ::telemetry_data::ClientToServer_EmergencyBrakes* mutable_emergency_brakes();
@@ -1795,6 +1935,7 @@ class ClientToServer :
   ::telemetry_data::ClientToServer_Motors* motors_;
   ::telemetry_data::ClientToServer_Batteries* batteries_;
   ::telemetry_data::ClientToServer_Sensors* sensors_;
+  ::telemetry_data::ClientToServer_Temperature* temperature_;
   ::telemetry_data::ClientToServer_EmergencyBrakes* emergency_brakes_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_message_2eproto;
@@ -2268,6 +2409,24 @@ ClientToServer_Sensors::imu() const {
 
 // -------------------------------------------------------------------
 
+// ClientToServer_Temperature
+
+// sint32 temperature = 1;
+inline void ClientToServer_Temperature::clear_temperature() {
+  temperature_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Temperature::temperature() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Temperature.temperature)
+  return temperature_;
+}
+inline void ClientToServer_Temperature::set_temperature(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  temperature_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Temperature.temperature)
+}
+
+// -------------------------------------------------------------------
+
 // ClientToServer_EmergencyBrakes
 
 // repeated bool brakes = 1;
@@ -2559,7 +2718,58 @@ inline void ClientToServer::set_allocated_sensors(::telemetry_data::ClientToServ
   // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.sensors)
 }
 
-// .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+// .telemetry_data.ClientToServer.Temperature temperature = 6;
+inline bool ClientToServer::has_temperature() const {
+  return this != internal_default_instance() && temperature_ != nullptr;
+}
+inline void ClientToServer::clear_temperature() {
+  if (GetArenaNoVirtual() == nullptr && temperature_ != nullptr) {
+    delete temperature_;
+  }
+  temperature_ = nullptr;
+}
+inline const ::telemetry_data::ClientToServer_Temperature& ClientToServer::temperature() const {
+  const ::telemetry_data::ClientToServer_Temperature* p = temperature_;
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.temperature)
+  return p != nullptr ? *p : *reinterpret_cast<const ::telemetry_data::ClientToServer_Temperature*>(
+      &::telemetry_data::_ClientToServer_Temperature_default_instance_);
+}
+inline ::telemetry_data::ClientToServer_Temperature* ClientToServer::release_temperature() {
+  // @@protoc_insertion_point(field_release:telemetry_data.ClientToServer.temperature)
+  
+  ::telemetry_data::ClientToServer_Temperature* temp = temperature_;
+  temperature_ = nullptr;
+  return temp;
+}
+inline ::telemetry_data::ClientToServer_Temperature* ClientToServer::mutable_temperature() {
+  
+  if (temperature_ == nullptr) {
+    auto* p = CreateMaybeMessage<::telemetry_data::ClientToServer_Temperature>(GetArenaNoVirtual());
+    temperature_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:telemetry_data.ClientToServer.temperature)
+  return temperature_;
+}
+inline void ClientToServer::set_allocated_temperature(::telemetry_data::ClientToServer_Temperature* temperature) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == nullptr) {
+    delete temperature_;
+  }
+  if (temperature) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena = nullptr;
+    if (message_arena != submessage_arena) {
+      temperature = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, temperature, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  temperature_ = temperature;
+  // @@protoc_insertion_point(field_set_allocated:telemetry_data.ClientToServer.temperature)
+}
+
+// .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 7;
 inline bool ClientToServer::has_emergency_brakes() const {
   return this != internal_default_instance() && emergency_brakes_ != nullptr;
 }
@@ -2613,6 +2823,8 @@ inline void ClientToServer::set_allocated_emergency_brakes(::telemetry_data::Cli
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
