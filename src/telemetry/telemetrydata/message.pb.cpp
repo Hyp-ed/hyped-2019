@@ -23,6 +23,7 @@ extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::interna
 extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ClientToServer_Sensors_message_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Sensors_ImuData_message_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_StateMachine_message_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_message_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Temperature_message_2eproto;
 namespace telemetry_data {
 class ServerToClientDefaultTypeInternal {
  public:
@@ -56,6 +57,10 @@ class ClientToServer_SensorsDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_Sensors> _instance;
 } _ClientToServer_Sensors_default_instance_;
+class ClientToServer_TemperatureDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_Temperature> _instance;
+} _ClientToServer_Temperature_default_instance_;
 class ClientToServer_EmergencyBrakesDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ClientToServer_EmergencyBrakes> _instance;
@@ -76,13 +81,14 @@ static void InitDefaultsscc_info_ClientToServer_message_2eproto() {
   ::telemetry_data::ClientToServer::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<6> scc_info_ClientToServer_message_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 6, InitDefaultsscc_info_ClientToServer_message_2eproto}, {
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<7> scc_info_ClientToServer_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 7, InitDefaultsscc_info_ClientToServer_message_2eproto}, {
       &scc_info_ClientToServer_Navigation_message_2eproto.base,
       &scc_info_ClientToServer_StateMachine_message_2eproto.base,
       &scc_info_ClientToServer_Motors_message_2eproto.base,
       &scc_info_ClientToServer_Batteries_message_2eproto.base,
       &scc_info_ClientToServer_Sensors_message_2eproto.base,
+      &scc_info_ClientToServer_Temperature_message_2eproto.base,
       &scc_info_ClientToServer_EmergencyBrakes_message_2eproto.base,}};
 
 static void InitDefaultsscc_info_ClientToServer_Batteries_message_2eproto() {
@@ -199,6 +205,20 @@ static void InitDefaultsscc_info_ClientToServer_StateMachine_message_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_StateMachine_message_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ClientToServer_StateMachine_message_2eproto}, {}};
 
+static void InitDefaultsscc_info_ClientToServer_Temperature_message_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::telemetry_data::_ClientToServer_Temperature_default_instance_;
+    new (ptr) ::telemetry_data::ClientToServer_Temperature();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::telemetry_data::ClientToServer_Temperature::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ClientToServer_Temperature_message_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ClientToServer_Temperature_message_2eproto}, {}};
+
 static void InitDefaultsscc_info_ServerToClient_message_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -213,7 +233,7 @@ static void InitDefaultsscc_info_ServerToClient_message_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ServerToClient_message_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsscc_info_ServerToClient_message_2eproto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_message_2eproto[10];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_message_2eproto[11];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_message_2eproto[3];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_message_2eproto = nullptr;
 
@@ -285,6 +305,12 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_message_2eproto::offsets[] PRO
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors, module_status_),
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Sensors, imu_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Temperature, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Temperature, temperature_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_EmergencyBrakes, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -300,6 +326,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_message_2eproto::offsets[] PRO
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, motors_),
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, batteries_),
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, sensors_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, temperature_),
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer, emergency_brakes_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -311,8 +338,9 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 44, -1, sizeof(::telemetry_data::ClientToServer_Batteries)},
   { 52, -1, sizeof(::telemetry_data::ClientToServer_Sensors_ImuData)},
   { 59, -1, sizeof(::telemetry_data::ClientToServer_Sensors)},
-  { 66, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
-  { 72, -1, sizeof(::telemetry_data::ClientToServer)},
+  { 66, -1, sizeof(::telemetry_data::ClientToServer_Temperature)},
+  { 72, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
+  { 78, -1, sizeof(::telemetry_data::ClientToServer)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -324,6 +352,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Batteries_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Sensors_ImuData_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Sensors_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_Temperature_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_EmergencyBrakes_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::telemetry_data::_ClientToServer_default_instance_),
 };
@@ -335,7 +364,7 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "\007\n\003ACK\020\000\022\010\n\004STOP\020\001\022\r\n\tCALIBRATE\020\002\022\n\n\006LAU"
   "NCH\020\003\022\t\n\005RESET\020\004\022\031\n\025SERVICE_PROPULSION_G"
   "O\020\005\022\033\n\027SERVICE_PROPULSION_STOP\020\006\022\023\n\017NOMI"
-  "NAL_BRAKING\020\007\"\236\r\n\016ClientToServer\022=\n\nnavi"
+  "NAL_BRAKING\020\007\"\203\016\n\016ClientToServer\022=\n\nnavi"
   "gation\030\001 \001(\0132).telemetry_data.ClientToSe"
   "rver.Navigation\022B\n\rstate_machine\030\002 \001(\0132+"
   ".telemetry_data.ClientToServer.StateMach"
@@ -343,46 +372,49 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "entToServer.Motors\022;\n\tbatteries\030\004 \001(\0132(."
   "telemetry_data.ClientToServer.Batteries\022"
   "7\n\007sensors\030\005 \001(\0132&.telemetry_data.Client"
-  "ToServer.Sensors\022H\n\020emergency_brakes\030\006 \001"
-  "(\0132..telemetry_data.ClientToServer.Emerg"
-  "encyBrakes\032\212\001\n\nNavigation\022B\n\rmodule_stat"
-  "us\030\001 \001(\0162+.telemetry_data.ClientToServer"
-  ".ModuleStatus\022\020\n\010distance\030\002 \001(\002\022\020\n\010veloc"
-  "ity\030\003 \001(\002\022\024\n\014acceleration\030\004 \001(\002\032\225\002\n\014Stat"
-  "eMachine\022H\n\rcurrent_state\030\002 \001(\01621.teleme"
-  "try_data.ClientToServer.StateMachine.Sta"
-  "te\"\272\001\n\005State\022\013\n\007INVALID\020\000\022\010\n\004IDLE\020\001\022\017\n\013C"
-  "ALIBRATING\020\002\022\t\n\005READY\020\003\022\020\n\014ACCELERATING\020"
-  "\004\022\023\n\017NOMINAL_BRAKING\020\005\022\025\n\021EMERGENCY_BRAK"
-  "ING\020\006\022\020\n\014RUN_COMPLETE\020\007\022\023\n\017FAILURE_STOPP"
-  "ED\020\010\022\013\n\007EXITING\020\t\022\014\n\010FINISHED\020\n\032\304\001\n\006Moto"
-  "rs\022B\n\rmodule_status\030\001 \001(\0162+.telemetry_da"
-  "ta.ClientToServer.ModuleStatus\022\022\n\nveloci"
-  "ty_1\030\002 \001(\021\022\022\n\nvelocity_2\030\003 \001(\021\022\022\n\nveloci"
-  "ty_3\030\004 \001(\021\022\022\n\nvelocity_4\030\005 \001(\021\022\022\n\nveloci"
-  "ty_5\030\006 \001(\021\022\022\n\nvelocity_6\030\007 \001(\021\032\202\003\n\tBatte"
-  "ries\022B\n\rmodule_status\030\001 \001(\0162+.telemetry_"
-  "data.ClientToServer.ModuleStatus\022Q\n\023low_"
-  "power_batteries\030\002 \003(\01324.telemetry_data.C"
-  "lientToServer.Batteries.BatteryData\022R\n\024h"
-  "igh_power_batteries\030\003 \003(\01324.telemetry_da"
-  "ta.ClientToServer.Batteries.BatteryData\032"
-  "\211\001\n\013BatteryData\022\017\n\007voltage\030\001 \001(\r\022\017\n\007curr"
-  "ent\030\002 \001(\021\022\016\n\006charge\030\003 \001(\r\022\023\n\013temperature"
-  "\030\004 \001(\005\022\030\n\020low_voltage_cell\030\005 \001(\r\022\031\n\021high"
-  "_voltage_cell\030\006 \001(\r\032\267\001\n\007Sensors\022B\n\rmodul"
-  "e_status\030\001 \001(\0162+.telemetry_data.ClientTo"
-  "Server.ModuleStatus\022;\n\003imu\030\002 \003(\0132..telem"
-  "etry_data.ClientToServer.Sensors.ImuData"
-  "\032+\n\007ImuData\022\023\n\013operational\030\001 \001(\010\022\013\n\003acc\030"
-  "\002 \003(\002\032!\n\017EmergencyBrakes\022\016\n\006brakes\030\001 \003(\010"
-  "\"D\n\014ModuleStatus\022\t\n\005START\020\000\022\010\n\004INIT\020\001\022\t\n"
-  "\005READY\020\002\022\024\n\020CRITICAL_FAILURE\020\003B\036\n\rteleme"
-  "trydataB\rTelemetryDatab\006proto3"
+  "ToServer.Sensors\022\?\n\013temperature\030\006 \001(\0132*."
+  "telemetry_data.ClientToServer.Temperatur"
+  "e\022H\n\020emergency_brakes\030\007 \001(\0132..telemetry_"
+  "data.ClientToServer.EmergencyBrakes\032\212\001\n\n"
+  "Navigation\022B\n\rmodule_status\030\001 \001(\0162+.tele"
+  "metry_data.ClientToServer.ModuleStatus\022\020"
+  "\n\010distance\030\002 \001(\002\022\020\n\010velocity\030\003 \001(\002\022\024\n\014ac"
+  "celeration\030\004 \001(\002\032\225\002\n\014StateMachine\022H\n\rcur"
+  "rent_state\030\002 \001(\01621.telemetry_data.Client"
+  "ToServer.StateMachine.State\"\272\001\n\005State\022\013\n"
+  "\007INVALID\020\000\022\010\n\004IDLE\020\001\022\017\n\013CALIBRATING\020\002\022\t\n"
+  "\005READY\020\003\022\020\n\014ACCELERATING\020\004\022\023\n\017NOMINAL_BR"
+  "AKING\020\005\022\025\n\021EMERGENCY_BRAKING\020\006\022\020\n\014RUN_CO"
+  "MPLETE\020\007\022\023\n\017FAILURE_STOPPED\020\010\022\013\n\007EXITING"
+  "\020\t\022\014\n\010FINISHED\020\n\032\304\001\n\006Motors\022B\n\rmodule_st"
+  "atus\030\001 \001(\0162+.telemetry_data.ClientToServ"
+  "er.ModuleStatus\022\022\n\nvelocity_1\030\002 \001(\021\022\022\n\nv"
+  "elocity_2\030\003 \001(\021\022\022\n\nvelocity_3\030\004 \001(\021\022\022\n\nv"
+  "elocity_4\030\005 \001(\021\022\022\n\nvelocity_5\030\006 \001(\021\022\022\n\nv"
+  "elocity_6\030\007 \001(\021\032\202\003\n\tBatteries\022B\n\rmodule_"
+  "status\030\001 \001(\0162+.telemetry_data.ClientToSe"
+  "rver.ModuleStatus\022Q\n\023low_power_batteries"
+  "\030\002 \003(\01324.telemetry_data.ClientToServer.B"
+  "atteries.BatteryData\022R\n\024high_power_batte"
+  "ries\030\003 \003(\01324.telemetry_data.ClientToServ"
+  "er.Batteries.BatteryData\032\211\001\n\013BatteryData"
+  "\022\017\n\007voltage\030\001 \001(\r\022\017\n\007current\030\002 \001(\021\022\016\n\006ch"
+  "arge\030\003 \001(\r\022\023\n\013temperature\030\004 \001(\005\022\030\n\020low_v"
+  "oltage_cell\030\005 \001(\r\022\031\n\021high_voltage_cell\030\006"
+  " \001(\r\032\267\001\n\007Sensors\022B\n\rmodule_status\030\001 \001(\0162"
+  "+.telemetry_data.ClientToServer.ModuleSt"
+  "atus\022;\n\003imu\030\002 \003(\0132..telemetry_data.Clien"
+  "tToServer.Sensors.ImuData\032+\n\007ImuData\022\023\n\013"
+  "operational\030\001 \001(\010\022\013\n\003acc\030\002 \003(\002\032\"\n\013Temper"
+  "ature\022\023\n\013temperature\030\001 \001(\021\032!\n\017EmergencyB"
+  "rakes\022\016\n\006brakes\030\001 \003(\010\"D\n\014ModuleStatus\022\t\n"
+  "\005START\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020CRITICA"
+  "L_FAILURE\020\003B\036\n\rtelemetrydataB\rTelemetryD"
+  "atab\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_message_2eproto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_message_2eproto_sccs[10] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_message_2eproto_sccs[11] = {
   &scc_info_ClientToServer_message_2eproto.base,
   &scc_info_ClientToServer_Batteries_message_2eproto.base,
   &scc_info_ClientToServer_Batteries_BatteryData_message_2eproto.base,
@@ -392,15 +424,16 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_mes
   &scc_info_ClientToServer_Sensors_message_2eproto.base,
   &scc_info_ClientToServer_Sensors_ImuData_message_2eproto.base,
   &scc_info_ClientToServer_StateMachine_message_2eproto.base,
+  &scc_info_ClientToServer_Temperature_message_2eproto.base,
   &scc_info_ServerToClient_message_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_message_2eproto_once;
 static bool descriptor_table_message_2eproto_initialized = false;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_message_2eproto = {
-  &descriptor_table_message_2eproto_initialized, descriptor_table_protodef_message_2eproto, "message.proto", 1990,
-  &descriptor_table_message_2eproto_once, descriptor_table_message_2eproto_sccs, descriptor_table_message_2eproto_deps, 10, 0,
+  &descriptor_table_message_2eproto_initialized, descriptor_table_protodef_message_2eproto, "message.proto", 2091,
+  &descriptor_table_message_2eproto_once, descriptor_table_message_2eproto_sccs, descriptor_table_message_2eproto_deps, 11, 0,
   schemas, file_default_instances, TableStruct_message_2eproto::offsets,
-  file_level_metadata_message_2eproto, 10, file_level_enum_descriptors_message_2eproto, file_level_service_descriptors_message_2eproto,
+  file_level_metadata_message_2eproto, 11, file_level_enum_descriptors_message_2eproto, file_level_service_descriptors_message_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -3416,6 +3449,263 @@ void ClientToServer_Sensors::InternalSwap(ClientToServer_Sensors* other) {
 
 // ===================================================================
 
+void ClientToServer_Temperature::InitAsDefaultInstance() {
+}
+class ClientToServer_Temperature::HasBitSetters {
+ public:
+};
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ClientToServer_Temperature::kTemperatureFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ClientToServer_Temperature::ClientToServer_Temperature()
+  : ::PROTOBUF_NAMESPACE_ID::Message(), _internal_metadata_(nullptr) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:telemetry_data.ClientToServer.Temperature)
+}
+ClientToServer_Temperature::ClientToServer_Temperature(const ClientToServer_Temperature& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _internal_metadata_(nullptr) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  temperature_ = from.temperature_;
+  // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.Temperature)
+}
+
+void ClientToServer_Temperature::SharedCtor() {
+  temperature_ = 0;
+}
+
+ClientToServer_Temperature::~ClientToServer_Temperature() {
+  // @@protoc_insertion_point(destructor:telemetry_data.ClientToServer.Temperature)
+  SharedDtor();
+}
+
+void ClientToServer_Temperature::SharedDtor() {
+}
+
+void ClientToServer_Temperature::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ClientToServer_Temperature& ClientToServer_Temperature::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ClientToServer_Temperature_message_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void ClientToServer_Temperature::Clear() {
+// @@protoc_insertion_point(message_clear_start:telemetry_data.ClientToServer.Temperature)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  temperature_ = 0;
+  _internal_metadata_.Clear();
+}
+
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* ClientToServer_Temperature::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // sint32 temperature = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag, &_internal_metadata_, ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+bool ClientToServer_Temperature::MergePartialFromCodedStream(
+    ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+  // @@protoc_insertion_point(parse_start:telemetry_data.ClientToServer.Temperature)
+  for (;;) {
+    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // sint32 temperature = 1;
+      case 1: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (8 & 0xFF)) {
+
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
+                 input, &temperature_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:telemetry_data.ClientToServer.Temperature)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:telemetry_data.ClientToServer.Temperature)
+  return false;
+#undef DO_
+}
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+
+void ClientToServer_Temperature::SerializeWithCachedSizes(
+    ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:telemetry_data.ClientToServer.Temperature)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // sint32 temperature = 1;
+  if (this->temperature() != 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(1, this->temperature(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
+        _internal_metadata_.unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:telemetry_data.ClientToServer.Temperature)
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ClientToServer_Temperature::InternalSerializeWithCachedSizesToArray(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:telemetry_data.ClientToServer.Temperature)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // sint32 temperature = 1;
+  if (this->temperature() != 0) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(1, this->temperature(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:telemetry_data.ClientToServer.Temperature)
+  return target;
+}
+
+size_t ClientToServer_Temperature::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:telemetry_data.ClientToServer.Temperature)
+  size_t total_size = 0;
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::ComputeUnknownFieldsSize(
+        _internal_metadata_.unknown_fields());
+  }
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // sint32 temperature = 1;
+  if (this->temperature() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
+        this->temperature());
+  }
+
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ClientToServer_Temperature::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:telemetry_data.ClientToServer.Temperature)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ClientToServer_Temperature* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ClientToServer_Temperature>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:telemetry_data.ClientToServer.Temperature)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:telemetry_data.ClientToServer.Temperature)
+    MergeFrom(*source);
+  }
+}
+
+void ClientToServer_Temperature::MergeFrom(const ClientToServer_Temperature& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:telemetry_data.ClientToServer.Temperature)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.temperature() != 0) {
+    set_temperature(from.temperature());
+  }
+}
+
+void ClientToServer_Temperature::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:telemetry_data.ClientToServer.Temperature)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ClientToServer_Temperature::CopyFrom(const ClientToServer_Temperature& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:telemetry_data.ClientToServer.Temperature)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClientToServer_Temperature::IsInitialized() const {
+  return true;
+}
+
+void ClientToServer_Temperature::Swap(ClientToServer_Temperature* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ClientToServer_Temperature::InternalSwap(ClientToServer_Temperature* other) {
+  using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(temperature_, other->temperature_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_Temperature::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
 void ClientToServer_EmergencyBrakes::InitAsDefaultInstance() {
 }
 class ClientToServer_EmergencyBrakes::HasBitSetters {
@@ -3707,6 +3997,8 @@ void ClientToServer::InitAsDefaultInstance() {
       ::telemetry_data::ClientToServer_Batteries::internal_default_instance());
   ::telemetry_data::_ClientToServer_default_instance_._instance.get_mutable()->sensors_ = const_cast< ::telemetry_data::ClientToServer_Sensors*>(
       ::telemetry_data::ClientToServer_Sensors::internal_default_instance());
+  ::telemetry_data::_ClientToServer_default_instance_._instance.get_mutable()->temperature_ = const_cast< ::telemetry_data::ClientToServer_Temperature*>(
+      ::telemetry_data::ClientToServer_Temperature::internal_default_instance());
   ::telemetry_data::_ClientToServer_default_instance_._instance.get_mutable()->emergency_brakes_ = const_cast< ::telemetry_data::ClientToServer_EmergencyBrakes*>(
       ::telemetry_data::ClientToServer_EmergencyBrakes::internal_default_instance());
 }
@@ -3717,6 +4009,7 @@ class ClientToServer::HasBitSetters {
   static const ::telemetry_data::ClientToServer_Motors& motors(const ClientToServer* msg);
   static const ::telemetry_data::ClientToServer_Batteries& batteries(const ClientToServer* msg);
   static const ::telemetry_data::ClientToServer_Sensors& sensors(const ClientToServer* msg);
+  static const ::telemetry_data::ClientToServer_Temperature& temperature(const ClientToServer* msg);
   static const ::telemetry_data::ClientToServer_EmergencyBrakes& emergency_brakes(const ClientToServer* msg);
 };
 
@@ -3740,6 +4033,10 @@ const ::telemetry_data::ClientToServer_Sensors&
 ClientToServer::HasBitSetters::sensors(const ClientToServer* msg) {
   return *msg->sensors_;
 }
+const ::telemetry_data::ClientToServer_Temperature&
+ClientToServer::HasBitSetters::temperature(const ClientToServer* msg) {
+  return *msg->temperature_;
+}
 const ::telemetry_data::ClientToServer_EmergencyBrakes&
 ClientToServer::HasBitSetters::emergency_brakes(const ClientToServer* msg) {
   return *msg->emergency_brakes_;
@@ -3750,6 +4047,7 @@ const int ClientToServer::kStateMachineFieldNumber;
 const int ClientToServer::kMotorsFieldNumber;
 const int ClientToServer::kBatteriesFieldNumber;
 const int ClientToServer::kSensorsFieldNumber;
+const int ClientToServer::kTemperatureFieldNumber;
 const int ClientToServer::kEmergencyBrakesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -3787,6 +4085,11 @@ ClientToServer::ClientToServer(const ClientToServer& from)
   } else {
     sensors_ = nullptr;
   }
+  if (from.has_temperature()) {
+    temperature_ = new ::telemetry_data::ClientToServer_Temperature(*from.temperature_);
+  } else {
+    temperature_ = nullptr;
+  }
   if (from.has_emergency_brakes()) {
     emergency_brakes_ = new ::telemetry_data::ClientToServer_EmergencyBrakes(*from.emergency_brakes_);
   } else {
@@ -3813,6 +4116,7 @@ void ClientToServer::SharedDtor() {
   if (this != internal_default_instance()) delete motors_;
   if (this != internal_default_instance()) delete batteries_;
   if (this != internal_default_instance()) delete sensors_;
+  if (this != internal_default_instance()) delete temperature_;
   if (this != internal_default_instance()) delete emergency_brakes_;
 }
 
@@ -3851,6 +4155,10 @@ void ClientToServer::Clear() {
     delete sensors_;
   }
   sensors_ = nullptr;
+  if (GetArenaNoVirtual() == nullptr && temperature_ != nullptr) {
+    delete temperature_;
+  }
+  temperature_ = nullptr;
   if (GetArenaNoVirtual() == nullptr && emergency_brakes_ != nullptr) {
     delete emergency_brakes_;
   }
@@ -3901,9 +4209,16 @@ const char* ClientToServer::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+      // .telemetry_data.ClientToServer.Temperature temperature = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 50)) {
+          ptr = ctx->ParseMessage(mutable_temperature(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 58)) {
           ptr = ctx->ParseMessage(mutable_emergency_brakes(), ptr);
           CHK_(ptr);
         } else goto handle_unusual;
@@ -3993,9 +4308,20 @@ bool ClientToServer::MergePartialFromCodedStream(
         break;
       }
 
-      // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+      // .telemetry_data.ClientToServer.Temperature temperature = 6;
       case 6: {
         if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (50 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
+               input, mutable_temperature()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 7;
+      case 7: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (58 & 0xFF)) {
           DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessage(
                input, mutable_emergency_brakes()));
         } else {
@@ -4061,10 +4387,16 @@ void ClientToServer::SerializeWithCachedSizes(
       5, HasBitSetters::sensors(this), output);
   }
 
-  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+  // .telemetry_data.ClientToServer.Temperature temperature = 6;
+  if (this->has_temperature()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
+      6, HasBitSetters::temperature(this), output);
+  }
+
+  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 7;
   if (this->has_emergency_brakes()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteMessageMaybeToArray(
-      6, HasBitSetters::emergency_brakes(this), output);
+      7, HasBitSetters::emergency_brakes(this), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -4115,11 +4447,18 @@ void ClientToServer::SerializeWithCachedSizes(
         5, HasBitSetters::sensors(this), target);
   }
 
-  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+  // .telemetry_data.ClientToServer.Temperature temperature = 6;
+  if (this->has_temperature()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        6, HasBitSetters::temperature(this), target);
+  }
+
+  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 7;
   if (this->has_emergency_brakes()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        6, HasBitSetters::emergency_brakes(this), target);
+        7, HasBitSetters::emergency_brakes(this), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -4178,7 +4517,14 @@ size_t ClientToServer::ByteSizeLong() const {
         *sensors_);
   }
 
-  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 6;
+  // .telemetry_data.ClientToServer.Temperature temperature = 6;
+  if (this->has_temperature()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *temperature_);
+  }
+
+  // .telemetry_data.ClientToServer.EmergencyBrakes emergency_brakes = 7;
   if (this->has_emergency_brakes()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
@@ -4227,6 +4573,9 @@ void ClientToServer::MergeFrom(const ClientToServer& from) {
   if (from.has_sensors()) {
     mutable_sensors()->::telemetry_data::ClientToServer_Sensors::MergeFrom(from.sensors());
   }
+  if (from.has_temperature()) {
+    mutable_temperature()->::telemetry_data::ClientToServer_Temperature::MergeFrom(from.temperature());
+  }
   if (from.has_emergency_brakes()) {
     mutable_emergency_brakes()->::telemetry_data::ClientToServer_EmergencyBrakes::MergeFrom(from.emergency_brakes());
   }
@@ -4262,6 +4611,7 @@ void ClientToServer::InternalSwap(ClientToServer* other) {
   swap(motors_, other->motors_);
   swap(batteries_, other->batteries_);
   swap(sensors_, other->sensors_);
+  swap(temperature_, other->temperature_);
   swap(emergency_brakes_, other->emergency_brakes_);
 }
 
@@ -4296,6 +4646,9 @@ template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Sensors_ImuData* A
 }
 template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Sensors* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Sensors >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_Sensors >(arena);
+}
+template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_Temperature* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_Temperature >(Arena* arena) {
+  return Arena::CreateInternal< ::telemetry_data::ClientToServer_Temperature >(arena);
 }
 template<> PROTOBUF_NOINLINE ::telemetry_data::ClientToServer_EmergencyBrakes* Arena::CreateMaybeMessage< ::telemetry_data::ClientToServer_EmergencyBrakes >(Arena* arena) {
   return Arena::CreateInternal< ::telemetry_data::ClientToServer_EmergencyBrakes >(arena);
