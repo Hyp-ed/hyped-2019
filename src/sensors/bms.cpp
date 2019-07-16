@@ -229,7 +229,7 @@ bool BMSHP::hasId(uint32_t id, bool extended)
   if (id == 0x70 || id == 0x80) return true;
 
   // Thermistor expansion module
-  if (id == 0x1839F380) return true;
+  if (id == 0x1839F380 || id == 0x1839F381) return true;
 
   // ignore misc thermistor module messages
   if (id == 0x1838F380 || id == 0x18EEFF80) return true;
@@ -239,7 +239,7 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
   // thermistor expansion module
-  if (message.id == 0x1839F380) {   // C
+  if ((message.id == 0x1839F380) || (message.id = 0x1839F381)) {   // C
     local_data_.low_temperature     = message.data[1];
     local_data_.high_temperature    = message.data[2];
     local_data_.average_temperature = message.data[3];
