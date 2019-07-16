@@ -33,7 +33,6 @@ using utils::io::can::Frame;
 using utils::Logger;
 using utils::io::Can;
 using utils::io::CanProccesor;
-using utils::Timer;
 
 namespace embrakes {
 
@@ -73,7 +72,7 @@ class Stepper :public CanProccesor {
   /**
    * @brief sends clamp message
    */
-  void sendClamp();
+  void sendClamp(uint8_t enabled, uint8_t period);
 
   private:
 
@@ -85,9 +84,6 @@ class Stepper :public CanProccesor {
     data::Telemetry       tlm_data_;
     data::StateMachine    sm_data_;
     Frame                 message_to_send;
-    bool                  sendingClamp;
-    Timer                 timer;
-    uint64_t              clampTimer;
     uint8_t               stepper_position_LSB;
     uint8_t               stepper_position_MSB;
     uint8_t               stepper_period;

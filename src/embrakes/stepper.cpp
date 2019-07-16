@@ -32,11 +32,11 @@ Stepper::Stepper(Logger& log, uint8_t id)
 {
 can_.start();
 
-stepper_position_LSB = 0x0;
-stepper_position_MSB = 0x0;
+stepper_position_LSB = 0x00;
+stepper_position_MSB = 0x00;
 stepper_period       = 0x28;
-isEnabled            = 0x0; // is true (or set to anything above 0) if brakes to be retracted
-isHome               = 0x0; // is true (equal to 1) if button is pressed (if brakes are retracted)
+isEnabled            = 0x00; // is true (or set to anything above 0) if brakes to be retracted
+isHome               = 0x01; // is 0 if button is pressed (if brakes are retracted)
 
 message_to_send.id       = node_id_;
 message_to_send.extended = false;
@@ -57,13 +57,12 @@ void Stepper::processNewData(utils::io::can::Frame &message)
     uint8_t stepper_position_LSB = message.data[1];
     uint8_t stepper_position_MSB = message.data[2];
     uint8_t isHome = message.data[3];
-    uint16_t current_average = (message.data[5] << 8)| message.data[4];
     uint8_t can_id = message.data[6];
 
     checkHome(isHome);
     
   } else {
-    log_.ERR("Brakes", "Stepper %d, %i: CAN message not recognised", node_id_, id);
+    log_.ERR("Brakes", "Stepper %d, %i: CAN message not recognised", node_id_);
   }
 }
 
@@ -79,78 +78,35 @@ void Stepper::checkHome(uint8_t button)
 {
   // make sure current brake is noted as retracted or not (based on the message received) in the data struct
   uint8_t brk_id = node_id_ - 20;
-  if(button && !em_brakes_data_.brakes_retracted[brk_id]){
+  if(!button && !em_brakes_data_.brakes_retracted[brk_id]){
     em_brakes_data_.brakes_retracted[brk_id] = true;
     data_.setEmergencyBrakesData(em_brakes_data_);
-  } else if(!button && em_brakes_data_.brakes_retracted[brk_id]){
+  } else if(button && em_brakes_data_.brakes_retracted[brk_id]){
     em_brakes_data_.brakes_retracted[brk_id] = false;
     data_.setEmergencyBrakesData(em_brakes_data_);
   }
 }
 
-void Stepper::sendRetract(uint8_t LSB, uint8_t MSB, uint8_t period){
-  log_.INFO("Brakes", "Sending a retract message");
-  message_to_send.data[0] = 0x1;
+void Stepper::sendRetract(uint8_t MSB, uint8_t LSB, uint8_t period){
+  log_.INFO("Brakes", "Sending a retract message to brake %i", node_id_-20);
+  message_to_send.data[0] = 0x01;
   message_to_send.data[1] = MSB;
   message_to_send.data[2] = LSB;
   message_to_send.data[3] = period;
   
-
   can_.send(message_to_send);
   
 }
 
-void Stepper::sendClamp(){
-  log_.INFO("Brakes", "Calmping the brakes");
-  sendingClamp = true;
+void Stepper::sendClamp(uint8_t enabled, uint8_t period){
 
-  message_to_send.data[0] = 0x01;
+  message_to_send.data[0] = enabled;
   message_to_send.data[1] = 0x13;
   message_to_send.data[2] = 0x88;
-  message_to_send.data[3] = 0x28;
-  can_.send(message_to_send);
-  
-  timer.start();
-  clampTimer = timer.getTimeMicros();
+  message_to_send.data[3] = period;
 
-  while(sendingClamp){
-    if(clampTimer + 100000 == timer.getTimeMicros()){
-      message_to_send.data[3] = 0x19;
-      can_.send(message_to_send);
-    }
-    if(clampTimer + 200000 == timer.getTimeMicros()){
-      message_to_send.data[3] = 0x16;
-      can_.send(message_to_send);
-    }
-    if(clampTimer + 300000 == timer.getTimeMicros()){
-      message_to_send.data[3] = 0x14;
-      can_.send(message_to_send);
-    }
-    if(clampTimer + 400000 == timer.getTimeMicros()){
-      message_to_send.data[3] = 0x11;
-      can_.send(message_to_send);
-    }
-    if(clampTimer + 500000 == timer.getTimeMicros()){
-      message_to_send.data[3] = 0x0f;
-      can_.send(message_to_send);
-    }
-    if(clampTimer + 600000 == timer.getTimeMicros()){
-      message_to_send.data[3] = 0x1c;
-      can_.send(message_to_send);
-    }
-    if(clampTimer + 750000 == timer.getTimeMicros()){
-      message_to_send.data[3] = 0x0a;
-      can_.send(message_to_send);
-    }
-    if(clampTimer + 900000 == timer.getTimeMicros()){
-      message_to_send.data[3] = 0x19;
-      can_.send(message_to_send);
-    }
-    if(clampTimer + 1100000 == timer.getTimeMicros()){
-      message_to_send.data[1] = 0x00;
-      can_.send(message_to_send);
-    }
-  }
+  can_.send(message_to_send);
+
 }
 
 }}  // namespace hyped::embrakes
