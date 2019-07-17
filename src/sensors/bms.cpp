@@ -155,8 +155,9 @@ void BMS::getData(BatteryData* battery)
   for (uint16_t v: data_.voltage) battery->voltage += v;
   battery->voltage    /= 100;  // scale to dV from mV
   battery->average_temperature = data_.temperature;
+  if (battery->average_temperature == -40) battery->average_temperature = 0;    // if temp offline
   battery->current     = (current_ - 0x800000)/100;  // offset provided by datasheet
-  if (battery->current == -18350) battery->current = 0;
+  battery->current = (-1)*battery->current - 18350;  // further calculation from testing
 
   // not used, initialised to zero
   battery->low_temperature = 0;
@@ -232,8 +233,13 @@ bool BMSHP::hasId(uint32_t id, bool extended)
   // Thermistor expansion module
   if (id == thermistor_id_) return true;
 
+  // Thermistor node IDs
+  if (id == 0x6B4 || id == 0x6B5) return true;
+
   // ignore misc thermistor module messages
   if (id == 0x1838F380 || id == 0x18EEFF80) return true;
+  if (id == 0x1838F381 || id == 0x18EEFF81) return true;
+
   return false;
 }
 
