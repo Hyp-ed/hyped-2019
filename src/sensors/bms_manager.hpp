@@ -81,11 +81,6 @@ class BmsManager: public ManagerInterface  {
   GPIO* lp_ssr_;
 
   /**
-   * @brief propulsion cooling module
-   */
-  GPIO* prop_cool_;
-
-  /**
    * @brief holds LP BatteryData, HP BatteryData, and module_status
    */
   data::Batteries batteries_;

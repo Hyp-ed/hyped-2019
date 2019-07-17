@@ -68,8 +68,6 @@ BmsManager::BmsManager(Logger& log)
       }
       hp_master_ = new GPIO(sys_.config->sensors.hp_master, utils::io::gpio::kOut);
       hp_master_->clear();
-      prop_cool_ = new GPIO(sys_.config->sensors.prop_cool, utils::io::gpio::kOut);
-      prop_cool_->clear();
       log_.INFO("BMS-MANAGER", "HP SSRs has been initialised CLEAR");
 
       // Set LPSSR manual switch
@@ -112,7 +110,6 @@ void BmsManager::clearHP()
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i]->clear();      // HP off until kReady State
       }
-      prop_cool_->clear();
     }
   }
 }
@@ -125,7 +122,6 @@ void BmsManager::setHP()
         hp_ssr_[i]->set();
       }
       hp_master_->set();
-      prop_cool_->set();
     }
   }
 }
@@ -188,7 +184,7 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.current < 50 || battery.current > 500) {       // current in 5A to 50A
+    if (battery.current < 20 || battery.current > 500) {       // current in 2A to 50A
        if (batteries_.module_status != previous_status_)
         log_.ERR("BMS-MANAGER", "BMS LP %d current out of range: %d", i, battery.current);
       return false;

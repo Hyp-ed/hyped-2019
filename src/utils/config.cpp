@@ -149,13 +149,6 @@ void Config::ParseSensors(char* line)
     }
   }
 
-  if (strcmp(token, "PropCool") == 0) {
-    char* value = strtok(NULL, " ");
-    if (value) {
-      sensors.prop_cool = atoi(value);
-    }
-  }
-
   if (strcmp(token, "LPSSR") == 0) {
     char* value = strtok(NULL, " ");
     if (value) {
