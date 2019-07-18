@@ -35,7 +35,11 @@ int main(int argc, char* argv[]) {
     Logger log(true, 3);
     
     Stepper* stepper;
-    stepper = new Stepper(23, 27, log, 1);
+    stepper = new Stepper(26, 27, log, 1);
+    
+    stepper->sendRetract();
+    Thread::sleep(5000);
+    stepper->sendClamp();
 
 
 }

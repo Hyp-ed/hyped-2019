@@ -63,6 +63,8 @@ class Stepper {
    */
   void checkAccFailure();
 
+  bool checkClamped();
+
   private:
 
     utils::Logger&        log_;
