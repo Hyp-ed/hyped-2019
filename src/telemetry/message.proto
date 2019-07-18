@@ -62,9 +62,13 @@ message ClientToServer {
             uint32 voltage = 1;
             sint32 current = 2;
             uint32 charge = 3;
-            int32 temperature = 4;
-            uint32 low_voltage_cell = 5;
-            uint32 high_voltage_cell = 6;
+            int32 average_temperature = 4;
+
+            // below only for BMSHP! Value for BMSLP = 0
+            int32 low_temperature = 5;
+            int32 high_temperature = 6;
+            uint32 low_voltage_cell = 7;
+            uint32 high_voltage_cell = 8;
         }
 
         ModuleStatus module_status = 1;

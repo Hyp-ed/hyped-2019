@@ -129,7 +129,9 @@ void SendLoop::packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_d
   battery_data_msg.set_voltage(battery_data.voltage);
   battery_data_msg.set_current(battery_data.current);
   battery_data_msg.set_charge(battery_data.charge);
-  battery_data_msg.set_temperature(battery_data.average_temperature);
+  battery_data_msg.set_average_temperature(battery_data.average_temperature);
+  battery_data_msg.set_low_temperature(battery_data.low_temperature);
+  battery_data_msg.set_high_temperature(battery_data.high_temperature);
   battery_data_msg.set_low_voltage_cell(battery_data.low_voltage_cell);
   battery_data_msg.set_high_voltage_cell(battery_data.high_voltage_cell);
 }
