@@ -27,7 +27,7 @@ Main::Main(uint8_t id, Logger &log)
   : Thread(id, log),
     is_running_(true),
     log_(log),
-    state_processor_(new StateProcessor(6, log)),
+    state_processor_(new StateProcessor(Motors::kNumMotors, log)),
     data_(Data::getInstance())
 {
   // Initialise states

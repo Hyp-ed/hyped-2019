@@ -265,12 +265,6 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_message_2eproto::offsets[] PRO
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, module_status_),
-  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_1_),
-  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_2_),
-  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_3_),
-  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_4_),
-  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_5_),
-  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Motors, velocity_6_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -334,13 +328,13 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 6, -1, sizeof(::telemetry_data::ClientToServer_Navigation)},
   { 15, -1, sizeof(::telemetry_data::ClientToServer_StateMachine)},
   { 21, -1, sizeof(::telemetry_data::ClientToServer_Motors)},
-  { 33, -1, sizeof(::telemetry_data::ClientToServer_Batteries_BatteryData)},
-  { 44, -1, sizeof(::telemetry_data::ClientToServer_Batteries)},
-  { 52, -1, sizeof(::telemetry_data::ClientToServer_Sensors_ImuData)},
-  { 59, -1, sizeof(::telemetry_data::ClientToServer_Sensors)},
-  { 66, -1, sizeof(::telemetry_data::ClientToServer_Temperature)},
-  { 72, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
-  { 78, -1, sizeof(::telemetry_data::ClientToServer)},
+  { 27, -1, sizeof(::telemetry_data::ClientToServer_Batteries_BatteryData)},
+  { 38, -1, sizeof(::telemetry_data::ClientToServer_Batteries)},
+  { 46, -1, sizeof(::telemetry_data::ClientToServer_Sensors_ImuData)},
+  { 53, -1, sizeof(::telemetry_data::ClientToServer_Sensors)},
+  { 60, -1, sizeof(::telemetry_data::ClientToServer_Temperature)},
+  { 66, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
+  { 72, -1, sizeof(::telemetry_data::ClientToServer)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -364,7 +358,7 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "\007\n\003ACK\020\000\022\010\n\004STOP\020\001\022\r\n\tCALIBRATE\020\002\022\n\n\006LAU"
   "NCH\020\003\022\t\n\005RESET\020\004\022\031\n\025SERVICE_PROPULSION_G"
   "O\020\005\022\033\n\027SERVICE_PROPULSION_STOP\020\006\022\023\n\017NOMI"
-  "NAL_BRAKING\020\007\"\203\016\n\016ClientToServer\022=\n\nnavi"
+  "NAL_BRAKING\020\007\"\212\r\n\016ClientToServer\022=\n\nnavi"
   "gation\030\001 \001(\0132).telemetry_data.ClientToSe"
   "rver.Navigation\022B\n\rstate_machine\030\002 \001(\0132+"
   ".telemetry_data.ClientToServer.StateMach"
@@ -386,31 +380,28 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "\005READY\020\003\022\020\n\014ACCELERATING\020\004\022\023\n\017NOMINAL_BR"
   "AKING\020\005\022\025\n\021EMERGENCY_BRAKING\020\006\022\020\n\014RUN_CO"
   "MPLETE\020\007\022\023\n\017FAILURE_STOPPED\020\010\022\013\n\007EXITING"
-  "\020\t\022\014\n\010FINISHED\020\n\032\304\001\n\006Motors\022B\n\rmodule_st"
-  "atus\030\001 \001(\0162+.telemetry_data.ClientToServ"
-  "er.ModuleStatus\022\022\n\nvelocity_1\030\002 \001(\021\022\022\n\nv"
-  "elocity_2\030\003 \001(\021\022\022\n\nvelocity_3\030\004 \001(\021\022\022\n\nv"
-  "elocity_4\030\005 \001(\021\022\022\n\nvelocity_5\030\006 \001(\021\022\022\n\nv"
-  "elocity_6\030\007 \001(\021\032\202\003\n\tBatteries\022B\n\rmodule_"
-  "status\030\001 \001(\0162+.telemetry_data.ClientToSe"
-  "rver.ModuleStatus\022Q\n\023low_power_batteries"
-  "\030\002 \003(\01324.telemetry_data.ClientToServer.B"
-  "atteries.BatteryData\022R\n\024high_power_batte"
-  "ries\030\003 \003(\01324.telemetry_data.ClientToServ"
-  "er.Batteries.BatteryData\032\211\001\n\013BatteryData"
-  "\022\017\n\007voltage\030\001 \001(\r\022\017\n\007current\030\002 \001(\021\022\016\n\006ch"
-  "arge\030\003 \001(\r\022\023\n\013temperature\030\004 \001(\005\022\030\n\020low_v"
-  "oltage_cell\030\005 \001(\r\022\031\n\021high_voltage_cell\030\006"
-  " \001(\r\032\267\001\n\007Sensors\022B\n\rmodule_status\030\001 \001(\0162"
-  "+.telemetry_data.ClientToServer.ModuleSt"
-  "atus\022;\n\003imu\030\002 \003(\0132..telemetry_data.Clien"
-  "tToServer.Sensors.ImuData\032+\n\007ImuData\022\023\n\013"
-  "operational\030\001 \001(\010\022\013\n\003acc\030\002 \003(\002\032\"\n\013Temper"
-  "ature\022\023\n\013temperature\030\001 \001(\021\032!\n\017EmergencyB"
-  "rakes\022\016\n\006brakes\030\001 \003(\010\"D\n\014ModuleStatus\022\t\n"
-  "\005START\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020CRITICA"
-  "L_FAILURE\020\003B\036\n\rtelemetrydataB\rTelemetryD"
-  "atab\006proto3"
+  "\020\t\022\014\n\010FINISHED\020\n\032L\n\006Motors\022B\n\rmodule_sta"
+  "tus\030\001 \001(\0162+.telemetry_data.ClientToServe"
+  "r.ModuleStatus\032\202\003\n\tBatteries\022B\n\rmodule_s"
+  "tatus\030\001 \001(\0162+.telemetry_data.ClientToSer"
+  "ver.ModuleStatus\022Q\n\023low_power_batteries\030"
+  "\002 \003(\01324.telemetry_data.ClientToServer.Ba"
+  "tteries.BatteryData\022R\n\024high_power_batter"
+  "ies\030\003 \003(\01324.telemetry_data.ClientToServe"
+  "r.Batteries.BatteryData\032\211\001\n\013BatteryData\022"
+  "\017\n\007voltage\030\001 \001(\r\022\017\n\007current\030\002 \001(\021\022\016\n\006cha"
+  "rge\030\003 \001(\r\022\023\n\013temperature\030\004 \001(\005\022\030\n\020low_vo"
+  "ltage_cell\030\005 \001(\r\022\031\n\021high_voltage_cell\030\006 "
+  "\001(\r\032\267\001\n\007Sensors\022B\n\rmodule_status\030\001 \001(\0162+"
+  ".telemetry_data.ClientToServer.ModuleSta"
+  "tus\022;\n\003imu\030\002 \003(\0132..telemetry_data.Client"
+  "ToServer.Sensors.ImuData\032+\n\007ImuData\022\023\n\013o"
+  "perational\030\001 \001(\010\022\013\n\003acc\030\002 \003(\002\032\"\n\013Tempera"
+  "ture\022\023\n\013temperature\030\001 \001(\021\032!\n\017EmergencyBr"
+  "akes\022\016\n\006brakes\030\001 \003(\010\"D\n\014ModuleStatus\022\t\n\005"
+  "START\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020CRITICAL"
+  "_FAILURE\020\003B\036\n\rtelemetrydataB\rTelemetryDa"
+  "tab\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_message_2eproto_deps[1] = {
 };
@@ -430,7 +421,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_mes
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_message_2eproto_once;
 static bool descriptor_table_message_2eproto_initialized = false;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_message_2eproto = {
-  &descriptor_table_message_2eproto_initialized, descriptor_table_protodef_message_2eproto, "message.proto", 2091,
+  &descriptor_table_message_2eproto_initialized, descriptor_table_protodef_message_2eproto, "message.proto", 1970,
   &descriptor_table_message_2eproto_once, descriptor_table_message_2eproto_sccs, descriptor_table_message_2eproto_deps, 11, 0,
   schemas, file_default_instances, TableStruct_message_2eproto::offsets,
   file_level_metadata_message_2eproto, 11, file_level_enum_descriptors_message_2eproto, file_level_service_descriptors_message_2eproto,
@@ -1453,12 +1444,6 @@ class ClientToServer_Motors::HasBitSetters {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ClientToServer_Motors::kModuleStatusFieldNumber;
-const int ClientToServer_Motors::kVelocity1FieldNumber;
-const int ClientToServer_Motors::kVelocity2FieldNumber;
-const int ClientToServer_Motors::kVelocity3FieldNumber;
-const int ClientToServer_Motors::kVelocity4FieldNumber;
-const int ClientToServer_Motors::kVelocity5FieldNumber;
-const int ClientToServer_Motors::kVelocity6FieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_Motors::ClientToServer_Motors()
@@ -1470,16 +1455,12 @@ ClientToServer_Motors::ClientToServer_Motors(const ClientToServer_Motors& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::memcpy(&module_status_, &from.module_status_,
-    static_cast<size_t>(reinterpret_cast<char*>(&velocity_6_) -
-    reinterpret_cast<char*>(&module_status_)) + sizeof(velocity_6_));
+  module_status_ = from.module_status_;
   // @@protoc_insertion_point(copy_constructor:telemetry_data.ClientToServer.Motors)
 }
 
 void ClientToServer_Motors::SharedCtor() {
-  ::memset(&module_status_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&velocity_6_) -
-      reinterpret_cast<char*>(&module_status_)) + sizeof(velocity_6_));
+  module_status_ = 0;
 }
 
 ClientToServer_Motors::~ClientToServer_Motors() {
@@ -1505,9 +1486,7 @@ void ClientToServer_Motors::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&module_status_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&velocity_6_) -
-      reinterpret_cast<char*>(&module_status_)) + sizeof(velocity_6_));
+  module_status_ = 0;
   _internal_metadata_.Clear();
 }
 
@@ -1525,48 +1504,6 @@ const char* ClientToServer_Motors::_InternalParse(const char* ptr, ::PROTOBUF_NA
           ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
           set_module_status(static_cast<::telemetry_data::ClientToServer_ModuleStatus>(val));
-        } else goto handle_unusual;
-        continue;
-      // sint32 velocity_1 = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          velocity_1_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // sint32 velocity_2 = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          velocity_2_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // sint32 velocity_3 = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
-          velocity_3_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // sint32 velocity_4 = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
-          velocity_4_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // sint32 velocity_5 = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
-          velocity_5_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // sint32 velocity_6 = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
-          velocity_6_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarintZigZag32(&ptr);
-          CHK_(ptr);
         } else goto handle_unusual;
         continue;
       default: {
@@ -1613,84 +1550,6 @@ bool ClientToServer_Motors::MergePartialFromCodedStream(
         break;
       }
 
-      // sint32 velocity_1 = 2;
-      case 2: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (16 & 0xFF)) {
-
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
-                 input, &velocity_1_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // sint32 velocity_2 = 3;
-      case 3: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (24 & 0xFF)) {
-
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
-                 input, &velocity_2_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // sint32 velocity_3 = 4;
-      case 4: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
-
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
-                 input, &velocity_3_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // sint32 velocity_4 = 5;
-      case 5: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
-
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
-                 input, &velocity_4_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // sint32 velocity_5 = 6;
-      case 6: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
-
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
-                 input, &velocity_5_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // sint32 velocity_6 = 7;
-      case 7: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (56 & 0xFF)) {
-
-          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
-                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_SINT32>(
-                 input, &velocity_6_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -1724,36 +1583,6 @@ void ClientToServer_Motors::SerializeWithCachedSizes(
       1, this->module_status(), output);
   }
 
-  // sint32 velocity_1 = 2;
-  if (this->velocity_1() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(2, this->velocity_1(), output);
-  }
-
-  // sint32 velocity_2 = 3;
-  if (this->velocity_2() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(3, this->velocity_2(), output);
-  }
-
-  // sint32 velocity_3 = 4;
-  if (this->velocity_3() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(4, this->velocity_3(), output);
-  }
-
-  // sint32 velocity_4 = 5;
-  if (this->velocity_4() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(5, this->velocity_4(), output);
-  }
-
-  // sint32 velocity_5 = 6;
-  if (this->velocity_5() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(6, this->velocity_5(), output);
-  }
-
-  // sint32 velocity_6 = 7;
-  if (this->velocity_6() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32(7, this->velocity_6(), output);
-  }
-
   if (_internal_metadata_.have_unknown_fields()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
@@ -1771,36 +1600,6 @@ void ClientToServer_Motors::SerializeWithCachedSizes(
   if (this->module_status() != 0) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       1, this->module_status(), target);
-  }
-
-  // sint32 velocity_1 = 2;
-  if (this->velocity_1() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(2, this->velocity_1(), target);
-  }
-
-  // sint32 velocity_2 = 3;
-  if (this->velocity_2() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(3, this->velocity_2(), target);
-  }
-
-  // sint32 velocity_3 = 4;
-  if (this->velocity_3() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(4, this->velocity_3(), target);
-  }
-
-  // sint32 velocity_4 = 5;
-  if (this->velocity_4() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(5, this->velocity_4(), target);
-  }
-
-  // sint32 velocity_5 = 6;
-  if (this->velocity_5() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(6, this->velocity_5(), target);
-  }
-
-  // sint32 velocity_6 = 7;
-  if (this->velocity_6() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteSInt32ToArray(7, this->velocity_6(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1828,48 +1627,6 @@ size_t ClientToServer_Motors::ByteSizeLong() const {
   if (this->module_status() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->module_status());
-  }
-
-  // sint32 velocity_1 = 2;
-  if (this->velocity_1() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
-        this->velocity_1());
-  }
-
-  // sint32 velocity_2 = 3;
-  if (this->velocity_2() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
-        this->velocity_2());
-  }
-
-  // sint32 velocity_3 = 4;
-  if (this->velocity_3() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
-        this->velocity_3());
-  }
-
-  // sint32 velocity_4 = 5;
-  if (this->velocity_4() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
-        this->velocity_4());
-  }
-
-  // sint32 velocity_5 = 6;
-  if (this->velocity_5() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
-        this->velocity_5());
-  }
-
-  // sint32 velocity_6 = 7;
-  if (this->velocity_6() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SInt32Size(
-        this->velocity_6());
   }
 
   int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
@@ -1902,24 +1659,6 @@ void ClientToServer_Motors::MergeFrom(const ClientToServer_Motors& from) {
   if (from.module_status() != 0) {
     set_module_status(from.module_status());
   }
-  if (from.velocity_1() != 0) {
-    set_velocity_1(from.velocity_1());
-  }
-  if (from.velocity_2() != 0) {
-    set_velocity_2(from.velocity_2());
-  }
-  if (from.velocity_3() != 0) {
-    set_velocity_3(from.velocity_3());
-  }
-  if (from.velocity_4() != 0) {
-    set_velocity_4(from.velocity_4());
-  }
-  if (from.velocity_5() != 0) {
-    set_velocity_5(from.velocity_5());
-  }
-  if (from.velocity_6() != 0) {
-    set_velocity_6(from.velocity_6());
-  }
 }
 
 void ClientToServer_Motors::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -1948,12 +1687,6 @@ void ClientToServer_Motors::InternalSwap(ClientToServer_Motors* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(module_status_, other->module_status_);
-  swap(velocity_1_, other->velocity_1_);
-  swap(velocity_2_, other->velocity_2_);
-  swap(velocity_3_, other->velocity_3_);
-  swap(velocity_4_, other->velocity_4_);
-  swap(velocity_5_, other->velocity_5_);
-  swap(velocity_6_, other->velocity_6_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ClientToServer_Motors::GetMetadata() const {
