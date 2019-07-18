@@ -156,8 +156,8 @@ void BMS::getData(BatteryData* battery)
   battery->voltage    /= 100;  // scale to dV from mV
   battery->average_temperature = data_.temperature;
   if (battery->average_temperature == -40) battery->average_temperature = 0;    // if temp offline
-  battery->current     = (current_ - 0x800000)/100;  // offset provided by datasheet
-  battery->current = (-1)*battery->current - 18350;  // further calculation from testing
+  battery->current     = current_ - 0x800000;  // offset provided by datasheet
+  battery->current    /= 100;   // scale to dA from mA
 
   // not used, initialised to zero
   battery->low_temperature = 0;

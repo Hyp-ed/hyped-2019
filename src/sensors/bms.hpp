@@ -52,7 +52,7 @@ using data::Data;
 
 namespace bms {
 // how often shall request messages be sent
-constexpr uint32_t kFreq    = 2;           // in Hz
+constexpr uint32_t kFreq    = 4;           // in Hz
 constexpr uint32_t kPeriod  = 1000/kFreq;  // in milliseconds
 
 // what is the CAN ID space for BMS units

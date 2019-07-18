@@ -96,6 +96,11 @@ class BmsManager: public ManagerInterface  {
   data::ModuleStatus previous_status_;
 
   /**
+   * @brief do not check ranges for first few cycles so not throw error at startup
+   */
+  bool initialised_ = false;
+
+  /**
    * @brief checks voltage, current, temperature, and charge
    */
   bool batteriesInRange();

@@ -92,8 +92,7 @@ void Main::checkTemperature()
 {
   temperature_->run();               // not a thread
   data_.setTemperature(temperature_->getData());
-  if ((data_.getTemperature() > 50) && !log_error_)
-  {
+  if ((data_.getTemperature() > 50) && !log_error_) {
     log_.INFO("Sensors", "PCB temperature is getting a wee high...sorry Cheng");
     log_error_ = true;
   }
@@ -102,8 +101,8 @@ void Main::checkTemperature()
 void Main::run()
 {
   // start all managers
-  imu_manager_->start();
   battery_manager_->start();
+  imu_manager_->start();
 
   // Initalise the keyence arrays
   keyence_stripe_counter_arr_    = data_.getSensorsData().keyence_stripe_counter;
