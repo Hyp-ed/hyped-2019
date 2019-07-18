@@ -21,12 +21,12 @@
 namespace hyped {
 namespace embrakes {
 
-Stepper::Stepper(uint32_t enable_pin, uint32_t button_pin, Logger& log, uint8_t id)
+Stepper::Stepper(uint8_t enable_pin, uint8_t button_pin, Logger& log, uint8_t id)
     : log_(log),
       data_(data::Data::getInstance()),
       brake_id_(id),
       em_brakes_data_(data_.getEmergencyBrakesData()),
-      command_pin_(enable_pin, utils::io::gpio::kIn, log_),
+      command_pin_(enable_pin, utils::io::gpio::kOut, log_),
       button_(button_pin, utils::io::gpio::kIn, log_),
       is_clamped_(true)
 {
