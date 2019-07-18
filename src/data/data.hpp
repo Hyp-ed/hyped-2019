@@ -97,6 +97,7 @@ struct BatteryData {
   int8_t    average_temperature;    // C
 
   // below only for BMSHP! Value for BMSLP = 0
+  uint8_t cell_voltage_[Batteries::kNumCells];
   int8_t    low_temperature;        // C
   int8_t    high_temperature;       // C
   uint16_t  low_voltage_cell;       // mV
@@ -106,6 +107,7 @@ struct BatteryData {
 struct Batteries : public Module {
   static constexpr int kNumLPBatteries = 3;
   static constexpr int kNumHPBatteries = 2;
+  static constexpr int kNumCells = 36;
 
   array<BatteryData, kNumLPBatteries> low_power_batteries;
   array<BatteryData, kNumHPBatteries> high_power_batteries;

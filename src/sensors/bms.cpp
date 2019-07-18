@@ -190,6 +190,7 @@ BMSHP::BMSHP(uint16_t id, Logger& log)
     : log_(log),
       can_id_(id*2 + bms::kHPBase),
       thermistor_id_(id + bms::kThermistorBase),
+      cell_id_(id + bms::kCellBase),
       local_data_ {},
       last_update_time_(0)
 {
@@ -223,8 +224,11 @@ bool BMSHP::hasId(uint32_t id, bool extended)
   // HPBMS
   if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
 
-  // unused CAN ID and OBDII ECU ID
-  if (id == 0x36 || id == 0x7E4) return true;
+  // CAN ID for broadcast message
+  if (id == cell_id_) return true;
+  
+  // OBDII ECU ID
+  if (id == 0x7E4) return true;
 
   // unused messages, fault message?
   if (id == 0x6D0 || id == 0x7EC) return true;
@@ -271,6 +275,14 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]);   // mV
   }
   last_update_time_ = utils::Timer::getTimeMicros();
+
+  if (message.id == cell_id_) {
+    for (int i = 0; i < data::Batteries::kNumCells; i++) {
+      int cell_num = static_cast<int>(message.data[0]);
+      local_data_.cell_voltage_[cell_num] = (message.data[1] << 8) | message.data[2];
+      Thread::sleep(bms::kCellRefresh);
+    }
+  }
 
   log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
