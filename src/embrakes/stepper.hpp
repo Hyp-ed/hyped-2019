@@ -41,7 +41,7 @@ class Stepper {
    * @brief Construct a new Stepper object
    * @param log, node id
    */
-  Stepper(uint32_t enable_pin, uint32_t button_pin, Logger& log, uint8_t id);
+  Stepper(uint8_t enable_pin, uint8_t button_pin, Logger& log, uint8_t id);
 
   /**
    * @brief {checks if brake's button is pressed, notes change in the data struct}
