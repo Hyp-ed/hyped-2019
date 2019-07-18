@@ -92,9 +92,10 @@ void Main::checkTemperature()
 {
   temperature_->run();               // not a thread
   data_.setTemperature(temperature_->getData());
-  if (data_.getTemperature() > 85 && !log_error_)
+  if (data_.getTemperature() > 85 && !log_error_) {
     log_.INFO("Sensors", "PCB temperature is getting a wee high...sorry Cheng");
     log_error_ = true;
+  }
 }
 
 void Main::run()
