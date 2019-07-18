@@ -28,6 +28,7 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
   : log_(log),
   sys_(System::getSystem()),
   data_(Data::getInstance()),
+  motor_data_(data_.getMotorData()),
   motorAmount(motorAmount),
   initialized(false),
   criticalError(false),
@@ -39,7 +40,7 @@ StateProcessor::StateProcessor(int motorAmount, Logger &log)
 
   useFakeController = sys_.fake_motors;
 
-  navigationData = Data::getInstance().getNavigationData();
+  navigationData = data_.getNavigationData();
 
   controllers = new ControllerInterface*[motorAmount];
 
@@ -124,6 +125,13 @@ void StateProcessor::enterPreOperational()
 void StateProcessor::accelerate()
 {
   if (initialized) {
+    motor_data_ = data_.getMotorData();
+    for (int i = 0; i < motorAmount; i++) {
+      controllers[i]->updateActualVelocity();
+      motor_data_.rpms[i] = controllers[i]->getVelocity();
+    }
+    data_.setMotorData(motor_data_);
+
     if (accelerationTimer.getTimeMicros() - accelerationTimestamp > 5000) {
       log_.DBG3("Motor", "Accelerate");
       accelerationTimestamp = accelerationTimer.getTimeMicros();

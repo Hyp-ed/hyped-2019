@@ -120,12 +120,8 @@ struct EmergencyBrakes : public Module {
 // -------------------------------------------------------------------------------------------------
 
 struct Motors : public Module {
-  int32_t velocity_1;
-  int32_t velocity_2;
-  int32_t velocity_3;
-  int32_t velocity_4;
-  int32_t velocity_5;
-  int32_t velocity_6;
+  static constexpr int kNumMotors = 4;
+  std::array<uint32_t, kNumMotors> rpms = { {0, 0, 0, 0} };
 };
 
 // -------------------------------------------------------------------------------------------------
