@@ -226,7 +226,7 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 
   // CAN ID for broadcast message
   if (id == cell_id_) return true;
-  
+
   // OBDII ECU ID
   if (id == 0x7E4) return true;
 
