@@ -55,12 +55,6 @@ message ClientToServer {
 
     message Motors {
         ModuleStatus module_status = 1;
-        sint32 velocity_1 = 2;
-        sint32 velocity_2 = 3;
-        sint32 velocity_3 = 4;
-        sint32 velocity_4 = 5;
-        sint32 velocity_5 = 6;
-        sint32 velocity_6 = 7;
     }
 
     message Batteries {

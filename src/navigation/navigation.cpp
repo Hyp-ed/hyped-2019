@@ -33,8 +33,8 @@ Navigation::Navigation(Logger& log, unsigned int axis/*=0*/)
            status_(ModuleStatus::kStart),
            counter_(0),
            axis_(axis),
-           calibration_limits_({0.05, 0.05, 0.05}),
-           imu_reliable_ {true, true, true, true},
+           calibration_limits_ {{0.05, 0.05, 0.05}},
+           imu_reliable_ {{true, true, true, true}},
            nOutlierImus_(0),
            stripe_counter_(0, 0),
            keyence_used_(true),
@@ -88,34 +88,28 @@ NavigationType Navigation::getEmergencyBrakingDistance() const
   return getVelocity()*getVelocity() / (2*kEmergencyDeceleration);
 }
 
-// TODO(Neil): check this is still the same, why is it so?
 NavigationType Navigation::getBrakingDistance() const
 {
-  // A polynomial fit for the braking distance at a specific (normalised) velocity, where
-  // kCoeffSlow for < 50m/s and kCoeffFast for > 50m/s because kCoeffFast is inaccurate
-  // at < 10m/s but they both agree between ~10 and ~50m/s.
-  static constexpr std::array<NavigationType, 16> kCoeffSlow = {
-       136.3132, 158.9403,  63.6093, -35.4894, -149.2755, 152.6967, 502.5464, -218.4689,
-      -779.534,   95.7285, 621.1013,  50.4598, -245.099,  -54.5,     38.0642,   12.3548};
-  static constexpr std::array<NavigationType, 16> kCoeffFast = {
-       258.6,  299.2,  115.2, -104.7, -260.9, 488.5, 940.8, -808.5, -1551.9,  551.7,
-      1315.7,  -61.4, -551.4,  -84.5,   90.7,  26.2};
-
-  NavigationType braking_distance = 2.0;
-  NavigationType var = 1.0;
-  if (getVelocity() < 50.0) {
-    NavigationType norm_v = (getVelocity() - 30.0079) / 17.2325;
-    for (unsigned int i = 0; i < kCoeffSlow.size(); ++i) {
-      braking_distance += kCoeffSlow[i] * var;
-      var *= norm_v;
-    }
-  } else {
-    NavigationType norm_v = (getVelocity() - 41.4985) / 23.5436;
-    for (unsigned int i = 0; i < kCoeffFast.size(); ++i) {
-      braking_distance += kCoeffFast[i] * var;
-      var *= norm_v;
-    }
+  Motors motor_data = data_.getMotorData();
+  uint32_t rpm = 0;
+  for (int i = 0; i < data::Motors::kNumMotors; i++) {
+    rpm += motor_data.rpms[i];
   }
+  uint32_t avg_rpm = rpm / data::Motors::kNumMotors;
+  float rot_velocity = (avg_rpm / 60) * (2 * pi);
+
+  NavigationType actuation_force = spring_compression_ * spring_coefficient_;
+  NavigationType braking_force = (actuation_force * coeff_friction_) /
+                                 (tan(embrake_angle_) - coeff_friction_);
+  NavigationType deceleration_total = kNumBrakes * braking_force / pod_mass_;
+
+  NavigationType pod_kinetic_energy = 0.5 * pod_mass_ * getVelocity() * getVelocity();
+  NavigationType rotational_kinetic_energy = data::Motors::kNumMotors * 0.5 * mom_inertia_wheel_ *
+                                             rot_velocity * rot_velocity;
+  NavigationType total_kinetic_energy = pod_kinetic_energy + rotational_kinetic_energy;
+
+  NavigationType braking_distance = (total_kinetic_energy / pod_mass_) / deceleration_total;
+
   return braking_distance;
 }
 
@@ -128,10 +122,10 @@ void Navigation::calibrateGravity()
 {
   log_.INFO("NAV", "Calibrating gravity");
   std::array<RollingStatistics<NavigationVector>, data::Sensors::kNumImus> online_array =
-    {RollingStatistics<NavigationVector>(kCalibrationQueries),
-     RollingStatistics<NavigationVector>(kCalibrationQueries),
-     RollingStatistics<NavigationVector>(kCalibrationQueries),
-     RollingStatistics<NavigationVector>(kCalibrationQueries)};
+    {{ RollingStatistics<NavigationVector>(kCalibrationQueries),
+       RollingStatistics<NavigationVector>(kCalibrationQueries),
+       RollingStatistics<NavigationVector>(kCalibrationQueries),
+       RollingStatistics<NavigationVector>(kCalibrationQueries) }};
   bool calibration_successful = false;
   int calibration_attempts = 0;
 
@@ -299,7 +293,6 @@ void Navigation::queryKeyence()
         keyence_failure_counter_++;
         keyence_failure_counter_ += floor(abs(distance_change) / kStripeDistance);
       }
-      // If there is more than one disagreement, we get kCriticalFailure
       // Lower the uncertainty in velocity (based on sinuisoidal distribution):
       velocity_uncertainty_ -= abs(distance_change*1e6/
                                (stripe_counter_.timestamp - init_timestamp_));
@@ -318,12 +311,16 @@ void Navigation::queryKeyence()
     }
   }
   // If more than one disagreement occurs then we enter the kCriticalFailure state
-  if (keyence_failure_counter_ > 1) status_ = ModuleStatus::kCriticalFailure;
+  if (keyence_failure_counter_ > 1) {
+    status_ = ModuleStatus::kCriticalFailure;
+    log_.ERR("NAV", "More than one large IMU/Keyence disagreement, entering kCriticalFailure");
+  }
   /* Similarly, if the current IMU distance is larger than four times the distance between
    * two stripes, then we know that the two can no longer agree. That is because at least
    * three stripes have been missed then, which throws kCriticalFailure. */
   if (distance_.value - stripe_counter_.value*kStripeDistance > 4 * kStripeDistance) {
     status_ = ModuleStatus::kCriticalFailure;
+    log_.ERR("NAV", "IMU distance at least 3 * kStripeDistance ahead, entering kCriticalFailure.");
   }
   // Update old keyence readings with current ones
   prev_keyence_readings_ = keyence_readings_;
@@ -369,13 +366,13 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
     // select non-outlier values
     NavigationArrayOneFaulty data_array_faulty;
     if (!imu_reliable_[0]) {
-      data_array_faulty = {data_array[1], data_array[2], data_array[3]};
+      data_array_faulty = {{data_array[1], data_array[2], data_array[3]}};
     } else if (!imu_reliable_[1]) {
-      data_array_faulty = {data_array[0], data_array[2], data_array[3]};
+      data_array_faulty = {{data_array[0], data_array[2], data_array[3]}};
     } else if (!imu_reliable_[2]) {
-      data_array_faulty = {data_array[0], data_array[1], data_array[3]};
+      data_array_faulty = {{data_array[0], data_array[1], data_array[3]}};
     } else if (!imu_reliable_[3]) {
-      data_array_faulty = {data_array[0], data_array[1], data_array[2]};
+      data_array_faulty = {{data_array[0], data_array[1], data_array[2]}};
     }
     std::sort(data_array_faulty.begin(), data_array_faulty.end());
     q1 = (data_array_faulty[0] + data_array_faulty[1]) / 2.;
@@ -421,7 +418,10 @@ void Navigation::tukeyFences(NavigationArray& data_array, float threshold)
         imu_reliable_[i] = false;
         nOutlierImus_++;
       }
-      if (nOutlierImus_ > 1) status_ = ModuleStatus::kCriticalFailure;
+      if (nOutlierImus_ > 1) {
+        status_ = ModuleStatus::kCriticalFailure;
+        log_.ERR("NAV", "At least two IMUs no longer reliable, entering CriticalFailure.");
+      }
     } else {
       imu_outlier_counter_[i] = 0;
       if (counter_ % 100 == 0 && imu_reliable_[i]) {

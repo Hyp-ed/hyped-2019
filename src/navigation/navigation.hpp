@@ -39,6 +39,7 @@ using data::ImuData;
 using data::ModuleStatus;
 using data::NavigationType;
 using data::NavigationVector;
+using data::Motors;
 using navigation::KalmanFilter;
 using utils::Logger;
 using utils::math::Integrator;
@@ -160,6 +161,16 @@ namespace navigation {
       static constexpr float kTukeyIQRBound = 3;
 
       static constexpr NavigationType kStripeDistance = 30.48;
+
+      static constexpr uint32_t pod_mass_           = 250;  // kg
+      static constexpr float    mom_inertia_wheel_  = 0.04;  // kgm²
+      static constexpr uint32_t kNumBrakes          = 4;
+      static constexpr float    coeff_friction_     = 0.38;
+      static constexpr uint32_t spring_compression_ = 40;
+      static constexpr uint32_t spring_coefficient_ = 18;
+      static constexpr float    embrake_angle_      = 0.52;
+
+     static constexpr float pi = 3.14159265359;  // Have to approximate
 
       // System communication
       Logger& log_;

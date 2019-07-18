@@ -93,12 +93,6 @@ void SendLoop::packMotorsMessage(telemetry_data::ClientToServer& msg)
   telemetry_data::ClientToServer::Motors* motors_msg = msg.mutable_motors();
 
   motors_msg->set_module_status(Utils::moduleStatusEnumConversion(motor_data.module_status));
-  motors_msg->set_velocity_1(motor_data.velocity_1);
-  motors_msg->set_velocity_2(motor_data.velocity_2);
-  motors_msg->set_velocity_3(motor_data.velocity_3);
-  motors_msg->set_velocity_4(motor_data.velocity_4);
-  motors_msg->set_velocity_5(motor_data.velocity_5);
-  motors_msg->set_velocity_6(motor_data.velocity_6);
 }
 
 void SendLoop::packBatteriesMessage(telemetry_data::ClientToServer& msg)

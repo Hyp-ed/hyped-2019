@@ -91,6 +91,16 @@ class BmsManager: public ManagerInterface  {
   data::Batteries batteries_;
 
   /**
+   * @brief print log messages once
+   */
+  data::State previous_state_;
+
+  /**
+   * @brief print log messages once
+   */
+  data::ModuleStatus previous_status_;
+
+  /**
    * @brief checks voltage, current, temperature, and charge
    */
   bool batteriesInRange();

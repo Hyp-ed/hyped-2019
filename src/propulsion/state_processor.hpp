@@ -42,6 +42,7 @@ using data::Batteries;
 using utils::Timer;
 using data::Navigation;
 using data::Data;
+using data::Motors;
 
 class StateProcessor : public StateProcessorInterface
 {
@@ -145,6 +146,7 @@ class StateProcessor : public StateProcessorInterface
     Logger &log_;
     System &sys_;
     Data   &data_;
+    Motors motor_data_;
     int motorAmount;
     bool initialized;
     bool criticalError;
