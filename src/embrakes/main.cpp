@@ -28,10 +28,10 @@ Main::Main(uint8_t id, Logger &log)
     log_(log),
     data_(data::Data::getInstance())
 {
-  brake_1 = new Stepper(log_, 20);
-  brake_2 = new Stepper(log_, 21);
-  brake_3 = new Stepper(log_, 22);
-  brake_4 = new Stepper(log_, 23);
+  Stepper* brake_1 = new Stepper(26, 27, log_, 1);
+  Stepper* brake_2 = new Stepper(28, 29, log_, 2);
+  Stepper* brake_3 = new Stepper(30, 31, log_, 3);
+  Stepper* brake_4 = new Stepper(32, 33, log_, 4);
 }
 
 void Main::run() {
@@ -51,19 +51,29 @@ void Main::run() {
           !em_brakes_.brakes_retracted[1] && !em_brakes_.brakes_retracted[2] &&
           !em_brakes_.brakes_retracted[3]) {
           
-          brake_1->sendRetract(0x0, 0x7d, 0x28);
-          brake_2->sendRetract(0x0, 0x7d, 0x28);
-          brake_3->sendRetract(0x0, 0x7d, 0x28);
-          brake_4->sendRetract(0x0, 0x7d, 0x28);
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
+
+          brake_1->checkHome();
+          brake_2->checkHome();
+          brake_3->checkHome();
+          brake_4->checkHome();
 
         } else if(!tlm_data_.nominal_braking_command && em_brakes_.brakes_retracted[0] &&
           em_brakes_.brakes_retracted[1] && em_brakes_.brakes_retracted[2] &&
           em_brakes_.brakes_retracted[3]) {
-          
+
           brake_1->sendClamp();
           brake_2->sendClamp();
           brake_3->sendClamp();
           brake_4->sendClamp();
+
+          brake_1->checkHome();
+          brake_2->checkHome();
+          brake_3->checkHome();
+          brake_4->checkHome();
 
         }
         break;
@@ -71,36 +81,33 @@ void Main::run() {
         if(!em_brakes_.brakes_retracted[0] && !em_brakes_.brakes_retracted[1] &&
         !em_brakes_.brakes_retracted[2] && !em_brakes_.brakes_retracted[3]) {
           
-          brake_1->sendRetract(0x0, 0x7d, 0x28);
-          brake_2->sendRetract(0x0, 0x7d, 0x28);
-          brake_3->sendRetract(0x0, 0x7d, 0x28);
-          brake_4->sendRetract(0x0, 0x7d, 0x28);
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
+
+          em_brakes_.module_status = ModuleStatus::kReady;
+          data_.setEmergencyBrakesData(em_brakes_);
         }
-        em_brakes_.module_status = ModuleStatus::kReady;
-        data_.setEmergencyBrakesData(em_brakes_);
+
+          brake_1->checkHome();
+          brake_2->checkHome();
+          brake_3->checkHome();
+          brake_4->checkHome();
+
+        break;
+      case data::State::kAccelerating:
+        brake_1->checkAccFailure();
+        brake_2->checkAccFailure();
+        brake_3->checkAccFailure();
+        brake_4->checkAccFailure();
+
         break;
       case data::State::kNominalBraking:
-        if(em_brakes_.brakes_retracted[0] && em_brakes_.brakes_retracted[1] &&
-        em_brakes_.brakes_retracted[2] && em_brakes_.brakes_retracted[3]) {
-          
-          brake_1->sendClamp();
-          brake_2->sendClamp();
-          brake_3->sendClamp();
-          brake_4->sendClamp();
-        }
-        log_.INFO("Brakes", "Starting Nominal Braking");
-        break;
-      case data::State::kEmergencyBraking:
-
-        // ???brakes engaged by cutting high power???
-
-        log_.INFO("Brakes", "Starting Emergency Braking");
-
-        // TODO(Kornelija): checkHome
-        break;
-      case data::State::kExiting:
-
-        // ???clamp brakes when service propulsion is stopped???
+        brake_1->sendClamp();
+        brake_2->sendClamp();
+        brake_3->sendClamp();
+        brake_4->sendClamp();
 
         break;
       case data::State::kFinished:
@@ -108,19 +115,29 @@ void Main::run() {
           !em_brakes_.brakes_retracted[1] && !em_brakes_.brakes_retracted[2] &&
           !em_brakes_.brakes_retracted[3]) {
           
-          brake_1->sendRetract(0x0, 0x7d, 0x28);
-          brake_2->sendRetract(0x0, 0x7d, 0x28);
-          brake_3->sendRetract(0x0, 0x7d, 0x28);
-          brake_4->sendRetract(0x0, 0x7d, 0x28);
+          brake_1->sendRetract();
+          brake_2->sendRetract();
+          brake_3->sendRetract();
+          brake_4->sendRetract();
+
+          brake_1->checkHome();
+          brake_2->checkHome();
+          brake_3->checkHome();
+          brake_4->checkHome();
 
         } else if(!tlm_data_.nominal_braking_command && em_brakes_.brakes_retracted[0] &&
           em_brakes_.brakes_retracted[1] && em_brakes_.brakes_retracted[2] &&
           em_brakes_.brakes_retracted[3]) {
-          
+
           brake_1->sendClamp();
           brake_2->sendClamp();
           brake_3->sendClamp();
           brake_4->sendClamp();
+
+          brake_1->checkHome();
+          brake_2->checkHome();
+          brake_3->checkHome();
+          brake_4->checkHome();
 
         }
         break;
