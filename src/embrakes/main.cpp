@@ -28,10 +28,10 @@ Main::Main(uint8_t id, Logger &log)
     log_(log),
     data_(data::Data::getInstance())
 {
-  Stepper* brake_1 = new Stepper(26, 27, log_, 1);
-  Stepper* brake_2 = new Stepper(28, 29, log_, 2);
-  Stepper* brake_3 = new Stepper(30, 31, log_, 3);
-  Stepper* brake_4 = new Stepper(32, 33, log_, 4);
+  Stepper* brake_1 = new Stepper(87, 89, log_, 1);
+  Stepper* brake_2 = new Stepper(10, 11, log_, 2);
+  Stepper* brake_3 = new Stepper(9, 81, log_, 3);
+  Stepper* brake_4 = new Stepper(8, 80, log_, 4);
 }
 
 void Main::run() {
