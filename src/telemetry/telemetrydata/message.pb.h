@@ -803,54 +803,12 @@ class ClientToServer_Motors :
   ::telemetry_data::ClientToServer_ModuleStatus module_status() const;
   void set_module_status(::telemetry_data::ClientToServer_ModuleStatus value);
 
-  // sint32 velocity_1 = 2;
-  void clear_velocity_1();
-  static const int kVelocity1FieldNumber = 2;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_1() const;
-  void set_velocity_1(::PROTOBUF_NAMESPACE_ID::int32 value);
-
-  // sint32 velocity_2 = 3;
-  void clear_velocity_2();
-  static const int kVelocity2FieldNumber = 3;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_2() const;
-  void set_velocity_2(::PROTOBUF_NAMESPACE_ID::int32 value);
-
-  // sint32 velocity_3 = 4;
-  void clear_velocity_3();
-  static const int kVelocity3FieldNumber = 4;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_3() const;
-  void set_velocity_3(::PROTOBUF_NAMESPACE_ID::int32 value);
-
-  // sint32 velocity_4 = 5;
-  void clear_velocity_4();
-  static const int kVelocity4FieldNumber = 5;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_4() const;
-  void set_velocity_4(::PROTOBUF_NAMESPACE_ID::int32 value);
-
-  // sint32 velocity_5 = 6;
-  void clear_velocity_5();
-  static const int kVelocity5FieldNumber = 6;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_5() const;
-  void set_velocity_5(::PROTOBUF_NAMESPACE_ID::int32 value);
-
-  // sint32 velocity_6 = 7;
-  void clear_velocity_6();
-  static const int kVelocity6FieldNumber = 7;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_6() const;
-  void set_velocity_6(::PROTOBUF_NAMESPACE_ID::int32 value);
-
   // @@protoc_insertion_point(class_scope:telemetry_data.ClientToServer.Motors)
  private:
   class HasBitSetters;
 
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
   int module_status_;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_1_;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_2_;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_3_;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_4_;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_5_;
-  ::PROTOBUF_NAMESPACE_ID::int32 velocity_6_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_message_2eproto;
 };
@@ -2059,90 +2017,6 @@ inline void ClientToServer_Motors::set_module_status(::telemetry_data::ClientToS
   
   module_status_ = value;
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.module_status)
-}
-
-// sint32 velocity_1 = 2;
-inline void ClientToServer_Motors::clear_velocity_1() {
-  velocity_1_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Motors::velocity_1() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_1)
-  return velocity_1_;
-}
-inline void ClientToServer_Motors::set_velocity_1(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  velocity_1_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_1)
-}
-
-// sint32 velocity_2 = 3;
-inline void ClientToServer_Motors::clear_velocity_2() {
-  velocity_2_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Motors::velocity_2() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_2)
-  return velocity_2_;
-}
-inline void ClientToServer_Motors::set_velocity_2(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  velocity_2_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_2)
-}
-
-// sint32 velocity_3 = 4;
-inline void ClientToServer_Motors::clear_velocity_3() {
-  velocity_3_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Motors::velocity_3() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_3)
-  return velocity_3_;
-}
-inline void ClientToServer_Motors::set_velocity_3(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  velocity_3_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_3)
-}
-
-// sint32 velocity_4 = 5;
-inline void ClientToServer_Motors::clear_velocity_4() {
-  velocity_4_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Motors::velocity_4() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_4)
-  return velocity_4_;
-}
-inline void ClientToServer_Motors::set_velocity_4(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  velocity_4_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_4)
-}
-
-// sint32 velocity_5 = 6;
-inline void ClientToServer_Motors::clear_velocity_5() {
-  velocity_5_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Motors::velocity_5() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_5)
-  return velocity_5_;
-}
-inline void ClientToServer_Motors::set_velocity_5(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  velocity_5_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_5)
-}
-
-// sint32 velocity_6 = 7;
-inline void ClientToServer_Motors::clear_velocity_6() {
-  velocity_6_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Motors::velocity_6() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Motors.velocity_6)
-  return velocity_6_;
-}
-inline void ClientToServer_Motors::set_velocity_6(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  velocity_6_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Motors.velocity_6)
 }
 
 // -------------------------------------------------------------------
