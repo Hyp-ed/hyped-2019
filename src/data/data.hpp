@@ -121,7 +121,7 @@ struct EmergencyBrakes : public Module {
 
 struct Motors : public Module {
   static constexpr int kNumMotors = 4;
-  std::array<uint32_t, kNumMotors> rpms = {0};
+  std::array<uint32_t, kNumMotors> rpms = { {0, 0, 0, 0} };
 };
 
 // -------------------------------------------------------------------------------------------------
