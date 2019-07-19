@@ -14,8 +14,8 @@ Port    9090
 
 > Sensors
 ChipSelect  47,22,45,86
-KeyenceL    72
-KeyenceR    74
+KeyenceL    66
+KeyenceR    67
 Thermistor  3
 HPMaster    46
 HPSSR       26,44
