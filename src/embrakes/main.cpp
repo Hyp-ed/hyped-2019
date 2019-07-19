@@ -36,7 +36,7 @@ Main::Main(uint8_t id, Logger &log)
     command_pins_[i] = sys_.config->embrakes.command[i];
     button_pins_[i] = sys_.config->embrakes.button[i];
   }
-  Stepper brake_1(command_pins_[0], button_pins_[0], log_, 1);
+  brake_1 = new Stepper(command_pins_[0], button_pins_[0], log_, 1);
   // Stepper brake_2(command_pins_[1], button_pins_[1], log_, 2);
   // Stepper brake_3(command_pins_[2], button_pins_[2], log_, 3);
   // Stepper brake_4(command_pins_[3], button_pins_[3], log_, 4);
