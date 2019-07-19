@@ -61,7 +61,7 @@ class BmsManager: public ManagerInterface  {
   /**
    * @brief check IMD and set GPIOs accordingly
    */
-  void checkIMD();
+  bool checkIMD();
 
   /**
    * @brief needs to be references because run() passes directly to data struct
