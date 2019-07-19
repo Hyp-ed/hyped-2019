@@ -269,7 +269,7 @@ void Navigation::queryKeyence()
       NavigationType allowed_uncertainty = distance_uncertainty_;
       /* If the uncertainty is too small, it is set to a relatively small value so that we do
        * not get an error just because the uncertainty is tiny. */
-      NavigationType minimum_uncertainty = kStripeDistance / 10.;
+      NavigationType minimum_uncertainty = kStripeDistance / 5.;
       if (distance_uncertainty_ < minimum_uncertainty) allowed_uncertainty = minimum_uncertainty;
       NavigationType distance_change = distance_.value - stripe_counter_.value*kStripeDistance;
       /* There should only be an updated stripe count if the IMU determined distance is closer
