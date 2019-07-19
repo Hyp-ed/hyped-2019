@@ -273,9 +273,12 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_message_2eproto::offsets[] PRO
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, voltage_),
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, current_),
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, charge_),
-  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, temperature_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, average_temperature_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, low_temperature_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, high_temperature_),
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, low_voltage_cell_),
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, high_voltage_cell_),
+  PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries_BatteryData, indv_voltage_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::telemetry_data::ClientToServer_Batteries, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -329,12 +332,12 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 15, -1, sizeof(::telemetry_data::ClientToServer_StateMachine)},
   { 21, -1, sizeof(::telemetry_data::ClientToServer_Motors)},
   { 27, -1, sizeof(::telemetry_data::ClientToServer_Batteries_BatteryData)},
-  { 38, -1, sizeof(::telemetry_data::ClientToServer_Batteries)},
-  { 46, -1, sizeof(::telemetry_data::ClientToServer_Sensors_ImuData)},
-  { 53, -1, sizeof(::telemetry_data::ClientToServer_Sensors)},
-  { 60, -1, sizeof(::telemetry_data::ClientToServer_Temperature)},
-  { 66, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
-  { 72, -1, sizeof(::telemetry_data::ClientToServer)},
+  { 41, -1, sizeof(::telemetry_data::ClientToServer_Batteries)},
+  { 49, -1, sizeof(::telemetry_data::ClientToServer_Sensors_ImuData)},
+  { 56, -1, sizeof(::telemetry_data::ClientToServer_Sensors)},
+  { 63, -1, sizeof(::telemetry_data::ClientToServer_Temperature)},
+  { 69, -1, sizeof(::telemetry_data::ClientToServer_EmergencyBrakes)},
+  { 75, -1, sizeof(::telemetry_data::ClientToServer)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -358,7 +361,7 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "\007\n\003ACK\020\000\022\010\n\004STOP\020\001\022\r\n\tCALIBRATE\020\002\022\n\n\006LAU"
   "NCH\020\003\022\t\n\005RESET\020\004\022\031\n\025SERVICE_PROPULSION_G"
   "O\020\005\022\033\n\027SERVICE_PROPULSION_STOP\020\006\022\023\n\017NOMI"
-  "NAL_BRAKING\020\007\"\212\r\n\016ClientToServer\022=\n\nnavi"
+  "NAL_BRAKING\020\007\"\333\r\n\016ClientToServer\022=\n\nnavi"
   "gation\030\001 \001(\0132).telemetry_data.ClientToSe"
   "rver.Navigation\022B\n\rstate_machine\030\002 \001(\0132+"
   ".telemetry_data.ClientToServer.StateMach"
@@ -382,26 +385,28 @@ const char descriptor_table_protodef_message_2eproto[] PROTOBUF_SECTION_VARIABLE
   "MPLETE\020\007\022\023\n\017FAILURE_STOPPED\020\010\022\013\n\007EXITING"
   "\020\t\022\014\n\010FINISHED\020\n\032L\n\006Motors\022B\n\rmodule_sta"
   "tus\030\001 \001(\0162+.telemetry_data.ClientToServe"
-  "r.ModuleStatus\032\202\003\n\tBatteries\022B\n\rmodule_s"
+  "r.ModuleStatus\032\323\003\n\tBatteries\022B\n\rmodule_s"
   "tatus\030\001 \001(\0162+.telemetry_data.ClientToSer"
   "ver.ModuleStatus\022Q\n\023low_power_batteries\030"
   "\002 \003(\01324.telemetry_data.ClientToServer.Ba"
   "tteries.BatteryData\022R\n\024high_power_batter"
   "ies\030\003 \003(\01324.telemetry_data.ClientToServe"
-  "r.Batteries.BatteryData\032\211\001\n\013BatteryData\022"
+  "r.Batteries.BatteryData\032\332\001\n\013BatteryData\022"
   "\017\n\007voltage\030\001 \001(\r\022\017\n\007current\030\002 \001(\021\022\016\n\006cha"
-  "rge\030\003 \001(\r\022\023\n\013temperature\030\004 \001(\005\022\030\n\020low_vo"
-  "ltage_cell\030\005 \001(\r\022\031\n\021high_voltage_cell\030\006 "
-  "\001(\r\032\267\001\n\007Sensors\022B\n\rmodule_status\030\001 \001(\0162+"
-  ".telemetry_data.ClientToServer.ModuleSta"
-  "tus\022;\n\003imu\030\002 \003(\0132..telemetry_data.Client"
-  "ToServer.Sensors.ImuData\032+\n\007ImuData\022\023\n\013o"
-  "perational\030\001 \001(\010\022\013\n\003acc\030\002 \003(\002\032\"\n\013Tempera"
-  "ture\022\023\n\013temperature\030\001 \001(\021\032!\n\017EmergencyBr"
-  "akes\022\016\n\006brakes\030\001 \003(\010\"D\n\014ModuleStatus\022\t\n\005"
-  "START\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020CRITICAL"
-  "_FAILURE\020\003B\036\n\rtelemetrydataB\rTelemetryDa"
-  "tab\006proto3"
+  "rge\030\003 \001(\r\022\033\n\023average_temperature\030\004 \001(\005\022\027"
+  "\n\017low_temperature\030\005 \001(\005\022\030\n\020high_temperat"
+  "ure\030\006 \001(\005\022\030\n\020low_voltage_cell\030\007 \001(\r\022\031\n\021h"
+  "igh_voltage_cell\030\010 \001(\r\022\024\n\014indv_voltage\030\t"
+  " \003(\r\032\267\001\n\007Sensors\022B\n\rmodule_status\030\001 \001(\0162"
+  "+.telemetry_data.ClientToServer.ModuleSt"
+  "atus\022;\n\003imu\030\002 \003(\0132..telemetry_data.Clien"
+  "tToServer.Sensors.ImuData\032+\n\007ImuData\022\023\n\013"
+  "operational\030\001 \001(\010\022\013\n\003acc\030\002 \003(\002\032\"\n\013Temper"
+  "ature\022\023\n\013temperature\030\001 \001(\021\032!\n\017EmergencyB"
+  "rakes\022\016\n\006brakes\030\001 \003(\010\"D\n\014ModuleStatus\022\t\n"
+  "\005START\020\000\022\010\n\004INIT\020\001\022\t\n\005READY\020\002\022\024\n\020CRITICA"
+  "L_FAILURE\020\003B\036\n\rtelemetrydataB\rTelemetryD"
+  "atab\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_message_2eproto_deps[1] = {
 };
@@ -421,7 +426,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_mes
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_message_2eproto_once;
 static bool descriptor_table_message_2eproto_initialized = false;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_message_2eproto = {
-  &descriptor_table_message_2eproto_initialized, descriptor_table_protodef_message_2eproto, "message.proto", 1970,
+  &descriptor_table_message_2eproto_initialized, descriptor_table_protodef_message_2eproto, "message.proto", 2051,
   &descriptor_table_message_2eproto_once, descriptor_table_message_2eproto_sccs, descriptor_table_message_2eproto_deps, 11, 0,
   schemas, file_default_instances, TableStruct_message_2eproto::offsets,
   file_level_metadata_message_2eproto, 11, file_level_enum_descriptors_message_2eproto, file_level_service_descriptors_message_2eproto,
@@ -1706,9 +1711,12 @@ class ClientToServer_Batteries_BatteryData::HasBitSetters {
 const int ClientToServer_Batteries_BatteryData::kVoltageFieldNumber;
 const int ClientToServer_Batteries_BatteryData::kCurrentFieldNumber;
 const int ClientToServer_Batteries_BatteryData::kChargeFieldNumber;
-const int ClientToServer_Batteries_BatteryData::kTemperatureFieldNumber;
+const int ClientToServer_Batteries_BatteryData::kAverageTemperatureFieldNumber;
+const int ClientToServer_Batteries_BatteryData::kLowTemperatureFieldNumber;
+const int ClientToServer_Batteries_BatteryData::kHighTemperatureFieldNumber;
 const int ClientToServer_Batteries_BatteryData::kLowVoltageCellFieldNumber;
 const int ClientToServer_Batteries_BatteryData::kHighVoltageCellFieldNumber;
+const int ClientToServer_Batteries_BatteryData::kIndvVoltageFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ClientToServer_Batteries_BatteryData::ClientToServer_Batteries_BatteryData()
@@ -1718,7 +1726,8 @@ ClientToServer_Batteries_BatteryData::ClientToServer_Batteries_BatteryData()
 }
 ClientToServer_Batteries_BatteryData::ClientToServer_Batteries_BatteryData(const ClientToServer_Batteries_BatteryData& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr) {
+      _internal_metadata_(nullptr),
+      indv_voltage_(from.indv_voltage_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&voltage_, &from.voltage_,
     static_cast<size_t>(reinterpret_cast<char*>(&high_voltage_cell_) -
@@ -1755,6 +1764,7 @@ void ClientToServer_Batteries_BatteryData::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  indv_voltage_.Clear();
   ::memset(&voltage_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&high_voltage_cell_) -
       reinterpret_cast<char*>(&voltage_)) + sizeof(high_voltage_cell_));
@@ -1790,24 +1800,48 @@ const char* ClientToServer_Batteries_BatteryData::_InternalParse(const char* ptr
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // int32 temperature = 4;
+      // int32 average_temperature = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
-          temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          average_temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 low_voltage_cell = 5;
+      // int32 low_temperature = 5;
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+          low_temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 high_temperature = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+          high_temperature_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 low_voltage_cell = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
           low_voltage_cell_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 high_voltage_cell = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+      // uint32 high_voltage_cell = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
           high_voltage_cell_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // repeated uint32 indv_voltage = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 74)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(mutable_indv_voltage(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 72) {
+          add_indv_voltage(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -1880,22 +1914,48 @@ bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
         break;
       }
 
-      // int32 temperature = 4;
+      // int32 average_temperature = 4;
       case 4: {
         if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
 
           DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
                    ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
-                 input, &temperature_)));
+                 input, &average_temperature_)));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // uint32 low_voltage_cell = 5;
+      // int32 low_temperature = 5;
       case 5: {
         if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
+
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
+                 input, &low_temperature_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 high_temperature = 6;
+      case 6: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
+
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
+                 input, &high_temperature_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // uint32 low_voltage_cell = 7;
+      case 7: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (56 & 0xFF)) {
 
           DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
                    ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
@@ -1906,13 +1966,29 @@ bool ClientToServer_Batteries_BatteryData::MergePartialFromCodedStream(
         break;
       }
 
-      // uint32 high_voltage_cell = 6;
-      case 6: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
+      // uint32 high_voltage_cell = 8;
+      case 8: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (64 & 0xFF)) {
 
           DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
                    ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
                  input, &high_voltage_cell_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // repeated uint32 indv_voltage = 9;
+      case 9: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (74 & 0xFF)) {
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPackedPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_indv_voltage())));
+        } else if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (72 & 0xFF)) {
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 74u, input, this->mutable_indv_voltage())));
         } else {
           goto handle_unusual;
         }
@@ -1961,19 +2037,40 @@ void ClientToServer_Batteries_BatteryData::SerializeWithCachedSizes(
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(3, this->charge(), output);
   }
 
-  // int32 temperature = 4;
-  if (this->temperature() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(4, this->temperature(), output);
+  // int32 average_temperature = 4;
+  if (this->average_temperature() != 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(4, this->average_temperature(), output);
   }
 
-  // uint32 low_voltage_cell = 5;
+  // int32 low_temperature = 5;
+  if (this->low_temperature() != 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(5, this->low_temperature(), output);
+  }
+
+  // int32 high_temperature = 6;
+  if (this->high_temperature() != 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32(6, this->high_temperature(), output);
+  }
+
+  // uint32 low_voltage_cell = 7;
   if (this->low_voltage_cell() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(5, this->low_voltage_cell(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(7, this->low_voltage_cell(), output);
   }
 
-  // uint32 high_voltage_cell = 6;
+  // uint32 high_voltage_cell = 8;
   if (this->high_voltage_cell() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(6, this->high_voltage_cell(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(8, this->high_voltage_cell(), output);
+  }
+
+  // repeated uint32 indv_voltage = 9;
+  if (this->indv_voltage_size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteTag(9, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_indv_voltage_cached_byte_size_.load(
+        std::memory_order_relaxed));
+  }
+  for (int i = 0, n = this->indv_voltage_size(); i < n; i++) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32NoTag(
+      this->indv_voltage(i), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -2004,19 +2101,42 @@ void ClientToServer_Batteries_BatteryData::SerializeWithCachedSizes(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->charge(), target);
   }
 
-  // int32 temperature = 4;
-  if (this->temperature() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->temperature(), target);
+  // int32 average_temperature = 4;
+  if (this->average_temperature() != 0) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->average_temperature(), target);
   }
 
-  // uint32 low_voltage_cell = 5;
+  // int32 low_temperature = 5;
+  if (this->low_temperature() != 0) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(5, this->low_temperature(), target);
+  }
+
+  // int32 high_temperature = 6;
+  if (this->high_temperature() != 0) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(6, this->high_temperature(), target);
+  }
+
+  // uint32 low_voltage_cell = 7;
   if (this->low_voltage_cell() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->low_voltage_cell(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(7, this->low_voltage_cell(), target);
   }
 
-  // uint32 high_voltage_cell = 6;
+  // uint32 high_voltage_cell = 8;
   if (this->high_voltage_cell() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->high_voltage_cell(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(8, this->high_voltage_cell(), target);
+  }
+
+  // repeated uint32 indv_voltage = 9;
+  if (this->indv_voltage_size() > 0) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteTagToArray(
+      9,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
+      target);
+    target = ::PROTOBUF_NAMESPACE_ID::io::CodedOutputStream::WriteVarint32ToArray(
+        _indv_voltage_cached_byte_size_.load(std::memory_order_relaxed),
+         target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      WriteUInt32NoTagToArray(this->indv_voltage_, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -2040,6 +2160,21 @@ size_t ClientToServer_Batteries_BatteryData::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  // repeated uint32 indv_voltage = 9;
+  {
+    size_t data_size = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      UInt32Size(this->indv_voltage_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _indv_voltage_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
   // uint32 voltage = 1;
   if (this->voltage() != 0) {
     total_size += 1 +
@@ -2061,21 +2196,35 @@ size_t ClientToServer_Batteries_BatteryData::ByteSizeLong() const {
         this->charge());
   }
 
-  // int32 temperature = 4;
-  if (this->temperature() != 0) {
+  // int32 average_temperature = 4;
+  if (this->average_temperature() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->temperature());
+        this->average_temperature());
   }
 
-  // uint32 low_voltage_cell = 5;
+  // int32 low_temperature = 5;
+  if (this->low_temperature() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->low_temperature());
+  }
+
+  // int32 high_temperature = 6;
+  if (this->high_temperature() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->high_temperature());
+  }
+
+  // uint32 low_voltage_cell = 7;
   if (this->low_voltage_cell() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->low_voltage_cell());
   }
 
-  // uint32 high_voltage_cell = 6;
+  // uint32 high_voltage_cell = 8;
   if (this->high_voltage_cell() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
@@ -2109,6 +2258,7 @@ void ClientToServer_Batteries_BatteryData::MergeFrom(const ClientToServer_Batter
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  indv_voltage_.MergeFrom(from.indv_voltage_);
   if (from.voltage() != 0) {
     set_voltage(from.voltage());
   }
@@ -2118,8 +2268,14 @@ void ClientToServer_Batteries_BatteryData::MergeFrom(const ClientToServer_Batter
   if (from.charge() != 0) {
     set_charge(from.charge());
   }
-  if (from.temperature() != 0) {
-    set_temperature(from.temperature());
+  if (from.average_temperature() != 0) {
+    set_average_temperature(from.average_temperature());
+  }
+  if (from.low_temperature() != 0) {
+    set_low_temperature(from.low_temperature());
+  }
+  if (from.high_temperature() != 0) {
+    set_high_temperature(from.high_temperature());
   }
   if (from.low_voltage_cell() != 0) {
     set_low_voltage_cell(from.low_voltage_cell());
@@ -2154,10 +2310,13 @@ void ClientToServer_Batteries_BatteryData::Swap(ClientToServer_Batteries_Battery
 void ClientToServer_Batteries_BatteryData::InternalSwap(ClientToServer_Batteries_BatteryData* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  indv_voltage_.InternalSwap(&other->indv_voltage_);
   swap(voltage_, other->voltage_);
   swap(current_, other->current_);
   swap(charge_, other->charge_);
-  swap(temperature_, other->temperature_);
+  swap(average_temperature_, other->average_temperature_);
+  swap(low_temperature_, other->low_temperature_);
+  swap(high_temperature_, other->high_temperature_);
   swap(low_voltage_cell_, other->low_voltage_cell_);
   swap(high_voltage_cell_, other->high_voltage_cell_);
 }

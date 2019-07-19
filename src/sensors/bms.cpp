@@ -1,5 +1,5 @@
 /*
- * Authors: M. Kristien
+ * Authors: M. Kristien and Gregory Dayao
  * Organisation: HYPED
  * Date: 12. April 2018
  * Description:
@@ -155,8 +155,9 @@ void BMS::getData(BatteryData* battery)
   for (uint16_t v: data_.voltage) battery->voltage += v;
   battery->voltage    /= 100;  // scale to dV from mV
   battery->average_temperature = data_.temperature;
-  battery->current     = (current_ - 0x800000)/100;  // offset provided by datasheet
-  if (battery->current == -18350) battery->current = 0;
+  if (battery->average_temperature == -40) battery->average_temperature = 0;    // if temp offline
+  battery->current     = current_ - 0x800000;  // offset provided by datasheet
+  battery->current    /= 100;   // scale to dA from mA
 
   // not used, initialised to zero
   battery->low_temperature = 0;
@@ -188,6 +189,8 @@ std::vector<uint16_t> BMSHP::existing_ids_;   // NOLINT [build/include_what_you_
 BMSHP::BMSHP(uint16_t id, Logger& log)
     : log_(log),
       can_id_(id*2 + bms::kHPBase),
+      thermistor_id_(id + bms::kThermistorBase),
+      cell_id_(id + bms::kCellBase),
       local_data_ {},
       last_update_time_(0)
 {
@@ -221,25 +224,31 @@ bool BMSHP::hasId(uint32_t id, bool extended)
   // HPBMS
   if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
 
-  // unused CAN ID and OBDII ECU ID
-  if (id == 0x36 || id == 0x7E4) return true;
+  // CAN ID for broadcast message
+  if (id == cell_id_) return true;
 
+  // OBDII ECU ID
+  if (id == 0x7E4) return true;
   // unused messages, fault message?
   if (id == 0x6D0 || id == 0x7EC) return true;
   if (id == 0x70 || id == 0x80) return true;
 
   // Thermistor expansion module
-  if (id == 0x1839F380) return true;
+  if (id == thermistor_id_) return true;
 
+  // Thermistor node IDs
+  if (id == 0x6B4 || id == 0x6B5) return true;
   // ignore misc thermistor module messages
   if (id == 0x1838F380 || id == 0x18EEFF80) return true;
+  if (id == 0x1838F381 || id == 0x18EEFF81) return true;
+
   return false;
 }
 
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
   // thermistor expansion module
-  if (message.id == 0x1839F380) {   // C
+  if (message.id == thermistor_id_) {   // C
     local_data_.low_temperature     = message.data[1];
     local_data_.high_temperature    = message.data[2];
     local_data_.average_temperature = message.data[3];
@@ -265,6 +274,14 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   }
   last_update_time_ = utils::Timer::getTimeMicros();
 
+  // individual cell voltages, configured at 100ms refresh rate
+  if (message.id == cell_id_) {
+    int cell_num = static_cast<int>(message.data[0]);   // get any value
+    local_data_.cell_voltage[cell_num] = (message.data[1] << 8) | message.data[2];
+    local_data_.cell_voltage[cell_num] *=10;   // mV
+  }
+
+  log_.DBG2("BMSHP", "Cell voltage: %u", local_data_.cell_voltage[0]);
   log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
     local_data_.current,

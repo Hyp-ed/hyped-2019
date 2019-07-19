@@ -60,6 +60,10 @@ BmsManager::BmsManager(Logger& log)
     if (!sys_.battery_test) {
       // Set SSR switches for real system
 
+      imd_out_ = new GPIO(sys_.config->sensors.IMDOut, utils::io::gpio::kOut);
+      imd_out_->set();
+      imd_in_ = new GPIO(sys_.config->sensors.IMDIn, utils::io::gpio::kIn);
+
       // clear HPSSRs if default is high
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i] = new GPIO(sys_.config->sensors.HPSSR[i], utils::io::gpio::kOut);
@@ -68,14 +72,12 @@ BmsManager::BmsManager(Logger& log)
       }
       hp_master_ = new GPIO(sys_.config->sensors.hp_master, utils::io::gpio::kOut);
       hp_master_->clear();
-      prop_cool_ = new GPIO(sys_.config->sensors.prop_cool, utils::io::gpio::kOut);
-      prop_cool_->clear();
       log_.INFO("BMS-MANAGER", "HP SSRs has been initialised CLEAR");
 
-      // Set LPSSR manual switch
-      lp_ssr_ = new GPIO(sys_.config->sensors.LPSSR, utils::io::gpio::kOut);
-      lp_ssr_->set();
-      log_.INFO("BMS-MANAGER", "LP SSR has been set");
+      // Set embrakes ssr
+      embrakes_ssr_ = new GPIO(sys_.config->sensors.embrakes, utils::io::gpio::kOut);
+      embrakes_ssr_->set();
+      log_.INFO("BMS-MANAGER", "Embrake SSR has been set");
     }
   } else if (sys_.fake_batteries_fail) {
     // fake batteries fail here
@@ -101,6 +103,7 @@ BmsManager::BmsManager(Logger& log)
   batteries_.module_status = data::ModuleStatus::kInit;
   data_.setBatteriesData(batteries_);
   Thread::yield();
+  start_time_ = utils::Timer::getTimeMicros();
   log_.INFO("BMS-MANAGER", "batteries data has been initialised");
 }
 
@@ -112,7 +115,6 @@ void BmsManager::clearHP()
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i]->clear();      // HP off until kReady State
       }
-      prop_cool_->clear();
     }
   }
 }
@@ -123,9 +125,22 @@ void BmsManager::setHP()
     if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i]->set();
+        Thread::sleep(100);
       }
       hp_master_->set();
-      prop_cool_->set();
+    }
+  }
+}
+
+void BmsManager::checkIMD()
+{
+  if (!sys_.battery_test) {
+    if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
+      if (!imd_in_->read()) {
+        log_.ERR("BMS-MANAGER", "IMD Fault! HP off and embrakes engaged");
+        clearHP();
+        embrakes_ssr_->clear();
+      }
     }
   }
 }
@@ -145,24 +160,29 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    // check health of batteries
-    if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-      if (!batteriesInRange()) {
-        if (batteries_.module_status != previous_status_)
-          log_.ERR("BMS-MANAGER", "battery failure detected");
-        batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-        clearHP();
+    data::State state = data_.getStateMachineData().current_state;
+    if (utils::Timer::getTimeMicros() - start_time_ > check_time_) {
+      // check health of batteries
+      if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
+        if (!batteriesInRange()) {
+          if (batteries_.module_status != previous_status_)
+            log_.ERR("BMS-MANAGER", "battery failure detected");
+          batteries_.module_status = data::ModuleStatus::kCriticalFailure;
+          clearHP();
+        }
+        previous_status_ = batteries_.module_status;
       }
-      previous_status_ = batteries_.module_status;
     }
+
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    data::State state = data_.getStateMachineData().current_state;
+    checkIMD();
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       clearHP();
+      embrakes_ssr_->clear();     // actuate brakes in emergency state
       if (state != previous_state_)
-        log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
+        log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared and Embrakes actuated");
     } else if (state == data::State::kFinished) {
       clearHP();
       if (state != previous_state_)
@@ -188,7 +208,7 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.current < 50 || battery.current > 500) {       // current in 5A to 50A
+    if (battery.current < 0 || battery.current > 500) {       // current in 0A to 50A
        if (batteries_.module_status != previous_status_)
         log_.ERR("BMS-MANAGER", "BMS LP %d current out of range: %d", i, battery.current);
       return false;
