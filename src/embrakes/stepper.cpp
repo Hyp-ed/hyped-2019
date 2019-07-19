@@ -30,6 +30,8 @@ Stepper::Stepper(uint32_t enable_pin, uint32_t button_pin, Logger& log, uint8_t 
       button_(button_pin, utils::io::gpio::kIn, log_),
       is_clamped_(true)
 {
+  GPIO command_pin_(enable_pin, utils::io::gpio::kOut, log_);
+  GPIO button_(button_pin, utils::io::gpio::kIn, log_);
 }
 
 void Stepper::checkHome() {
@@ -44,18 +46,18 @@ void Stepper::checkHome() {
 
 void Stepper::sendRetract() {
   log_.INFO("Brakes", "Sending a retract message to brake %i", brake_id_);
-  command_pin_.set();
+  command_pin_.clear();
   is_clamped_ = false;
 }
 
 void Stepper::sendClamp() {
   log_.INFO("Brakes", "Sending a retract message to brake %i", brake_id_);
-  command_pin_.clear();
+  command_pin_.set();
   is_clamped_ = true;
 }
 
 void Stepper::checkAccFailure() {
-  if(!button_.wait()){
+  if(!button_.read()){
     log_.ERR("Brakes", "Brake %b failure", brake_id_);
     em_brakes_data_.module_status = ModuleStatus::kCriticalFailure;
     data_.setEmergencyBrakesData(em_brakes_data_);
