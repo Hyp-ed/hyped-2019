@@ -208,7 +208,7 @@ void Navigation::queryImus()
     if (!imu_reliable_[i]) { acc_raw[i] = 0;
     } else {
       NavigationVector a = sensor_readings_.value[i].acc - gravity_calibration_[i];
-      acc_raw[i] = accNorm(a) * (1 - 2 * (a[axis_] < 0));
+      acc_raw[i] = a[axis_];  // accNorm(a) * (1 - 2 * (a[axis_] < 0));
     }
   }
   tukeyFences(acc_raw, kTukeyThreshold);
