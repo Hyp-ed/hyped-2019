@@ -35,12 +35,11 @@ int main(int argc, char* argv[]) {
     Logger log(true, 3);
     
     Stepper* stepper;
-    stepper = new Stepper(log, 20);
-    stepper->registerStepper();
+    stepper = new Stepper(26, 27, log, 1);
+    
     stepper->sendRetract();
-    log.INFO("Brakes_test", "Retract message sent");
-    Thread::sleep(10000);
+    Thread::sleep(5000);
     stepper->sendClamp();
-    log.INFO("Brakes_test", "Clamp message sent");
+
 
 }
