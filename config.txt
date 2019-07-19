@@ -7,7 +7,7 @@
 # ParseNavigation() function
 
 > Telemetry
-IP      localhost
+IP      192.162.6.1
 Port    9090
 
 > Navigation
@@ -19,5 +19,4 @@ KeyenceR    74
 Thermistor  3
 HPMaster    46
 HPSSR       26,44
-PropCool    46
-LPSSR       67
+LPSSR       68

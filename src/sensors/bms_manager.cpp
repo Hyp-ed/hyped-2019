@@ -68,8 +68,6 @@ BmsManager::BmsManager(Logger& log)
       }
       hp_master_ = new GPIO(sys_.config->sensors.hp_master, utils::io::gpio::kOut);
       hp_master_->clear();
-      prop_cool_ = new GPIO(sys_.config->sensors.prop_cool, utils::io::gpio::kOut);
-      prop_cool_->clear();
       log_.INFO("BMS-MANAGER", "HP SSRs has been initialised CLEAR");
 
       // Set LPSSR manual switch
@@ -102,6 +100,7 @@ BmsManager::BmsManager(Logger& log)
   data_.setBatteriesData(batteries_);
   Thread::yield();
   log_.INFO("BMS-MANAGER", "batteries data has been initialised");
+  // Thread::sleep(100);
 }
 
 void BmsManager::clearHP()
@@ -112,7 +111,6 @@ void BmsManager::clearHP()
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i]->clear();      // HP off until kReady State
       }
-      prop_cool_->clear();
     }
   }
 }
@@ -123,15 +121,16 @@ void BmsManager::setHP()
     if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i]->set();
+        Thread::sleep(100);
       }
       hp_master_->set();
-      prop_cool_->set();
     }
   }
 }
 
 void BmsManager::run()
 {
+  int counter = 0;
   while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -145,16 +144,23 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    // check health of batteries
-    if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-      if (!batteriesInRange()) {
-        if (batteries_.module_status != previous_status_)
-          log_.ERR("BMS-MANAGER", "battery failure detected");
-        batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-        clearHP();
+    if (initialised_) {
+      // check health of batteries
+      if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
+        if (!batteriesInRange()) {
+          if (batteries_.module_status != previous_status_)
+            log_.ERR("BMS-MANAGER", "battery failure detected");
+          batteries_.module_status = data::ModuleStatus::kCriticalFailure;
+          clearHP();
+        }
+        previous_status_ = batteries_.module_status;
       }
-      previous_status_ = batteries_.module_status;
     }
+    if (!initialised_) {
+      counter++;
+      if (counter == 50) initialised_ = true;
+    }
+
     // publish the new data
     data_.setBatteriesData(batteries_);
 
@@ -188,7 +194,7 @@ bool BmsManager::batteriesInRange()
       return false;
     }
 
-    if (battery.current < 50 || battery.current > 500) {       // current in 5A to 50A
+    if (battery.current < 0 || battery.current > 500) {       // current in 0A to 50A
        if (batteries_.module_status != previous_status_)
         log_.ERR("BMS-MANAGER", "BMS LP %d current out of range: %d", i, battery.current);
       return false;
