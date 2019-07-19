@@ -41,7 +41,6 @@ enum Submodule {
   kNavigation,
   kTelemetry,
   kPropulsion,
-  kEmbrakes,
   kSensors,
   kStateMachine
 };
@@ -72,16 +71,10 @@ class Config {
     int embrakes;
   } sensors;
 
-  struct Embrakes {
-    int command[4];
-    int button[4];
-  } embrakes;
-
 //  private:
   void ParseNavigation(char* line);
   void ParseTelemetry(char* line);
   void ParseSensors(char* line);
-  void ParseEmbrakes(char* line);
   void ParseNone(char* line);
 
  private:

@@ -22,7 +22,3 @@ HPSSR       46,26
 IMDOut      20
 IMDIn       7
 Embrakes    44
-
-> Embrakes
-Command     66,69,45,23
-Button      87,10,9,8

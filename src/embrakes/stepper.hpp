@@ -21,7 +21,7 @@
 
 #include "utils/timer.hpp"
 #include "utils/logger.hpp"
-#include "utils/io/gpio.hpp"
+#include "utils/io/can.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "data/data.hpp"
@@ -29,24 +29,47 @@
 namespace hyped {
 
 using utils::concurrent::Thread;
+using utils::io::can::Frame;
 using utils::Logger;
-using utils::io::GPIO;
-using data::ModuleStatus;
+using utils::io::Can;
+using utils::io::CanProccesor;
 
 namespace embrakes {
 
-class Stepper {
+// Types of CANopen messages, these are used for CAN ID's
+
+constexpr uint32_t kSdoReceive = 0x600;
+constexpr uint32_t kSdoTransmit = 0x580;
+
+constexpr uint32_t canIds[13] {0x600, 0x580};
+
+class Stepper :public CanProccesor {
   public:
   /**
    * @brief Construct a new Stepper object
    * @param log, node id
    */
-  Stepper(uint8_t enable_pin, uint8_t button_pin, Logger& log, uint8_t id);
+  Stepper(Logger& log, uint8_t id);
+
+  /**
+     * @brief { Registers stepper to process incoming CAN messages }
+     */
+  void registerStepper();
+
+  /**
+     * @brief { This function processes incoming CAN messages }
+     */
+  void processNewData(utils::io::can::Frame &message) override;
+
+  /**
+     * @brief { Returns true if the CAN message is ment for this CAN node }
+     */
+  bool hasId(uint32_t id, bool extended) override;
 
   /**
    * @brief {checks if brake's button is pressed, notes change in the data struct}
    */
-  void checkHome();
+  void checkHome(uint8_t button);
 
   /**
    * @brief sends retract message
@@ -58,25 +81,21 @@ class Stepper {
    */
   void sendClamp();
 
-  /**
-   * @brief checks for brake failure during acceleration
-   */
-  void checkAccFailure();
-
-  void checkBrakingFailure();
-
-  bool checkClamped();
-
   private:
 
     utils::Logger&        log_;
     data::Data&           data_;
+    uint8_t               node_id_;
+    Can&                  can_;
     data::EmergencyBrakes em_brakes_data_;
-    GPIO                  command_pin_;
-    GPIO                  button_;
-    uint8_t               brake_id_;
-    uint8_t               is_clamped_;
-    uint64_t              timer;
+    data::Telemetry       tlm_data_;
+    data::StateMachine    sm_data_;
+    Frame                 message_to_send;
+    uint8_t               stepper_position_LSB;
+    uint8_t               stepper_position_MSB;
+    uint8_t               stepper_period;
+    uint8_t               isEnabled;
+    uint8_t               isHome;
 
 };
 
