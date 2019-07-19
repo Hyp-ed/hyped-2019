@@ -12,6 +12,9 @@ Port    9090
 
 > Navigation
 
+> StateMachine
+Timeout        23000000
+
 > Sensors
 ChipSelect  47,22,36,86
 KeyenceL    72

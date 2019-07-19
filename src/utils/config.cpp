@@ -51,6 +51,7 @@ struct ModuleEntry {
 ModuleEntry module_map[] = {
   {kNone,         "NOMODULE",       &Config::ParseNone},
   {kNavigation,   "Navigation",     &Config::ParseNavigation},
+  {kStateMachine, "StateMachine",   &Config::ParseStateMachine},
   {kTelemetry,    "Telemetry",      &Config::ParseTelemetry},
   {kSensors,      "Sensors",        &Config::ParseSensors}
 };
@@ -63,6 +64,17 @@ void Config::ParseNone(char* line)
 void Config::ParseNavigation(char* line)
 {
   printf("nav %s\n", line);
+}
+
+void Config::ParseStateMachine(char* line)
+{
+  char* token = strtok(line, " ");
+  if (strcmp(token, "Timeout") == 0) {
+    char* value = strtok(NULL, " ");
+    if (value) {
+      statemachine.timeout = atoi(value);
+    }
+  }
 }
 
 void Config::ParseTelemetry(char* line)
