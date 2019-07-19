@@ -40,6 +40,7 @@ enum Submodule {
   kNone,
   kNavigation,
   kTelemetry,
+  kEmbrakes,
   kPropulsion,
   kSensors,
   kStateMachine
@@ -59,6 +60,11 @@ class Config {
     std::string Port;
   } telemetry;
 
+  struct Embrakes {
+    int command[4];
+    int button[4];
+  } embrakes;
+
   struct Sensors {
     int chip_select[data::Sensors::kNumImus];
     int KeyenceL;
@@ -73,6 +79,7 @@ class Config {
 //  private:
   void ParseNavigation(char* line);
   void ParseTelemetry(char* line);
+  void ParseEmbrakes(char* line);
   void ParseSensors(char* line);
   void ParseNone(char* line);
 

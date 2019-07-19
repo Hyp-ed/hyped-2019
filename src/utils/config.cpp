@@ -52,6 +52,7 @@ ModuleEntry module_map[] = {
   {kNone,         "NOMODULE",       &Config::ParseNone},
   {kNavigation,   "Navigation",     &Config::ParseNavigation},
   {kTelemetry,    "Telemetry",      &Config::ParseTelemetry},
+  {kEmbrakes,     "Embrakes",       &Config::ParseEmbrakes},
   {kSensors,      "Sensors",        &Config::ParseSensors}
 };
 
@@ -84,6 +85,28 @@ void Config::ParseTelemetry(char* line)
     telemetry.IP = tokens[1];
   } else if (tokens[0] == "Port") {
     telemetry.Port = tokens[1];
+  }
+}
+
+void Config::ParseEmbrakes(char* line)
+{
+  char* token = strtok(line, " ");
+
+  if (strcmp(token, "Command") == 0) {
+    for (int i = 0; i < 4; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+        embrakes.command[i] = atoi(value);
+      }
+    }
+  }
+  if (strcmp(token, "Button") == 0) {
+    for (int i = 0; i < 4; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+        embrakes.button[i] = atoi(value);
+      }
+    }
   }
 }
 
