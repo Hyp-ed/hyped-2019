@@ -62,6 +62,7 @@ BmsManager::BmsManager(Logger& log)
 
       imd_out_ = new GPIO(sys_.config->sensors.IMDOut, utils::io::gpio::kOut);
       imd_out_->set();
+      Thread::sleep(10);
       imd_in_ = new GPIO(sys_.config->sensors.IMDIn, utils::io::gpio::kIn);
 
       // clear HPSSRs if default is high
@@ -132,7 +133,7 @@ void BmsManager::setHP()
   }
 }
 
-void BmsManager::checkIMD()
+bool BmsManager::checkIMD()
 {
   if (!sys_.battery_test) {
     if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
@@ -140,9 +141,11 @@ void BmsManager::checkIMD()
         log_.ERR("BMS-MANAGER", "IMD Fault! HP off and embrakes engaged");
         clearHP();
         embrakes_ssr_->clear();
+        return false;
       }
     }
   }
+  return true;
 }
 
 void BmsManager::run()
@@ -164,7 +167,7 @@ void BmsManager::run()
     if (utils::Timer::getTimeMicros() - start_time_ > check_time_) {
       // check health of batteries
       if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-        if (!batteriesInRange()) {
+        if ((!batteriesInRange()) || checkIMD()) {
           if (batteries_.module_status != previous_status_)
             log_.ERR("BMS-MANAGER", "battery failure detected");
           batteries_.module_status = data::ModuleStatus::kCriticalFailure;
@@ -177,7 +180,6 @@ void BmsManager::run()
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    checkIMD();
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       clearHP();
       embrakes_ssr_->clear();     // actuate brakes in emergency state
