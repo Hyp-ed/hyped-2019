@@ -69,6 +69,7 @@ message ClientToServer {
             int32 high_temperature = 6;
             uint32 low_voltage_cell = 7;
             uint32 high_voltage_cell = 8;
+            repeated uint32 indv_voltage = 9;
         }
 
         ModuleStatus module_status = 1;
