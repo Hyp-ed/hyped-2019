@@ -63,6 +63,8 @@ class Stepper {
    */
   void checkAccFailure();
 
+  void checkBrakingFailure();
+
   bool checkClamped();
 
   private:
@@ -74,6 +76,7 @@ class Stepper {
     GPIO                  button_;
     uint8_t               brake_id_;
     uint8_t               is_clamped_;
+    uint64_t              timer;
 
 };
 

@@ -32,6 +32,11 @@ Main::Main(uint8_t id, Logger &log)
   Stepper brake_2(28, 29, log_, 2);
   Stepper brake_3(30, 31, log_, 3);
   Stepper brake_4(32, 33, log_, 4);
+
+  brake_1.sendClamp();
+  brake_2.sendClamp();
+  brake_3.sendClamp();
+  brake_4.sendClamp();
 }
 
 void Main::run() {
@@ -60,7 +65,7 @@ void Main::run() {
           if(brake_4->checkClamped){
             brake_4->sendRetract();
           }
-          Thread::sleep(500);
+          Thread::sleep(1000);
           brake_1->checkHome();
           brake_2->checkHome();
           brake_3->checkHome();
@@ -79,7 +84,7 @@ void Main::run() {
           if(!brake_4->checkClamped){
             brake_4->sendClamp();
           }
-          Thread::sleep(500);
+          Thread::sleep(1000);
           brake_1->checkHome();
           brake_2->checkHome();
           brake_3->checkHome();
@@ -105,7 +110,7 @@ void Main::run() {
           em_brakes_.module_status = ModuleStatus::kReady;
           data_.setEmergencyBrakesData(em_brakes_);
         }
-        Thread::sleep(500);
+        Thread::sleep(1000);
         brake_1->checkHome();
         brake_2->checkHome();
         brake_3->checkHome();
@@ -116,10 +121,8 @@ void Main::run() {
         brake_2->checkAccFailure();
         brake_3->checkAccFailure();
         brake_4->checkAccFailure();
-
         break;
       case data::State::kNominalBraking:
-
         if (!brake_1->checkClamped()){
           brake_1->sendClamp();
         }
@@ -132,12 +135,16 @@ void Main::run() {
         if(!brake_4->checkClamped()){
           brake_4->sendClamp();
         }
-        
+        Thread::sleep(1000);
         brake_1->checkHome();
         brake_2->checkHome();
         brake_3->checkHome();
         brake_4->checkHome();
 
+        brake_1->checkBrakingFailure();
+        brake_2->checkBrakingFailure();
+        brake_3->checkBrakingFailure();
+        brake_4->checkBrakingFailure();
         break;
       case data::State::kFinished:
         if(tlm_data_.nominal_braking_command) {
@@ -154,7 +161,7 @@ void Main::run() {
           if(brake_4->checkClamped){
             brake_4->sendRetract();
           }
-          Thread::sleep(500);
+          Thread::sleep(1000);
           brake_1->checkHome();
           brake_2->checkHome();
           brake_3->checkHome();

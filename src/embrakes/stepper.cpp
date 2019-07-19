@@ -58,9 +58,27 @@ void Stepper::sendClamp() {
 
 void Stepper::checkAccFailure() {
   if(!button_.read()){
-    log_.ERR("Brakes", "Brake %b failure", brake_id_);
-    em_brakes_data_.module_status = ModuleStatus::kCriticalFailure;
-    data_.setEmergencyBrakesData(em_brakes_data_);
+    timer = utils::Timer::getTimeMicros();
+    if((utils::Timer::getTimeMicros() - timer > 200000) && !button_.read()){
+      log_.ERR("Brakes", "Brake %b failure", brake_id_);
+      em_brakes_data_.module_status = ModuleStatus::kCriticalFailure;
+      data_.setEmergencyBrakesData(em_brakes_data_);
+    } else{
+      return;
+    }
+  }
+}
+
+void Stepper::checkBrakingFailure() {
+  if(button_.read()){
+    timer = utils::Timer::getTimeMicros();
+    if((utils::Timer::getTimeMicros() - timer > 200000) && button_.read()){
+      log_.ERR("Brakes", "Brake %b failure", brake_id_);
+      em_brakes_data_.module_status = ModuleStatus::kCriticalFailure;
+      data_.setEmergencyBrakesData(em_brakes_data_);
+    } else{
+      return;
+    }
   }
 }
 
