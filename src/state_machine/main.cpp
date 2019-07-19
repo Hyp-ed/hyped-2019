@@ -37,7 +37,6 @@ Main::Main(uint8_t id, Logger& log)
       data_(data::Data::getInstance())
 {
   timeout_ = static_cast<uint64_t>(sys_.config->statemachine.timeout);
-  log.INFO("STMTEST", "timeout = %u", timeout_);
 }
 
 /**
