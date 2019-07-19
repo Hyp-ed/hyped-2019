@@ -59,12 +59,6 @@ BmsManager::BmsManager(Logger& log)
 
     if (!sys_.battery_test) {
       // Set SSR switches for real system
-
-      imd_out_ = new GPIO(sys_.config->sensors.IMDOut, utils::io::gpio::kOut);
-      imd_out_->set();
-      Thread::sleep(10);
-      imd_in_ = new GPIO(sys_.config->sensors.IMDIn, utils::io::gpio::kIn);
-
       // clear HPSSRs if default is high
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i] = new GPIO(sys_.config->sensors.HPSSR[i], utils::io::gpio::kOut);
@@ -137,11 +131,11 @@ bool BmsManager::checkIMD()
 {
   if (!sys_.battery_test) {
     if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
-      if (!imd_in_->read()) {
-        log_.ERR("BMS-MANAGER", "IMD Fault! HP off and embrakes engaged");
-        clearHP();
-        embrakes_ssr_->clear();
-        return false;
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        if (batteries_.high_power_batteries[i].imd_fault == false) {
+          log_.ERR("BMS-MANAGER", "IMD Fault at HP pack %d: throwing kCriticalFailure", i);
+          return false;
+        }
       }
     }
   }
@@ -167,7 +161,7 @@ void BmsManager::run()
     if (utils::Timer::getTimeMicros() - start_time_ > check_time_) {
       // check health of batteries
       if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-        if ((!batteriesInRange()) || checkIMD()) {
+        if ((!batteriesInRange()) || (!checkIMD())) {
           if (batteries_.module_status != previous_status_)
             log_.ERR("BMS-MANAGER", "battery failure detected");
           batteries_.module_status = data::ModuleStatus::kCriticalFailure;
