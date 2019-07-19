@@ -59,6 +59,11 @@ BmsManager::BmsManager(Logger& log)
 
     if (!sys_.battery_test) {
       // Set SSR switches for real system
+
+      imd_out_ = new GPIO(sys_.config->sensors.IMDOut, utils::io::gpio::kOut);
+      imd_out_->set();
+      log_.INFO("BMS-MANAGER", "IMD has been initialised SET");
+
       // clear HPSSRs if default is high
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i] = new GPIO(sys_.config->sensors.HPSSR[i], utils::io::gpio::kOut);
@@ -133,7 +138,8 @@ bool BmsManager::checkIMD()
     if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         if (batteries_.high_power_batteries[i].imd_fault == false) {
-          log_.ERR("BMS-MANAGER", "IMD Fault at HP pack %d: throwing kCriticalFailure", i);
+          log_.ERR("BMS-MANAGER", "IMD Fault %d: clearing imd_out_, throwing kCriticalFailure", i);
+          imd_out_->clear();
           return false;
         }
       }

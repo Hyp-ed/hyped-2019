@@ -20,5 +20,4 @@ Thermistor  3
 HPMaster    65
 HPSSR       46,26
 IMDOut      20
-IMDIn       7
 Embrakes    44
