@@ -18,3 +18,7 @@ KeyenceR    74
 Thermistor  3
 HPSSR       70
 LPSSR       71
+
+> Embrakes
+Command     66,69,45,23
+Button      87,10,9,8
