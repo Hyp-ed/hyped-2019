@@ -287,8 +287,8 @@ void Navigation::queryKeyence()
       is only checked in an update, otherwise we might throw an error in between stripes.
       The first stripe is very uncertain, since it takes the longest, thus we ignore it.
       Even if the first stripe is missed, error handling will catch it when the second is seen.*/
-      if ((distance_change < -allowed_uncertainty) ||
-          (distance_change >  allowed_uncertainty))
+      if ((distance_change < (-2) * allowed_uncertainty) ||
+          (distance_change > 2 * allowed_uncertainty))
       {
         keyence_failure_counter_++;
         keyence_failure_counter_ += floor(abs(distance_change) / kStripeDistance);
