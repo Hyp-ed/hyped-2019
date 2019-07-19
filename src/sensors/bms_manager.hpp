@@ -59,6 +59,11 @@ class BmsManager: public ManagerInterface  {
   void setHP();
 
   /**
+   * @brief check IMD and set GPIOs accordingly
+   */
+  void checkIMD();
+
+  /**
    * @brief needs to be references because run() passes directly to data struct
    */
   data::Data&     data_;
@@ -75,10 +80,15 @@ class BmsManager: public ManagerInterface  {
   GPIO* hp_ssr_[data::Batteries::kNumHPBatteries];
 
   /**
-   * @brief LPSSR held high, will be cleared if power loss to BBB, thus HPSSR will be cleared
-   *        holds SSR high, which is manually set at pod startup
+   * @brief hold IMD SSR high and shut off HP/embrakes at low read
    */
-  GPIO* lp_ssr_;
+  GPIO* imd_out_;
+  GPIO* imd_in_;
+
+  /**
+   * @brief embrakes_ssr_ held high in nominal states, cleared in emergency state
+   */
+  GPIO* embrakes_ssr_;
 
   /**
    * @brief holds LP BatteryData, HP BatteryData, and module_status
@@ -96,9 +106,10 @@ class BmsManager: public ManagerInterface  {
   data::ModuleStatus previous_status_;
 
   /**
-   * @brief do not check ranges for first few cycles so not throw error at startup
+   * @brief do not check ranges for first 5 seconds
    */
-  bool initialised_ = false;
+  uint64_t start_time_;
+  uint64_t check_time_ = 5000000;
 
   /**
    * @brief checks voltage, current, temperature, and charge

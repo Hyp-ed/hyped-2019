@@ -923,6 +923,18 @@ class ClientToServer_Batteries_BatteryData :
 
   // accessors -------------------------------------------------------
 
+  // repeated uint32 indv_voltage = 9;
+  int indv_voltage_size() const;
+  void clear_indv_voltage();
+  static const int kIndvVoltageFieldNumber = 9;
+  ::PROTOBUF_NAMESPACE_ID::uint32 indv_voltage(int index) const;
+  void set_indv_voltage(int index, ::PROTOBUF_NAMESPACE_ID::uint32 value);
+  void add_indv_voltage(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >&
+      indv_voltage() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >*
+      mutable_indv_voltage();
+
   // uint32 voltage = 1;
   void clear_voltage();
   static const int kVoltageFieldNumber = 1;
@@ -941,21 +953,33 @@ class ClientToServer_Batteries_BatteryData :
   ::PROTOBUF_NAMESPACE_ID::uint32 charge() const;
   void set_charge(::PROTOBUF_NAMESPACE_ID::uint32 value);
 
-  // int32 temperature = 4;
-  void clear_temperature();
-  static const int kTemperatureFieldNumber = 4;
-  ::PROTOBUF_NAMESPACE_ID::int32 temperature() const;
-  void set_temperature(::PROTOBUF_NAMESPACE_ID::int32 value);
+  // int32 average_temperature = 4;
+  void clear_average_temperature();
+  static const int kAverageTemperatureFieldNumber = 4;
+  ::PROTOBUF_NAMESPACE_ID::int32 average_temperature() const;
+  void set_average_temperature(::PROTOBUF_NAMESPACE_ID::int32 value);
 
-  // uint32 low_voltage_cell = 5;
+  // int32 low_temperature = 5;
+  void clear_low_temperature();
+  static const int kLowTemperatureFieldNumber = 5;
+  ::PROTOBUF_NAMESPACE_ID::int32 low_temperature() const;
+  void set_low_temperature(::PROTOBUF_NAMESPACE_ID::int32 value);
+
+  // int32 high_temperature = 6;
+  void clear_high_temperature();
+  static const int kHighTemperatureFieldNumber = 6;
+  ::PROTOBUF_NAMESPACE_ID::int32 high_temperature() const;
+  void set_high_temperature(::PROTOBUF_NAMESPACE_ID::int32 value);
+
+  // uint32 low_voltage_cell = 7;
   void clear_low_voltage_cell();
-  static const int kLowVoltageCellFieldNumber = 5;
+  static const int kLowVoltageCellFieldNumber = 7;
   ::PROTOBUF_NAMESPACE_ID::uint32 low_voltage_cell() const;
   void set_low_voltage_cell(::PROTOBUF_NAMESPACE_ID::uint32 value);
 
-  // uint32 high_voltage_cell = 6;
+  // uint32 high_voltage_cell = 8;
   void clear_high_voltage_cell();
-  static const int kHighVoltageCellFieldNumber = 6;
+  static const int kHighVoltageCellFieldNumber = 8;
   ::PROTOBUF_NAMESPACE_ID::uint32 high_voltage_cell() const;
   void set_high_voltage_cell(::PROTOBUF_NAMESPACE_ID::uint32 value);
 
@@ -964,10 +988,14 @@ class ClientToServer_Batteries_BatteryData :
   class HasBitSetters;
 
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 > indv_voltage_;
+  mutable std::atomic<int> _indv_voltage_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::uint32 voltage_;
   ::PROTOBUF_NAMESPACE_ID::int32 current_;
   ::PROTOBUF_NAMESPACE_ID::uint32 charge_;
-  ::PROTOBUF_NAMESPACE_ID::int32 temperature_;
+  ::PROTOBUF_NAMESPACE_ID::int32 average_temperature_;
+  ::PROTOBUF_NAMESPACE_ID::int32 low_temperature_;
+  ::PROTOBUF_NAMESPACE_ID::int32 high_temperature_;
   ::PROTOBUF_NAMESPACE_ID::uint32 low_voltage_cell_;
   ::PROTOBUF_NAMESPACE_ID::uint32 high_voltage_cell_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -2065,21 +2093,49 @@ inline void ClientToServer_Batteries_BatteryData::set_charge(::PROTOBUF_NAMESPAC
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.charge)
 }
 
-// int32 temperature = 4;
-inline void ClientToServer_Batteries_BatteryData::clear_temperature() {
-  temperature_ = 0;
+// int32 average_temperature = 4;
+inline void ClientToServer_Batteries_BatteryData::clear_average_temperature() {
+  average_temperature_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Batteries_BatteryData::temperature() const {
-  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.temperature)
-  return temperature_;
+inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Batteries_BatteryData::average_temperature() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.average_temperature)
+  return average_temperature_;
 }
-inline void ClientToServer_Batteries_BatteryData::set_temperature(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void ClientToServer_Batteries_BatteryData::set_average_temperature(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  temperature_ = value;
-  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.temperature)
+  average_temperature_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.average_temperature)
 }
 
-// uint32 low_voltage_cell = 5;
+// int32 low_temperature = 5;
+inline void ClientToServer_Batteries_BatteryData::clear_low_temperature() {
+  low_temperature_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Batteries_BatteryData::low_temperature() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.low_temperature)
+  return low_temperature_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_low_temperature(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  low_temperature_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.low_temperature)
+}
+
+// int32 high_temperature = 6;
+inline void ClientToServer_Batteries_BatteryData::clear_high_temperature() {
+  high_temperature_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ClientToServer_Batteries_BatteryData::high_temperature() const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.high_temperature)
+  return high_temperature_;
+}
+inline void ClientToServer_Batteries_BatteryData::set_high_temperature(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  high_temperature_ = value;
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.high_temperature)
+}
+
+// uint32 low_voltage_cell = 7;
 inline void ClientToServer_Batteries_BatteryData::clear_low_voltage_cell() {
   low_voltage_cell_ = 0u;
 }
@@ -2093,7 +2149,7 @@ inline void ClientToServer_Batteries_BatteryData::set_low_voltage_cell(::PROTOBU
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.low_voltage_cell)
 }
 
-// uint32 high_voltage_cell = 6;
+// uint32 high_voltage_cell = 8;
 inline void ClientToServer_Batteries_BatteryData::clear_high_voltage_cell() {
   high_voltage_cell_ = 0u;
 }
@@ -2105,6 +2161,36 @@ inline void ClientToServer_Batteries_BatteryData::set_high_voltage_cell(::PROTOB
   
   high_voltage_cell_ = value;
   // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.high_voltage_cell)
+}
+
+// repeated uint32 indv_voltage = 9;
+inline int ClientToServer_Batteries_BatteryData::indv_voltage_size() const {
+  return indv_voltage_.size();
+}
+inline void ClientToServer_Batteries_BatteryData::clear_indv_voltage() {
+  indv_voltage_.Clear();
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 ClientToServer_Batteries_BatteryData::indv_voltage(int index) const {
+  // @@protoc_insertion_point(field_get:telemetry_data.ClientToServer.Batteries.BatteryData.indv_voltage)
+  return indv_voltage_.Get(index);
+}
+inline void ClientToServer_Batteries_BatteryData::set_indv_voltage(int index, ::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  indv_voltage_.Set(index, value);
+  // @@protoc_insertion_point(field_set:telemetry_data.ClientToServer.Batteries.BatteryData.indv_voltage)
+}
+inline void ClientToServer_Batteries_BatteryData::add_indv_voltage(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  indv_voltage_.Add(value);
+  // @@protoc_insertion_point(field_add:telemetry_data.ClientToServer.Batteries.BatteryData.indv_voltage)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >&
+ClientToServer_Batteries_BatteryData::indv_voltage() const {
+  // @@protoc_insertion_point(field_list:telemetry_data.ClientToServer.Batteries.BatteryData.indv_voltage)
+  return indv_voltage_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::uint32 >*
+ClientToServer_Batteries_BatteryData::mutable_indv_voltage() {
+  // @@protoc_insertion_point(field_mutable_list:telemetry_data.ClientToServer.Batteries.BatteryData.indv_voltage)
+  return &indv_voltage_;
 }
 
 // -------------------------------------------------------------------
