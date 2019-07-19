@@ -30,27 +30,17 @@ Main::Main(uint8_t id, Logger &log)
     data_(data::Data::getInstance()),
     sys_(utils::System::getSystem())
 {
-<<<<<<< HEAD
-  Stepper brake_1(26, 27, log_, 1);
-  Stepper brake_2(28, 29, log_, 2);
-  Stepper brake_3(30, 31, log_, 3);
-  Stepper brake_4(32, 33, log_, 4);
 
-  brake_1.sendClamp();
-  brake_2.sendClamp();
-  brake_3.sendClamp();
-  brake_4.sendClamp();
-=======
   // parse GPIO pins from config.txt file
   for (int i = 0; i < 4; i++) {
     command_pins_[i] = sys_.config->embrakes.command[i];
     button_pins_[i] = sys_.config->embrakes.button[i];
   }
-  Stepper* brake_1 = new Stepper(command_pins_[0], button_pins_[0], log_, 1);
-  Stepper* brake_2 = new Stepper(command_pins_[1], button_pins_[1], log_, 2);
-  Stepper* brake_3 = new Stepper(command_pins_[2], button_pins_[2], log_, 3);
-  Stepper* brake_4 = new Stepper(command_pins_[3], button_pins_[3], log_, 4);
->>>>>>> 812648b57485b010ce8ea48e5012351b00e3e7a6
+  Stepper brake_1(command_pins_[0], button_pins_[0], log_, 1);
+  // Stepper brake_2(command_pins_[1], button_pins_[1], log_, 2);
+  // Stepper brake_3(command_pins_[2], button_pins_[2], log_, 3);
+  // Stepper brake_4(command_pins_[3], button_pins_[3], log_, 4);
+
 }
 
 void Main::run() {
@@ -70,39 +60,39 @@ void Main::run() {
           if(brake_1->checkClamped()){
             brake_1->sendRetract();
           }
-          if(brake_2->checkClamped()){
-            brake_2->sendRetract();
-          }
-          if(brake_3->checkClamped){
-            brake_3->sendRetract();
-          }
-          if(brake_4->checkClamped){
-            brake_4->sendRetract();
-          }
+          // if(brake_2->checkClamped()){
+          //   brake_2->sendRetract();
+          // }
+          // if(brake_3->checkClamped){
+          //   brake_3->sendRetract();
+          // }
+          // if(brake_4->checkClamped){
+          //   brake_4->sendRetract();
+          // }
           Thread::sleep(1000);
           brake_1->checkHome();
-          brake_2->checkHome();
-          brake_3->checkHome();
-          brake_4->checkHome();
+          // brake_2->checkHome();
+          // brake_3->checkHome();
+          // brake_4->checkHome();
 
         } else if(!tlm_data_.nominal_braking_command) {
           if(!brake_1->checkClamped()){
             brake_1->sendClamp();
           }
-          if(!brake_2->checkClamped()){
-            brake_2->sendClamp();
-          }
-          if(!brake_3->checkClamped){
-            brake_3->sendClamp();
-          }
-          if(!brake_4->checkClamped){
-            brake_4->sendClamp();
-          }
+          // if(!brake_2->checkClamped()){
+          //   brake_2->sendClamp();
+          // }
+          // if(!brake_3->checkClamped){
+          //   brake_3->sendClamp();
+          // }
+          // if(!brake_4->checkClamped){
+          //   brake_4->sendClamp();
+          // }
           Thread::sleep(1000);
           brake_1->checkHome();
-          brake_2->checkHome();
-          brake_3->checkHome();
-          brake_4->checkHome();
+          // brake_2->checkHome();
+          // brake_3->checkHome();
+          // brake_4->checkHome();
 
         }
         break;
@@ -110,55 +100,54 @@ void Main::run() {
         if(brake_1->checkClamped()){
           brake_1->sendRetract();
         }
-        if(brake_2->checkClamped()){
-          brake_2->sendRetract();
-        }
-        if(brake_3->checkClamped()){
-          brake_3->sendRetract();
-        }
-        if(brake_4->checkClamped()){
-          brake_4->sendRetract();
-        }
-        if(brake_1->checkClamped() && brake_2->checkClamped() &&
-        brake_3->checkClamped() && brake_3->checkClamped()) {
+        // if(brake_2->checkClamped()){
+        //   brake_2->sendRetract();
+        // }
+        // if(brake_3->checkClamped()){
+        //   brake_3->sendRetract();
+        // }
+        // if(brake_4->checkClamped()){
+        //   brake_4->sendRetract();
+        // }
+        if(!brake_1->checkClamped()) {
           em_brakes_.module_status = ModuleStatus::kReady;
           data_.setEmergencyBrakesData(em_brakes_);
         }
         Thread::sleep(1000);
         brake_1->checkHome();
-        brake_2->checkHome();
-        brake_3->checkHome();
-        brake_4->checkHome();
+        // brake_2->checkHome();
+        // brake_3->checkHome();
+        // brake_4->checkHome();
         break;
       case data::State::kAccelerating:
         brake_1->checkAccFailure();
-        brake_2->checkAccFailure();
-        brake_3->checkAccFailure();
-        brake_4->checkAccFailure();
+        // brake_2->checkAccFailure();
+        // brake_3->checkAccFailure();
+        // brake_4->checkAccFailure();
         break;
       case data::State::kNominalBraking:
         if (!brake_1->checkClamped()){
           brake_1->sendClamp();
         }
-        if(!brake_2->checkClamped()){
-          brake_2->sendClamp();
-        }
-        if(!brake_3->checkClamped()){
-          brake_3->sendClamp();
-        }
-        if(!brake_4->checkClamped()){
-          brake_4->sendClamp();
-        }
+        // if(!brake_2->checkClamped()){
+        //   brake_2->sendClamp();
+        // }
+        // if(!brake_3->checkClamped()){
+        //   brake_3->sendClamp();
+        // }
+        // if(!brake_4->checkClamped()){
+        //   brake_4->sendClamp();
+        // }
         Thread::sleep(1000);
         brake_1->checkHome();
-        brake_2->checkHome();
-        brake_3->checkHome();
-        brake_4->checkHome();
+        // brake_2->checkHome();
+        // brake_3->checkHome();
+        // brake_4->checkHome();
 
         brake_1->checkBrakingFailure();
-        brake_2->checkBrakingFailure();
-        brake_3->checkBrakingFailure();
-        brake_4->checkBrakingFailure();
+        // brake_2->checkBrakingFailure();
+        // brake_3->checkBrakingFailure();
+        // brake_4->checkBrakingFailure();
         break;
       case data::State::kFinished:
         if(tlm_data_.nominal_braking_command) {
@@ -166,40 +155,40 @@ void Main::run() {
           if(brake_1->checkClamped()){
             brake_1->sendRetract();
           }
-          if(brake_2->checkClamped()){
-            brake_2->sendRetract();
-          }
-          if(brake_3->checkClamped){
-            brake_3->sendRetract();
-          }
-          if(brake_4->checkClamped){
-            brake_4->sendRetract();
-          }
+          // if(brake_2->checkClamped()){
+          //   brake_2->sendRetract();
+          // }
+          // if(brake_3->checkClamped){
+          //   brake_3->sendRetract();
+          // }
+          // if(brake_4->checkClamped){
+          //   brake_4->sendRetract();
+          // }
           Thread::sleep(1000);
           brake_1->checkHome();
-          brake_2->checkHome();
-          brake_3->checkHome();
-          brake_4->checkHome();
+          // brake_2->checkHome();
+          // brake_3->checkHome();
+          // brake_4->checkHome();
 
         } else if(!tlm_data_.nominal_braking_command) {
 
           if(!brake_1->checkClamped()){
             brake_1->sendClamp();
           }
-          if(!brake_2->checkClamped()){
-            brake_2->sendClamp();
-          }
-          if(!brake_3->checkClamped){
-            brake_3->sendClamp();
-          }
-          if(!brake_4->checkClamped){
-            brake_4->sendClamp();
-          }
+          // if(!brake_2->checkClamped()){
+          //   brake_2->sendClamp();
+          // }
+          // if(!brake_3->checkClamped){
+          //   brake_3->sendClamp();
+          // }
+          // if(!brake_4->checkClamped){
+          //   brake_4->sendClamp();
+          // }
           Thread::sleep(500);
           brake_1->checkHome();
-          brake_2->checkHome();
-          brake_3->checkHome();
-          brake_4->checkHome();
+          // brake_2->checkHome();
+          // brake_3->checkHome();
+          // brake_4->checkHome();
 
         }
         break;

@@ -60,9 +60,9 @@ class Main : public Thread
     int                    command_pins_[4];
     int                    button_pins_[4];
     Stepper*               brake_1;
-    Stepper*               brake_2;
-    Stepper*               brake_3;
-    Stepper*               brake_4;
+    // Stepper*               brake_2;
+    // Stepper*               brake_3;
+    // Stepper*               brake_4;
 };
 
 }}
