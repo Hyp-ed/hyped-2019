@@ -36,8 +36,8 @@ namespace sensors {
 
 
 class FakeBatteries : public BMSInterface {
-  typedef array<array<uint16_t, 6>, 4> BatteryCases;
-  typedef array<uint16_t, 6> BatteryInformation;
+  typedef array<uint16_t, 8> BatteryInformation;
+  typedef array<BatteryInformation, 4> BatteryCases;
 
  public:
   /**
@@ -81,12 +81,7 @@ class FakeBatteries : public BMSInterface {
   bool is_fail_;
   int case_index_;    // handle for array of values for both hp/lp
 
-  uint16_t voltage_;
-  int16_t current_;
-  uint8_t charge_;
-  int8_t temperature_;
-  uint16_t low_voltage_cell_;
-  uint16_t high_voltage_cell_;
+  BatteryData local_data_;
 
   uint64_t acc_start_time_;
   bool acc_started_;

@@ -44,6 +44,7 @@ void SendLoop::run()
     packMotorsMessage(msg);
     packBatteriesMessage(msg);
     packSensorsMessage(msg);
+    packTemperatureMessage(msg);
     packEmergencyBrakesMessage(msg);
 
     try {
@@ -69,46 +70,40 @@ void SendLoop::run()
 
 void SendLoop::packNavigationMessage(telemetry_data::ClientToServer& msg)
 {
-  nav_data_ = data_.getNavigationData();
+  data::Navigation nav_data = data_.getNavigationData();
   telemetry_data::ClientToServer::Navigation* navigation_msg = msg.mutable_navigation();
 
-  navigation_msg->set_module_status(Utils::moduleStatusEnumConversion(nav_data_.module_status));
-  navigation_msg->set_distance(nav_data_.distance);
-  navigation_msg->set_velocity(nav_data_.velocity);
-  navigation_msg->set_acceleration(nav_data_.acceleration);
+  navigation_msg->set_module_status(Utils::moduleStatusEnumConversion(nav_data.module_status));
+  navigation_msg->set_distance(nav_data.distance);
+  navigation_msg->set_velocity(nav_data.velocity);
+  navigation_msg->set_acceleration(nav_data.acceleration);
 }
 
 void SendLoop::packStateMachineMessage(telemetry_data::ClientToServer& msg)
 {
-  sm_data_ = data_.getStateMachineData();
+  data::StateMachine sm_data = data_.getStateMachineData();
   telemetry_data::ClientToServer::StateMachine* state_machine_msg = msg.mutable_state_machine();
 
-  state_machine_msg->set_current_state(Utils::stateEnumConversion(sm_data_.current_state));
+  state_machine_msg->set_current_state(Utils::stateEnumConversion(sm_data.current_state));
 }
 
 void SendLoop::packMotorsMessage(telemetry_data::ClientToServer& msg)
 {
-  motor_data_ = data_.getMotorData();
+  data::Motors motor_data = data_.getMotorData();
   telemetry_data::ClientToServer::Motors* motors_msg = msg.mutable_motors();
 
-  motors_msg->set_module_status(Utils::moduleStatusEnumConversion(motor_data_.module_status));
-  motors_msg->set_velocity_1(motor_data_.velocity_1);
-  motors_msg->set_velocity_2(motor_data_.velocity_2);
-  motors_msg->set_velocity_3(motor_data_.velocity_3);
-  motors_msg->set_velocity_4(motor_data_.velocity_4);
-  motors_msg->set_velocity_5(motor_data_.velocity_5);
-  motors_msg->set_velocity_6(motor_data_.velocity_6);
+  motors_msg->set_module_status(Utils::moduleStatusEnumConversion(motor_data.module_status));
 }
 
 void SendLoop::packBatteriesMessage(telemetry_data::ClientToServer& msg)
 {
-  batteries_data_ = data_.getBatteriesData();
+  data::Batteries batteries_data = data_.getBatteriesData();
   telemetry_data::ClientToServer::Batteries* batteries_msg = msg.mutable_batteries();
 
-  batteries_msg->set_module_status(Utils::moduleStatusEnumConversion(batteries_data_.module_status)); // NOLINT
+  batteries_msg->set_module_status(Utils::moduleStatusEnumConversion(batteries_data.module_status)); // NOLINT
 
-  packLpBatteryDataMessage(*batteries_msg, batteries_data_.low_power_batteries);
-  packHpBatteryDataMessage(*batteries_msg, batteries_data_.high_power_batteries);
+  packLpBatteryDataMessage(*batteries_msg, batteries_data.low_power_batteries);
+  packHpBatteryDataMessage(*batteries_msg, batteries_data.high_power_batteries);
 }
 
 template<std::size_t SIZE>
@@ -134,19 +129,25 @@ void SendLoop::packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_d
   battery_data_msg.set_voltage(battery_data.voltage);
   battery_data_msg.set_current(battery_data.current);
   battery_data_msg.set_charge(battery_data.charge);
-  battery_data_msg.set_temperature(battery_data.temperature);
+  battery_data_msg.set_average_temperature(battery_data.average_temperature);
+  battery_data_msg.set_low_temperature(battery_data.low_temperature);
+  battery_data_msg.set_high_temperature(battery_data.high_temperature);
   battery_data_msg.set_low_voltage_cell(battery_data.low_voltage_cell);
   battery_data_msg.set_high_voltage_cell(battery_data.high_voltage_cell);
+
+  for (int voltage : battery_data.cell_voltage) {
+    battery_data_msg.add_indv_voltage(voltage);
+  }
 }
 
 void SendLoop::packSensorsMessage(telemetry_data::ClientToServer& msg)
 {
-  sensors_data_ = data_.getSensorsData();
+  data::Sensors sensors_data = data_.getSensorsData();
   telemetry_data::ClientToServer::Sensors* sensors_msg = msg.mutable_sensors();
 
-  sensors_msg->set_module_status(Utils::moduleStatusEnumConversion(sensors_data_.module_status));
+  sensors_msg->set_module_status(Utils::moduleStatusEnumConversion(sensors_data.module_status));
 
-  for (data::ImuData imu_data : sensors_data_.imu.value) {
+  for (data::ImuData imu_data : sensors_data.imu.value) {
     telemetry_data::ClientToServer::Sensors::ImuData* imu_data_msg = sensors_msg->add_imu();
 
     imu_data_msg->set_operational(imu_data.operational);
@@ -159,13 +160,21 @@ void SendLoop::packSensorsMessage(telemetry_data::ClientToServer& msg)
   }
 }
 
+void SendLoop::packTemperatureMessage(telemetry_data::ClientToServer& msg)
+{
+  telemetry_data::ClientToServer::Temperature* temp_msg = msg.mutable_temperature();
+
+  temp_msg->set_temperature(data_.getTemperature());
+}
+
 void SendLoop::packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg)
 {
-  emergency_brakes_data_ = data_.getEmergencyBrakesData();
+  data::EmergencyBrakes emergency_brakes_data = data_.getEmergencyBrakesData();
   telemetry_data::ClientToServer::EmergencyBrakes* emergency_brakes_msg = msg.mutable_emergency_brakes(); // NOLINT
 
-  emergency_brakes_msg->set_front_brakes(emergency_brakes_data_.front_brakes);
-  emergency_brakes_msg->set_rear_brakes(emergency_brakes_data_.rear_brakes);
+  for (bool brake_retracted : emergency_brakes_data.brakes_retracted) {
+    emergency_brakes_msg->add_brakes(brake_retracted);
+  }
 }
 
 }  // namespace telemetry

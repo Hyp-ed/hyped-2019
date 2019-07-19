@@ -13,11 +13,15 @@ Port    9090
 > Navigation
 
 > Sensors
-KeyenceL    72
-KeyenceR    74
+ChipSelect  47,22,27,86
+KeyenceL    68
+KeyenceR    67
 Thermistor  3
-HPSSR       70
-LPSSR       71
+HPMaster    65
+HPSSR       46,26
+IMDOut      20
+IMDIn       7
+Embrakes    44
 
 > Embrakes
 Command     66,69,45,23

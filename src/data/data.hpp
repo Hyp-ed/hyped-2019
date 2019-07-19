@@ -79,7 +79,7 @@ struct StripeCounter : public Sensor {
 };
 
 struct TemperatureData : public Sensor {
-  int temp;
+  int temp;   // C
 };
 
 struct Sensors : public Module {
@@ -91,17 +91,23 @@ struct Sensors : public Module {
 };
 
 struct BatteryData {
-  uint16_t  voltage;  // V
-  int16_t   current;  // mA
-  uint8_t   charge;
-  int8_t    temperature;  // C
-  uint16_t  low_voltage_cell;  // V
-  uint16_t  high_voltage_cell;  // V
+  static constexpr int kNumCells = 36;
+  uint16_t  voltage;                    // dV
+  int16_t   current;                    // dA
+  uint8_t   charge;                     // %
+  int8_t    average_temperature;        // C
+
+  // below only for BMSHP! Value for BMSLP = 0
+  uint16_t  cell_voltage[kNumCells];    // mV
+  int8_t    low_temperature;            // C
+  int8_t    high_temperature;           // C
+  uint16_t  low_voltage_cell;           // mV
+  uint16_t  high_voltage_cell;          // mV
 };
 
 struct Batteries : public Module {
   static constexpr int kNumLPBatteries = 3;
-  static constexpr int kNumHPBatteries = 3;
+  static constexpr int kNumHPBatteries = 2;
 
   array<BatteryData, kNumLPBatteries> low_power_batteries;
   array<BatteryData, kNumHPBatteries> high_power_batteries;
@@ -116,12 +122,8 @@ struct EmergencyBrakes : public Module {
 // -------------------------------------------------------------------------------------------------
 
 struct Motors : public Module {
-  int32_t velocity_1;
-  int32_t velocity_2;
-  int32_t velocity_3;
-  int32_t velocity_4;
-  int32_t velocity_5;
-  int32_t velocity_6;
+  static constexpr int kNumMotors = 4;
+  std::array<uint32_t, kNumMotors> rpms = { {0, 0, 0, 0} };
 };
 
 // -------------------------------------------------------------------------------------------------

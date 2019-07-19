@@ -78,6 +78,10 @@ class System {
   bool fake_keyence_fail;
   bool fake_temperature_fail;
 
+  // sensor test variables below
+  bool battery_test;
+  bool fake_highpower;
+
   // Navigation System IDs
   int8_t imu_id;
   int8_t run_id;
@@ -87,6 +91,7 @@ class System {
   bool tube_run;
   bool elevator_run;
   bool stationary_run;
+  bool outside_run;
 
   // barriers
   /**

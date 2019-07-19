@@ -1,5 +1,5 @@
 /*
- * Authors: M. Kristien
+ * Authors: M. Kristien and Gregory Dayao
  * Organisation: HYPED
  * Date: 12. April 2018
  * Description:
@@ -143,7 +143,6 @@ void BMS::processNewData(utils::io::can::Frame& message)
   last_update_time_ = utils::Timer::getTimeMicros();
 }
 
-
 bool BMS::isOnline()
 {
   // consider online if the data has been updated in the last second
@@ -154,18 +153,30 @@ void BMS::getData(BatteryData* battery)
 {
   battery->voltage = 0;
   for (uint16_t v: data_.voltage) battery->voltage += v;
-  battery->voltage    /= 100;  // scale to 0.1V
-  battery->temperature = data_.temperature;
-  battery->current     = current_ - 0x800000;  // offset provided by datasheet.
+  battery->voltage    /= 100;  // scale to dV from mV
+  battery->average_temperature = data_.temperature;
+  if (battery->average_temperature == -40) battery->average_temperature = 0;    // if temp offline
+  battery->current     = current_ - 0x800000;  // offset provided by datasheet
+  battery->current    /= 100;   // scale to dA from mA
+
+  // not used, initialised to zero
+  battery->low_temperature = 0;
+  battery->high_temperature = 0;
+  battery->low_voltage_cell = 0;
+  battery->high_voltage_cell = 0;
 
   // charge calculation
-  if (battery->voltage > 240) {                                       // constant high
+  if (battery->voltage >= 252) {                                     // constant high
     battery->charge = 95;
-  } else if (240 >= battery->voltage && battery->voltage >= 180) {    // linear high
-    battery->charge = battery->voltage / 0.75 - 225;
-  } else if (180 >= battery->voltage && battery->voltage >= 150) {    // linear low
-    battery->charge = battery->voltage / 2 - 75;
-  } else {                                                            // constant low
+  } else if (252 > battery->voltage && battery->voltage >= 210) {    // linear high
+    battery->charge = static_cast<uint8_t>(std::round((battery->voltage - 198.8) * (25/14)));
+  } else if (210 > battery->voltage && battery->voltage >= 207) {    // binomial low
+    battery->charge = 15;
+  } else if (207 > battery->voltage && battery->voltage >= 200) {    // binomial low
+    battery->charge = 10;
+  } else if (200 > battery->voltage && battery->voltage >= 189) {    // binomial low
+    battery->charge = 5;
+  } else {                                                           // constant low
     battery->charge = 0;
   }
 }
@@ -178,8 +189,9 @@ std::vector<uint16_t> BMSHP::existing_ids_;   // NOLINT [build/include_what_you_
 BMSHP::BMSHP(uint16_t id, Logger& log)
     : log_(log),
       can_id_(id*2 + bms::kHPBase),
+      thermistor_id_(id + bms::kThermistorBase),
+      cell_id_(id + bms::kCellBase),
       local_data_ {},
-      local_temp_data_ {},
       last_update_time_(0)
 {
   // verify this BMSHP unit has not been instantiated
@@ -209,53 +221,72 @@ void BMSHP::getData(BatteryData* battery)
 
 bool BMSHP::hasId(uint32_t id, bool extended)
 {
-  // only accept a single CAN message
-
   // HPBMS
   if (id == can_id_ || id == static_cast<uint16_t>(can_id_ + 1)) return true;
 
+  // CAN ID for broadcast message
+  if (id == cell_id_) return true;
+
+  // OBDII ECU ID
+  if (id == 0x7E4) return true;
+  // unused messages, fault message?
+  if (id == 0x6D0 || id == 0x7EC) return true;
+  if (id == 0x70 || id == 0x80) return true;
+
   // Thermistor expansion module
-  if (id == 0x1839F380) return true;
+  if (id == thermistor_id_) return true;
+
+  // Thermistor node IDs
+  if (id == 0x6B4 || id == 0x6B5) return true;
+  // ignore misc thermistor module messages
+  if (id == 0x1838F380 || id == 0x18EEFF80) return true;
+  if (id == 0x1838F381 || id == 0x18EEFF81) return true;
+
   return false;
 }
 
 void BMSHP::processNewData(utils::io::can::Frame& message)
 {
-  // thermistor expansion module first to get high_voltage_cell
-  if (message.id == 0x1839F380) {
-    local_temp_data_.low_temperature     = message.data[1];
-    local_temp_data_.high_temperature    = message.data[2];
-    local_temp_data_.average_temperature = message.data[3];
-    local_data_.temperature = message.data[3];   // main data struct
+  // thermistor expansion module
+  if (message.id == thermistor_id_) {   // C
+    local_data_.low_temperature     = message.data[1];
+    local_data_.high_temperature    = message.data[2];
+    local_data_.average_temperature = message.data[3];
   }
-  log_.DBG1("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
-    local_temp_data_.high_temperature,
-    local_temp_data_.average_temperature,
-    local_temp_data_.low_temperature);
 
-  // TODO(Greg, Iain): config main BMSHP message
+  log_.DBG2("BMSHP", "High Temp: %d, Average Temp: %d, Low Temp: %d",
+    local_data_.high_temperature,
+    local_data_.average_temperature,
+    local_data_.low_temperature);
+
+  // voltage, current and charge 1:1 configured
+  // low_voltage_cell and high_voltage_cell 10:1 configured
   // message format is expected to look like this:
-  // [ voltageH , volageL  , currentH   , currentL,
-  //  charge   , HighTemp , AverageTemp, state, lowVoltageCellH,
-  //  lowVoltageCellL ]
+  // [ voltageH , volageL , currentH , currentL , charge ,
+  // lowVoltageCellH , lowVoltageCellL ] [ highVoltageCellH , highVoltageCellL ]
   if (message.id == can_id_) {
-    local_data_.voltage     = (message.data[0] << 8) | message.data[1];
-    local_data_.current     = (message.data[2] << 8) | message.data[3];
-    local_data_.charge      = message.data[4] * 0.5;    // data needs scaling
-    // local_data_.temperature = message.data[5];
-    local_data_.low_voltage_cell  = ((message.data[6] << 8) | message.data[7])/10;
-    last_update_time_ = utils::Timer::getTimeMicros();
-  } else {
-    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1])/10;
+    local_data_.voltage     = (message.data[0] << 8) | message.data[1];           // dV
+    local_data_.current     = (message.data[2] << 8) | message.data[3];           // dV
+    local_data_.charge      = (message.data[4]) * 0.5;                            // %
+    local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]);   // mV
+  } else if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
+    local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]);   // mV
+  }
+  last_update_time_ = utils::Timer::getTimeMicros();
+
+  // individual cell voltages, configured at 100ms refresh rate
+  if (message.id == cell_id_) {
+    int cell_num = static_cast<int>(message.data[0]);   // get any value
+    local_data_.cell_voltage[cell_num] = (message.data[1] << 8) | message.data[2];
+    local_data_.cell_voltage[cell_num] /=10;   // mV
   }
 
-  log_.DBG1("BMSHP", "received data Volt,Curr,Char, %u,%u,%u",
+  log_.DBG2("BMSHP", "Cell voltage: %u", local_data_.cell_voltage[0]);
+  log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
     local_data_.current,
-    local_data_.charge);
+    local_data_.charge,
+    local_data_.low_voltage_cell,
+    local_data_.high_voltage_cell);
 }
-
-
-
-
 }}  // namespace hyped::sensors

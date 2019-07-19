@@ -255,7 +255,7 @@ int Imu::readFifo(std::vector<ImuData>& data)
 void Imu::getData(ImuData* data)
 {
   if (is_online_) {
-    log_.DBG3("Imu", "Getting Imu data");
+    log_.DBG2("Imu", "Getting Imu data");
     auto& acc = data->acc;
     uint8_t response[8];
     int16_t bit_data;

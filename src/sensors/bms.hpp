@@ -1,5 +1,5 @@
 /*
- * Authors: M. Kristien
+ * Authors: M. Kristien and Gregory Dayao
  * Organisation: HYPED
  * Date: 12. April 2018
  * Description:
@@ -52,7 +52,7 @@ using data::Data;
 
 namespace bms {
 // how often shall request messages be sent
-constexpr uint32_t kFreq    = 2;           // in Hz
+constexpr uint32_t kFreq    = 4;           // in Hz
 constexpr uint32_t kPeriod  = 1000/kFreq;  // in milliseconds
 
 // what is the CAN ID space for BMS units
@@ -64,13 +64,19 @@ constexpr uint16_t kIdSize      = 5;       // size of id-space of BMS-CAN messag
  * base = kIdBase + (kIdIncrement * id_)
  */
 
-constexpr uint16_t kHPBase      = 0x6B0;    // CAN id for high power BMSHP
+/**
+ * LP: Notches:    0        1        2
+ *     ID:      301-304, 311-314, 321-324
+ *     Hex:     12D-130, 137-13A, 141-144
+ * HP: ID:      1712-13, 1714-15
+ *     Hex:     6B0-6B1, 6B2-6B3
+ * Therm ID:   406451072  406451073
+ *       Hex:  0x1839F380 0x1839F381
+ */
 
-struct HPBatteryTemperature {
-  int8_t high_temperature;
-  int8_t average_temperature;
-  int8_t low_temperature;
-};
+constexpr uint16_t kHPBase      = 0x6B0;    // CAN id for high power BMSHP
+constexpr uint64_t kThermistorBase = 0x1839F380;  // HP Thermistor expansion module
+constexpr uint16_t kCellBase = 0x36;        // BMS Broadcast ID
 
 struct Data {
   static constexpr uint8_t kTemperatureOffset = 40;
@@ -159,9 +165,10 @@ class BMSHP : public CanProccesor, public BMSInterface {
   void processNewData(utils::io::can::Frame& message) override;
 
  private:
-  bms::HPBatteryTemperature  local_temp_data_;
   Logger&         log_;
   uint16_t        can_id_;            // CAN id to be used
+  uint64_t        thermistor_id_;     // thermistor expansion module CAN id
+  uint16_t        cell_id_;           // broadcast message ID
   BatteryData     local_data_;        // stores values from CAN
   uint64_t        last_update_time_;  // stores arrival time of CAN message
   // for making sure only one object per BMS unit exist

@@ -67,7 +67,6 @@ class ImuManager: public ImuManagerInterface {
    */
   data::Data&      data_;
 
-  uint8_t           chip_select_[data::Sensors::kNumImus];
   ImuInterface*     imu_[data::Sensors::kNumImus];
 };
 

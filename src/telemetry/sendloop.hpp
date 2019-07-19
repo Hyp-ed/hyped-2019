@@ -50,15 +50,10 @@ class SendLoop: public Thread {
     void packHpBatteryDataMessage(batteriesMsg& batteries_msg, std::array<data::BatteryData, SIZE>& battery_data_array); // NOLINT
     void packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_data_msg, data::BatteryData& battery_data); // NOLINT
     void packSensorsMessage(telemetry_data::ClientToServer& msg);
+    void packTemperatureMessage(telemetry_data::ClientToServer& msg);
     void packEmergencyBrakesMessage(telemetry_data::ClientToServer& msg);
     Main&                   main_ref_;
     data::Data&             data_;
-    data::Navigation        nav_data_;
-    data::StateMachine      sm_data_;
-    data::Motors            motor_data_;
-    data::Batteries         batteries_data_;
-    data::Sensors           sensors_data_;
-    data::EmergencyBrakes   emergency_brakes_data_;
 };
 
 }  // namespace telemetry

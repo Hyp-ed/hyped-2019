@@ -42,6 +42,7 @@ namespace navigation {
       State current_state = data.getStateMachineData().current_state;
 
     if (!sys_.tube_run) nav_.Navigation::disableKeyenceUsage();
+    if (sys_.fake_keyence) nav_.Navigation::setKeyenceFake();
 
     switch (current_state) {
         case State::kIdle :
@@ -51,11 +52,15 @@ namespace navigation {
         case State::kCalibrating :
           if (nav_.getModuleStatus() == ModuleStatus::kInit) {
             nav_.calibrateGravity();
-            nav_.initTimestamps();
           }
           break;
 
         case State::kAccelerating :
+           if (!nav_.getHasInit()) {
+             nav_.initTimestamps();
+             nav_.setHasInit();
+           }
+
         case State::kNominalBraking :
         case State::kEmergencyBraking :
         case State::kExiting :
@@ -69,5 +74,4 @@ namespace navigation {
       }
     }
   }
-
 }}  // namespace hyped::navigation

@@ -39,6 +39,7 @@ using data::ImuData;
 using data::ModuleStatus;
 using data::NavigationType;
 using data::NavigationVector;
+using data::Motors;
 using navigation::KalmanFilter;
 using utils::Logger;
 using utils::math::Integrator;
@@ -132,9 +133,23 @@ namespace navigation {
        */
       void initTimestamps();
       /**
+       * @brief Used to check whether initial timestamps have been set
+       *
+       * @return Boolean whether init timestamps have been set
+       */
+      bool getHasInit();
+      /*
+       * @brief Set initialisation of timestamps to true
+       */
+      void setHasInit();
+      /**
        * @brief Disable keyence readings to have any impact on the run.
        */
       void disableKeyenceUsage();
+      /**
+       * @brief Set the keyence used to fake, so the system knows to use central timestamps.
+       */
+      void setKeyenceFake();
 
     private:
       static constexpr int kCalibrationAttempts = 3;
@@ -144,6 +159,18 @@ namespace navigation {
       static constexpr NavigationType kEmergencyDeceleration = 24;
       static constexpr float kTukeyThreshold = 1;  // 0.75
       static constexpr float kTukeyIQRBound = 3;
+
+      static constexpr NavigationType kStripeDistance = 30.48;
+
+      static constexpr uint32_t pod_mass_           = 250;  // kg
+      static constexpr float    mom_inertia_wheel_  = 0.04;  // kgm²
+      static constexpr uint32_t kNumBrakes          = 4;
+      static constexpr float    coeff_friction_     = 0.38;
+      static constexpr uint32_t spring_compression_ = 40;
+      static constexpr uint32_t spring_coefficient_ = 18;
+      static constexpr float    embrake_angle_      = 0.52;
+
+     static constexpr float pi = 3.14159265359;  // Have to approximate
 
       // System communication
       Logger& log_;
@@ -177,6 +204,8 @@ namespace navigation {
       KeyenceDataArray prev_keyence_readings_;
       // Are the keyence sensors used or ignored?
       bool keyence_used_;
+      // Is the keyence used fake or real?
+      bool keyence_real_;
       // This counts the number of times the keyence readings disagree with the IMU data more than
       // allowed due to uncertainty. It is used at the moment to check if the calculated
       // uncertainty is acceptable.
@@ -202,6 +231,8 @@ namespace navigation {
       NavigationType prev_acc_;
       // Previous velocity measurement
       NavigationType prev_vel_;
+      // Have initial timestamps been set?
+      bool init_time_set_;
 
       // To convert acceleration -> velocity -> distance
       Integrator<NavigationType> acceleration_integrator_;  // acceleration to velocity
