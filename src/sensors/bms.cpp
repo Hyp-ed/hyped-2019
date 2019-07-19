@@ -277,13 +277,11 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   last_update_time_ = utils::Timer::getTimeMicros();
 
   if (message.id == cell_id_) {
-    for (int i = 0; i < data::Batteries::kNumCells; i++) {
-      int cell_num = static_cast<int>(message.data[0]);
-      local_data_.cell_voltage_[cell_num] = (message.data[1] << 8) | message.data[2];
-      Thread::sleep(bms::kCellRefresh);
-    }
+    int cell_num = static_cast<int>(message.data[0]);
+    local_data_.cell_voltage_[cell_num] = (message.data[1] << 8) | message.data[2];
   }
 
+  log_.INFO("BMSHP", "Cell voltage: %u", local_data_.cell_voltage_[3]);
   log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
     local_data_.current,

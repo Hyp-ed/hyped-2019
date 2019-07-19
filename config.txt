@@ -7,7 +7,7 @@
 # ParseNavigation() function
 
 > Telemetry
-IP      192.162.6.1
+IP      192.168.0.40
 Port    9090
 
 > Navigation

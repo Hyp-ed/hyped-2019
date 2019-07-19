@@ -144,22 +144,22 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    if (initialised_) {
-      // check health of batteries
-      if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-        if (!batteriesInRange()) {
-          if (batteries_.module_status != previous_status_)
-            log_.ERR("BMS-MANAGER", "battery failure detected");
-          batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-          clearHP();
-        }
-        previous_status_ = batteries_.module_status;
-      }
-    }
-    if (!initialised_) {
-      counter++;
-      if (counter == 50) initialised_ = true;
-    }
+    // if (initialised_) {
+      // // check health of batteries
+      // if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
+        // if (!batteriesInRange()) {
+          // if (batteries_.module_status != previous_status_)
+            // // log_.ERR("BMS-MANAGER", "battery failure detected");
+          // batteries_.module_status = data::ModuleStatus::kCriticalFailure;
+          // clearHP();
+        // }
+        // previous_status_ = batteries_.module_status;
+      // }
+    // }
+    // if (!initialised_) {
+      // counter++;
+      // if (counter == 50) initialised_ = true;
+    // }
 
     // publish the new data
     data_.setBatteriesData(batteries_);
