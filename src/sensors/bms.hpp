@@ -1,5 +1,5 @@
 /*
- * Authors: M. Kristien
+ * Authors: M. Kristien and Gregory Dayao
  * Organisation: HYPED
  * Date: 12. April 2018
  * Description:
@@ -76,8 +76,7 @@ constexpr uint16_t kIdSize      = 5;       // size of id-space of BMS-CAN messag
 
 constexpr uint16_t kHPBase      = 0x6B0;    // CAN id for high power BMSHP
 constexpr uint64_t kThermistorBase = 0x1839F380;  // HP Thermistor expansion module
-constexpr uint16_t kCellBase = 0x36;
-constexpr uint32_t kCellRefresh = 100;
+constexpr uint16_t kCellBase = 0x36;        // BMS Broadcast ID
 
 struct Data {
   static constexpr uint8_t kTemperatureOffset = 40;
@@ -169,7 +168,7 @@ class BMSHP : public CanProccesor, public BMSInterface {
   Logger&         log_;
   uint16_t        can_id_;            // CAN id to be used
   uint64_t        thermistor_id_;     // thermistor expansion module CAN id
-  uint16_t        cell_id_;
+  uint16_t        cell_id_;           // broadcast message ID
   BatteryData     local_data_;        // stores values from CAN
   uint64_t        last_update_time_;  // stores arrival time of CAN message
   // for making sure only one object per BMS unit exist
