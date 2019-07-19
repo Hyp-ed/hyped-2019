@@ -53,16 +53,13 @@ class Main : public Thread
   private:
     Logger&                log_;
     data::Data&            data_;
-    utils::System&         sys_;
     data::StateMachine     sm_data_;
     data::EmergencyBrakes  em_brakes_;
     data::Telemetry        tlm_data_;
-    int                    command_pins_[4];
-    int                    button_pins_[4];
     Stepper*               brake_1;
-    // Stepper*               brake_2;
-    // Stepper*               brake_3;
-    // Stepper*               brake_4;
+    Stepper*               brake_2;
+    Stepper*               brake_3;
+    Stepper*               brake_4;
 };
 
 }}
