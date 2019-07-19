@@ -84,6 +84,8 @@ class BmsManager: public ManagerInterface  {
    */
   GPIO* embrakes_ssr_;
 
+  GPIO* imd_out_;
+
   /**
    * @brief holds LP BatteryData, HP BatteryData, and module_status
    */
