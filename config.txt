@@ -16,12 +16,12 @@ Port    9090
 Timeout        23000000
 
 > Sensors
-ChipSelect  47,22,45,86
-KeyenceL    66
+ChipSelect  47,22,27,86
+KeyenceL    68
 KeyenceR    67
 Thermistor  3
-HPMaster    46
-HPSSR       26,44
+HPMaster    65
+HPSSR       46,26
 IMDOut      20
 IMDIn       7
-Embrakes    68
+Embrakes    44
