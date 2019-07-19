@@ -17,6 +17,7 @@
 */
 
 #include "main.hpp"
+#include "utils/config.hpp"
 
 namespace hyped
 {
@@ -26,8 +27,10 @@ namespace embrakes
 Main::Main(uint8_t id, Logger &log)
   : Thread(id, log),
     log_(log),
-    data_(data::Data::getInstance())
+    data_(data::Data::getInstance()),
+    sys_(utils::System::getSystem())
 {
+<<<<<<< HEAD
   Stepper brake_1(26, 27, log_, 1);
   Stepper brake_2(28, 29, log_, 2);
   Stepper brake_3(30, 31, log_, 3);
@@ -37,6 +40,17 @@ Main::Main(uint8_t id, Logger &log)
   brake_2.sendClamp();
   brake_3.sendClamp();
   brake_4.sendClamp();
+=======
+  // parse GPIO pins from config.txt file
+  for (int i = 0; i < 4; i++) {
+    command_pins_[i] = sys_.config->embrakes.command[i];
+    button_pins_[i] = sys_.config->embrakes.button[i];
+  }
+  Stepper* brake_1 = new Stepper(command_pins_[0], button_pins_[0], log_, 1);
+  Stepper* brake_2 = new Stepper(command_pins_[1], button_pins_[1], log_, 2);
+  Stepper* brake_3 = new Stepper(command_pins_[2], button_pins_[2], log_, 3);
+  Stepper* brake_4 = new Stepper(command_pins_[3], button_pins_[3], log_, 4);
+>>>>>>> 812648b57485b010ce8ea48e5012351b00e3e7a6
 }
 
 void Main::run() {
