@@ -70,10 +70,10 @@ BmsManager::BmsManager(Logger& log)
       hp_master_->clear();
       log_.INFO("BMS-MANAGER", "HP SSRs has been initialised CLEAR");
 
-      // Set LPSSR manual switch
-      lp_ssr_ = new GPIO(sys_.config->sensors.LPSSR, utils::io::gpio::kOut);
-      lp_ssr_->set();
-      log_.INFO("BMS-MANAGER", "LP SSR has been set");
+      // Set embrakes ssr
+      embrakes_ssr_ = new GPIO(sys_.config->sensors.embrakes, utils::io::gpio::kOut);
+      embrakes_ssr_->set();
+      log_.INFO("BMS-MANAGER", "Embrake SSR has been set");
     }
   } else if (sys_.fake_batteries_fail) {
     // fake batteries fail here
@@ -99,8 +99,8 @@ BmsManager::BmsManager(Logger& log)
   batteries_.module_status = data::ModuleStatus::kInit;
   data_.setBatteriesData(batteries_);
   Thread::yield();
+  start_time_ = utils::Timer::getTimeMicros();
   log_.INFO("BMS-MANAGER", "batteries data has been initialised");
-  // Thread::sleep(100);
 }
 
 void BmsManager::clearHP()
@@ -130,7 +130,6 @@ void BmsManager::setHP()
 
 void BmsManager::run()
 {
-  int counter = 0;
   while (sys_.running_) {
     // keep updating data_ based on values read from sensors
     for (int i = 0; i < data::Batteries::kNumLPBatteries; i++) {
@@ -144,31 +143,28 @@ void BmsManager::run()
         batteries_.high_power_batteries[i].voltage = 0;
     }
 
-    // if (initialised_) {
-      // // check health of batteries
-      // if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-        // if (!batteriesInRange()) {
-          // if (batteries_.module_status != previous_status_)
-            // // log_.ERR("BMS-MANAGER", "battery failure detected");
-          // batteries_.module_status = data::ModuleStatus::kCriticalFailure;
-          // clearHP();
-        // }
-        // previous_status_ = batteries_.module_status;
-      // }
-    // }
-    // if (!initialised_) {
-      // counter++;
-      // if (counter == 50) initialised_ = true;
-    // }
+    data::State state = data_.getStateMachineData().current_state;
+    if (utils::Timer::getTimeMicros() - start_time_ > check_time_) {
+      // check health of batteries
+      if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
+        if (!batteriesInRange()) {
+          if (batteries_.module_status != previous_status_)
+            log_.ERR("BMS-MANAGER", "battery failure detected");
+          batteries_.module_status = data::ModuleStatus::kCriticalFailure;
+          clearHP();
+        }
+        previous_status_ = batteries_.module_status;
+      }
+    }
 
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    data::State state = data_.getStateMachineData().current_state;
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       clearHP();
+      embrakes_ssr_->clear();     // actuate brakes in emergency state
       if (state != previous_state_)
-        log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared");
+        log_.ERR("BMS-MANAGER", "Emergency State! HP SSR cleared and Embrakes actuated");
     } else if (state == data::State::kFinished) {
       clearHP();
       if (state != previous_state_)

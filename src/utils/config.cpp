@@ -149,10 +149,10 @@ void Config::ParseSensors(char* line)
     }
   }
 
-  if (strcmp(token, "LPSSR") == 0) {
+  if (strcmp(token, "Embrakes") == 0) {
     char* value = strtok(NULL, " ");
     if (value) {
-      sensors.LPSSR = atoi(value);
+      sensors.embrakes = atoi(value);
     }
   }
 }

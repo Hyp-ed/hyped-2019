@@ -13,10 +13,10 @@ Port    9090
 > Navigation
 
 > Sensors
-ChipSelect  47,22,36,86
+ChipSelect  47,22,45,86
 KeyenceL    72
 KeyenceR    74
 Thermistor  3
 HPMaster    46
 HPSSR       26,44
-LPSSR       68
+Embrakes    68

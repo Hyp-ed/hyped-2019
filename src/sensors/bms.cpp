@@ -1,5 +1,5 @@
 /*
- * Authors: M. Kristien
+ * Authors: M. Kristien and Gregory Dayao
  * Organisation: HYPED
  * Date: 12. April 2018
  * Description:
@@ -229,7 +229,6 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 
   // OBDII ECU ID
   if (id == 0x7E4) return true;
-
   // unused messages, fault message?
   if (id == 0x6D0 || id == 0x7EC) return true;
   if (id == 0x70 || id == 0x80) return true;
@@ -239,7 +238,6 @@ bool BMSHP::hasId(uint32_t id, bool extended)
 
   // Thermistor node IDs
   if (id == 0x6B4 || id == 0x6B5) return true;
-
   // ignore misc thermistor module messages
   if (id == 0x1838F380 || id == 0x18EEFF80) return true;
   if (id == 0x1838F381 || id == 0x18EEFF81) return true;
@@ -276,12 +274,14 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   }
   last_update_time_ = utils::Timer::getTimeMicros();
 
+  // individual cell voltages, configured at 100ms refresh rate
   if (message.id == cell_id_) {
-    int cell_num = static_cast<int>(message.data[0]);
+    int cell_num = static_cast<int>(message.data[0]);   // get any value
     local_data_.cell_voltage_[cell_num] = (message.data[1] << 8) | message.data[2];
+    local_data_.cell_voltage_[cell_num] *=10;   // mV
   }
 
-  log_.INFO("BMSHP", "Cell voltage: %u", local_data_.cell_voltage_[3]);
+  log_.DBG2("BMSHP", "Cell voltage: %u", local_data_.cell_voltage_[0]);
   log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
     local_data_.current,
