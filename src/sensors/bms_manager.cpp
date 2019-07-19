@@ -60,6 +60,10 @@ BmsManager::BmsManager(Logger& log)
     if (!sys_.battery_test) {
       // Set SSR switches for real system
 
+      imd_out_ = new GPIO(sys_.config->sensors.IMDOut, utils::io::gpio::kOut);
+      imd_out_->set();
+      imd_in_ = new GPIO(sys_.config->sensors.IMDIn, utils::io::gpio::kIn);
+
       // clear HPSSRs if default is high
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i] = new GPIO(sys_.config->sensors.HPSSR[i], utils::io::gpio::kOut);
@@ -128,6 +132,19 @@ void BmsManager::setHP()
   }
 }
 
+void BmsManager::checkIMD()
+{
+  if (!sys_.battery_test) {
+    if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
+      if (!imd_in_->read()) {
+        log_.ERR("BMS-MANAGER", "IMD Fault! HP off and embrakes engaged");
+        clearHP();
+        embrakes_ssr_->clear();
+      }
+    }
+  }
+}
+
 void BmsManager::run()
 {
   while (sys_.running_) {
@@ -160,6 +177,7 @@ void BmsManager::run()
     // publish the new data
     data_.setBatteriesData(batteries_);
 
+    checkIMD();
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       clearHP();
       embrakes_ssr_->clear();     // actuate brakes in emergency state

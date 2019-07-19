@@ -66,6 +66,8 @@ class Config {
     int Thermistor;
     int hp_master;
     int HPSSR[data::Batteries::kNumHPBatteries];
+    int IMDOut;
+    int IMDIn;
     int embrakes;
   } sensors;
 

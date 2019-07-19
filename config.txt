@@ -19,4 +19,6 @@ KeyenceR    67
 Thermistor  3
 HPMaster    46
 HPSSR       26,44
+IMDOut      20
+IMDIn       7
 Embrakes    68
