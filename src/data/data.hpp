@@ -98,7 +98,7 @@ struct BatteryData {
   int8_t    average_temperature;        // C
 
   // below only for BMSHP! Value for BMSLP = 0
-  uint16_t  cell_voltage_[kNumCells];   // mV
+  uint16_t  cell_voltage[kNumCells];    // mV
   int8_t    low_temperature;            // C
   int8_t    high_temperature;           // C
   uint16_t  low_voltage_cell;           // mV

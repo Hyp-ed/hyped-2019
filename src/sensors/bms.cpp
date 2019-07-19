@@ -277,11 +277,11 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   // individual cell voltages, configured at 100ms refresh rate
   if (message.id == cell_id_) {
     int cell_num = static_cast<int>(message.data[0]);   // get any value
-    local_data_.cell_voltage_[cell_num] = (message.data[1] << 8) | message.data[2];
-    local_data_.cell_voltage_[cell_num] *=10;   // mV
+    local_data_.cell_voltage[cell_num] = (message.data[1] << 8) | message.data[2];
+    local_data_.cell_voltage[cell_num] *=10;   // mV
   }
 
-  log_.DBG2("BMSHP", "Cell voltage: %u", local_data_.cell_voltage_[0]);
+  log_.DBG2("BMSHP", "Cell voltage: %u", local_data_.cell_voltage[0]);
   log_.DBG2("BMSHP", "received data Volt,Curr,Char,low_v,high_v: %u,%u,%u,%u,%u",
     local_data_.voltage,
     local_data_.current,

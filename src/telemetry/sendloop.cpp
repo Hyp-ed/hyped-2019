@@ -134,6 +134,10 @@ void SendLoop::packBatteryDataMessageHelper(batteriesMsg::BatteryData& battery_d
   battery_data_msg.set_high_temperature(battery_data.high_temperature);
   battery_data_msg.set_low_voltage_cell(battery_data.low_voltage_cell);
   battery_data_msg.set_high_voltage_cell(battery_data.high_voltage_cell);
+
+  for (int voltage : battery_data.cell_voltage) {
+    battery_data_msg.add_indv_voltage(voltage);
+  }
 }
 
 void SendLoop::packSensorsMessage(telemetry_data::ClientToServer& msg)
