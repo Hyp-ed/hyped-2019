@@ -53,6 +53,7 @@ ModuleEntry module_map[] = {
   {kNavigation,   "Navigation",     &Config::ParseNavigation},
   {kStateMachine, "StateMachine",   &Config::ParseStateMachine},
   {kTelemetry,    "Telemetry",      &Config::ParseTelemetry},
+  {kEmbrakes,     "Embrakes",       &Config::ParseEmbrakes},
   {kSensors,      "Sensors",        &Config::ParseSensors}
 };
 
@@ -96,6 +97,28 @@ void Config::ParseTelemetry(char* line)
     telemetry.IP = tokens[1];
   } else if (tokens[0] == "Port") {
     telemetry.Port = tokens[1];
+  }
+}
+
+void Config::ParseEmbrakes(char* line)
+{
+  char* token = strtok(line, " ");
+
+  if (strcmp(token, "Command") == 0) {
+    for (int i = 0; i < 4; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+        embrakes.command[i] = atoi(value);
+      }
+    }
+  }
+  if (strcmp(token, "Button") == 0) {
+    for (int i = 0; i < 4; i++) {
+      char* value = strtok(NULL, ",");
+      if (value) {
+        embrakes.button[i] = atoi(value);
+      }
+    }
   }
 }
 
@@ -165,13 +188,6 @@ void Config::ParseSensors(char* line)
     char* value = strtok(NULL, " ");
     if (value) {
       sensors.IMDOut = atoi(value);
-    }
-  }
-
-  if (strcmp(token, "IMDIn") == 0) {
-    char* value = strtok(NULL, " ");
-    if (value) {
-      sensors.IMDIn = atoi(value);
     }
   }
 

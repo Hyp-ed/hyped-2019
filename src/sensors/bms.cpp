@@ -271,6 +271,13 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]);   // mV
   } else if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]);   // mV
+    uint16_t imd_reading = ((message.data[2] << 8) | message.data[3]);
+    log_.DBG2("BMSHP", "Isolation ADC: %u", imd_reading);
+    if (imd_reading > 25000) {      // 2.5 volts
+      local_data_.imd_fault = true;
+    } else {
+      local_data_.imd_fault = false;
+    }
   }
   last_update_time_ = utils::Timer::getTimeMicros();
 
