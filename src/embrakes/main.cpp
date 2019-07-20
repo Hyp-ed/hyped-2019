@@ -76,7 +76,7 @@ void Main::run() {
           // brake_3->checkHome();
           // brake_4->checkHome();
 
-        } else if(!tlm_data_.nominal_braking_command) {
+        } else if(tlm_data_.nominal_braking_command) {
           log_.INFO("Brakes", "ENGAGE COMMAND");
           if(!brake_1->checkClamped()){
             brake_1->sendClamp();
