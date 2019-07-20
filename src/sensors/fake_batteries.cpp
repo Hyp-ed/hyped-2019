@@ -33,7 +33,7 @@ FakeBatteries::FakeBatteries(Logger& log, bool is_lp, bool is_fail)
       lp_failure_ {{100, 1000, 0, 0, 100, 0, 0, 0}},
       lp_success_ {{245, 450, 70, 0, 35, 0, 0, 0}},
       hp_failure_ {{900, 10000, 0, 5, 70, 100, 500, 400}},
-      hp_success_ {{1150, 3000, 70, 30, 35, 40, 3000, 3200}},
+      hp_success_ {{1150, 1000, 70, 30, 35, 40, 3000, 3200}},
       cases_ {{lp_failure_, lp_success_, hp_failure_, hp_success_}},
       is_lp_(is_lp),
       is_fail_(is_fail),
