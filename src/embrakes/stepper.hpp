@@ -41,7 +41,7 @@ class Stepper {
    * @brief Construct a new Stepper object
    * @param log, node id
    */
-  Stepper(uint8_t enable_pin, uint8_t button_pin, Logger& log, uint8_t id);
+  Stepper(uint8_t enable_pin_1, uint8_t enable_pin_2, uint8_t button_brake_1, uint8_t button_brake_2, Logger& log);
 
   /**
    * @brief {checks if brake's button is pressed, notes change in the data struct}
@@ -72,9 +72,10 @@ class Stepper {
     utils::Logger&        log_;
     data::Data&           data_;
     data::EmergencyBrakes em_brakes_data_;
-    GPIO                  command_pin_;
-    GPIO                  button_;
-    uint8_t               brake_id_;
+    GPIO                  command_pin_1;
+    GPIO                  command_pin_2;
+    GPIO                  button_B1;
+    GPIO                  button_B2;
     uint8_t               is_clamped_;
     uint64_t              timer;
 
