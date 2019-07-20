@@ -22,7 +22,7 @@
 #ifndef PROPULSION_RPM_REGULATOR_HPP_
 #define PROPULSION_RPM_REGULATOR_HPP_
 
-#define MAX_RPM 10000  // todo(Iain): update for actual run
+#define MAX_RPM 6000  // todo(Iain): update for actual run
 #define MAX_TEMP 150  // todo(Iain): find out actual value.
 #define MAX_CURRENT 2000  // (mA) todo(Iain): replace this with an actual function.
 

@@ -2,38 +2,45 @@
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
 #include "propulsion/controller.hpp"
+#include "sensors/bms_manager.hpp"
+#include "data/data.hpp"
 
 using hyped::utils::System;
 using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using hyped::motor_control::Controller;
-
-#define NUM_MOTORS 1
+using hyped::sensors::BmsManager;
+using hyped::data::Data;
+using hyped::data::StateMachine;
+using hyped::data::State;
+using hyped::data::Batteries;
 
 int main(int argc, char** argv) {
   System::parseArgs(argc, argv);
   Logger log = System::getLogger();
 
-  // Create and initialise motors
-  Controller** controllers;
-  for (int i = 0; i < NUM_MOTORS; i++) {
-    controllers[i] = new Controller(log, i);
-  }
+  Data& data_ = Data::getInstance();
+  BmsManager bms_manager(log);
+  bms_manager.start();
+  Thread::sleep(500);
+  StateMachine state_machine = data_.getStateMachineData();
 
+  // Create and initialise motors
+  Controller* controller = new Controller(log, 1);
   // Register the controllers as nodes on the CANBus
-  for (int i = 0; i < NUM_MOTORS; i++) {
-    controllers[i]->registerController();
-  }
+  controller->registerController();
 
   // Send Configuration messages to controllers
-  for (int i = 0; i < NUM_MOTORS; i++) {
-    controllers[i]->configure();
-  }
+  controller->configure();
+
+  log.INFO("TEST", "Transitioning to kReady in 3 seconds");
+  Thread::sleep(3000);
+
+  state_machine.current_state = State::kReady;
+  data_.setStateMachineData(state_machine);
 
   // Send auto align command
-  for (int i = 0; i < NUM_MOTORS; i++) {
-    controllers[i]->autoAlignMotorPosition();
-  }
+  controller->autoAlignMotorPosition();
 
   // Sleep to process any errors
   Thread::sleep(100000);
