@@ -84,6 +84,9 @@ class BmsManager: public ManagerInterface  {
    */
   GPIO* embrakes_ssr_;
 
+  /**
+   * @brief for IMD boolean in BatteryData
+   */
   GPIO* imd_out_;
 
   /**
