@@ -15,6 +15,7 @@ message ServerToClient {
         SERVICE_PROPULSION_GO = 5;
         SERVICE_PROPULSION_STOP = 6;
         NOMINAL_BRAKING = 7;
+        NOMINAL_RETRACT = 8;
     }
 
     Command command = 1;
