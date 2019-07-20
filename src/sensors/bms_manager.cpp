@@ -60,6 +60,7 @@ BmsManager::BmsManager(Logger& log)
     if (!sys_.battery_test) {
       // Set SSR switches for real system
 
+      // IMD ssr
       imd_out_ = new GPIO(sys_.config->sensors.IMDOut, utils::io::gpio::kOut);
       imd_out_->set();
       log_.INFO("BMS-MANAGER", "IMD has been initialised SET");
@@ -125,7 +126,7 @@ void BmsManager::setHP()
     if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i]->set();
-        Thread::sleep(100);
+        sleep(50);
       }
       hp_master_->set();
     }
@@ -167,7 +168,7 @@ void BmsManager::run()
     if (utils::Timer::getTimeMicros() - start_time_ > check_time_) {
       // check health of batteries
       if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-        if ((!batteriesInRange()) || (!checkIMD())) {
+        if (!(batteriesInRange() && checkIMD())) {
           if (batteries_.module_status != previous_status_)
             log_.ERR("BMS-MANAGER", "battery failure detected");
           batteries_.module_status = data::ModuleStatus::kCriticalFailure;
