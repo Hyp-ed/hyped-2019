@@ -21,69 +21,91 @@
 namespace hyped {
 namespace embrakes {
 
-Stepper::Stepper(uint8_t enable_pin, uint8_t button_pin, Logger& log, uint8_t id)
+Stepper::Stepper(Logger& log, uint8_t id)
     : log_(log),
       data_(data::Data::getInstance()),
-      brake_id_(id),
+      node_id_(id),
+      can_(Can::getInstance()),
       em_brakes_data_(data_.getEmergencyBrakesData()),
-      command_pin_(enable_pin, utils::io::gpio::kOut, log_),
-      button_(button_pin, utils::io::gpio::kIn, log_),
-      is_clamped_(true)
+      tlm_data_(data_.getTelemetryData()),
+      sm_data_(data_.getStateMachineData())
 {
-  GPIO command_pin_(enable_pin, utils::io::gpio::kOut, log_);
-  GPIO button_(button_pin, utils::io::gpio::kIn, log_);
+can_.start();
+
+stepper_position_LSB = 0x0;
+stepper_position_MSB = 0x0;
+stepper_period       = 0x28;
+isEnabled            = 0x0; // is true (or set to anything above 0) if brakes to be retracted
+isHome               = 0x0; // is true (equal to 1) if button is pressed (if brakes are retracted)
+
+message_to_send.id       = node_id_;
+message_to_send.extended = false;
+message_to_send.len      = 8;
 }
 
-void Stepper::checkHome() {
-  if(button_.read() && !em_brakes_data_.brakes_retracted[brake_id_-1]){
-    em_brakes_data_.brakes_retracted[brake_id_-1] = true;
+void Stepper::registerStepper()
+{
+  can_.registerProcessor(this);
+}
+
+void Stepper::processNewData(utils::io::can::Frame &message)
+{
+  uint32_t id = message.id;
+  uint8_t ex = message.extended;
+  if(hasId(id, ex)) {
+    uint8_t isEnabled = message.data[0];
+    uint8_t stepper_position_LSB = message.data[1];
+    uint8_t stepper_position_MSB = message.data[2];
+    uint8_t isHome = message.data[3];
+
+    checkHome(isHome);
+
+  } else {
+    log_.ERR("Brakes", "Stepper %d, %i: CAN message not recognised", node_id_, id);
+  }
+}
+
+bool Stepper::hasId(uint32_t id, bool extended)
+{
+  if (node_id_ == id) {
+    return true;
+  }
+  return false;
+}
+
+void Stepper::checkHome(uint8_t button)
+{
+  // make sure current brake is noted as retracted or not (based on the message received) in the data struct
+  uint8_t brk_id = node_id_ - 20;
+  if(button && !em_brakes_data_.brakes_retracted[brk_id]){
+    em_brakes_data_.brakes_retracted[brk_id] = true;
     data_.setEmergencyBrakesData(em_brakes_data_);
-  } else if(!button_.read() && em_brakes_data_.brakes_retracted[brake_id_-1]){
-    em_brakes_data_.brakes_retracted[brake_id_-1] = false;
+  } else if(!button && em_brakes_data_.brakes_retracted[brk_id]){
+    em_brakes_data_.brakes_retracted[brk_id] = false;
     data_.setEmergencyBrakesData(em_brakes_data_);
   }
 }
 
-void Stepper::sendRetract() {
-  log_.INFO("Brakes", "Sending a retract message to brake %i", brake_id_);
-  command_pin_.clear();
-  is_clamped_ = false;
+void Stepper::sendRetract(){
+  log_.INFO("Brakes", "Sending a retract message");
+  message_to_send.data[0] = 0x01;
+  message_to_send.data[1] = 0xfc;
+  message_to_send.data[2] = 0x18;
+  message_to_send.data[3] = 0x28;
+
+
+  can_.send(message_to_send);
+
 }
 
-void Stepper::sendClamp() {
-  log_.INFO("Brakes", "Sending a retract message to brake %i", brake_id_);
-  command_pin_.set();
-  is_clamped_ = true;
-}
+void Stepper::sendClamp(){
+  log_.INFO("Brakes", "Calmping the brakes");
+  message_to_send.data[0] = 0x00;
+  message_to_send.data[3] = 0x28;
+  message_to_send.data[2] = 0xe8;
+  message_to_send.data[1] = 0x03;
 
-void Stepper::checkAccFailure() {
-  if(!button_.read()){
-    timer = utils::Timer::getTimeMicros();
-    if((utils::Timer::getTimeMicros() - timer > 200000) && !button_.read()){
-      log_.ERR("Brakes", "Brake %b failure", brake_id_);
-      em_brakes_data_.module_status = ModuleStatus::kCriticalFailure;
-      data_.setEmergencyBrakesData(em_brakes_data_);
-    } else{
-      return;
-    }
-  }
-}
-
-void Stepper::checkBrakingFailure() {
-  if(button_.read()){
-    timer = utils::Timer::getTimeMicros();
-    if((utils::Timer::getTimeMicros() - timer > 200000) && button_.read()){
-      log_.ERR("Brakes", "Brake %b failure", brake_id_);
-      em_brakes_data_.module_status = ModuleStatus::kCriticalFailure;
-      data_.setEmergencyBrakesData(em_brakes_data_);
-    } else{
-      return;
-    }
-  }
-}
-
-bool Stepper::checkClamped() {
-  return is_clamped_;
+  can_.send(message_to_send);
 }
 
 }}  // namespace hyped::embrakes
