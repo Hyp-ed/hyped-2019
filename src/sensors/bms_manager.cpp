@@ -60,9 +60,10 @@ BmsManager::BmsManager(Logger& log)
     if (!sys_.battery_test) {
       // Set SSR switches for real system
 
+      // IMD ssr
       imd_out_ = new GPIO(sys_.config->sensors.IMDOut, utils::io::gpio::kOut);
       imd_out_->set();
-      imd_in_ = new GPIO(sys_.config->sensors.IMDIn, utils::io::gpio::kIn);
+      log_.INFO("BMS-MANAGER", "IMD has been initialised SET");
 
       // clear HPSSRs if default is high
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
@@ -125,24 +126,27 @@ void BmsManager::setHP()
     if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
       for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
         hp_ssr_[i]->set();
-        Thread::sleep(100);
+        sleep(50);
       }
       hp_master_->set();
     }
   }
 }
 
-void BmsManager::checkIMD()
+bool BmsManager::checkIMD()
 {
   if (!sys_.battery_test) {
     if (!(sys_.fake_batteries || sys_.fake_batteries_fail)) {
-      if (!imd_in_->read()) {
-        log_.ERR("BMS-MANAGER", "IMD Fault! HP off and embrakes engaged");
-        clearHP();
-        embrakes_ssr_->clear();
+      for (int i = 0; i < data::Batteries::kNumHPBatteries; i++) {
+        if (batteries_.high_power_batteries[i].imd_fault == false) {
+          log_.ERR("BMS-MANAGER", "IMD Fault %d: clearing imd_out_, throwing kCriticalFailure", i);
+          imd_out_->clear();
+          return false;
+        }
       }
     }
   }
+  return true;
 }
 
 void BmsManager::run()
@@ -164,7 +168,7 @@ void BmsManager::run()
     if (utils::Timer::getTimeMicros() - start_time_ > check_time_) {
       // check health of batteries
       if (batteries_.module_status != data::ModuleStatus::kCriticalFailure) {
-        if (!batteriesInRange()) {
+        if (!(batteriesInRange() && checkIMD())) {
           if (batteries_.module_status != previous_status_)
             log_.ERR("BMS-MANAGER", "battery failure detected");
           batteries_.module_status = data::ModuleStatus::kCriticalFailure;
@@ -177,7 +181,6 @@ void BmsManager::run()
     // publish the new data
     data_.setBatteriesData(batteries_);
 
-    checkIMD();
     if (state == data::State::kEmergencyBraking || state == data::State::kFailureStopped) {
       clearHP();
       embrakes_ssr_->clear();     // actuate brakes in emergency state

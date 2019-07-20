@@ -103,6 +103,7 @@ struct BatteryData {
   int8_t    high_temperature;           // C
   uint16_t  low_voltage_cell;           // mV
   uint16_t  high_voltage_cell;          // mV
+  bool      imd_fault;
 };
 
 struct Batteries : public Module {
@@ -137,7 +138,7 @@ struct Telemetry : public Module {
   bool reset_command = false;
   bool service_propulsion_go = false;
   bool emergency_stop_command = false;
-  bool nominal_braking_command = false;
+  bool nominal_braking_command = true;
 };
 
 // -------------------------------------------------------------------------------------------------

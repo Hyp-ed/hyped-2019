@@ -259,11 +259,11 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.average_temperature,
     local_data_.low_temperature);
 
-  // voltage, current and charge 1:1 configured
+  // voltage, current, charge, and isolation 1:1 configured
   // low_voltage_cell and high_voltage_cell 10:1 configured
   // message format is expected to look like this:
-  // [ voltageH , volageL , currentH , currentL , charge ,
-  // lowVoltageCellH , lowVoltageCellL ] [ highVoltageCellH , highVoltageCellL ]
+  // [ voltageH , volageL , currentH , currentL , charge , lowVoltageCellH , lowVoltageCellL ]
+  // [ highVoltageCellH , highVoltageCellL , IsolationADCH , Isolation ADCL]
   if (message.id == can_id_) {
     local_data_.voltage     = (message.data[0] << 8) | message.data[1];           // dV
     local_data_.current     = (message.data[2] << 8) | message.data[3];           // dV
@@ -271,6 +271,13 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
     local_data_.low_voltage_cell  = ((message.data[5] << 8) | message.data[6]);   // mV
   } else if (message.id == static_cast<uint16_t>(can_id_ + 1)) {
     local_data_.high_voltage_cell = ((message.data[0] << 8) | message.data[1]);   // mV
+    uint16_t imd_reading = ((message.data[2] << 8) | message.data[3]);            // mV
+    log_.DBG2("BMSHP", "Isolation ADC: %u", imd_reading);
+    if (imd_reading > 4000) {      // 4 volts for safe isolation
+      local_data_.imd_fault = true;
+    } else {
+      local_data_.imd_fault = false;
+    }
   }
   last_update_time_ = utils::Timer::getTimeMicros();
 
@@ -278,7 +285,7 @@ void BMSHP::processNewData(utils::io::can::Frame& message)
   if (message.id == cell_id_) {
     int cell_num = static_cast<int>(message.data[0]);   // get any value
     local_data_.cell_voltage[cell_num] = (message.data[1] << 8) | message.data[2];
-    local_data_.cell_voltage[cell_num] *=10;   // mV
+    local_data_.cell_voltage[cell_num] /=10;            // mV
   }
 
   log_.DBG2("BMSHP", "Cell voltage: %u", local_data_.cell_voltage[0]);

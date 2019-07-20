@@ -61,7 +61,7 @@ class BmsManager: public ManagerInterface  {
   /**
    * @brief check IMD and set GPIOs accordingly
    */
-  void checkIMD();
+  bool checkIMD();
 
   /**
    * @brief needs to be references because run() passes directly to data struct
@@ -80,15 +80,14 @@ class BmsManager: public ManagerInterface  {
   GPIO* hp_ssr_[data::Batteries::kNumHPBatteries];
 
   /**
-   * @brief hold IMD SSR high and shut off HP/embrakes at low read
-   */
-  GPIO* imd_out_;
-  GPIO* imd_in_;
-
-  /**
    * @brief embrakes_ssr_ held high in nominal states, cleared in emergency state
    */
   GPIO* embrakes_ssr_;
+
+  /**
+   * @brief for IMD boolean in BatteryData
+   */
+  GPIO* imd_out_;
 
   /**
    * @brief holds LP BatteryData, HP BatteryData, and module_status

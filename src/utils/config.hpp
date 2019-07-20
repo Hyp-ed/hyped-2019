@@ -40,6 +40,7 @@ enum Submodule {
   kNone,
   kNavigation,
   kTelemetry,
+  kEmbrakes,
   kPropulsion,
   kSensors,
   kStateMachine
@@ -54,10 +55,19 @@ class Config {
     // define all navigation configuration fields
   } navigation;
 
+  struct StateMachine {
+    int timeout;
+  } statemachine;
+
   struct Telemetry {
     std::string IP;
     std::string Port;
   } telemetry;
+
+  struct Embrakes {
+    int command[4];
+    int button[4];
+  } embrakes;
 
   struct Sensors {
     int chip_select[data::Sensors::kNumImus];
@@ -67,13 +77,14 @@ class Config {
     int hp_master;
     int HPSSR[data::Batteries::kNumHPBatteries];
     int IMDOut;
-    int IMDIn;
     int embrakes;
   } sensors;
 
 //  private:
   void ParseNavigation(char* line);
+  void ParseStateMachine(char* line);
   void ParseTelemetry(char* line);
+  void ParseEmbrakes(char* line);
   void ParseSensors(char* line);
   void ParseNone(char* line);
 

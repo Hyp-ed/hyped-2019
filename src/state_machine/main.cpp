@@ -25,6 +25,7 @@
 #include "data/data.hpp"
 #include "utils/timer.hpp"
 #include "utils/system.hpp"
+#include "utils/config.hpp"
 
 namespace hyped {
 namespace state_machine {
@@ -32,9 +33,11 @@ namespace state_machine {
 Main::Main(uint8_t id, Logger& log)
     : Thread(id, log),
       hypedMachine(log),
-      timeout_(23000000),     // 23 seconds
+      sys_(utils::System::getSystem()),
       data_(data::Data::getInstance())
-{ /* EMPTY */ }
+{
+  timeout_ = static_cast<uint64_t>(sys_.config->statemachine.timeout);
+}
 
 /**
   *  @brief  Runs state machine thread.
