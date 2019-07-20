@@ -28,6 +28,7 @@
 #include "utils/concurrent/thread.hpp"
 #include "state_machine/hyped-machine.hpp"
 #include "data/data.hpp"
+#include "utils/system.hpp"
 
 namespace hyped {
 
@@ -44,6 +45,7 @@ class Main: public Thread {
 
  private:
   HypedMachine hypedMachine;
+  utils::System&  sys_;
 
   // return true iff the event has been fired
   bool checkInitialised();

@@ -55,6 +55,10 @@ class Config {
     // define all navigation configuration fields
   } navigation;
 
+  struct StateMachine {
+    int timeout;
+  } statemachine;
+
   struct Telemetry {
     std::string IP;
     std::string Port;
@@ -78,6 +82,7 @@ class Config {
 
 //  private:
   void ParseNavigation(char* line);
+  void ParseStateMachine(char* line);
   void ParseTelemetry(char* line);
   void ParseEmbrakes(char* line);
   void ParseSensors(char* line);
