@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "utils/logger.hpp"
 #include "utils/system.hpp"
 #include "utils/concurrent/thread.hpp"
@@ -8,28 +10,60 @@ using hyped::utils::Logger;
 using hyped::utils::concurrent::Thread;
 using hyped::motor_control::Controller;
 
+int32_t readVel(const char* filepath, Logger& log)
+{
+  FILE* fp;
+
+  fp = fopen(filepath, "r");
+
+  int32_t vel = 0;
+
+  if (fp == NULL) {
+  } else {
+    char line[255];
+    fgets(line, 255, fp);
+    log.INFO("TEST", "line= %s",line);
+
+    vel = std::atoi(line);
+  }
+  fclose(fp);
+  return vel;
+}
+
 int main(int argc, char** argv) {
   System::parseArgs(argc, argv);
   Logger log = System::getLogger();
 
-  Controller controller(log, 2);
+  Controller controller(log, 5);
 
   controller.registerController();
   controller.configure();
+
+  int32_t vel = 0;
+  controller.sendTargetVelocity(vel);
   controller.enterOperational();
 
-  int32_t max_velocity = 200;
-  int32_t current_velocity;
-  int32_t target_velocity;
+  // Thread::sleep(1000);
+  // controller.sendTargetVelocity(10);
 
-  while (controller.getVelocity() < max_velocity) {
-    current_velocity = controller.getVelocity();
-    target_velocity = current_velocity + 100;
-    controller.sendTargetVelocity(target_velocity);
-    log.INFO("MOT-TEST", "Current velocity: %d rpm", current_velocity);
-    Thread::sleep(1000);
+  // Thread::sleep(100000);
+
+  while(1) {
+  vel = readVel("data/in/target_velocity_test.txt", log);
+  log.INFO("TEST", "vel= %d", vel);
+  controller.sendTargetVelocity(vel);
+  Thread::sleep(1000);
   }
+  
+  // controller.autoAlignMotorPosition();
 
-  Thread::sleep(10000);
-  controller.enterPreOperational();
+  // controller.sendTargetVelocity(50);
+
+  // for (auto i = 0; i < 20; i++) {
+  //   controller.updateActualVelocity();
+  //   auto vel = controller.getVelocity();
+  //   log.INFO("TEST", "Actual velocity: %d rpm", vel);
+  //   Thread::sleep(1000);
+  // }
+  // controller.enterPreOperational();
 }

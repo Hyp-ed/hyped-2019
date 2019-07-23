@@ -79,6 +79,7 @@ void Main::run()
           if (previous_state_ != current_state_) {
             log_.INFO("Motor", "State Ready");
             previous_state_ = current_state_;
+            state_processor_->sendOperationalCommand();
           }
     } else if (current_state_ == State::kAccelerating) {
           // Accelerate the motors
@@ -110,9 +111,10 @@ void Main::run()
           Telemetry telem = data_.getTelemetryData();
           if (telem.service_propulsion_go) {
             state_processor_->servicePropulsion();
-            log_.INFO("MOTOR", "Service propulsion active");
+            log_.DBG1("MOTOR", "Service propulsion active");
+          } else {
+            state_processor_->quickStopAll();
           }
-          // TODO(Iain): Need to stop the exiting somewhere
     } else if (current_state_ == State::kFailureStopped) {
           // Enter preoperational
           if (previous_state_ != current_state_) {

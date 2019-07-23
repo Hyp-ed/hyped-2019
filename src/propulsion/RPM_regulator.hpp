@@ -22,9 +22,9 @@
 #ifndef PROPULSION_RPM_REGULATOR_HPP_
 #define PROPULSION_RPM_REGULATOR_HPP_
 
-#define MAX_RPM 7000  // todo(Iain): update for actual run
-#define MAX_TEMP 100  // todo(Iain): find out actual value.
-#define MAX_CURRENT 30  // todo(Iain): replace this with an actual function.
+#define MAX_RPM 6000
+#define MAX_TEMP 150
+#define MAX_CURRENT 1500  // mA
 
 #include <cstdlib>
 #include <vector>
@@ -70,14 +70,6 @@ class RPM_Regulator {
   bool getFailure();
 
  private:
-  /**
-   * @brief reads the optimal values from a file
-   *
-   * @param filepath - path to a file containing values
-   */
-  // Add back if necessary
-  // void readFile(vector<int32_t>* values, const char* filepath);
-
   /**
    * @brief calculates the optimal rpm based off of the current velocity.
    *

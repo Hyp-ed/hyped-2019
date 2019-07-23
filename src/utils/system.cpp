@@ -375,6 +375,9 @@ Logger& System::getLogger()
 
 static void gracefulExit(int x)
 {
+  System& sys = System::getSystem();
+  sys.running_ = false;
+
   Logger log(true, 0);
   log.INFO("SYSTEM", "termination signal received, exiting gracefully");
   exit(0);

@@ -81,14 +81,17 @@ void StateProcessor::initMotors()
       break;
     }
   }
-
   if (!error) {
-    prepareMotors();
     initialized = true;
   } else {
     criticalError = true;
   }
 }
+
+  void StateProcessor::sendOperationalCommand()
+  {
+    prepareMotors();
+  }
 
 void StateProcessor::registerControllers()
 {
@@ -142,6 +145,8 @@ void StateProcessor::accelerate()
       int32_t act_temp = calcMaxTemp(controllers);
 
       int32_t rpm = regulator.calculateRPM(velocity, act_rpm, act_current, act_temp);
+
+      log_.INFO("MOTOR", "Sending %d rpm as target", rpm);
 
       for (int i = 0;i < motorAmount; i++) {
         controllers[i]->sendTargetVelocity(rpm);

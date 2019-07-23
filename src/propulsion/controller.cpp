@@ -248,6 +248,10 @@ void Controller::requestStateTransition(utils::io::can::Frame& message, Controll
 
 void Controller::autoAlignMotorPosition()
 {
+  nmt_message_.data[0] = kNmtOperational;
+  nmt_message_.data[1] = node_id_;
+  sendSdoMessage(nmt_message_);
+  Thread::sleep(100);
   if (sendControllerMessage(autoAlignMsg[0])) return;
 }
 
