@@ -115,7 +115,6 @@ void Main::run()
           } else {
             state_processor_->quickStopAll();
           }
-          // TODO(Iain): Need to stop the exiting somewhere
     } else if (current_state_ == State::kFailureStopped) {
           // Enter preoperational
           if (previous_state_ != current_state_) {

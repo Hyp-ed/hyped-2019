@@ -69,9 +69,9 @@ int32_t RPM_Regulator::calculateOptimalRPM(int32_t act_velocity)
 int32_t RPM_Regulator::step(int32_t opt_rpm, bool direction)
 {
   if (direction) {
-    return std::round(opt_rpm*0.1);  // placeholder
+    return std::round(opt_rpm*0.1);
   } else {
-    return std::round(opt_rpm*0.05);  // placeholder
+    return std::round(opt_rpm*0.05);
   }
 }
 
