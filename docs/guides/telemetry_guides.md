@@ -14,13 +14,15 @@ First, generate the protobuf files:
 $ make protoc
 ```
 
-Now, whenever you want to compile a program that uses the telemetry module, make sure to use the `PROTOBUF=1` flag. For example:
+Now, whenever you want to compile a program that uses the telemetry module, make sure to use the `PROTOBUF=1` flag. For the main program run:
 ```
-$ make MAIN=demo_telem.cpp PROTOBUF=1
+$ make PROTOBUF=1
 ```
 The linker will run into errors if this is not specified.
 
 If you're running this locally on your laptop, make sure `config.txt` has the `IP` specified as `localhost` and `Port` as `9090`. If using the Rockets, `Port` will be the same but `IP` will now be the static ip address of the access point computer (if you've followed the guide below word for word it should be `192.168.1.40`).
+
+Since the telemetry module will stop the program if it cannot connect to the base-station, make sure you've followed the instructions [here](https://github.com/Hyp-ed/base-station-2019/blob/master/README.md) on how to start the base-station. The base-station needs to be started before you run `hyped`.
 
 Now you can run `./hyped` and it should work!
 
