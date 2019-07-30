@@ -9,7 +9,7 @@ If you're running this on your laptop, make sure you've followed the [guide on b
 
 *In the past telemetry files had to manually be added to `Source.files`, this is now automated!*
 
-First, generate the protobuf files (only necessary if your version of protobufs is different from v3.6.1 which is what the generated files saved in `src/telemetry/telemetrydata` are for):
+First, generate the protobuf files:
 ```
 $ make protoc
 ```
@@ -68,9 +68,14 @@ libprotoc 3.6.1
 Now if you want to run code that uses the telemetry module refer to [this guide](#running-the-telemetry-module).
 
 ## Connecting the Rockets
-***Read instructions below sequentially***
+***Follow instructions below only if you want to configure the rockets manually or for the first time, otherwise just flash the config files provided by SpaceX which can be found in our Drive [here](https://drive.google.com/drive/folders/1DEZkNo7ZnE4ZAlGTfbYi_xrVpMejJWNj?usp=sharing).***
+
 <br>
-***Use [this video](https://www.youtube.com/watch?v=4zKNIveuCxM&feature=youtu.be) as reference***
+<br>
+
+*Read instructions below sequentially*
+<br>
+*Use [this video](https://www.youtube.com/watch?v=4zKNIveuCxM&feature=youtu.be) as reference*
 <br>
 *Just to clarify Access Point Computer refers to the computer with the designated Access Point Rocket plugged in; Station Computer refers to the computer with the designated Station Rocket plugged in*
 <br>
